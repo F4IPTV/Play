@@ -8,7 +8,7 @@ https://raw.githubusercontent.com/IPTVSHARED/iptv/refs/heads/main/LOGO_FHD.mp4
 #EXTINF:-1 tvg-id="no_epg" tvg-logo="https://raw.githubusercontent.com/IPTVSHARED/iptv/refs/heads/main/QR.png" group-title="ИНФО", ПОДДЕРЖКА ПРОЕКТА
 https://raw.githubusercontent.com/IPTVSHARED/iptv/refs/heads/main/donat.mp4
 
-#EXTINF:-1 tvg-id="no_epg" tvg-logo="https://static10.tgstat.ru/channels/_0/c5/c5d4392f3362c41844450fddcf07931f.jpg" group-title="ИНФО", ОБНОВЛЕНИЕ: 31.05.2025г 12:05
+#EXTINF:-1 tvg-id="no_epg" tvg-logo="https://static10.tgstat.ru/channels/_0/c5/c5d4392f3362c41844450fddcf07931f.jpg" group-title="ИНФО", ОБНОВЛЕНИЕ: 31.05.2025г 22:00
 #EXTVLCOPT:http-user-agent=SmartTV
 https://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R05_KAMINTV/variant.m3u8
 
@@ -419,11 +419,8 @@ https://mhd128.iptv2022.com/p/2U31OHsHxjKEH4AmNbOs8Q,1748725211/streaming/footba
 #EXTVLCOPT:http-user-agent=SmartTV
 https://mhd128.iptv2022.com/p/2TMjy9nOGNmtEmngTI3gKA,1748725211/streaming/footbal3hd/324/1/tracks-v5a1/mono.m3u8
 
-#EXTINF:-1 tvg-id="setanta-sports" group-title="Спортивные", Сетанта Спорт 1 HD
-http://rr2.73mtv.org/~109e1a3c05fcad5b22d13b9453dc0db5122/45141/hls/pl.m3u8
-
-#EXTINF:-1 tvg-id="setanta-sports-plus" group-title="Спортивные", Сетанта Спорт 2 HD
-http://rr2.73mtv.org/~109e1a3c05fcad5b22d13b9453dc0db5122/63626/hls/pl.m3u8
+#EXTINF:-1 tvg-id="okko-sport-2" group-title="Спортивные", Окко.Прайм Спорт
+http://x96.uz:8888/channel/n428fb900/index.m3u8?q=32c3ac162cdf7b2f2c8b3ab4451f6330
 
 #EXTINF:-1 tvg-logo="https://avatars.mds.yandex.net/get-mpic/4904013/img_id1736141387086004860.png/orig" tvg-id="no_epg_sport" group-title="Спортивные", IDC Random
 http://217.19.214.38:8200/hls/77/live1.m3u8
@@ -936,7 +933,7 @@ https://mhd128.iptv2022.com/p/gVwLiHNDJNDBDD3SKMNVaQ,1748725221/streaming/taina-
 http://api.peers.tv/timeshift/galaxy_tv/16/playlist.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhY2Nlc3MiLCJleHAiOjE3NDg3NjkzODAsImlhdCI6MTc0ODY4Mjk4MCwiY2lkIjo2LCJ1aWQiOjkyMDYxOTIzOSwicmVnIjpmYWxzZSwiaXAiOjE1NTE3MDQzNTYsImFkdWx0IjpmYWxzZX0.OpuqZhscDopfL7xXl1O9nRAFvF1v_3SeBsY95lTe3rI&offset=3
 
 #EXTINF:-1 tvg-id="nat-geo-wild" group-title="Познавательные", Nat Geo Wild
-http://78.130.250.2:8023/play/a02c/index.m3u8
+http://135.181.115.81:8000/play/a03v/index.m3u8?token=livetv
 
 #EXTINF:-1 tvg-id="nat-geo-wild" group-title="Познавательные", Nat Geo Wild HD
 http://188.237.47.212:6005
