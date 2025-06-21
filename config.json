@@ -19,15 +19,15 @@
     "backups": [
     {
       "file": "yt_backup.json",
-      "url": "https://f4iptv.github.io/Play/Backups/yt_backup.json",
+      "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
       "target_folder": "Download",
       "tags": ["youtube"]
     },
     {
       "file": "iptv_playlist.m3u",
-      "url": "https://f4iptv.github.io/Play/Backups/iptv_playlist.m3u",
-      "target_folder": "TVBackup",
-      "tags": ["iptv"]
+      "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
+      "target_folder": "Documents",
+      "tags": ["youtube"]
     }
   ],
   "groups": {
