@@ -99,6 +99,9 @@
     function updateStatus(message) {
       const status = document.getElementById('status');
       status.innerHTML = message;
+      if (message.includes("Установка завершена")) {
+    document.getElementById('nextBtn').disabled = true;
+  }
     }
   </script>
 
