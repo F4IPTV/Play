@@ -15,6 +15,11 @@
       margin: 10px;
       width: 250px;
     }
+    #nextBtn {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
     #status {
       margin-top: 20px;
       font-weight: bold;
@@ -40,8 +45,9 @@
   <input type="password" id="passwordInput" placeholder="Введите пароль">
   <br>
 
-  <button onclick="startInstall()">Начать установку</button>
-  <button onclick="nextInstall()" style="background-color: #e0e0e0;">Следующее приложение</button>
+  <button type="button" onclick="startInstall()">Начать установку</button>
+  <br>
+  <button type="button" id="nextBtn" onclick="nextInstall()">➡ Следующее приложение</button>
 
   <div id="status"></div>
 
@@ -86,7 +92,7 @@
     function nextInstall() {
       if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
         window.AndroidInterface.installNextApkManually();
-        document.getElementById('status').innerHTML = "➡ Установка следующего приложения...";
+        document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
       }
     }
   </script>
