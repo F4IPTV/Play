@@ -41,6 +41,7 @@
   <br>
 
   <button onclick="startInstall()">Начать установку</button>
+  <button onclick="nextInstall()" style="background-color: #e0e0e0;">Следующее приложение</button>
 
   <div id="status"></div>
 
@@ -73,13 +74,19 @@
 
         status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
 
-        // Передача группы в Android-интерфейс
         if (window.AndroidInterface) {
           window.AndroidInterface.startInstallation(group);
         }
 
       } catch (error) {
         status.innerHTML = "❌ Ошибка загрузки конфигурации.";
+      }
+    }
+
+    function nextInstall() {
+      if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
+        window.AndroidInterface.installNextApkManually();
+        document.getElementById('status').innerHTML = "➡ Установка следующего приложения...";
       }
     }
   </script>
