@@ -9,14 +9,13 @@
       "file": "iptv.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
       "tags": ["youtube"]
-    }
   ],
   {
       "file": "ipt33v.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
       "tags": ["TVBackup", "youtube"]
-    }
   ],
+  {
   "backups": [
     {
       "file": "yt_backup.json",
