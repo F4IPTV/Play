@@ -19,6 +19,7 @@
       background-color: #4CAF50;
       color: white;
       font-weight: bold;
+      display: none; /* скрыта по умолчанию */
     }
     #status {
       margin-top: 20px;
@@ -79,6 +80,8 @@
         }
 
         status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
+
+        document.getElementById('nextBtn').style.display = "inline-block"; // ← показываем кнопку
 
         if (window.AndroidInterface) {
           window.AndroidInterface.startInstallation(group);
