@@ -1,0 +1,44 @@
+{
+  "apps": [
+    {
+      "file": "youtube.apk",
+      "url": "https://f4iptv.github.io/Play/APKTV/Zona.apk",
+      "version": "3.1.2",
+      "tags": ["youtube", "all"]
+    },
+    {
+      "file": "iptv.apk",
+      "url": "https://f4iptv.github.io/Play/APKTV/iptv.apk",
+      "version": "1.5.0",
+      "tags": ["iptv", "tv", "all"]
+    }
+  ],
+  "backups": [
+    {
+      "file": "yt_backup.json",
+      "url": "https://f4iptv.github.io/Play/Backups/yt_backup.json",
+      "target_folder": "Download",
+      "tags": ["youtube"]
+    },
+    {
+      "file": "iptv_playlist.m3u",
+      "url": "https://f4iptv.github.io/Play/Backups/iptv_playlist.m3u",
+      "target_folder": "TVBackup",
+      "tags": ["iptv"]
+    }
+  ],
+  "groups": {
+    "youtube": {
+      "password": "1234",
+      "tags": ["youtube"]
+    },
+    "iptv": {
+      "password": "3333",
+      "tags": ["iptv"]
+    },
+    "all": {
+      "password": "9999",
+      "tags": ["all"]
+    }
+  }
+}
