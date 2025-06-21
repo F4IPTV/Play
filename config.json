@@ -18,13 +18,13 @@
   ],
     "backups": [
     {
-      "file": "yt_backup.json",
+      "file": "KinoTrend.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
       "target_folder": "Download",
       "tags": ["youtube"]
     },
     {
-      "file": "iptv_playlist.m3u",
+      "file": "KinoTrend11.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
       "target_folder": "Documents",
       "tags": ["youtube"]
