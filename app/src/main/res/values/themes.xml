@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Filin4ikTV" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
