@@ -7,55 +7,79 @@
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
     }
-    input, button {
+    select, input, button {
       font-size: 18px;
       padding: 10px;
       margin: 10px;
+      width: 250px;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <h2>Введите пароль доступа</h2>
-  <input type="password" id="passwordInput" placeholder="Пароль">
-  <br>
-  <button onclick="checkPassword()">Продолжить</button>
+  <h2>Выберите пакет установки</h2>
 
-  <div id="result" style="margin-top: 20px;"></div>
+  <select id="groupSelect">
+    <option value="">-- Выбрать --</option>
+    <option value="youtube">YouTube</option>
+    <option value="kino">Кинотеатры</option>
+    <option value="iptv">IPTV</option>
+    <option value="torrenttv">TorrentTV</option>
+    <option value="max">MAX</option>
+    <option value="all">Все</option>
+  </select>
+
+  <br>
+
+  <input type="password" id="passwordInput" placeholder="Введите пароль">
+  <br>
+
+  <button onclick="startInstall()">Начать установку</button>
+
+  <div id="status"></div>
 
   <script>
-    async function checkPassword() {
-      const inputPassword = document.getElementById('passwordInput').value.trim();
-      const resultDiv = document.getElementById('result');
+    async function startInstall() {
+      const group = document.getElementById('groupSelect').value;
+      const password = document.getElementById('passwordInput').value.trim();
+      const status = document.getElementById('status');
+
+      if (!group || !password) {
+        status.innerHTML = "❗ Пожалуйста, выберите пакет и введите пароль.";
+        return;
+      }
 
       try {
-        const response = await fetch("https://yourusername.github.io/installer-data/config.json");
+        const response = await fetch("https://yourgithub.github.io/installer-data/config.json");
         const config = await response.json();
 
-        const groups = config.groups;
-        let groupFound = null;
+        const groupInfo = config.groups[group];
 
-        for (const groupName in groups) {
-          if (groups[groupName].password === inputPassword) {
-            groupFound = groupName;
-            break;
-          }
+        if (!groupInfo) {
+          status.innerHTML = "❌ Группа не найдена!";
+          return;
         }
 
-        if (groupFound) {
-          resultDiv.innerHTML = `✔ Группа найдена: <b>${groupFound}</b><br>Начинается установка...`;
-
-          // Здесь вызывается Android-часть (через JS-интерфейс)
-          if (window.AndroidInterface) {
-            window.AndroidInterface.startInstallation(groupFound);
-          }
-        } else {
-          resultDiv.innerHTML = "❌ Неверный пароль!";
+        if (groupInfo.password !== password) {
+          status.innerHTML = "🔒 Неверный пароль!";
+          return;
         }
-      } catch (err) {
-        resultDiv.innerHTML = "Ошибка загрузки данных!";
+
+        status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
+
+        // Передача группы в Android-интерфейс
+        if (window.AndroidInterface) {
+          window.AndroidInterface.startInstallation(group);
+        }
+
+      } catch (error) {
+        status.innerHTML = "❌ Ошибка загрузки конфигурации.";
       }
     }
   </script>
