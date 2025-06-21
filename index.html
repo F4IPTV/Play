@@ -1,16 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>TV Installer</title>
+  <meta charset="UTF-8">
+  <title>Установщик</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Если много будете пиздить, то все отключу!!!</h1>
-    <p>Выберите пакет:</p>
-    <ul>
-        <li><a href="minimal.html">111111111111111</a></li>
-        <li><a href="full.html">Полный</a></li>
-        <li><a href="tv.html">ТВ-пакет</a></li>
-    </ul>
+
+  <h2>Введите пароль доступа</h2>
+  <input type="password" id="passwordInput" placeholder="Пароль">
+  <br>
+  <button onclick="checkPassword()">Продолжить</button>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script>
+    async function checkPassword() {
+      const inputPassword = document.getElementById('passwordInput').value.trim();
+      const resultDiv = document.getElementById('result');
+
+      try {
+        const response = await fetch("https://yourusername.github.io/installer-data/config.json");
+        const config = await response.json();
+
+        const groups = config.groups;
+        let groupFound = null;
+
+        for (const groupName in groups) {
+          if (groups[groupName].password === inputPassword) {
+            groupFound = groupName;
+            break;
+          }
+        }
+
+        if (groupFound) {
+          resultDiv.innerHTML = `✔ Группа найдена: <b>${groupFound}</b><br>Начинается установка...`;
+
+          // Здесь вызывается Android-часть (через JS-интерфейс)
+          if (window.AndroidInterface) {
+            window.AndroidInterface.startInstallation(groupFound);
+          }
+        } else {
+          resultDiv.innerHTML = "❌ Неверный пароль!";
+        }
+      } catch (err) {
+        resultDiv.innerHTML = "Ошибка загрузки данных!";
+      }
+    }
+  </script>
+
 </body>
 </html>
