@@ -3,13 +3,11 @@
     {
       "file": "Zona.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/Zona.apk",
-      "version": "3.1.2",
-      "tags": ["youtube", "all"]
+      "tags": ["youtube"]
     },
     {
       "file": "iptv.apk",
       "url": "https://f4iptv.github.io/Play/APKTV/iptv.apk",
-      "version": "1.5.0",
       "tags": ["iptv", "tv", "all"]
     }
   ],
