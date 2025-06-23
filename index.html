@@ -100,14 +100,8 @@
       const status = document.getElementById('status');
       status.innerHTML = message;
       if (message.includes("Установка завершена")) {
-        document.getElementById('nextBtn').disabled = true;
-      }
-
-      if (message.includes("Готово к следующей установке")) {
-        setTimeout(() => {
-          nextInstall();
-        }, 2000); // таймер 2 секунды
-      }
+    document.getElementById('nextBtn').disabled = true;
+  }
     }
   </script>
 
