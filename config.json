@@ -2,12 +2,12 @@
   "apps": [
     {
       "file": "Проводник.apk",
-      "url": "https://drive.google.com/uc?export=download&id=1f2HImBTGeOyCN52cuhKo5p9p16FOv5WM",
+      "url": "https://raw.githubusercontent.com/F4IPTV/Play/main/APKTV/%D0%9F%D1%80%D0%BE%D0%B2%D0%BE%D0%B4%D0%BD%D0%B8%D0%BA.apk",
       "tags": ["start"]
     },
     {
       "file": "AnyDesk.apk",
-      "url": "https://drive.google.com/uc?export=download&id=1hRww1GZP8oYOcL78oyG0oy7Rg60Qhi6R",
+      "url": "https://raw.githubusercontent.com/F4IPTV/Play/main/APKTV/AnyDesk.apk",
       "tags": ["start"]
     },
     {
