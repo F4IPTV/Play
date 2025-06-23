@@ -1,47 +1,148 @@
 {
   "apps": [
     {
-      "file": "Zona.apk",
-      "url": "https://f4iptv.github.io/Play/APKTV/Zona.apk",
+      "file": "Проводник.apk,
+      "url": "https://drive.google.com/uc?export=download&id=1f2HImBTGeOyCN52cuhKo5p9p16FOv5WM",
+      "tags": ["start"]
+    },
+    {
+      "file": "AnyDesk.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1hRww1GZP8oYOcL78oyG0oy7Rg60Qhi6R",
+      "tags": ["start"]
+    },
+    {
+      "file": "YouTube.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1mU-VUQpXFiJGalv9S8fmJ3DndSsskVaG",
       "tags": ["youtube"]
     },
     {
-      "file": "iptv.apk",
-      "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
+      "file": "SmartTube_stable.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1pTFP6gI68D_LH0aGX6-z8GDXgZJ5bH4T",
       "tags": ["youtube"]
     },
-  {
-      "file": "ipt33v.apk",
-      "url": "https://drive.google.com/uc?export=download&id=1H3_2KQV32n03oxYAW0hQfqISqvCPQ52Z",
-      "tags": ["TVBackup", "youtube"]
+    {
+      "file": "ByeByeDPI.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1ojVRjwKT1IRjxCekPUXm6HLF6PowbTXO",
+      "tags": ["youtube"]
+    },
+    {
+      "file": "Zona.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1eKwV8zBCvSOv26Djl582WhV4QUGpFWy8",
+      "tags": ["kino", "kino_torrent"]
+    },
+    {
+      "file": "HDRezkaTV.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1MqItFM9pC0EMEOoUUxL8kXENOJWp0HEQ",
+      "tags": ["kino", "kino_torrent"]
+    },
+    {
+      "file": "NUM.apk",
+      "url": "https://drive.google.com/uc?export=download&id=161IJcSiKUm0QQFZZjzxrIGFjUmNGxP9n",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "KinoTrend.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1LjFiqIOaLUBAC76y628XXLGARGJ8xprk",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "LAMPA.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1vbdEgEDN5py_aSfWhzVrDLBR3mpqSDKP",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "TorrServe_MatriX.apk",
+      "url": "https://drive.google.com/uc?export=download&id=132UaRSJfk7iW31Bofrd1pJrQIOpoOq4M",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "VimuMediaPlayer.MD.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1dDctdMqp31aUVK7_IP-BKBBp5ApHn9Fg",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "Televizo-1.9.4.0-Premium.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1XhuvY01fiVQDdC30uIqtZsjw5L4RZ5n8",
+      "tags": ["iptv", "iptv_torrenttv"]
+    },
+    {
+      "file": "drm-play.lite.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1fD75abzspcPwW6SCCpsPoHIOD_1DXOoM",
+      "tags": ["iptv", "iptv_torrenttv"]
+    },
+    {
+      "file": "Эфир+ТВ.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1OC4E-OeHv_tNiT5gUnv24yoc00GZS11_",
+      "tags": ["iptv", "iptv_torrenttv"]
+    },
+    {
+      "file": "AceStreamEngine.apk",
+      "url": "https://drive.google.com/uc?export=download&id=1J8IiM6jtSDbDY90BFkJCNRO1A15wTQJH",
+      "tags": ["iptv", "iptv_torrenttv"]
   }
   ],
     "backups": [
     {
-      "file": "KinoTrend.apk",
-      "url": "https://f4iptv.github.io/Play/APKTV/KinoTrend.apk",
+      "file": "televizo_2025-05-17.backup",
+      "url": "https://drive.google.com/uc?export=download&id=1sUbatTAXS7YA468kWkNNKup5q_77ZsAe",
+      "target_folder": "Download",
+      "tags": ["iptv", "iptv_torrenttv"]
+    },
+    {
+      "file": "ott-play.pref",
+      "url": "https://drive.google.com/uc?export=download&id=1QnYsmskY1mcytDSWyyFVTc0z4ntEF5SQ",
+      "target_folder": "Download",
+      "tags": ["iptv", "iptv_torrenttv"]
+    },
+    {
+      "file": "bbd_20250224_2120.json",
+      "url": "https://drive.google.com/uc?export=download&id=1r0fUy0n0q7goQkoRtAd915Sns-UIAiCW",
       "target_folder": "Download",
       "tags": ["youtube"]
     },
     {
-      "file": "Zona.apk",
-      "url": "https://f4iptv.github.io/Play/APKTV/Zona.apk",
-      "target_folder": "Documents",
-      "tags": ["youtube"]
+      "file": "settings.backup",
+      "url": "https://drive.google.com/uc?export=download&id=1nztXk1OTsj6cyH2od1aFgjcyY2zbSGJQ",
+      "target_folder": "Documents/LAMPA",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "storage.backup",
+      "url": "https://drive.google.com/uc?export=download&id=1wF1i-oUtJOGb79AF_mCu26ctkOBZHtnr",
+      "target_folder": "Documents/LAMPA",
+      "tags": ["kino_torrent"]
+    },
+    {
+      "file": "settings.backup",
+      "url": "https://drive.google.com/uc?export=download&id=1bt1AA95baXF51NXTUMExK88AxDuKXHOW",
+      "target_folder": "Documents/NUM",
+      "tags": ["kino_torrent"]
     }
   ],
   "groups": {
-    "youtube": {
+    "Start": {
+      "password": "",
+      "tags": ["start"]
+    },
+    "Youtube": {
       "password": "1234",
       "tags": ["youtube"]
     },
-    "iptv": {
-      "password": "3333",
+    "Kino": {
+      "password": "1234",
+      "tags": ["kino"]
+    },
+    "Kino_Torrent": {
+      "password": "1234",
+      "tags": ["kino_torrent"]
+    },
+    "IPTV": {
+      "password": "1234",
       "tags": ["iptv"]
     },
-    "all": {
-      "password": "9999",
-      "tags": ["all"]
+    "IPTV_TorrentTV": {
+      "password": "1234",
+      "tags": ["iptv_torrenttv"]
     }
   }
 }
