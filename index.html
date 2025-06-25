@@ -25,18 +25,56 @@
       font-weight: bold;
     }
     select:focus, input:focus, button:focus {
-  outline: none; /* Убираем стандартную синюю рамку */
-  border: 3px solid red; /* Жирная красная рамка */
-  box-shadow: 0 0 8px red; /* Дополнительное свечение по желанию */
+      outline: none;
+      border: 3px solid red;
+      box-shadow: 0 0 8px red;
     }
-
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .card {
+      border: 2px solid gray;
+      border-radius: 10px;
+      width: 120px;
+      height: 120px;
+      text-align: center;
+      font-size: 18px;
+      padding-top: 20px;
+      cursor: pointer;
+      background: #fff;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .card:hover {
+      background: #f0fff0;
+    }
+    .card.selected {
+      border-color: green;
+      background: #e0ffe0;
+    }
   </style>
 </head>
 <body>
 
   <h2>Добро пожаловать! Выберите пакет для установки!</h2>
 
-  <select id="groupSelect">
+  <div class="card-container">
+    <div class="card" data-group="Start" onclick="selectCard(this)">🚀<br>Старт</div>
+    <div class="card" data-group="Youtube" onclick="selectCard(this)">▶️<br>Ютуб</div>
+    <div class="card" data-group="Kino" onclick="selectCard(this)">🎬<br>Онлайн кинотеатры</div>
+    <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>Торрент + Кино</div>
+    <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>IPTV</div>
+    <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>IPTV + TorrentTV</div>
+  </div>
+
+  <select id="groupSelect" style="display:none;">
     <option value="">-- Выбрать --</option>
     <option value="Start">Старт</option>
     <option value="Youtube">Ютуб</option>
@@ -58,6 +96,12 @@
   <div id="status"></div>
 
   <script>
+    function selectCard(card) {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('groupSelect').value = card.dataset.group;
+    }
+
     async function startInstall() {
       const group = document.getElementById('groupSelect').value;
       const password = document.getElementById('passwordInput').value.trim();
@@ -106,8 +150,8 @@
       const status = document.getElementById('status');
       status.innerHTML = message;
       if (message.includes("Установка завершена")) {
-    document.getElementById('nextBtn').disabled = true;
-  }
+        document.getElementById('nextBtn').disabled = true;
+      }
     }
   </script>
 
