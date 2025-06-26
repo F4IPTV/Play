@@ -1,171 +1,236 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Установщик</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    select, input, button {
-      font-size: 18px;
-      padding: 10px;
-      margin: 10px;
-      width: 250px;
-    }
-    #nextBtn {
-      background-color: #4CAF50;
-      color: white;
-      font-weight: bold;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    select:focus, input:focus, button:focus {
-      outline: none;
-      border: 3px solid red;
-      box-shadow: 0 0 8px red;
-    }
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .card {
-      border: 2px solid gray;
-      border-radius: 10px;
-      width: 120px;
-      height: 120px;
-      text-align: center;
-      font-size: 18px;
-      padding-top: 20px;
-      cursor: pointer;
-      background: #fff;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .card:hover {
-      background: #f0fff0;
-    }
-    .card.selected {
-      border-color: green;
-      background: #e0ffe0;
-    }
-  </style>
-</head>
-<body>
+package com.example.filin4iktv
 
-<h2>Добро пожаловать! Выберите пакет для установки!</h2>
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.*
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import android.util.Log
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
 
-<div class="card-container">
-  <div class="card" data-group="Start" onclick="selectCard(this)">🚀<br>Старт</div>
-  <div class="card" data-group="Youtube" onclick="selectCard(this)">▶️<br>Ютуб</div>
-  <div class="card" data-group="Kino" onclick="selectCard(this)">🎬<br>Онлайн кинотеатры</div>
-  <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>Торрент + Кино</div>
-  <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>IPTV</div>
-  <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>IPTV + TorrentTV</div>
-</div>
+class MainActivity : AppCompatActivity() {
 
-<select id="groupSelect" style="display:none;">
-  <option value="">-- Выбрать --</option>
-  <option value="Start">Старт</option>
-  <option value="Youtube">Ютуб</option>
-  <option value="Kino">Онлайн кинотеатры</option>
-  <option value="Kino_Torrent">Торрент и оналайн кинотеатры</option>
-  <option value="IPTV">IPTV</option>
-  <option value="IPTV_TorrentTV">IPTV и TorrentTV</option>
-</select>
+    private lateinit var webView: WebView
+    private lateinit var webInterface: WebAppInterface
 
-<br>
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-<input type="password" id="passwordInput" placeholder="Введите пароль">
-<br>
+        checkStoragePermissions()
 
-<button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
-<br>
-<button type="button" id="nextBtn" onclick="nextInstall()">➡ Следующее приложение</button>
+        cacheDir.listFiles()?.forEach {
+            if (it.name.endsWith(".apk")) it.delete()
+        }
 
-<div id="status"></div>
+        webView = WebView(this)
+        webView.id = android.R.id.content
+        setContentView(webView)
 
-<script>
-  let totalCount = 0;
-  let downloadedCount = 0;
-
-  function selectCard(card) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    document.getElementById('groupSelect').value = card.dataset.group;
-    totalCount = 0;
-    downloadedCount = 0;
-    document.getElementById('status').innerHTML = "";
-  }
-
-  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('startBtn').focus();
-    }
-  });
-
-  function startInstall() {
-    const group = document.getElementById('groupSelect').value;
-    const password = document.getElementById('passwordInput').value.trim();
-    const status = document.getElementById('status');
-
-    if (!group || !password) {
-      status.innerHTML = "❗ Пожалуйста, выберите пакет и введите пароль.";
-      return;
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = WebViewClient()
+        webInterface = WebAppInterface(this)
+        webView.addJavascriptInterface(webInterface, "AndroidInterface")
+        webView.loadUrl("https://f4iptv.github.io/Play/index.html")
     }
 
-    status.innerHTML = "⏳ Идёт подготовка, загрузка файлов...";
-
-    if (window.AndroidInterface) {
-      window.AndroidInterface.startInstallation(group);
-    }
-  }
-
-  function nextInstall() {
-    if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
-      const result = window.AndroidInterface.installNextApkManually();
-      if (result === "empty") {
-        document.getElementById('status').innerHTML = "✅ Очередь пуста, установка завершена.";
-      } else {
-        document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
-      }
-    }
-  }
-
-  function updateStatus(message) {
-    const status = document.getElementById('status');
-
-    if (message.startsWith("COUNT:")) {
-      totalCount = parseInt(message.replace("COUNT:", ""));
-      downloadedCount = 0;
-      status.innerHTML = `⏳ Началось скачивание... 0 из ${totalCount} готово.`;
-      return;
+    override fun onResume() {
+        super.onResume()
+        if (webInterface.installQueue.isNotEmpty()) {
+            webInterface.installNextApkManually()
+        }
     }
 
-    if (message === "DOWNLOADED") {
-      downloadedCount++;
-      status.innerHTML = `⬇️ Скачано ${downloadedCount} из ${totalCount} файлов.`;
-      return;
+    private fun checkStoragePermissions() {
+        val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+        val missingPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (missingPermissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missingPermissions.toTypedArray(), 100)
+        }
     }
 
-    status.innerHTML = message;
+    inner class WebAppInterface(private val context: Context) {
 
-    if (message.includes("Установка завершена")) {
-      document.getElementById('nextBtn').disabled = true;
+        val installQueue = mutableListOf<File>()
+
+        @JavascriptInterface
+        fun startInstallation(groupName: String) {
+            Thread {
+                try {
+                    val configUrl = "https://f4iptv.github.io/Play/config.json"
+                    val configText = URL(configUrl).readText()
+                    val config = JSONObject(configText)
+
+                    val group = config.getJSONObject("groups").getJSONObject(groupName)
+                    val tags = group.getJSONArray("tags")
+
+                    installQueue.clear()
+
+                    val apps = config.getJSONArray("apps")
+                    val appsToInstall = mutableListOf<String>()
+
+                    for (i in 0 until apps.length()) {
+                        val app = apps.getJSONObject(i)
+                        if (tagsMatch(tags, app.getJSONArray("tags"))) {
+                            val url = app.getString("url")
+                            if (url.isNotBlank()) appsToInstall.add(url)
+                        }
+                    }
+
+                    sendMessageToWebView("COUNT:${appsToInstall.size}")
+
+                    for (url in appsToInstall) {
+                        val apkFile = downloadApkToCache(url)
+                        if (apkFile != null) installQueue.add(apkFile)
+                        sendMessageToWebView("DOWNLOADED")
+                    }
+
+                    val backups = config.getJSONArray("backups")
+                    for (i in 0 until backups.length()) {
+                        val backup = backups.getJSONObject(i)
+                        if (tagsMatch(tags, backup.getJSONArray("tags"))) {
+                            val fileUrl = backup.getString("url")
+                            val folder = backup.getString("target_folder")
+                            if (fileUrl.isNotBlank() && folder.isNotBlank()) downloadFile(fileUrl, folder)
+                        }
+                    }
+
+                    Handler(Looper.getMainLooper()).post {
+                        if (installQueue.isNotEmpty()) {
+                            installNextApk()
+                        } else {
+                            sendMessageToWebView("✅ Установка завершена. Нет приложений.")
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    sendMessageToWebView("❌ Ошибка установки: ${e.message}")
+                }
+            }.start()
+        }
+
+        @JavascriptInterface
+        fun installNextApkManually(): String {
+            return if (installQueue.isEmpty()) {
+                sendMessageToWebView("✅ Очередь пуста, установка завершена.")
+                "empty"
+            } else {
+                installNextApk()
+                "ok"
+            }
+        }
+
+        fun installNextApk() {
+            if (installQueue.isEmpty()) {
+                sendMessageToWebView("✅ Установка завершена. Больше нет приложений.")
+                return
+            }
+
+            val apkFile = installQueue.removeAt(0)
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", apkFile)
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            context.startActivity(intent)
+        }
+
+        private fun tagsMatch(groupTags: JSONArray, itemTags: JSONArray): Boolean {
+            for (i in 0 until groupTags.length()) {
+                val tag = groupTags.getString(i)
+                for (j in 0 until itemTags.length()) {
+                    if (tag.equals(itemTags.getString(j), ignoreCase = true)) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
+        private fun downloadApkToCache(urlStr: String): File? {
+            return try {
+                val fileName = "install_${System.currentTimeMillis()}.apk"
+                val file = File(context.cacheDir, fileName)
+
+                val input = URL(urlStr).openStream()
+                val output = FileOutputStream(file)
+                input.copyTo(output)
+                input.close()
+                output.close()
+
+                file
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        private fun downloadFile(urlStr: String, targetFolder: String) {
+            try {
+                val fileName = Uri.parse(urlStr).lastPathSegment ?: return
+
+                val baseDir = when {
+                    targetFolder.startsWith("Download") -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    targetFolder.startsWith("Documents") -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    else -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                }
+
+                val relativePath = targetFolder.substringAfter("/", "")
+                val targetDir = if (relativePath.isNotEmpty()) File(baseDir, relativePath) else baseDir
+
+                if (!targetDir.exists()) {
+                    if (!targetDir.mkdirs()) return
+                }
+
+                val outFile = File(targetDir, fileName)
+
+                val url = URL(urlStr)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connect()
+
+                val input = BufferedInputStream(connection.inputStream)
+                val output = FileOutputStream(outFile)
+
+                input.copyTo(output)
+                input.close()
+                output.close()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        private fun sendMessageToWebView(message: String) {
+            Handler(Looper.getMainLooper()).post {
+                (context as? MainActivity)?.runOnUiThread {
+                    val webView = (context as MainActivity).findViewById<WebView>(android.R.id.content).rootView as WebView
+                    webView.evaluateJavascript("updateStatus('${message.replace("'", "\\'")}')", null)
+                }
+            }
+        }
     }
-  }
-</script>
-
-</body>
-</html>
+}
