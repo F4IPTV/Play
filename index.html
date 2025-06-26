@@ -109,13 +109,14 @@
     }
   });
 
-  async function startInstall() {
+ async function startInstall() {
     const group = document.getElementById('groupSelect').value;
     const password = document.getElementById('passwordInput').value.trim();
     const status = document.getElementById('status');
 
     if (!group || !password) {
       status.innerHTML = "❗ Пожалуйста, выберите пакет и введите пароль.";
+      status.style.color = "red";
       return;
     }
 
@@ -127,15 +128,18 @@
 
       if (!groupInfo) {
         status.innerHTML = "❌ Группа не найдена!";
+        status.style.color = "red";
         return;
       }
 
       if (groupInfo.password !== password) {
         status.innerHTML = "🔒 Неверный пароль!";
+        status.style.color = "red";
         return;
       }
 
-      status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
+      status.innerHTML = "✅ Пароль принят, идёт загрузка... ⏳";
+      status.style.color = "green";
 
       if (window.AndroidInterface) {
         window.AndroidInterface.startInstallation(group);
@@ -143,8 +147,10 @@
 
     } catch (error) {
       status.innerHTML = "❌ Ошибка загрузки конфигурации.";
+      status.style.color = "red";
     }
-  }
+}
+
 
   function nextInstall() {
     if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
