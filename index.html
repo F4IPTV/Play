@@ -175,6 +175,20 @@
       status.classList.add('visible');
     }
   }
+
+  function updateStatus(message) {
+    const status = document.getElementById('status');
+
+    if (message.includes("Установка завершена")) {
+      status.innerHTML = "✅ Установка завершена.";
+      status.style.color = "green";
+      status.classList.add('visible');
+      return;
+    }
+
+    status.innerHTML = message;
+    status.classList.add('visible');
+  }
 </script>
 
 </body>
