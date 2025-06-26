@@ -179,23 +179,9 @@
   function updateStatus(message) {
     const status = document.getElementById('status');
 
-    if (message.includes("Установка завершена")) {
-      status.innerHTML = "✅ Установка завершена.";
-      status.style.color = "green";
-      status.classList.add('visible');
-      return;
-    }
-
-    if (message.includes("Нет приложений")) {
+    if (message === "FINISH") {
       status.innerHTML = "✅ Все приложения установлены.";
       status.style.color = "green";
-      status.classList.add('visible');
-      return;
-    }
-
-    if (message.includes("Ошибка установки")) {
-      status.innerHTML = "❌ Ошибка установки.";
-      status.style.color = "red";
       status.classList.add('visible');
       return;
     }
