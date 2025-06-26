@@ -186,6 +186,13 @@
       return;
     }
 
+    if (message.startsWith("Установка приложений:")) {
+      status.innerHTML = `${message}`;
+      status.style.color = "black";
+      status.classList.add('visible');
+      return;
+    }
+
     status.innerHTML = message;
     status.classList.add('visible');
   }
