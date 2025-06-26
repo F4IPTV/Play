@@ -121,7 +121,7 @@
   ],
   "groups": {
     "Start": {
-      "password": "0000",
+      "password": "",
       "tags": ["start"]
     },
     "Youtube": {
