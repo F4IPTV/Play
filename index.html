@@ -175,27 +175,6 @@
       status.classList.add('visible');
     }
   }
-
-  function updateStatus(message) {
-    const status = document.getElementById('status');
-
-    if (message === "FINISH") {
-      status.innerHTML = "✅ Все приложения установлены.";
-      status.style.color = "green";
-      status.classList.add('visible');
-      return;
-    }
-
-    if (message.startsWith("Установка приложений:")) {
-      status.innerHTML = `${message}`;
-      status.style.color = "black";
-      status.classList.add('visible');
-      return;
-    }
-
-    status.innerHTML = message;
-    status.classList.add('visible');
-  }
 </script>
 
 </body>
