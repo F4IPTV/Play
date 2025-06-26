@@ -186,6 +186,20 @@
       return;
     }
 
+    if (message.includes("Нет приложений")) {
+      status.innerHTML = "✅ Все приложения установлены.";
+      status.style.color = "green";
+      status.classList.add('visible');
+      return;
+    }
+
+    if (message.includes("Ошибка установки")) {
+      status.innerHTML = "❌ Ошибка установки.";
+      status.style.color = "red";
+      status.classList.add('visible');
+      return;
+    }
+
     status.innerHTML = message;
     status.classList.add('visible');
   }
