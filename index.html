@@ -148,8 +148,12 @@
 
   function nextInstall() {
     if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
-      window.AndroidInterface.installNextApkManually();
-      document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
+      const result = window.AndroidInterface.installNextApkManually();
+      if (result === "empty") {
+        document.getElementById('status').innerHTML = "✅ Очередь пуста, установка завершена.";
+      } else {
+        document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
+      }
     }
   }
 
