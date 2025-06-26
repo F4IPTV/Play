@@ -23,6 +23,7 @@
     #status {
       margin-top: 20px;
       font-weight: bold;
+      min-height: 24px;
     }
     select:focus, input:focus, button:focus {
       outline: none;
@@ -100,6 +101,10 @@
     document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     document.getElementById('groupSelect').value = card.dataset.group;
+
+    const status = document.getElementById('status');
+    status.innerHTML = "";
+    status.style.color = "";
   }
 
   document.getElementById('passwordInput').addEventListener('keydown', function(e) {
@@ -109,7 +114,7 @@
     }
   });
 
- async function startInstall() {
+  async function startInstall() {
     const group = document.getElementById('groupSelect').value;
     const password = document.getElementById('passwordInput').value.trim();
     const status = document.getElementById('status');
@@ -149,8 +154,7 @@
       status.innerHTML = "❌ Ошибка загрузки конфигурации.";
       status.style.color = "red";
     }
-}
-
+  }
 
   function nextInstall() {
     if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
