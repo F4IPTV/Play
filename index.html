@@ -63,97 +63,104 @@
 </head>
 <body>
 
-  <h2>Добро пожаловать! Выберите пакет для установки!</h2>
+<h2>Добро пожаловать! Выберите пакет для установки!</h2>
 
-  <div class="card-container">
-    <div class="card" data-group="Start" onclick="selectCard(this)">🚀<br>Старт</div>
-    <div class="card" data-group="Youtube" onclick="selectCard(this)">▶️<br>Ютуб</div>
-    <div class="card" data-group="Kino" onclick="selectCard(this)">🎬<br>Онлайн кинотеатры</div>
-    <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>Торрент + Кино</div>
-    <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>IPTV</div>
-    <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>IPTV + TorrentTV</div>
-  </div>
+<div class="card-container">
+  <div class="card" data-group="Start" onclick="selectCard(this)">🚀<br>Старт</div>
+  <div class="card" data-group="Youtube" onclick="selectCard(this)">▶️<br>Ютуб</div>
+  <div class="card" data-group="Kino" onclick="selectCard(this)">🎬<br>Онлайн кинотеатры</div>
+  <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>Торрент + Кино</div>
+  <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>IPTV</div>
+  <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>IPTV + TorrentTV</div>
+</div>
 
-  <select id="groupSelect" style="display:none;">
-    <option value="">-- Выбрать --</option>
-    <option value="Start">Старт</option>
-    <option value="Youtube">Ютуб</option>
-    <option value="Kino">Онлайн кинотеатры</option>
-    <option value="Kino_Torrent">Торрент и оналайн кинотеатры</option>
-    <option value="IPTV">IPTV</option>
-    <option value="IPTV_TorrentTV">IPTV и TorrentTV</option>
-  </select>
+<select id="groupSelect" style="display:none;">
+  <option value="">-- Выбрать --</option>
+  <option value="Start">Старт</option>
+  <option value="Youtube">Ютуб</option>
+  <option value="Kino">Онлайн кинотеатры</option>
+  <option value="Kino_Torrent">Торрент и оналайн кинотеатры</option>
+  <option value="IPTV">IPTV</option>
+  <option value="IPTV_TorrentTV">IPTV и TorrentTV</option>
+</select>
 
-  <br>
+<br>
 
-  <input type="password" id="passwordInput" placeholder="Введите пароль">
-  <br>
+<input type="password" id="passwordInput" placeholder="Введите пароль">
+<br>
 
-  <button type="button" onclick="startInstall()">Начать установку</button>
-  <br>
-  <button type="button" id="nextBtn" onclick="nextInstall()">➡ Следующее приложение</button>
+<button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
+<br>
+<button type="button" id="nextBtn" onclick="nextInstall()">➡ Следующее приложение</button>
 
-  <div id="status"></div>
+<div id="status"></div>
 
-  <script>
-    function selectCard(card) {
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      document.getElementById('groupSelect').value = card.dataset.group;
+<script>
+  function selectCard(card) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    document.getElementById('groupSelect').value = card.dataset.group;
+  }
+
+  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('startBtn').focus();
+    }
+  });
+
+  async function startInstall() {
+    const group = document.getElementById('groupSelect').value;
+    const password = document.getElementById('passwordInput').value.trim();
+    const status = document.getElementById('status');
+
+    if (!group || !password) {
+      status.innerHTML = "❗ Пожалуйста, выберите пакет и введите пароль.";
+      return;
     }
 
-    async function startInstall() {
-      const group = document.getElementById('groupSelect').value;
-      const password = document.getElementById('passwordInput').value.trim();
-      const status = document.getElementById('status');
+    try {
+      const response = await fetch("https://f4iptv.github.io/Play/config.json");
+      const config = await response.json();
 
-      if (!group || !password) {
-        status.innerHTML = "❗ Пожалуйста, выберите пакет и введите пароль.";
+      const groupInfo = config.groups[group];
+
+      if (!groupInfo) {
+        status.innerHTML = "❌ Группа не найдена!";
         return;
       }
 
-      try {
-        const response = await fetch("https://f4iptv.github.io/Play/config.json");
-        const config = await response.json();
-
-        const groupInfo = config.groups[group];
-
-        if (!groupInfo) {
-          status.innerHTML = "❌ Группа не найдена!";
-          return;
-        }
-
-        if (groupInfo.password !== password) {
-          status.innerHTML = "🔒 Неверный пароль!";
-          return;
-        }
-
-        status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
-
-        if (window.AndroidInterface) {
-          window.AndroidInterface.startInstallation(group);
-        }
-
-      } catch (error) {
-        status.innerHTML = "❌ Ошибка загрузки конфигурации.";
+      if (groupInfo.password !== password) {
+        status.innerHTML = "🔒 Неверный пароль!";
+        return;
       }
-    }
 
-    function nextInstall() {
-      if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
-        window.AndroidInterface.installNextApkManually();
-        document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
-      }
-    }
+      status.innerHTML = `✅ Пароль принят. Установка пакета: <b>${group}</b>...`;
 
-    function updateStatus(message) {
-      const status = document.getElementById('status');
-      status.innerHTML = message;
-      if (message.includes("Установка завершена")) {
-        document.getElementById('nextBtn').disabled = true;
+      if (window.AndroidInterface) {
+        window.AndroidInterface.startInstallation(group);
       }
+
+    } catch (error) {
+      status.innerHTML = "❌ Ошибка загрузки конфигурации.";
     }
-  </script>
+  }
+
+  function nextInstall() {
+    if (window.AndroidInterface && window.AndroidInterface.installNextApkManually) {
+      window.AndroidInterface.installNextApkManually();
+      document.getElementById('status').innerHTML = "➡ Установка следующего APK...";
+    }
+  }
+
+  function updateStatus(message) {
+    const status = document.getElementById('status');
+    status.innerHTML = message;
+    if (message.includes("Установка завершена")) {
+      document.getElementById('nextBtn').disabled = true;
+    }
+  }
+</script>
 
 </body>
 </html>
