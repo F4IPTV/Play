@@ -236,7 +236,7 @@ function showRequestList(config) {
       btn.onclick = () => {
         if (window.AndroidInterface) {
           window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-          alert("Бэкап успешно скопирован: " + backup.file);
+          alert("✅ Бэкап скопирован: " + backup.file);
         }
       };
       list.appendChild(btn);
