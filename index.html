@@ -4,97 +4,23 @@
   <meta charset="UTF-8">
   <title>Установщик</title>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    select, input, button {
-      font-size: 18px;
-      padding: 10px;
-      margin: 10px;
-      width: 250px;
-    }
-    #nextBtn {
-      background-color: #4CAF50;
-      color: white;
-      font-weight: bold;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-      min-height: 24px;
-      transition: opacity 0.5s ease;
-      opacity: 0;
-    }
-    #status.visible {
-      opacity: 1;
-    }
-    .spin {
-      display: inline-block;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    select:focus, input:focus, button:focus {
-      outline: none;
-      border: 3px solid red;
-      box-shadow: 0 0 8px red;
-    }
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .card {
-      border: 2px solid gray;
-      border-radius: 10px;
-      width: 120px;
-      height: 90px;
-      text-align: center;
-      font-size: 18px;
-      padding-top: 20px;
-      cursor: pointer;
-      background: #fff;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .card:hover {
-      background: #f0fff0;
-    }
-    .card.selected {
-      border-color: green;
-      background: #e0ffe0;
-    }
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-height: 80vh;
-      overflow-y: auto;
-      width: 80%;
-    }
-    .modal button {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
+    #status { margin-top: 20px; font-weight: bold; min-height: 24px; transition: opacity 0.5s ease; opacity: 0; }
+    #status.visible { opacity: 1; }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    select:focus, input:focus, button:focus { outline: none; border: 3px solid red; box-shadow: 0 0 8px red; }
+    .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
+    .card { border: 2px solid gray; border-radius: 10px; width: 120px; height: 90px; text-align: center;
+            font-size: 18px; padding-top: 20px; cursor: pointer; background: #fff; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    .card:hover { background: #f0fff0; }
+    .card.selected { border-color: green; background: #e0ffe0; }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
+             display: flex; justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: #fff; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; width: 80%; }
+    .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -123,11 +49,9 @@
 </select>
 
 <br>
-
 <button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
 <br>
 <input type="password" id="passwordInput" placeholder="Введите пароль">
-
 <div id="status"></div>
 
 <div id="modal" class="modal" style="display:none;">
@@ -175,7 +99,6 @@ async function startInstall() {
     const config = await response.json();
 
     const groupInfo = config.groups[group];
-
     if (!groupInfo) {
       status.innerHTML = "❌ Группа не найдена!";
       status.style.color = "red";
@@ -236,7 +159,7 @@ function showRequestList(config) {
       btn.onclick = () => {
         if (window.AndroidInterface) {
           window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-          alert("Бэкап скопирован: " + backup.file);
+          alert("Бэкап успешно скопирован: " + backup.file);
         }
       };
       list.appendChild(btn);
