@@ -135,27 +135,27 @@
       "tags": ["start"]
     },
     "Youtube": {
-      "password": "1234",
+      "password": "",
       "tags": ["youtube"]
     },
     "Kino": {
-      "password": "1234",
+      "password": "",
       "tags": ["kino"]
     },
     "Kino_Torrent": {
-      "password": "1234",
+      "password": "",
       "tags": ["kino_torrent"]
     },
     "IPTV": {
-      "password": "1234",
+      "password": "",
       "tags": ["iptv"]
     },
     "IPTV_TorrentTV": {
-      "password": "1234",
+      "password": "",
       "tags": ["iptv_torrenttv"]
     },
     "Request": {
-      "password": "1234",
+      "password": "",
       "tags": ["Request"]
     }
   }
