@@ -23,7 +23,7 @@
     {
       "file": "ByeByeDPI.apk",
       "url": "https://www.dropbox.com/scl/fi/i9zanf7tz6lf8gmi8iv6m/ByeByeDPI.apk?rlkey=rgz957w85aupznwqrh3xpiv5m&dl=1",
-      "tags": ["youtube"]
+      "tags": ["youtube", "Request"]
     },
     {
       "file": "Zona.apk",
@@ -48,7 +48,7 @@
     {
       "file": "LAMPA.apk",
       "url": "https://www.dropbox.com/scl/fi/dg0xhud0zzpxxd01rwh1s/LAMPA.apk?rlkey=mhmv3nqdqdoxu2f4zhqogtf4e&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "Request"]
     },
     {
       "file": "TorrServe_MatriX.apk",
@@ -108,7 +108,7 @@
       "file": "bbd_20250224_2120.json",
       "url": "https://www.dropbox.com/scl/fi/lokk08e3m83o6js12trib/bbd_20250224_2120.json?rlkey=77ofl42q6v5vv5qz5w3h738f3&dl=1",
       "target_folder": "Download",
-      "tags": ["youtube"]
+      "tags": ["youtube", "Request"]
     },
     {
       "file": "settings.backup",

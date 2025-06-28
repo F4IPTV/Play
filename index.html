@@ -73,6 +73,29 @@
       border-color: green;
       background: #e0ffe0;
     }
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #modalContent {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .modal-btn {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -89,7 +112,7 @@
   <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>4_Торрент + Кино</div>
   <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>5_IPTV</div>
   <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>6_IPTV + TorrentTV</div>
-  <div class="card" data-group="Request" onclick="selectCard(this)">✍<br>7_Заявки</div>
+  <div class="card" data-group="Request" onclick="openRequestModal()">✍<br>7_Заявки</div>
 </div>
 
 <select id="groupSelect" style="display:none;">
@@ -100,7 +123,6 @@
   <option value="Kino_Torrent">Торрент и оналайн кинотеатры</option>
   <option value="IPTV">IPTV</option>
   <option value="IPTV_TorrentTV">IPTV и TorrentTV</option>
-  <option value="Request">Заявки</option>
 </select>
 
 <br>
@@ -108,75 +130,76 @@
 <button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
 <br>
 <input type="password" id="passwordInput" placeholder="Введите пароль">
-
-
 <div id="status"></div>
 
+<div id="modal">
+  <div id="modalContent">
+    <h3>Выберите приложение для установки</h3>
+    <div id="requestList"></div>
+    <button onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
 <script>
-  function selectCard(card) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    document.getElementById('groupSelect').value = card.dataset.group;
+function selectCard(card) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('groupSelect').value = card.dataset.group;
+  const status = document.getElementById('status');
+  status.innerHTML = "";
+  status.style.color = "";
+  status.classList.remove('visible');
+}
 
-    const status = document.getElementById('status');
-    status.innerHTML = "";
-    status.style.color = "";
-    status.classList.remove('visible');
-  }
-
-  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('startBtn').focus();
-    }
-  });
-
-  async function startInstall() {
-    const group = document.getElementById('groupSelect').value;
-    const password = document.getElementById('passwordInput').value.trim();
-    const status = document.getElementById('status');
-
-    if (!group) {
-      status.innerHTML = "❗ Пожалуйста, выберите пакет.";
-      status.style.color = "red";
-      status.classList.add('visible');
-      return;
-    }
-
-    try {
-      const response = await fetch("https://f4iptv.github.io/Play/config.json");
-      const config = await response.json();
-
-      const groupInfo = config.groups[group];
-
-      if (!groupInfo) {
-        status.innerHTML = "❌ Группа не найдена!";
-        status.style.color = "red";
-        status.classList.add('visible');
-        return;
+function openRequestModal() {
+  fetch("https://f4iptv.github.io/Play/config.json")
+    .then(res => res.json())
+    .then(config => {
+      const apps = config.apps.filter(app => app.tags.includes("Request"));
+      const container = document.getElementById('requestList');
+      container.innerHTML = "";
+      if (apps.length === 0) {
+        container.innerHTML = "❗ Нет доступных приложений.";
+      } else {
+        apps.forEach(app => {
+          const btn = document.createElement('button');
+          btn.className = "modal-btn";
+          btn.textContent = app.file;
+          btn.onclick = () => {
+            if (window.AndroidInterface) window.AndroidInterface.installSingleApk(app.url);
+          };
+          container.appendChild(btn);
+        });
       }
+      document.getElementById('modal').style.display = "flex";
+    });
+}
 
-      if (groupInfo.password !== password) {
-        status.innerHTML = "🔒 Неверный пароль!";
-        status.style.color = "red";
-        status.classList.add('visible');
-        return;
-      }
+function closeModal() {
+  document.getElementById('modal').style.display = "none";
+}
 
-      status.innerHTML = "✅ Пароль принят, идёт загрузка... <span class='spin'>⏳</span>";
-      status.style.color = "green";
-      status.classList.add('visible');
+// Остальной твой код:
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') e.preventDefault(), document.getElementById('startBtn').focus();
+});
 
-      if (window.AndroidInterface) {
-        window.AndroidInterface.startInstallation(group);
-      }
+async function startInstall() {
+  const group = document.getElementById('groupSelect').value;
+  const password = document.getElementById('passwordInput').value.trim();
+  const status = document.getElementById('status');
 
-    } catch (error) {
-      status.innerHTML = "❌ Ошибка загрузки конфигурации.";
-      status.style.color = "red";
-      status.classList.add('visible');
-    }
-  }
+  if (!group) return status.innerHTML = "❗ Пожалуйста, выберите пакет.", status.style.color = "red", status.classList.add('visible');
+
+  const config = await fetch("https://f4iptv.github.io/Play/config.json").then(r => r.json()).catch(() => null);
+  if (!config || !config.groups[group]) return status.innerHTML = "❌ Группа не найдена!", status.style.color = "red", status.classList.add('visible');
+  if (config.groups[group].password !== password) return status.innerHTML = "🔒 Неверный пароль!", status.style.color = "red", status.classList.add('visible');
+
+  status.innerHTML = "✅ Пароль принят, идёт загрузка... <span class='spin'>⏳</span>";
+  status.style.color = "green";
+  status.classList.add('visible');
+  if (window.AndroidInterface) window.AndroidInterface.startInstallation(group);
+}
 </script>
 
 </body>
