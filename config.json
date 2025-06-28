@@ -23,7 +23,7 @@
     {
       "file": "ByeByeDPI.apk",
       "url": "https://www.dropbox.com/scl/fi/i9zanf7tz6lf8gmi8iv6m/ByeByeDPI.apk?rlkey=rgz957w85aupznwqrh3xpiv5m&dl=1",
-      "tags": ["youtube", "Request"]
+      "tags": ["youtube"]
     },
     {
       "file": "Zona.apk",
@@ -48,7 +48,7 @@
     {
       "file": "LAMPA.apk",
       "url": "https://www.dropbox.com/scl/fi/dg0xhud0zzpxxd01rwh1s/LAMPA.apk?rlkey=mhmv3nqdqdoxu2f4zhqogtf4e&dl=1",
-      "tags": ["kino_torrent", "Request"]
+      "tags": ["kino_torrent"]
     },
     {
       "file": "TorrServe_MatriX.apk",
@@ -96,13 +96,13 @@
       "file": "televizo_2025-05-17.backup",
       "url": "https://www.dropbox.com/scl/fi/w1rjd05o96x9c18uxk1hq/televizo_2025-05-17.backup?rlkey=7cuxc5xzvh7p0exf51jkqrs6o&dl=1",
       "target_folder": "Download",
-      "tags": ["iptv", "iptv_torrenttv"]
+      "tags": ["iptv", "iptv_torrenttv", "Request"]
     },
     {
       "file": "ott-play.pref",
       "url": "https://www.dropbox.com/scl/fi/0wd45j1go606p2ovwlf10/ott-play.pref?rlkey=35vrdaoe7k8s8ro1p564zsnbw&dl=1",
       "target_folder": "Download",
-      "tags": ["iptv", "iptv_torrenttv"]
+      "tags": ["iptv", "iptv_torrenttv", "Request"]
     },
     {
       "file": "bbd_20250224_2120.json",
@@ -114,19 +114,19 @@
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/1eqthvdh0s980h4ycip9x/settings.backup?rlkey=tkgivt1gz3qs8v2o3uvu6kcdo&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "Request"]
     },
     {
       "file": "storage.backup",
       "url": "https://www.dropbox.com/scl/fi/byfwhtqsbs8xbnnx0j44a/storage.backup?rlkey=6j0hzy19mvqqshfi1a22fq7hq&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "Request"]
     },
     {
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/ezzuhcfmff1c13vnne2r1/settings.backup?rlkey=un0rbea21kk3ohryvbemi80he&dl=1",
       "target_folder": "Documents/NUM",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "Request"]
     }
   ],
   "groups": {
