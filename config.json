@@ -148,6 +148,10 @@
     "IPTV_TorrentTV": {
       "password": "1234",
       "tags": ["iptv_torrenttv"]
+    },
+    "Request": {
+      "password": "1234",
+      "tags": ["Request"]
     }
   }
 }
