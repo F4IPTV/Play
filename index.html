@@ -166,7 +166,12 @@ function showRequestList(config) {
     });
   }
 
-  modal.style.display = "flex";
+ modal.style.display = "flex";
+
+  setTimeout(() => {
+    const firstBtn = list.querySelector('button');
+    if (firstBtn) firstBtn.focus();
+  }, 100);
 }
 
 function closeModal() {
