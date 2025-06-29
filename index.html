@@ -6,7 +6,7 @@
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px; }
     select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
-    #status { margin-top: 20px; font-weight: bold; min-height: 24px; transition: opacity 0.5s ease; opacity: 0; }
+    #status { margin-top: 20px; font-weight: bold; min-height: 24px;  transition: opacity 0.5s ease;  opacity: 0;  position: fixed;  top: 10px;  left: 0;  right: 0;  text-align: center;  z-index: 1001; }
     #status.visible { opacity: 1; }
     .spin { display: inline-block; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
