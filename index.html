@@ -114,6 +114,13 @@ async function startInstall() {
   }
 }
 
+function showStatus(message, color) {
+  const status = document.getElementById('status');
+  status.innerHTML = message;
+  status.style.color = color;
+  status.classList.add('visible');
+}
+
 function showGroupList(config) {
   const modal = document.getElementById('modal');
   const list = document.getElementById('modalList');
