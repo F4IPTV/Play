@@ -153,8 +153,13 @@ function showRequestList(config) {
       const btn = document.createElement('button');
       btn.textContent = app.file;
       btn.onclick = () => {
-        if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
-      };
+        const status = document.getElementById('status');
+    status.innerHTML = "⏳ Загрузка APK... <span class='spin'>⏳</span>";
+    status.style.color = "green";
+    status.classList.add('visible');
+
+    if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
+};
       list.appendChild(btn);
     });
 
@@ -162,11 +167,13 @@ function showRequestList(config) {
       const btn = document.createElement('button');
       btn.textContent = backup.file;
       btn.onclick = () => {
-        if (window.AndroidInterface) {
-          window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-          alert("Бэкап успешно скопирован: " + backup.file);
-        }
-      };
+        const status = document.getElementById('status');
+    status.innerHTML = "⏳ Копирование бэкапа... <span class='spin'>⏳</span>";
+    status.style.color = "green";
+    status.classList.add('visible');
+
+    if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
+};
       list.appendChild(btn);
     });
   }
