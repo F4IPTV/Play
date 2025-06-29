@@ -118,7 +118,7 @@ async function startInstall() {
       return;
     }
 
-    if (group === "Request") {
+    if (group === "8") {
       showRequestList(config);
       return;
     }
@@ -143,8 +143,8 @@ function showRequestList(config) {
   const list = document.getElementById('modalList');
   list.innerHTML = "";
 
-  const apps = config.apps.filter(app => app.tags.includes("Request"));
-  const backups = config.backups.filter(backup => backup.tags.includes("Request"));
+  const apps = config.apps.filter(app => app.tags.includes("8"));
+  const backups = config.backups.filter(backup => backup.tags.includes("8"));
 
   if (apps.length === 0 && backups.length === 0) {
     list.innerHTML = "Нет доступных приложений или бэкапов.";
