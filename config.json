@@ -3,82 +3,82 @@
     {
       "file": "Проводник.apk",
       "url": "https://www.dropbox.com/scl/fi/bx8vmyi3w5janvlo834lz/.apk?rlkey=l4naof18bbvlxyzuatx64z2k9&dl=1",
-      "tags": ["start", "youtube"]
+      "tags": ["start", "youtube", "MAX"]
     },
     {
       "file": "AnyDesk.apk",
       "url": "https://www.dropbox.com/scl/fi/84jz9voz42142y0xow3dc/AnyDesk.apk?rlkey=zwevv6rg6moq51yp34karxcrv&dl=1",
-      "tags": ["start"]
+      "tags": ["start", "MAX"]
     },
     {
       "file": "YouTube.apk",
       "url": "https://www.dropbox.com/scl/fi/ycrj3fu5j9fjczxep30sx/YouTube.apk?rlkey=me922wesij7y1nlepy9mznmlm&dl=1",
-      "tags": ["youtube"]
+      "tags": ["youtube", "MAX"]
     },
     {
       "file": "SmartTube_stable.apk",
       "url": "https://www.dropbox.com/scl/fi/k6hsnh8resjrnqqzrdyfj/SmartTube_stable.apk?rlkey=kxe5gl9d3lpyphjvea23l5frc&dl=1",
-      "tags": ["youtube"]
+      "tags": ["youtube", "MAX"]
     },
     {
       "file": "ByeByeDPI.apk",
       "url": "https://www.dropbox.com/scl/fi/i9zanf7tz6lf8gmi8iv6m/ByeByeDPI.apk?rlkey=rgz957w85aupznwqrh3xpiv5m&dl=1",
-      "tags": ["youtube"]
+      "tags": ["youtube", "MAX"]
     },
     {
       "file": "Zona.apk",
       "url": "https://www.dropbox.com/scl/fi/01zz3m90miqn2esjdmudq/Zona.apk?rlkey=ypl8nh3mz27bmd4aqmcl7guqo&dl=1",
-      "tags": ["kino", "iptv_torrenttv"]
+      "tags": ["kino", "iptv_torrenttv", "MAX"]
     },
     {
       "file": "HDRezkaTV.apk",
       "url": "https://www.dropbox.com/scl/fi/fs5bywbm66bf8vfkyqjts/HDRezkaTV.apk?rlkey=5xvsa6ystp67ihpahkkz5ekj4&dl=1",
-      "tags": ["kino", "kino_torrent"]
+      "tags": ["kino", "kino_torrent", "MAX"]
     },
     {
       "file": "NUM.apk",
       "url": "https://www.dropbox.com/scl/fi/3qbrxl0i25mrksgyao51w/NUM.apk?rlkey=1m47zpabq21ebrvxj8j5sdout&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "MAX"]
     },
     {
       "file": "KinoTrend.apk",
       "url": "https://www.dropbox.com/scl/fi/p34gwz45t7n64ioqydk86/KinoTrend.apk?rlkey=5bpgncqo2yq3a8n5oly2jw953&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "MAX"]
     },
     {
       "file": "LAMPA.apk",
       "url": "https://www.dropbox.com/scl/fi/dg0xhud0zzpxxd01rwh1s/LAMPA.apk?rlkey=mhmv3nqdqdoxu2f4zhqogtf4e&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "MAX"]
     },
     {
       "file": "TorrServe_MatriX.apk",
       "url": "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "MAX"]
     },
     {
       "file": "VimuMediaPlayer.MD.apk",
       "url": "https://www.dropbox.com/scl/fi/vbx0duku4c2dry50v8w53/VimuMediaPlayer.MD.apk?rlkey=818mnvher675omyq3bl5knr9b&dl=1",
-      "tags": ["kino_torrent"]
+      "tags": ["kino_torrent", "MAX"]
     },
     {
       "file": "Televizo-1.9.4.0-Premium.apk",
       "url": "https://www.dropbox.com/scl/fi/txsofb4zvemhe9sfptg37/Televizo-1.9.4.0-Premium.apk?rlkey=yo6pa486e8nblwku9klvggdcn&dl=1",
-      "tags": ["iptv", "iptv_torrenttv"]
+      "tags": ["iptv", "iptv_torrenttv", "MAX"]
     },
     {
       "file": "drm-play.lite.apk",
       "url": "https://www.dropbox.com/scl/fi/l2zjgeyle8192kdstd85o/drm-play.lite.apk?rlkey=o6b4nlxzl7xe8mjhhhcswwdsc&dl=1",
-      "tags": ["iptv", "iptv_torrenttv"]
+      "tags": ["iptv", "iptv_torrenttv", "MAX"]
     },
     {
       "file": "Эфир+ТВ.apk",
       "url": "https://www.dropbox.com/scl/fi/t6fovhf7t2qgtuhjeqyx2/.apk?rlkey=1ef09as3hthqv8kwuni0voiea&dl=1",
-      "tags": ["iptv", "iptv_torrenttv"]
+      "tags": ["iptv", "iptv_torrenttv", "MAX"]
     },
     {
       "file": "AceStreamEngine.apk",
       "url": "https://www.dropbox.com/scl/fi/7s2gbp4if4inl7jnj2zym/AceStreamEngine.apk?rlkey=dx1g4so5h1pznczamp4dr1lyg&dl=1",
-      "tags": ["iptv_torrenttv"]
+      "tags": ["iptv_torrenttv", "MAX"]
   },
     {
       "file": "AceStreamEngineFull.apk",
@@ -88,7 +88,7 @@
     {
       "file": "OTT+Navigator.apk",
       "url": "https://www.dropbox.com/scl/fi/u9m3rwly0plrptkmo85w4/OTT-Navigator.apk?rlkey=zgh2dbx568vwavhos8mkktxkk&dl=1",
-      "tags": ["Request"]
+      "tags": ["Request", "MAX"]
      }
   ],
     "backups": [
@@ -96,37 +96,37 @@
       "file": "televizo_2025-05-17.backup",
       "url": "https://www.dropbox.com/scl/fi/w1rjd05o96x9c18uxk1hq/televizo_2025-05-17.backup?rlkey=7cuxc5xzvh7p0exf51jkqrs6o&dl=1",
       "target_folder": "Download",
-      "tags": ["iptv", "iptv_torrenttv", "Request"]
+      "tags": ["iptv", "iptv_torrenttv", "Request", "MAX"]
     },
     {
       "file": "ott-play.pref",
       "url": "https://www.dropbox.com/scl/fi/0wd45j1go606p2ovwlf10/ott-play.pref?rlkey=35vrdaoe7k8s8ro1p564zsnbw&dl=1",
       "target_folder": "Download",
-      "tags": ["iptv", "iptv_torrenttv", "Request"]
+      "tags": ["iptv", "iptv_torrenttv", "Request", "MAX"]
     },
     {
       "file": "bbd_20250224_2120.json",
       "url": "https://www.dropbox.com/scl/fi/lokk08e3m83o6js12trib/bbd_20250224_2120.json?rlkey=77ofl42q6v5vv5qz5w3h738f3&dl=1",
       "target_folder": "Download",
-      "tags": ["youtube", "Request"]
+      "tags": ["youtube", "Request", "MAX"]
     },
     {
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/1eqthvdh0s980h4ycip9x/settings.backup?rlkey=tkgivt1gz3qs8v2o3uvu6kcdo&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "MAX"]
     },
     {
       "file": "storage.backup",
       "url": "https://www.dropbox.com/scl/fi/byfwhtqsbs8xbnnx0j44a/storage.backup?rlkey=6j0hzy19mvqqshfi1a22fq7hq&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "MAX"]
     },
     {
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/ezzuhcfmff1c13vnne2r1/settings.backup?rlkey=un0rbea21kk3ohryvbemi80he&dl=1",
       "target_folder": "Documents/NUM",
-      "tags": ["kino_torrent", "youtube"]
+      "tags": ["kino_torrent", "youtube", "MAX"]
     }
   ],
   "groups": {
@@ -153,6 +153,10 @@
     "IPTV_TorrentTV": {
       "password": "",
       "tags": ["iptv_torrenttv"]
+    },
+    "MAX": {
+      "password": "",
+      "tags": ["MAX"]
     },
     "Request": {
       "password": "",
