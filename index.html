@@ -28,29 +28,29 @@
 <h3 style="margin-top: 0;">Добро пожаловать! Выберите пакет для установки!</h3>
 
 <div class="card-container">
-  <div class="card" data-group="Start" onclick="selectCard(this)">🚀<br>1_Старт</div>
-  <div class="card" data-group="Youtube" onclick="selectCard(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="30" height="30" fill="red">
+  <div class="card" data-group="1" onclick="selectCard(this)">🚀<br>1_Старт</div>
+  <div class="card" data-group="2" onclick="selectCard(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="30" height="30" fill="red">
   <path d="M549.7 124.1c-6.3-23.7-24.9-42.4-48.6-48.6C456.5 64 288 64 288 64s-168.5 0-213.1 11.5c-23.7 6.3-42.4 24.9-48.6 48.6C16 168.7 16 256 16 256s0 87.3 10.3 131.9c6.3 23.7 24.9 42.4 48.6 48.6C119.5 448 288 448 288 448s168.5 0 213.1-11.5c23.7-6.3 42.4-24.9 48.6-48.6C560 343.3 560 256 560 256s0-87.3-10.3-131.9zM232 336V176l142 80-142 80z"/>
 </svg>
 <br>2_YouTube</div>
-  <div class="card" data-group="Kino" onclick="selectCard(this)">🎬<br>3_Онлайн кинотеатры</div>
-  <div class="card" data-group="Kino_Torrent" onclick="selectCard(this)">🌐<br>4_Торрент + Кино</div>
-  <div class="card" data-group="IPTV" onclick="selectCard(this)">📺<br>5_IPTV</div>
-  <div class="card" data-group="IPTV_TorrentTV" onclick="selectCard(this)">💾<br>6_IPTV + TorrentTV</div>
-  <div class="card" data-group="MAX" onclick="selectCard(this)">💾<br>7_Полная настройка</div>
-  <div class="card" data-group="Request" onclick="selectCard(this)">✍<br>8_Заявки</div>
+  <div class="card" data-group="3" onclick="selectCard(this)">🎬<br>3_Онлайн кинотеатры</div>
+  <div class="card" data-group="4" onclick="selectCard(this)">🌐<br>4_Торрент + Кино</div>
+  <div class="card" data-group="5" onclick="selectCard(this)">📺<br>5_IPTV</div>
+  <div class="card" data-group="6_TorrentTV" onclick="selectCard(this)">💾<br>6_IPTV + TorrentTV</div>
+  <div class="card" data-group="7" onclick="selectCard(this)">💾<br>7_Полная настройка</div>
+  <div class="card" data-group="8" onclick="selectCard(this)">✍<br>8_Заявки</div>
 </div>
 
 <select id="groupSelect" style="display:none;">
   <option value="">-- Выбрать --</option>
-  <option value="Start">Старт</option>
-  <option value="Youtube">Ютуб</option>
-  <option value="Kino">Онлайн кинотеатры</option>
-  <option value="Kino_Torrent">Торрент и оналайн кинотеатры</option>
-  <option value="IPTV">IPTV</option>
-  <option value="IPTV_TorrentTV">IPTV и TorrentTV</option>
-  <option value="MAX">Максимальный</option>
-  <option value="Request">Заявки</option>
+  <option value="1">Старт</option>
+  <option value="2">Ютуб</option>
+  <option value="3">Онлайн кинотеатры</option>
+  <option value="4">Торрент и оналайн кинотеатры</option>
+  <option value="5">IPTV</option>
+  <option value="6">IPTV и TorrentTV</option>
+  <option value="7">Максимальный</option>
+  <option value="8">Заявки</option>
 </select>
 
 <br>
