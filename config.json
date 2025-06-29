@@ -44,7 +44,7 @@
     {
       "file": "KinoTrend.apk",
       "url": "https://www.dropbox.com/scl/fi/p34gwz45t7n64ioqydk86/4_KinoTrend.apk?rlkey=5bpgncqo2yq3a8n5oly2jw953&dl=1",
-      "tags": ["4", "7""]
+      "tags": ["4", "7"]
     },
     {
       "file": "LAMPA.apk",
@@ -130,19 +130,19 @@
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/1eqthvdh0s980h4ycip9x/settings.backup?rlkey=tkgivt1gz3qs8v2o3uvu6kcdo&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["4, "7"]
+      "tags": ["4", "7"]
     },
     {
       "file": "storage.backup",
       "url": "https://www.dropbox.com/scl/fi/byfwhtqsbs8xbnnx0j44a/storage.backup?rlkey=6j0hzy19mvqqshfi1a22fq7hq&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["4, "7"]
+      "tags": ["4", "7"]
     },
     {
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/ezzuhcfmff1c13vnne2r1/settings.backup?rlkey=un0rbea21kk3ohryvbemi80he&dl=1",
       "target_folder": "Documents/NUM",
-      "tags": ["4, "7"]
+      "tags": ["4", "7"]
     }
   ],
   "groups": {
@@ -168,7 +168,7 @@
     },
     "6": {
       "password": "",
-      "tags": ["6]
+      "tags": ["6"]
     },
     "7": {
       "password": "",
