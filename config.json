@@ -28,37 +28,37 @@
     {
       "file": "Zona.apk",
       "url": "https://www.dropbox.com/scl/fi/01zz3m90miqn2esjdmudq/Zona.apk?rlkey=ypl8nh3mz27bmd4aqmcl7guqo&dl=1",
-      "tags": ["kino"]
+      "tags": ["kino", "iptv_torrenttv"]
     },
     {
       "file": "HDRezkaTV.apk",
       "url": "https://www.dropbox.com/scl/fi/fs5bywbm66bf8vfkyqjts/HDRezkaTV.apk?rlkey=5xvsa6ystp67ihpahkkz5ekj4&dl=1",
-      "tags": ["kino"]
+      "tags": ["kino", "kino_torrent"]
     },
     {
       "file": "NUM.apk",
       "url": "https://www.dropbox.com/scl/fi/3qbrxl0i25mrksgyao51w/NUM.apk?rlkey=1m47zpabq21ebrvxj8j5sdout&dl=1",
-      "tags": []
+      "tags": ["kino_torrent"]
     },
     {
       "file": "KinoTrend.apk",
       "url": "https://www.dropbox.com/scl/fi/p34gwz45t7n64ioqydk86/KinoTrend.apk?rlkey=5bpgncqo2yq3a8n5oly2jw953&dl=1",
-      "tags": []
+      "tags": ["kino_torrent"]
     },
     {
       "file": "LAMPA.apk",
       "url": "https://www.dropbox.com/scl/fi/dg0xhud0zzpxxd01rwh1s/LAMPA.apk?rlkey=mhmv3nqdqdoxu2f4zhqogtf4e&dl=1",
-      "tags": []
+      "tags": ["kino_torrent"]
     },
     {
       "file": "TorrServe_MatriX.apk",
       "url": "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1",
-      "tags": []
+      "tags": ["kino_torrent"]
     },
     {
       "file": "VimuMediaPlayer.MD.apk",
       "url": "https://www.dropbox.com/scl/fi/vbx0duku4c2dry50v8w53/VimuMediaPlayer.MD.apk?rlkey=818mnvher675omyq3bl5knr9b&dl=1",
-      "tags": []
+      "tags": ["kino_torrent"]
     },
     {
       "file": "Televizo-1.9.4.0-Premium.apk",
@@ -114,19 +114,19 @@
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/1eqthvdh0s980h4ycip9x/settings.backup?rlkey=tkgivt1gz3qs8v2o3uvu6kcdo&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube", "Request"]
+      "tags": ["kino_torrent", "youtube"]
     },
     {
       "file": "storage.backup",
       "url": "https://www.dropbox.com/scl/fi/byfwhtqsbs8xbnnx0j44a/storage.backup?rlkey=6j0hzy19mvqqshfi1a22fq7hq&dl=1",
       "target_folder": "Documents/LAMPA",
-      "tags": ["kino_torrent", "youtube", "Request"]
+      "tags": ["kino_torrent", "youtube"]
     },
     {
       "file": "settings.backup",
       "url": "https://www.dropbox.com/scl/fi/ezzuhcfmff1c13vnne2r1/settings.backup?rlkey=un0rbea21kk3ohryvbemi80he&dl=1",
       "target_folder": "Documents/NUM",
-      "tags": ["kino_torrent", "youtube", "Request"]
+      "tags": ["kino_torrent", "youtube"]
     }
   ],
   "groups": {
