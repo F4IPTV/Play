@@ -74,10 +74,7 @@ function selectCard(card) {
   card.classList.add('selected');
   document.getElementById('groupSelect').value = card.dataset.group;
 
-  const status = document.getElementById('status');
-  status.innerHTML = "";
-  status.style.color = "";
-  status.classList.remove('visible');
+  clearStatus();
 }
 
 document.getElementById('passwordInput').addEventListener('keydown', function(e) {
@@ -90,12 +87,9 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
 async function startInstall() {
   const group = document.getElementById('groupSelect').value;
   const password = document.getElementById('passwordInput').value.trim();
-  const status = document.getElementById('status');
 
   if (!group) {
-    status.innerHTML = "❗ Пожалуйста, выберите пакет.";
-    status.style.color = "red";
-    status.classList.add('visible');
+    showStatus("❗ Пожалуйста, выберите пакет.", "red");
     return;
   }
 
@@ -105,16 +99,12 @@ async function startInstall() {
 
     const groupInfo = config.groups[group];
     if (!groupInfo) {
-      status.innerHTML = "❌ Группа не найдена!";
-      status.style.color = "red";
-      status.classList.add('visible');
+      showStatus("❌ Группа не найдена!", "red");
       return;
     }
 
     if (groupInfo.password !== password) {
-      status.innerHTML = "🔒 Неверный пароль!";
-      status.style.color = "red";
-      status.classList.add('visible');
+      showStatus("🔒 Неверный пароль!", "red");
       return;
     }
 
@@ -123,18 +113,14 @@ async function startInstall() {
       return;
     }
 
-    status.innerHTML = "✅ Пароль принят, идёт загрузка... <span class='spin'>⏳</span>";
-    status.style.color = "green";
-    status.classList.add('visible');
+    showStatus("✅ Пароль принят, идёт загрузка... <span class='spin'>⏳</span>", "green");
 
     if (window.AndroidInterface) {
       window.AndroidInterface.startInstallation(group);
     }
 
   } catch (error) {
-    status.innerHTML = "❌ Ошибка загрузки конфигурации.";
-    status.style.color = "red";
-    status.classList.add('visible');
+    showStatus("❌ Ошибка загрузки конфигурации.", "red");
   }
 }
 
@@ -153,13 +139,9 @@ function showRequestList(config) {
       const btn = document.createElement('button');
       btn.textContent = app.file;
       btn.onclick = () => {
-        const status = document.getElementById('status');
-    status.innerHTML = "⏳ Загрузка APK... <span class='spin'>⏳</span>";
-    status.style.color = "green";
-    status.classList.add('visible');
-
-    if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
-};
+        showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green");
+        if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
+      };
       list.appendChild(btn);
     });
 
@@ -167,18 +149,14 @@ function showRequestList(config) {
       const btn = document.createElement('button');
       btn.textContent = backup.file;
       btn.onclick = () => {
-        const status = document.getElementById('status');
-    status.innerHTML = "⏳ Копирование бэкапа... <span class='spin'>⏳</span>";
-    status.style.color = "green";
-    status.classList.add('visible');
-
-    if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-};
+        showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green");
+        if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
+      };
       list.appendChild(btn);
     });
   }
 
- modal.style.display = "flex";
+  modal.style.display = "flex";
 
   setTimeout(() => {
     const firstBtn = list.querySelector('button');
@@ -189,15 +167,35 @@ function showRequestList(config) {
 function closeModal() {
   document.getElementById('modal').style.display = "none";
 }
+
 document.addEventListener('keydown', function(e) {
   const modal = document.getElementById('modal');
   if (modal.style.display === 'flex' && (e.key === 'Back' || e.key === 'Escape')) {
-    e.preventDefault(); 
+    e.preventDefault();
     closeModal();
   }
 });
 
+function showStatus(message, color = "green", timeout = 3000) {
+  const status = document.getElementById('status');
+  status.innerHTML = message;
+  status.style.color = color;
+  status.classList.add('visible');
+
+  clearTimeout(status.hideTimer);
+  status.hideTimer = setTimeout(() => {
+    status.classList.remove('visible');
+  }, timeout);
+}
+
+function clearStatus() {
+  const status = document.getElementById('status');
+  status.innerHTML = "";
+  status.classList.remove('visible');
+  clearTimeout(status.hideTimer);
+}
 </script>
+
 
 </body>
 </html>
