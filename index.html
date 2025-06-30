@@ -191,30 +191,56 @@ function closeModal() {
 
 document.addEventListener('keydown', function(e) {
   const modal = document.getElementById('modal');
-  if (modal.style.display === 'flex' && (e.key === 'Back' || e.key === 'Escape')) {
-    e.preventDefault();
-    closeModal();
-  }
-});
-  document.addEventListener('keydown', function(e) {
-  const modal = document.getElementById('modal');
   if (modal.style.display !== 'flex') return;
 
-  const buttons = modal.querySelectorAll('#modalList button, .modal-content > button');
+  const list = document.getElementById('modalList');
+  const buttons = Array.from(list.querySelectorAll('button'));
+  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
+  const allButtons = [...buttons, ...extraButtons];
+
+  if (allButtons.length === 0) return;
+
+  const cols = 2; // два столбца
+  const rows = Math.ceil(allButtons.length / cols);
+
   const active = document.activeElement;
+  const index = allButtons.indexOf(active);
+
+  if (index === -1) {
+    allButtons[0].focus();
+    return;
+  }
 
   if (e.key === 'ArrowDown') {
     e.preventDefault();
-    let next = Array.from(buttons).indexOf(active) + 1;
-    if (next >= buttons.length) next = buttons.length - 1;
-    buttons[next]?.focus();
+    const next = index + cols;
+    if (next < allButtons.length) {
+      allButtons[next].focus();
+    }
   }
 
   if (e.key === 'ArrowUp') {
     e.preventDefault();
-    let prev = Array.from(buttons).indexOf(active) - 1;
-    if (prev < 0) prev = 0;
-    buttons[prev]?.focus();
+    const prev = index - cols;
+    if (prev >= 0) {
+      allButtons[prev].focus();
+    }
+  }
+
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    const right = index + 1;
+    if (right < allButtons.length && (index % cols) < (cols - 1)) {
+      allButtons[right].focus();
+    }
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const left = index - 1;
+    if (left >= 0 && (index % cols) > 0) {
+      allButtons[left].focus();
+    }
   }
 
   if (e.key === 'Back' || e.key === 'Escape') {
@@ -222,6 +248,9 @@ document.addEventListener('keydown', function(e) {
     closeModal();
   }
 });
+
+
+
 
 </script>
 
