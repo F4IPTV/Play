@@ -52,11 +52,18 @@
       currentGroup = card.dataset.group;
     });
   });
+   document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const selected = document.querySelector('.card.selected');
+      if (selected) {
+        currentGroup = selected.dataset.group;
+        startInstall();
+      }
+    }
+  });
 </script>
 <select id="groupSelect" style="display:none;"></select>
-<br>
-<button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
-<br>
+
 <input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
 
