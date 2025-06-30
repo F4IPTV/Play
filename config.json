@@ -145,6 +145,17 @@
       "tags": ["4", "7"]
     }
   ],
+"links": [
+    {
+      "file": "Проводник",
+      "url": "https://telegra.ph/telegraph-1",
+      "tags": ["1"]
+    },
+    {
+      "file": "Приложения_v",
+      "url": "https://telegra.ph/telegraph-2",
+      "tags": ["1"]
+    }],
   "groups": {
     "1": {
       "password": "",

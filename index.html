@@ -137,42 +137,44 @@ function showStatus(message, color, timeout = 4000) {
 }
 
 
-function showGroupList(config) {
+function showGroupList(config)  {
   const modal = document.getElementById('modal');
   const list = document.getElementById('modalList');
   list.innerHTML = "";
-
   const apps = config.apps.filter(app => app.tags.includes(currentGroup));
   const backups = config.backups.filter(backup => backup.tags.includes(currentGroup));
-
-  if (apps.length === 0 && backups.length === 0) {
-    list.innerHTML = "Нет доступных приложений или бэкапов.";
-  } else {
-    apps.forEach(app => {
-      const btn = document.createElement('button');
-      btn.textContent = app.file;
-      btn.setAttribute('tabindex', '0');
-      btn.onclick = () => {
-        showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green", 4000);
-        if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
-      };
-      list.appendChild(btn);
-    });
-
-    backups.forEach(backup => {
-      const btn = document.createElement('button');
-      btn.textContent = backup.file;
-      btn.setAttribute('tabindex', '0');
-      btn.onclick = () => {
-        showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
-        if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-      };
-      list.appendChild(btn);
-    });
+  const links = config.links ? config.links.filter(link => link.tags.includes(currentGroup)) : [];
+  if (apps.length === 0 && backups.length === 0 && links.length === 0) {
+    list.innerHTML = "Нет доступных компонентов.";
   }
-
+  apps.forEach(app => {
+    const btn = document.createElement('button');
+    btn.textContent = app.file;
+    btn.onclick = () => {
+      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green", 4000);
+      if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
+    };
+    list.appendChild(btn);
+  });
+  backups.forEach(backup => {
+    const btn = document.createElement('button');
+    btn.textContent = backup.file;
+    btn.onclick = () => {
+      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
+      if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
+    };
+    list.appendChild(btn);
+  });
+  links.forEach(link => {
+    const btn = document.createElement('button');
+    btn.textContent = link.file;
+    btn.onclick = () => {
+      showStatus("🔗 Открытие инструкции...", "green", 3000);
+      if (window.AndroidInterface) window.AndroidInterface.openLink(link.url);
+    };
+    list.appendChild(btn);
+  });
   modal.style.display = "flex";
-
   setTimeout(() => {
     const firstBtn = list.querySelector('button');
     if (firstBtn) firstBtn.focus();
