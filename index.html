@@ -10,7 +10,7 @@
     #status.visible { opacity: 1; }
     .spin { display: inline-block; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    select:focus, input:focus, button:focus { outline: none; border: 3px solid red; box-shadow: 0 0 8px red; }
+    select:focus, input:focus, button:focus { border: 3px solid red; box-shadow: 0 0 8px red; }
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card { border: 2px solid gray; border-radius: 10px; width: 120px; height: 90px; text-align: center;
             font-size: 18px; padding-top: 20px; cursor: pointer; background: #fff; transition: 0.2s;
@@ -44,7 +44,15 @@
   <div class="card" data-group="7" onclick="selectCard(this)">💾<br>7_Полная настройка</div>
   <div class="card" data-group="8" onclick="selectCard(this)">✍<br>8_Заявки</div>
 </div>
-
+<script>
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('focus', () => {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      currentGroup = card.dataset.group;
+    });
+  });
+</script>
 <select id="groupSelect" style="display:none;"></select>
 <br>
 <button type="button" id="startBtn" onclick="startInstall()">Начать установку</button>
