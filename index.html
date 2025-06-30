@@ -123,12 +123,19 @@ async function startInstall() {
   }
 }
 
-function showStatus(message, color) {
+function showStatus(message, color, timeout = 4000) {
   const status = document.getElementById('status');
   status.innerHTML = message;
   status.style.color = color;
   status.classList.add('visible');
+
+  clearTimeout(status.hideTimer); // если вызовов много — сброс старого таймера
+
+  status.hideTimer = setTimeout(() => {
+    status.classList.remove('visible');
+  }, timeout);
 }
+
 
 function showGroupList(config) {
   const modal = document.getElementById('modal');
@@ -146,7 +153,7 @@ function showGroupList(config) {
       btn.textContent = app.file;
       btn.setAttribute('tabindex', '0');
       btn.onclick = () => {
-        showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green");
+        showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green", 4000);
         if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
       };
       list.appendChild(btn);
@@ -157,7 +164,7 @@ function showGroupList(config) {
       btn.textContent = backup.file;
       btn.setAttribute('tabindex', '0');
       btn.onclick = () => {
-        showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green");
+        showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
         if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
       };
       list.appendChild(btn);
