@@ -21,6 +21,12 @@
              display: flex; justify-content: center; align-items: center; z-index: 999; }
     .modal-content { background: #fff; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; width: 80%; }
      #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
+    #modalList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Две колонки */
+  gap: 10px;
+  justify-items: center;
+}
     .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
   </style>
 </head>
@@ -183,6 +189,33 @@ document.addEventListener('keydown', function(e) {
     closeModal();
   }
 });
+  document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('modal');
+  if (modal.style.display !== 'flex') return;
+
+  const buttons = modal.querySelectorAll('#modalList button, .modal-content > button');
+  const active = document.activeElement;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    let next = Array.from(buttons).indexOf(active) + 1;
+    if (next >= buttons.length) next = buttons.length - 1;
+    buttons[next]?.focus();
+  }
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    let prev = Array.from(buttons).indexOf(active) - 1;
+    if (prev < 0) prev = 0;
+    buttons[prev]?.focus();
+  }
+
+  if (e.key === 'Back' || e.key === 'Escape') {
+    e.preventDefault();
+    closeModal();
+  }
+});
+
 </script>
 
 
