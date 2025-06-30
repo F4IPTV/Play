@@ -275,15 +275,8 @@ document.querySelectorAll('.card').forEach(card => {
     currentGroup = card.dataset.group;
   });
 
-  card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      showPasswordInput();
-    }
-  });
 
-  card.addEventListener('click', () => {
-    showPasswordInput();
-  });
+ 
 });
 
 function showPasswordInput() {
