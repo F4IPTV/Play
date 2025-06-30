@@ -28,6 +28,17 @@
   justify-items: center;
 }
     .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    #passwordInput {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  padding: 12px;
+  width: 250px;
+  z-index: 1000;
+}
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -53,21 +64,21 @@
   });
 
   card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+  if (e.key === 'Enter') {
+    const group = card.dataset.group;
+    const groupInfo = cachedConfig?.groups?.[group];
+
+    if (groupInfo && groupInfo.password === "") {
+      startInstall();
+    } else {
       const passInput = document.getElementById('passwordInput');
       passInput.style.display = 'block';
       passInput.value = '';
       passInput.focus();
     }
-  });
-});
-
-document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    startInstall();
   }
 });
+
 
 document.addEventListener('keydown', function(e) {
   const passInput = document.getElementById('passwordInput');
