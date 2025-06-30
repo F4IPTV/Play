@@ -50,11 +50,15 @@
     document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     currentGroup = card.dataset.group;
+  });
 
-    const passInput = document.getElementById('passwordInput');
-    passInput.style.display = 'block';
-    passInput.value = '';
-    passInput.focus();
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const passInput = document.getElementById('passwordInput');
+      passInput.style.display = 'block';
+      passInput.value = '';
+      passInput.focus();
+    }
   });
 });
 
@@ -64,6 +68,18 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
     startInstall();
   }
 });
+
+document.addEventListener('keydown', function(e) {
+  const passInput = document.getElementById('passwordInput');
+  if (e.key === 'Back' || e.key === 'Escape') {
+    if (passInput.style.display === 'block') {
+      e.preventDefault();
+      passInput.style.display = 'none';
+      document.querySelector('.card.selected')?.focus();
+    }
+  }
+});
+
 
 </script>
 <select id="groupSelect" style="display:none;"></select>
