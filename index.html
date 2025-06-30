@@ -276,30 +276,41 @@ document.querySelectorAll('.card').forEach(card => {
   });
 
   card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handleGroupSelect(card);
+    if (e.key === 'Enter') {
+      showPasswordInput();
+    }
   });
 
-  // Для телефонов и мышки — обычный клик
   card.addEventListener('click', () => {
-    handleGroupSelect(card);
+    showPasswordInput();
   });
-
 });
 
-// Функция обработки выбора группы
-function handleGroupSelect(card) {
-  const group = card.dataset.group;
-  const groupInfo = cachedConfig?.groups?.[group];
-
-  if (groupInfo && groupInfo.password === "") {
-    startInstall();
-  } else {
-    const passInput = document.getElementById('passwordInput');
-    passInput.style.display = 'block';
-    passInput.value = '';
-    passInput.focus();
-  }
+function showPasswordInput() {
+  const passInput = document.getElementById('passwordInput');
+  passInput.style.display = 'block';
+  passInput.value = '';
+  passInput.focus();
 }
+
+document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    startInstall();
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  const passInput = document.getElementById('passwordInput');
+  if (e.key === 'Back' || e.key === 'Escape') {
+    if (passInput.style.display === 'block') {
+      e.preventDefault();
+      passInput.style.display = 'none';
+      document.querySelector('.card.selected')?.focus();
+    }
+  }
+});
+
 
 
 
