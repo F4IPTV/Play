@@ -45,26 +45,30 @@
   <div class="card" data-group="8" onclick="selectCard(this)">✍<br>8_Заявки</div>
 </div>
 <script>
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('focus', () => {
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      currentGroup = card.dataset.group;
-    });
+ document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('focus', () => {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    currentGroup = card.dataset.group;
+
+    const passInput = document.getElementById('passwordInput');
+    passInput.style.display = 'block';
+    passInput.value = '';
+    passInput.focus();
   });
-   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      const selected = document.querySelector('.card.selected');
-      if (selected) {
-        currentGroup = selected.dataset.group;
-        startInstall();
-      }
-    }
-  });
+});
+
+document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    startInstall();
+  }
+});
+
 </script>
 <select id="groupSelect" style="display:none;"></select>
 
-<input type="password" id="passwordInput" placeholder="Введите пароль">
+<input type="password" id="passwordInput" placeholder="Введите пароль" style="display:none;">
 <div id="status"></div>
 
 <div id="modal" class="modal" style="display:none;">
