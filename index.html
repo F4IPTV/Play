@@ -20,6 +20,7 @@
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
              display: flex; justify-content: center; align-items: center; z-index: 999; }
     .modal-content { background: #fff; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; width: 80%; }
+     #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
     .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
   </style>
 </head>
@@ -46,9 +47,11 @@
 <div id="status"></div>
 
 <div id="modal" class="modal" style="display:none;">
-  <div class="modal-content">
+   <div class="modal-content">
     <h3>Список компонентов:</h3>
-    <div id="modalList"></div>
+    <div id="modalListContainer">
+      <div id="modalList"></div>
+    </div>
     <br>
     <button onclick="installAll()">Установить всё</button>
     <button onclick="closeModal()">Закрыть</button>
@@ -114,12 +117,12 @@ async function startInstall() {
   }
 }
 
-function showStatus(message, color) {
+function showStatus(message, color, timeout = 3000) {
   const status = document.getElementById('status');
   status.innerHTML = message;
   status.style.color = color;
   status.classList.add('visible');
-}
+  }
 
 function showGroupList(config) {
   const modal = document.getElementById('modal');
