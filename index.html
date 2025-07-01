@@ -11,7 +11,9 @@
     #status.visible { opacity: 1; }
     .spin { display: inline-block; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    select:focus, input:focus, button:focus { border: 3px solid red; box-shadow: 0 0 8px red; }
+    select:focus, input:focus, button:focus { outline: none;
+  box-shadow: 0 0 8px red;
+  border-color: red; }
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card { border: 2px solid gray; border-radius: 10px; width: 120px; height: 90px; text-align: center;
             font-size: 18px; padding-top: 20px; cursor: pointer; background: #fff; transition: 0.2s;
@@ -20,7 +22,14 @@
     .card.selected { border-color: green; background: #e0ffe0; }
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
              display: flex; justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: #fff; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; width: 80%; }
+    .modal-content { background: #111;  /* Очень тёмный фон, почти чёрный */
+  color: white;       /* Текст белый, чтобы был виден */
+  padding: 20px;
+  border-radius: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 80%;
+  border: 1px solid #333; /* Тонкая светлая рамка для отделения */ }
      #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
     #modalList {
   display: grid;
@@ -28,7 +37,30 @@
   gap: 10px;
   justify-items: center;
 }
-    .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    
+    /* СТИЛЬ КНОПОК В СТИЛЕ GOOGLE TV */
+button {
+  background-color: #007BFF;
+  color: white;
+  border: 2px solid transparent; /* Прозрачная рамка — сразу резервируем место */
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 18px;
+  width: 250px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box; /* Чтобы padding + border не раздували кнопку */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:focus {
+  outline: none;
+  border-color: white; /* Белая рамка внутри зарезервированного места */
+  box-shadow: 0 0 10px #007BFF;
+}
   </style>
 </head>
 <body style="margin: 0; padding: 0;">
@@ -179,7 +211,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = app.file;
     btn.onclick = () => {
-      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green", 4000);
+      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "orange", 4000);
       if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
     };
     list.appendChild(btn);
@@ -188,7 +220,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = backup.file;
     btn.onclick = () => {
-      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
+      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "orange", 4000);
       if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
     };
     list.appendChild(btn);
@@ -210,8 +242,14 @@ function showGroupList(config)  {
 }
 
 function installAll() {
+  showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000);
+
   if (window.AndroidInterface) {
-    window.AndroidInterface.startInstallation(currentGroup);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        window.AndroidInterface.startInstallation(currentGroup);
+      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+    });
   }
 }
 
