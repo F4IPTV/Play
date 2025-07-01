@@ -24,7 +24,7 @@
     {
       "file": "ByeByeDPI.apk",
       "url": "https://www.dropbox.com/scl/fi/hz7lebzyktv4m63no3a2j/2_ByeByeDPI.apk?rlkey=2qmw1x51ysgcqk7c21bbi1tgl&dl=1",
-      "tags": ["1", "2", "7"]
+      "tags": ["2", "7"]
     },
     {
       "file": "Zona.apk",
@@ -186,7 +186,7 @@
       "tags": ["7"]
     },
     "8": {
-      "password": "",
+      "password": "1234",
       "tags": ["8"]
     }
   }
