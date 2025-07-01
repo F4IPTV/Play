@@ -11,7 +11,9 @@
     #status.visible { opacity: 1; }
     .spin { display: inline-block; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    select:focus, input:focus, button:focus { border: 3px solid red; box-shadow: 0 0 8px red; }
+    select:focus, input:focus, button:focus { outline: none;
+  box-shadow: 0 0 8px red;
+  border-color: red; }
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card { border: 2px solid gray; border-radius: 10px; width: 120px; height: 90px; text-align: center;
             font-size: 18px; padding-top: 20px; cursor: pointer; background: #fff; transition: 0.2s;
@@ -35,13 +37,13 @@
   gap: 10px;
   justify-items: center;
 }
-    .modal button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    
     /* СТИЛЬ КНОПОК В СТИЛЕ GOOGLE TV */
 button {
   background-color: #007BFF;
   color: white;
-  border: 4px solid transparent; /* Прозрачная рамка — сразу резервируем место */
-  border-radius: 9px;
+  border: 2px solid transparent; /* Прозрачная рамка — сразу резервируем место */
+  border-radius: 8px;
   padding: 10px 20px;
   font-size: 18px;
   width: 250px;
