@@ -101,7 +101,7 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
 
 async function startInstall() {
   const group = currentGroup;
-  const password = document.getElementById('passwordInput').value.trim();
+  const password = enteredPassword;
   const status = document.getElementById('status');
 
   if (!group) {
@@ -267,6 +267,20 @@ document.addEventListener('keydown', function(e) {
     closeModal();
   }
 });
+  let currentGroup = "";
+let cachedConfig = null;
+let enteredPassword = "";
+
+// Сохраняем пароль при любом вводе
+document.getElementById('passwordInput').addEventListener('input', function(e) {
+  enteredPassword = e.target.value.trim();
+});
+
+// Дополнительно сохраняем при уходе с поля (если вдруг Android жёстко скрывает клавиатуру)
+document.getElementById('passwordInput').addEventListener('blur', function(e) {
+  enteredPassword = e.target.value.trim();
+});
+
 
 
 
