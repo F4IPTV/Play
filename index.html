@@ -211,8 +211,11 @@ function showGroupList(config)  {
 
 function installAll() {
   showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
+
   if (window.AndroidInterface) {
-    window.AndroidInterface.startInstallation(currentGroup);
+    setTimeout(() => {
+      window.AndroidInterface.startInstallation(currentGroup);
+    }, 200);  // 200 мс хватает, чтобы браузер успел показать статус
   }
 }
 
