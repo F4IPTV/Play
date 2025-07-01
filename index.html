@@ -213,9 +213,11 @@ function installAll() {
   showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
 
   if (window.AndroidInterface) {
-    setTimeout(() => {
-      window.AndroidInterface.startInstallation(currentGroup);
-    }, 200);  // 200 мс хватает, чтобы браузер успел показать статус
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        window.AndroidInterface.startInstallation(currentGroup);
+      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+    });
   }
 }
 
