@@ -83,9 +83,13 @@
 let currentGroup = "";
 let cachedConfig = null;
 
+let lastPassword = "";
+
 function selectCard(card) {
   const passwordInput = document.getElementById('passwordInput');
-  passwordInput.blur();  // снимаем фокус, чтобы клавиатура закрылась, значение сохранилось
+  passwordInput.blur();
+
+  lastPassword = passwordInput.value.trim();  // фиксируем актуальный ввод
 
   document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
@@ -93,6 +97,7 @@ function selectCard(card) {
   document.getElementById('status').innerHTML = "";
   document.getElementById('status').classList.remove('visible');
 }
+
 
 
 document.getElementById('passwordInput').addEventListener('keydown', function(e) {
@@ -106,7 +111,7 @@ async function startInstall() {
   const passwordInput = document.getElementById('passwordInput');
 passwordInput.blur();  // Принудительно снимаем фокус, чтобы браузер зафиксировал значение
   const group = currentGroup;
-  const password = passwordInput.value.trim();
+  const password = lastPassword;
   const status = document.getElementById('status');
 
   if (!group) {
