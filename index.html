@@ -58,7 +58,6 @@
       const selected = document.querySelector('.card.selected');
       if (selected) {
         currentGroup = selected.dataset.group;
-        startInstall();
       }
     }
   });
@@ -86,15 +85,15 @@ let cachedConfig = null;
 
 function selectCard(card) {
   const passwordInput = document.getElementById('passwordInput');
-  passwordInput.blur();  // Снимаем фокус с поля пароля, чтобы клики работали везде
+  passwordInput.blur();  // снимаем фокус, чтобы клавиатура закрылась, значение сохранилось
 
   document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   currentGroup = card.dataset.group;
   document.getElementById('status').innerHTML = "";
   document.getElementById('status').classList.remove('visible');
-  startInstall();
 }
+
 
 document.getElementById('passwordInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
@@ -271,6 +270,22 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Back' || e.key === 'Escape') {
     e.preventDefault();
     closeModal();
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const selected = document.querySelector('.card.selected');
+    const activeInput = document.activeElement;
+
+    // Если фокус в поле пароля — Enter обрабатывается отдельно
+    if (activeInput.id === 'passwordInput') return;
+
+    const modal = document.getElementById('modal');
+    if (modal.style.display === 'flex') return;  // Если открыта модалка, не реагируем здесь
+
+    if (selected) {
+      startInstall();
+    }
   }
 });
 
