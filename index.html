@@ -85,6 +85,9 @@ let currentGroup = "";
 let cachedConfig = null;
 
 function selectCard(card) {
+  const passwordInput = document.getElementById('passwordInput');
+  passwordInput.blur();  // Снимаем фокус с поля пароля, чтобы клики работали везде
+
   document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   currentGroup = card.dataset.group;
