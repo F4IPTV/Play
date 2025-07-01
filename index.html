@@ -20,7 +20,14 @@
     .card.selected { border-color: green; background: #e0ffe0; }
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
              display: flex; justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: #fff; padding: 20px; border-radius: 10px; max-height: 80vh; overflow-y: auto; width: 80%; }
+    .modal-content { background: #111;  /* Очень тёмный фон, почти чёрный */
+  color: white;       /* Текст белый, чтобы был виден */
+  padding: 20px;
+  border-radius: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 80%;
+  border: 1px solid #333; /* Тонкая светлая рамка для отделения */ }
      #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
     #modalList {
   display: grid;
@@ -34,7 +41,7 @@ button {
   background-color: #007BFF;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 10px 20px;
   font-size: 18px;
   width: 250px;
