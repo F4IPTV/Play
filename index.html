@@ -179,7 +179,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = app.file;
     btn.onclick = () => {
-      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "green", 4000);
+      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "orange", 4000);
       if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
     };
     list.appendChild(btn);
@@ -188,7 +188,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = backup.file;
     btn.onclick = () => {
-      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "green", 4000);
+      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "orange", 4000);
       if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
     };
     list.appendChild(btn);
