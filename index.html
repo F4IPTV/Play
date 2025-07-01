@@ -93,6 +93,7 @@ function selectCard(card) {
   currentGroup = card.dataset.group;
   document.getElementById('status').innerHTML = "";
   document.getElementById('status').classList.remove('visible');
+  startInstall();
 }
 
 document.getElementById('passwordInput').addEventListener('keydown', function(e) {
