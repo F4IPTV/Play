@@ -28,6 +28,11 @@
       "tags": ["1", "2", "7"]
     },
     {
+      "file": "AmneziaWG.apk",
+      "url": "https://www.dropbox.com/scl/fi/8qk0ibzw84l0rkm4s97vg/2_AmneziaWG.apk?rlkey=sf8k3lsxm1m460k3ovtehmmtl&dl=1",
+      "tags": ["1", "2", "7"]
+    },
+    {
       "file": "Zona.apk",
       "url": "https://www.dropbox.com/scl/fi/2lgoph8088lhy6e9h65s1/3_4_Zona.apk?rlkey=8e44niwzxchl2aikoa5udj70d&dl=1",
       "tags": ["3", "4", "7"]
@@ -126,6 +131,12 @@
       "url": "https://www.dropbox.com/scl/fi/lokk08e3m83o6js12trib/ByeByeDPI.json?rlkey=77ofl42q6v5vv5qz5w3h738f3&dl=1",
       "target_folder": "Download",
       "tags": ["2", "7", "8"]
+    },
+      {
+      "file": "КонфигАмнезия.json",
+      "url": "https://www.dropbox.com/scl/fi/eg2l2zhyq2opbiwj34ofd/CONF-AMNESIA-2.zip?rlkey=jy85fhs4bgyb93fgssftg3u3o&dl=1",
+      "target_folder": "Download",
+      "tags": ["1", "2", "7", "8"]
     },
     {
       "file": "settings.backup",
