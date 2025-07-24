@@ -140,10 +140,10 @@
     },
     {
       "file": "настр ЛАМПЫ",
-      "urlS": [
+      "urls": [
 		"https://www.dropbox.com/scl/fi/1eqthvdh0s980h4ycip9x/settings.backup?rlkey=tkgivt1gz3qs8v2o3uvu6kcdo&dl=1",
 		"https://www.dropbox.com/scl/fi/byfwhtqsbs8xbnnx0j44a/storage.backup?rlkey=6j0hzy19mvqqshfi1a22fq7hq&dl=1"
-	      ]
+	      ],
       "target_folder": "Documents/LAMPA",
       "tags": ["4", "7"]
     },
