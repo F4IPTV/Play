@@ -119,6 +119,41 @@ let cachedConfig = null;
 
 let lastPassword = "";
 
+// 🔁 Очередь для последовательного копирования бэкапов
+let backupQueue = [];
+let backupTarget = "";
+
+// ⏳ Старт копирования бэкапов по очереди
+function copyBackupsSequentially(urls, folder) {
+  if (!urls.length) return;
+
+  backupQueue = urls;
+  backupTarget = folder;
+  copyNextBackup();
+}
+
+// 🚀 Следующий бэкап из очереди
+function copyNextBackup() {
+  if (backupQueue.length === 0) {
+    showStatus("✅ Все бэкапы скопированы", "green");
+    return;
+  }
+
+  const url = backupQueue.shift();
+  const fileName = url.split('/').pop();
+  showStatus(`⏳ Копирование: ${fileName} <span class='spin'>⏳</span>`, "orange", 4000);
+
+  if (window.AndroidInterface) {
+    window.AndroidInterface.copyBackup(url, backupTarget);
+  }
+}
+
+// ⬅️ Вызывается из Android после завершения каждого бэкапа
+function onBackupCopied() {
+  copyNextBackup();
+}
+
+
 function selectCard(card) {
   const passwordInput = document.getElementById('passwordInput');
   passwordInput.blur();
@@ -220,25 +255,15 @@ function showGroupList(config)  {
   const btn = document.createElement('button');
   btn.textContent = backup.file;
 
- btn.onclick = () => {
-  showStatus("⏳ Копирование бэкапов...", "orange", 4000);
-
-  const urls = backup.urls || (backup.url ? [backup.url] : []);
-  let delay = 0;
-
-  urls.forEach((url, i) => {
-    setTimeout(() => {
-      if (window.AndroidInterface) {
-        window.AndroidInterface.copyBackup(url, backup.target_folder);
-      }
-    }, delay);
-    delay += 1000; // 1 секунда между копированиями — можно меньше, если уверен в стабильности
-  });
-};
-
+  btn.onclick = () => {
+    const urls = backup.urls || (backup.url ? [backup.url] : []);
+    if (!urls.length) return;
+    copyBackupsSequentially(urls, backup.target_folder);
+  };
 
   list.appendChild(btn);
 });
+
 
 
   links.forEach(link => {
