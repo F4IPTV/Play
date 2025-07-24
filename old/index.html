@@ -224,15 +224,20 @@ function showGroupList(config)  {
     showStatus("⏳ Копирование бэкапов...", "orange", 4000);
 
     const urls = backup.urls || (backup.url ? [backup.url] : []);
-    urls.forEach(url => {
-      if (window.AndroidInterface) {
-        window.AndroidInterface.copyBackup(url, backup.target_folder);
-      }
+
+    // Пауза между копированиями, чтобы Android успевал обрабатывать
+    urls.forEach((url, i) => {
+      setTimeout(() => {
+        if (window.AndroidInterface) {
+          window.AndroidInterface.copyBackup(url, backup.target_folder);
+        }
+      }, i * 500); // 500 мс пауза между файлами
     });
   };
 
   list.appendChild(btn);
 });
+
 
   links.forEach(link => {
     const btn = document.createElement('button');
