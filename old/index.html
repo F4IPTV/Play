@@ -256,6 +256,7 @@ function showGroupList(config)  {
   btn.textContent = backup.file;
 
   btn.onclick = () => {
+   showStatus("⏳ Копи фаил... <span class='spin'>⏳</span>", "orange", 4000);
     const urls = backup.urls || (backup.url ? [backup.url] : []);
     if (!urls.length) return;
     copyBackupsSequentially(urls, backup.target_folder);
