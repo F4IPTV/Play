@@ -217,14 +217,23 @@ function showGroupList(config)  {
     list.appendChild(btn);
   });
   backups.forEach(backup => {
-    const btn = document.createElement('button');
-    btn.textContent = backup.file;
-    btn.onclick = () => {
-      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "orange", 4000);
-      if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-    };
-    list.appendChild(btn);
-  });
+  const btn = document.createElement('button');
+  btn.textContent = backup.file;
+
+  btn.onclick = () => {
+    showStatus("⏳ Копирование бэкапов...", "orange", 4000);
+
+    const urls = backup.urls || (backup.url ? [backup.url] : []);
+    urls.forEach(url => {
+      if (window.AndroidInterface) {
+        window.AndroidInterface.copyBackup(url, backup.target_folder);
+      }
+    });
+  };
+
+  list.appendChild(btn);
+});
+
   links.forEach(link => {
     const btn = document.createElement('button');
     btn.textContent = link.file;
