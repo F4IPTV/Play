@@ -220,20 +220,22 @@ function showGroupList(config)  {
   const btn = document.createElement('button');
   btn.textContent = backup.file;
 
-  btn.onclick = () => {
-    showStatus("⏳ Копирование бэкапов...", "orange", 4000);
+ btn.onclick = () => {
+  showStatus("⏳ Копирование бэкапов...", "orange", 4000);
 
-    const urls = backup.urls || (backup.url ? [backup.url] : []);
+  const urls = backup.urls || (backup.url ? [backup.url] : []);
+  let delay = 0;
 
-    // Пауза между копированиями, чтобы Android успевал обрабатывать
-    urls.forEach((url, i) => {
-      setTimeout(() => {
-        if (window.AndroidInterface) {
-          window.AndroidInterface.copyBackup(url, backup.target_folder);
-        }
-      }, i * 500); // 500 мс пауза между файлами
-    });
-  };
+  urls.forEach((url, i) => {
+    setTimeout(() => {
+      if (window.AndroidInterface) {
+        window.AndroidInterface.copyBackup(url, backup.target_folder);
+      }
+    }, delay);
+    delay += 1000; // 1 секунда между копированиями — можно меньше, если уверен в стабильности
+  });
+};
+
 
   list.appendChild(btn);
 });
