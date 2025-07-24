@@ -217,23 +217,23 @@ function showGroupList(config)  {
     list.appendChild(btn);
   });
   backups.forEach(backup => {
-    const btn = document.createElement('button');
-    btn.textContent = backup.file;
-    btn.onclick = () => {
-      showStatus("⏳ Копирование бэкапа... <span class='spin'>⏳</span>", "orange", 4000);
-      if (window.AndroidInterface) window.AndroidInterface.copyBackup(backup.url, backup.target_folder);
-    };
-    list.appendChild(btn);
-  });
-  links.forEach(link => {
-    const btn = document.createElement('button');
-    btn.textContent = link.file;
-    btn.onclick = () => {
-      showStatus("🔗 Открытие инструкции...", "green", 3000);
-      if (window.AndroidInterface) window.AndroidInterface.openLink(link.url);
-    };
-    list.appendChild(btn);
-  });
+  const btn = document.createElement('button');
+  btn.textContent = backup.file;
+
+  btn.onclick = () => {
+    const urls = backup.urls || (backup.url ? [backup.url] : []);
+    if (!urls.length) return;
+
+    showStatus("⏳ Копирование бэкапов... <span class='spin'>⏳</span>", "orange", 4000);
+
+    if (window.AndroidInterface) {
+      window.AndroidInterface.copyMultipleBackups(JSON.stringify(urls), backup.target_folder);
+    }
+  };
+
+  list.appendChild(btn);
+});
+
   modal.style.display = "flex";
   setTimeout(() => {
     const firstBtn = list.querySelector('button');
