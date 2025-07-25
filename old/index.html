@@ -100,6 +100,16 @@ button:focus {
 <br> 
 <input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
+<!-- Кнопки системных настроек -->
+<div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 12px;">
+  <button onclick="window.AndroidInterface.openUnknownSources()" style="flex: 1; padding: 10px; font-size: 16px;">
+    ⚙️ Неизвестные источники
+  </button>
+  <button onclick="window.AndroidInterface.openBatteryOptimization()" style="flex: 1; padding: 10px; font-size: 16px;">
+    🔋 Энергосбережение
+  </button>
+</div>
+
 
 <div id="modal" class="modal" style="display:none;">
    <div class="modal-content">
@@ -175,6 +185,8 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
     startInstall();
   }
 });
+
+
 
 async function startInstall() {
   const passwordInput = document.getElementById('passwordInput');
