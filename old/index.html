@@ -378,19 +378,21 @@ document.addEventListener('keydown', function(e) {
 });
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
-    const selected = document.querySelector('.card.selected');
-    const activeInput = document.activeElement;
+  const active = document.activeElement;
+  const modal = document.getElementById('modal');
+  if (modal.style.display === 'flex') return;
 
-    // Если фокус в поле пароля — Enter обрабатывается отдельно
-    if (activeInput.id === 'passwordInput') return;
-
-    const modal = document.getElementById('modal');
-    if (modal.style.display === 'flex') return;  // Если открыта модалка, не реагируем здесь
-
-    if (selected) {
-      startInstall();
-    }
+  // Если фокус на системных кнопках — ничего не делать
+  if (active && (active.textContent.includes("Неизвестные источники") || active.textContent.includes("Энергосбережение"))) {
+    return;
   }
+
+  const selected = document.querySelector('.card.selected');
+  if (selected) {
+    startInstall();
+  }
+}
+
 });
 
 
