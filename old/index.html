@@ -416,13 +416,19 @@ document.addEventListener('keydown', function(e) {
 
 </script>
 <script>
-  // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
-  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
-  if (isTV) {
-    const startBtn = document.getElementById("startBtn");
-    if (startBtn) startBtn.style.display = "none";
+  const ua = navigator.userAgent;
+  const isAndroidTV = /TV|GoogleTV|SHIELD|AFT/i.test(ua);
+  const isAospBox = /Android/i.test(ua) &&
+                    !isAndroidTV &&
+                    /Box|AOSP|rk|amlogic|s905|rockchip|AllWinner|Linux/i.test(ua);
+  const isMobile = !isAndroidTV && !isAospBox;
+
+  if (!isMobile) {
+    const btn = document.getElementById("startBtn");
+    if (btn) btn.style.display = "none";
   }
 </script>
+
 
 <script>
   // Убираем выделение с группы, если фокус на системной кнопке
