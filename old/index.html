@@ -416,13 +416,22 @@ document.addEventListener('keydown', function(e) {
 
 </script>
 <script>
-  // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
-  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
-  if (isTV) {
+  const ua = navigator.userAgent;
+
+  const isMobile = /Mobile/i.test(ua);  // 📱 Телефоны/планшеты
+  const isAndroidTV = /TV|GoogleTV|SHIELD|AFT/i.test(ua);  // 📺 Google TV / Android TV
+  const isAospBox = /Android/i.test(ua) &&
+                    !isMobile &&
+                    !isAndroidTV &&
+                    /Box|rk|amlogic|s905|rockchip|AllWinner|AOSP|Build/i.test(ua);  // 📦 AOSP-приставки
+
+  // ❌ Скрываем кнопку "Открыть группу" на всех приставках
+  if (isAndroidTV || isAospBox) {
     const startBtn = document.getElementById("startBtn");
     if (startBtn) startBtn.style.display = "none";
   }
 </script>
+
 
 </body>
 </html>
