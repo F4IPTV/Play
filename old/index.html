@@ -102,13 +102,13 @@ button:focus {
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 12px;">
-  <button onclick="window.AndroidInterface.openUnknownSources()" style="flex: 1; padding: 10px; font-size: 16px;">
+  <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" style="flex: 1; padding: 10px; font-size: 16px;">
     ⚙️ Неизвестные источники
   </button>
-  <button onclick="window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" style="flex: 1; padding: 10px; font-size: 16px;">
+  <button onclick="event.stopPropagation();window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" style="flex: 1; padding: 10px; font-size: 16px;">
     📌 Гугл обнова
   </button>
-  <button onclick="window.AndroidInterface.openBatteryOptimization()" style="flex: 1; padding: 10px; font-size: 16px;">
+  <button onclick="event.stopPropagation();window.AndroidInterface.openBatteryOptimization()" style="flex: 1; padding: 10px; font-size: 16px;">
     ⚙ Настройки системы
   </button>
 </div>
