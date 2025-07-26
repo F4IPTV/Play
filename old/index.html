@@ -105,10 +105,10 @@ button:focus {
   <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" style="flex: 1; padding: 10px; font-size: 16px;">
     ⚙️ Неизвестные источники
   </button>
-  <button onclick="event.stopPropagation();window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" style="flex: 1; padding: 10px; font-size: 16px;">
+  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" style="flex: 1; padding: 10px; font-size: 16px;">
     📌 Гугл обнова
   </button>
-  <button onclick="event.stopPropagation();window.AndroidInterface.openBatteryOptimization()" style="flex: 1; padding: 10px; font-size: 16px;">
+  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" style="flex: 1; padding: 10px; font-size: 16px;">
     ⚙ Настройки системы
   </button>
 </div>
@@ -135,6 +135,10 @@ let lastPassword = "";
 // 🔁 Очередь для последовательного копирования бэкапов
 let backupQueue = [];
 let backupTarget = "";
+
+// 🔁 Для пропууска ложного энтера
+let ignoreNextEnter = false;
+
 
 // ⏳ Старт копирования бэкапов по очереди
 function copyBackupsSequentially(urls, folder) {
@@ -320,6 +324,11 @@ function closeModal() {
 }
 
 document.addEventListener('keydown', function(e) {
+	if (ignoreNextEnter) {
+	ignoreNextEnter = false;
+	return;
+	}
+
   const modal = document.getElementById('modal');
   if (modal.style.display !== 'flex') return;
 
