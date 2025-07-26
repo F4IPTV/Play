@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="logosandtypes_com" data-name="logosandtypes com" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #4285f4;
+      }
+
+      .cls-2 {
+        fill: #fbbc05;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: #34a853;
+      }
+
+      .cls-5 {
+        fill: #ea4335;
+      }
+    </style>
+  </defs>
+  <path class="cls-3" d="M0,0H150V150H0V0Z"/>
+  <circle class="cls-1" cx="49.84" cy="53.92" r="39.51"/>
+  <path class="cls-4" d="M139.79,57.78c0,4.44-3.6,8.03-8.03,8.03s-8.03-3.6-8.03-8.03,3.6-8.03,8.03-8.03,8.03,3.6,8.03,8.03Z"/>
+  <path class="cls-5" d="M125.33,77.37c0,8.87-7.19,16.06-16.06,16.06s-16.06-7.19-16.06-16.06,7.19-16.06,16.06-16.06,16.06,7.19,16.06,16.06Z"/>
+  <path class="cls-2" d="M128.54,118.82c0,10.65-8.63,19.27-19.28,19.27s-19.28-8.63-19.28-19.27,8.63-19.28,19.28-19.28,19.28,8.63,19.28,19.28Z"/>
+</svg>
