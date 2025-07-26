@@ -90,12 +90,17 @@ button:focus {
 
 .system-buttons {
   display: flex;
+  flex-wrap: wrap;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .sys-btn {
-  flex: 1;
+  lex: 1 1 calc(33.33% - 20px); /* до 3 кнопок в строку с отступами */
+  min-width: 140px;
+  max-width: 240px;
   padding: 10px;
   font-size: 16px;
   text-align: center;
