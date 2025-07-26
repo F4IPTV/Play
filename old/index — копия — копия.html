@@ -2,71 +2,112 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Карточки в стиле Android TV</title>
+  <title>Установщик</title>
   <style>
-    body {
-      background-color: #121212;
-      color: white;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
 
-    .module-container {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 40px;  background-image: url('C:\GIT_REPO\Play\old\WINDOW.jpg'); /* путь к картинке */
+  background-size: cover;                 /* растянуть на весь экран */
+  background-position: center;            /* по центру */
+  background-repeat: no-repeat;           /* не повторять */
+  color: white; /* чтобы текст был виден */ }
+    select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
+    #status { margin-top: 20px; font-weight: bold; min-height: 24px;  transition: opacity 0.5s ease;  opacity: 0;  position: fixed;  top: 10px;  left: 0;  right: 0;  text-align: center;  z-index: 1001; }
+    #status.visible { opacity: 1; }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    select:focus, input:focus, button:focus { outline: none;
+  box-shadow: 0 0 8px red;
+  border-color: red; }
+    .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
+    .card {
+  background-color: #2a2a2a;
+  border-radius: 16px;
+  padding: 20px;
+  width: 150px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
 
-    .module-button {
-      background-color: #2a2a2a;
-      border-radius: 16px;
-      padding: 20px;
-      width: 150px;
-      height: 120px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 16px;
-      border: 2px solid transparent;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
+.card:hover,
+.card:focus {
+  background-color: #004d61;
+  border-color: #00cfff;
+  box-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
+  outline: none;
+}
 
-    .module-button:hover,
-    .module-button:focus {
-      background-color: #004d61;
-      border-color: #00cfff;
-      box-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
-      outline: none;
-    }
+.card.selected {
+  background-color: #00cfff;
+  color: black;
+}
 
-    .module-button.highlight {
-      background-color: #00cfff;
-      color: black;
-    }
+    .modal-content { background: #111;  /* Очень тёмный фон, почти чёрный */
+  color: white;       /* Текст белый, чтобы был виден */
+  padding: 20px;
+  border-radius: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 80%;
+  border: 1px solid #333; /* Тонкая светлая рамка для отделения */ }
+     #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
+    #modalList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Две колонки */
+  gap: 10px;
+  justify-items: center;
+}
+    
+    /* СТИЛЬ КНОПОК В СТИЛЕ GOOGLE TV */
+button {
+  background-color: #007BFF;
+  color: white;
+  border: 2px solid transparent; /* Прозрачная рамка — сразу резервируем место */
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 18px;
+  width: 250px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box; /* Чтобы padding + border не раздували кнопку */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:focus {
+  outline: none;
+  border-color: white; /* Белая рамка внутри зарезервированного места */
+  box-shadow: 0 0 10px #007BFF;
+}
   </style>
 </head>
-<body>
 
-<h2>Настройки</h2>
-<p style="opacity: 0.6;">сб, 26 июл. 16:38</p>
 
-<div class="module-container">
-  <div class="module-button">🔐<br>Авторизация</div>
-  <div class="module-button">🎨<br>Интерфейс</div>
-  <div class="module-button">🎬<br>Плеер</div>
-  <div class="module-button">🌐<br>TorrServer</div>
-  <div class="module-button highlight">📄<br>Парсер</div>
-  <div class="module-button">⚙️<br>Остальное</div>
+
+
+<body style="margin: 0; padding: 0;">
+
+<h3 style="margin-top: 0;">Добро пожаловать! Выберите пакет для установки!</h3>
+
+<div class="card-container">
+  <div class="card" data-group="1" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">🚀<br>1_Старт</div>
+  <div class="card" data-group="2" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">▶️<br>2_YouTube</div>
+  <div class="card" data-group="3" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">🎬<br>3_Онлайн кинотеатры</div>
+  <div class="card" data-group="4" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">🌐<br>4_Торрент + Кино</div>
+  <div class="card" data-group="5" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">📺<br>5_IPTV</div>
+  <div class="card" data-group="6" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">💾<br>6_IPTV + TorrentTV</div>
+  <div class="card" data-group="7" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">💾<br>7_Полная настройка</div>
+  <div class="card" data-group="8" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">✍<br>8_Заявки</div>
 </div>
-
-</body>
-</html>
-
 <script>
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('focus', () => {
