@@ -63,6 +63,17 @@ button:focus {
 }
   </style>
 </head>
+
+<script>
+  // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
+  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
+  if (isTV) {
+    const startBtn = document.getElementById("startBtn");
+    if (startBtn) startBtn.style.display = "none";
+  }
+</script>
+
+
 <body style="margin: 0; padding: 0;">
 
 <h3 style="margin-top: 0;">Добро пожаловать! Выберите пакет для установки!</h3>
