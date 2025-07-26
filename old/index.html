@@ -411,6 +411,17 @@ document.addEventListener('keydown', function(e) {
 
 
 </script>
+<script>
+  // Убираем выделение с группы, если фокус на системной кнопке
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("focus", () => {
+      if (!btn.classList.contains("card")) {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+      }
+    });
+  });
+</script>
+
 
 
 </body>
