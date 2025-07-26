@@ -64,14 +64,7 @@ button:focus {
   </style>
 </head>
 
-<script>
-  // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
-  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
-  if (isTV) {
-    const startBtn = document.getElementById("startBtn");
-    if (startBtn) startBtn.style.display = "none";
-  }
-</script>
+
 
 
 <body style="margin: 0; padding: 0;">
@@ -422,6 +415,15 @@ document.addEventListener('keydown', function(e) {
 
 
 </script>
+<script>
+  // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
+  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
+  if (isTV) {
+    const startBtn = document.getElementById("startBtn");
+    if (startBtn) startBtn.style.display = "none";
+  }
+</script>
+
 <script>
   // Убираем выделение с группы, если фокус на системной кнопке
   document.querySelectorAll("button").forEach(btn => {
