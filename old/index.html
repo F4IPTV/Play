@@ -549,10 +549,11 @@ function setProgressInfo(current, total, percent) {
 </script>
 
 <script>
-function hideProgress() {
-  document.getElementById('progressContainer').style.display = 'none';
+function function hideProgress() {
+  const container = document.getElementById('progress-container');
+  if (container) container.style.display = 'none';
 }
-/script>
+</script>
 
 <script>
   // Убираем выделение с группы, если фокус на системной кнопке
