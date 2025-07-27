@@ -521,7 +521,7 @@ function updateProgress(current = null, total = null, percent = 0, label) {
   bar.style.width = percent + "%";
 
   if (current !== null && total !== null) {
-    text.innerText = `Загрузка приложений: ${label}: ${percent}%`;
+    text.innerText = `Загрузка приложения: ${label} ${percent}%`;
   } else {
     text.innerText = `Загрузка...`;
   }
