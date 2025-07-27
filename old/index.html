@@ -130,6 +130,11 @@ button:focus {
 
 <h5 style="margin-top: 0;">Быстрый установщик ATV и GoogleTV! Filin4ik®_ATV.</h5>
 
+<div id="progress-container" style="width: 100%; background: #333; height: 6px; display: none;">
+  <div id="progress-bar" style="height: 100%; width: 0%; background: red; transition: width 0.2s;"></div>
+</div>
+
+
 <div class="card-container">
   <div class="card" data-group="1" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">🚀<br>1_Старт</div>
  <div class="card" data-group="2" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">
@@ -499,6 +504,24 @@ document.addEventListener('keydown', function(e) {
 
 </body>
 </html>
+
+<script>
+function setProgress(percent) {
+  const container = document.getElementById("progress-container");
+  const bar = document.getElementById("progress-bar");
+  if (!container || !bar) return;
+
+  container.style.display = "block";
+  bar.style.width = percent + "%";
+
+  if (percent >= 100) {
+    setTimeout(() => {
+      container.style.display = "none";
+      bar.style.width = "0%";
+    }, 1000); // скроем после секунды
+  }
+}
+</script>
 
 
 
