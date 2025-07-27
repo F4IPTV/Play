@@ -536,26 +536,6 @@ function updateProgress(current = null, total = null, percent = 0) {
 }
 
 </script>
-<script>
-function updateProgressWithLabel(current, total, percent, label) {
-  const container = document.getElementById("progress-container");
-  const bar = document.getElementById("progress-bar");
-  const text = document.getElementById("progress-text");
-
-  container.style.display = "block";
-  bar.style.width = percent + "%";
-  text.innerText = `Загрузка ${label}: ${percent}%`;
-
-  if (percent >= 100 && current === total) {
-    setTimeout(() => {
-      container.style.display = "none";
-      bar.style.width = "0%";
-      text.innerText = "";
-    }, 1500);
-  }
-}
-</script>
-
 
 <script>
 function hideProgress() {
