@@ -130,6 +130,17 @@ button:focus {
 
 <h5 style="margin-top: 0;">Быстрый установщик ATV и GoogleTV! Filin4ik®_ATV.</h5>
 
+<div id="progress-container" style="display:none; width: 100%; background: #333; padding: 10px; z-index: 1002; position: fixed; top: 0; left: 0; right: 0;">
+  <div id="progress-text" style="color: white; margin-bottom: 5px;">Загрузка...</div>
+  <div style="width: 100%; background: #555; height: 12px; border-radius: 6px;">
+    <div id="progress-bar" style="height: 12px; width: 0%; background: #4caf50; border-radius: 6px;"></div>
+  </div>
+</div>
+
+
+
+
+
 <div class="card-container">
   <div class="card" data-group="1" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">🚀<br>1_Старт</div>
  <div class="card" data-group="2" tabindex="0" onclick="selectCard(this)" onfocus="selectCard(this)">
@@ -171,10 +182,16 @@ button:focus {
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (8).svg" alt="" style="height: 20px;"><br>Неизвестные источники
   </button>
   <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
-    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height: 20px;"><br>Google Ассистент
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height: 20px;"><br>Google Katniss
   </button>
   <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (8).svg" alt="" style="height: 20px;"><br>Системные настройки
+  </button>
+  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()" class="sys-btn">
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (10).svg" alt="" style="height: 20px;"><br>Приложения
+  </button>
+  <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (8).svg" alt="" style="height: 20px;"><br>Очистить кеш
   </button>
   <button onclick="window.AndroidInterface.openFilePicker()" class="sys-btn">
   📂 Открыть файловый менеджер
@@ -280,7 +297,7 @@ passwordInput.blur();  // Принудительно снимаем фокус, 
   }
 
   try {
-    const response = await fetch("https://f4iptv.github.io/Play/old/config_Serg.json");
+    const response = await fetch("https://f4iptv.github.io/Play/old/config.json");
     const config = await response.json();
 
     const groupInfo = config.groups[group];
@@ -494,6 +511,63 @@ document.addEventListener('keydown', function(e) {
 </body>
 </html>
 
+<script>
+function updateProgress(current = null, total = null, percent = 0, label) {
+  const container = document.getElementById("progress-container");
+  const bar = document.getElementById("progress-bar");
+  const text = document.getElementById("progress-text");
+
+  container.style.display = "block";
+  bar.style.width = percent + "%";
+
+  if (current !== null && total !== null) {
+    text.innerHTML = `Загрузка приложения:&nbsp;&nbsp; ${label}&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
+  } else {
+    text.innerText = `Загрузка...`;
+  }
+
+  if (percent >= 100 && (current === null || current === total)) {
+    setTimeout(() => {
+      container.style.display = "none";
+      bar.style.width = "0%";
+      text.innerHTML = "";
+    }, 1500);
+  }
+}
+
+</script>
+<script>
+function updateProgressWithLabel(current, total, percent, label) {
+  const container = document.getElementById("progress-container");
+  const bar = document.getElementById("progress-bar");
+  const text = document.getElementById("progress-text");
+
+  container.style.display = "block";
+  bar.style.width = percent + "%";
+  text.innerText = `Загрузка ${label}: ${percent}%`;
+
+  if (percent >= 100 && current === total) {
+    setTimeout(() => {
+      container.style.display = "none";
+      bar.style.width = "0%";
+      text.innerText = "";
+    }, 1500);
+  }
+}
+</script>
+
+
+<script>
+function hideProgress() {
+  const container = document.getElementById('progress-container');
+  const bar = document.getElementById('progress-bar');
+  const text = document.getElementById('progress-text');
+
+  if (container) container.style.display = 'none';
+  if (bar) bar.style.width = '0%';
+  if (text) text.innerText = '';
+}
+</script>
 
 
 <script>
