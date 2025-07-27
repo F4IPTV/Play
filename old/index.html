@@ -521,7 +521,7 @@ function updateProgress(current = null, total = null, percent = 0, label) {
   bar.style.width = percent + "%";
 
   if (current !== null && total !== null) {
-    text.innerText = `Загрузка приложения: ${label}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
+    text.innerHTML = `Загрузка приложения: ${label}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
   } else {
     text.innerText = `Загрузка...`;
   }
@@ -530,7 +530,7 @@ function updateProgress(current = null, total = null, percent = 0, label) {
     setTimeout(() => {
       container.style.display = "none";
       bar.style.width = "0%";
-      text.innerText = "";
+      text.innerHTML = "";
     }, 1500);
   }
 }
