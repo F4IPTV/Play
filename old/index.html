@@ -511,34 +511,21 @@ document.addEventListener('keydown', function(e) {
 </html>
 
 <script>
-function setProgress(percent) {
-  const container = document.getElementById("progress-container");
-  const bar = document.getElementById("progress-bar");
-  if (!container || !bar) return;
-
-  container.style.display = "block";
-  bar.style.width = percent + "%";
-
-  if (percent >= 100) {
-    setTimeout(() => {
-      container.style.display = "none";
-      bar.style.width = "0%";
-    }, 1000); // скроем после секунды
-  }
-}
-</script>
-
-<script>
-function setProgressInfo(current, total, percent) {
+function updateProgress(current = null, total = null, percent = 0) {
   const container = document.getElementById("progress-container");
   const bar = document.getElementById("progress-bar");
   const text = document.getElementById("progress-text");
 
   container.style.display = "block";
   bar.style.width = percent + "%";
-  text.innerText = `Установка приложений: ${current} из ${total}, ${percent}%`;
 
-  if (percent >= 100 && current === total) {
+  if (current !== null && total !== null) {
+    text.innerText = `Установка приложений: ${current} из ${total}, ${percent}%`;
+  } else {
+    text.innerText = `Загрузка...`;
+  }
+
+  if (percent >= 100 && (current === null || current === total)) {
     setTimeout(() => {
       container.style.display = "none";
       bar.style.width = "0%";
@@ -546,14 +533,21 @@ function setProgressInfo(current, total, percent) {
     }, 1500);
   }
 }
+
 </script>
 
 <script>
-function function hideProgress() {
+function hideProgress() {
   const container = document.getElementById('progress-container');
+  const bar = document.getElementById('progress-bar');
+  const text = document.getElementById('progress-text');
+
   if (container) container.style.display = 'none';
+  if (bar) bar.style.width = '0%';
+  if (text) text.innerText = '';
 }
 </script>
+
 
 <script>
   // Убираем выделение с группы, если фокус на системной кнопке
