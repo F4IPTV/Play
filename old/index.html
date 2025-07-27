@@ -512,7 +512,7 @@ document.addEventListener('keydown', function(e) {
 </html>
 
 <script>
-function updateProgress(current = null, total = null, percent = 0) {
+function updateProgress(current = null, total = null, percent = 0, label) {
   const container = document.getElementById("progress-container");
   const bar = document.getElementById("progress-bar");
   const text = document.getElementById("progress-text");
@@ -521,7 +521,7 @@ function updateProgress(current = null, total = null, percent = 0) {
   bar.style.width = percent + "%";
 
   if (current !== null && total !== null) {
-    text.innerText = `Загрузка приложений: ${current} из ${total}, ${percent}%`;
+    text.innerText = `Загрузка приложений: ${label}: ${percent}%`;
   } else {
     text.innerText = `Загрузка...`;
   }
