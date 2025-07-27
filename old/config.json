@@ -207,25 +207,25 @@
       "file": "Televizo.backup",
       "url": "https://www.dropbox.com/scl/fi/nroii19ikc1jcihw9iyfz/Televizo.backup?rlkey=2m8tmg0acszz8ebwb8tmxofzo&dl=1",
       "target_folder": "Download",
-      "tags": [""]
+      "tags": "5", "7"]
     },
     {
       "file": "ott-play.pref",
       "url": "https://www.dropbox.com/scl/fi/0wd45j1go606p2ovwlf10/ott-play.pref?rlkey=35vrdaoe7k8s8ro1p564zsnbw&dl=1",
       "target_folder": "Download",
-      "tags": [""]
+      "tags": ["5", "7"]
     },
     {
       "file": "ByeByeDPI.backup",
       "url": "https://www.dropbox.com/scl/fi/s74rwdhlf7cd8v7jvka7h/ByeByeDPI.json?rlkey=zjuyoc01tkhcssvcxq2w8h2qr&dl=1",
       "target_folder": "Download",
-      "tags": [""]
+      "tags": ["2", "7"]
     },
       {
       "file": "КонфигАмнезия.json",
       "url": "https://www.dropbox.com/scl/fi/gmr6emv4crycofkw8h5fr/CONF-AMNESIA-3.zip?rlkey=p5c8jhfsyc7mrjhnunjxsanum&dl=3",
       "target_folder": "Download",
-      "tags": [""]
+      "tags": ["2", "7"]
     },
     {
       "file": "LampaATV.baackup",
@@ -234,7 +234,7 @@
 		"https://www.dropbox.com/scl/fi/l15s4074odgo62ghd96af/storage.backup?rlkey=mmp85a5inhjpfp6rwpppa775d&dl=1"
 	      ],
       "target_folder": "Documents/LAMPA ATV",
-      "tags": ["2", "4"]
+      "tags": ["4", "7"]
     },
     {
       "file": "Num.backup",
@@ -247,12 +247,12 @@
     {
       "file": "Статья 1",
       "url": "https://telegra.ph/telegraph-02-11-13",
-      "tags": ["1"]
+      "tags": [""]
     },
     {
       "file": "Статья 2",
       "url": "https://telegra.ph/telegraph-01-25",
-      "tags": ["1"]
+      "tags": [""]
     }],
   "groups": {
     "1": {
