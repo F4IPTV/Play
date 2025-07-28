@@ -650,6 +650,27 @@ function hideProgress() {
     document.getElementById('main-content').style.display = 'block';
   }, 3000); // 3 секунды
 </script>
+<script>
+  document.addEventListener("keydown", function (e) {
+    const input = document.getElementById("passwordInput");
+
+    if (
+      document.activeElement === input &&
+      (e.key === "Enter" || e.keyCode === 13)
+    ) {
+      showKeyboard(input);
+    }
+  });
+
+  function showKeyboard(input) {
+    input.removeAttribute('readonly'); // Вдруг снова сфокусировался
+    input.focus();
+
+    if (window.AndroidInterface && AndroidInterface.showKeyboard) {
+      AndroidInterface.showKeyboard();
+    }
+  }
+</script>
 
 
 
