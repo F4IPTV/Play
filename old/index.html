@@ -381,6 +381,13 @@ passwordInput.blur();  // Принудительно снимаем фокус, 
   }
 }
 
+function showKeyboard(input) {
+  input.focus();
+  if (window.AndroidInterface && AndroidInterface.showKeyboard) {
+    AndroidInterface.showKeyboard();
+  }
+}
+
 function showStatus(message, color, timeout = 4000) {
   const status = document.getElementById('status');
   status.innerHTML = message;
