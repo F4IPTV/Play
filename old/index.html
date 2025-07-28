@@ -405,7 +405,7 @@ function showGroupList(config)  {
     btn.textContent = app.file;
     btn.onclick = () => {
       showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "orange", 4000);
-      if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url);
+      if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url, app.file || "Приложение");
     };
     list.appendChild(btn);
   });
