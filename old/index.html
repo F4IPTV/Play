@@ -211,8 +211,7 @@ button:focus {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input id="passwordInput" type="password" readonly onfocus="this.removeAttribute('readonly')">
-
+<input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
@@ -637,13 +636,6 @@ function hideProgress() {
   }, 3000); // 3 секунды
 </script>
 
-<script>
-  document.getElementById("passwordInput").addEventListener("keydown", function (event) {
-    if (event.code === "Enter" || event.code === "NumpadEnter") {
-      AndroidInterface.showKeyboard(); // вызывается Kotlin
-    }
-  });
-</script>
 
 
 
