@@ -211,7 +211,7 @@ button:focus {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input type="password" id="passwordInput" placeholder="Введите пароль">
+<input id="password" type="text" placeholder="Введите пароль" inputmode="none" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" />
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
