@@ -211,16 +211,7 @@ button:focus {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input
-  id="passwordInput"
-  type="password"
-  placeholder="Введите пароль"
-  inputmode="none"
-  autocomplete="off"
-  readonly
-  onfocus="this.removeAttribute('readonly')"
-  onkeydown="if (event.key === 'Enter') showKeyboard(this)"
-/>
+<input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
@@ -381,12 +372,6 @@ passwordInput.blur();  // Принудительно снимаем фокус, 
   }
 }
 
-function showKeyboard(input) {
-  input.focus();
-  if (window.AndroidInterface && AndroidInterface.showKeyboard) {
-    AndroidInterface.showKeyboard();
-  }
-}
 
 function showStatus(message, color, timeout = 4000) {
   const status = document.getElementById('status');
@@ -650,27 +635,7 @@ function hideProgress() {
     document.getElementById('main-content').style.display = 'block';
   }, 3000); // 3 секунды
 </script>
-<script>
-  document.addEventListener("keydown", function (e) {
-    const input = document.getElementById("passwordInput");
 
-    if (
-      document.activeElement === input &&
-      (e.key === "Enter" || e.keyCode === 13)
-    ) {
-      showKeyboard(input);
-    }
-  });
-
-  function showKeyboard(input) {
-    input.removeAttribute('readonly'); // Вдруг снова сфокусировался
-    input.focus();
-
-    if (window.AndroidInterface && AndroidInterface.showKeyboard) {
-      AndroidInterface.showKeyboard();
-    }
-  }
-</script>
 
 
 
