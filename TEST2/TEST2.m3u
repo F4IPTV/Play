@@ -259,6 +259,8 @@ http://31.148.48.15/Russkiy_Roman_HD/index.m3u8
 http://31.133.36.244:8000/85
 #EXTINF:-1 group-title="Кино", Сапфир HD
 http://31.133.36.244:8000/86
+#EXTINF:-1 group-title="Кино", Синема HD
+http://178.124.152.238:8088/cinema
 #EXTINF:-1 group-title="Кино", Сити Эдем — Киноазия
 https://autopilot.catcast.tv/content/34393/index.m3u8?password=promolive
 #EXTINF:-1 group-title="Кино", Сити Эдем — Кинодок
@@ -303,8 +305,6 @@ http://77.235.1.19:8000/play/a04d/index.m3u8
 http://catchup.videoline.ru/cinema/index.m3u8
 #EXTINF:-1 group-title="Кино", Cinema HD
 http://77.235.1.19:8000/play/a01d/index.m3u8
-#EXTINF:-1 group-title="Кино", Cinema Космос TV
-http://178.124.152.238:8088/cinema
 #EXTINF:-1 group-title="Кино", FAN 
 http://31.210.208.171:8080/fan/index.m3u8?token=+W2MSER
 #EXTINF:-1 group-title="Кино", FAN HD
@@ -470,8 +470,6 @@ http://176.62.72.48:8001/play/a00q/index.m3u8
 
 #EXTINF:-1 group-title="Познавательные", 2x2
 http://178.217.72.66:8080/2x2/index.m3u8
-#EXTINF:-1 group-title="Познавательные", 2x2 HD
-https://livetv.mylifeisgood.net.ru/channels/2x2.m3u8
 #EXTINF:-1 catchup="append" catchup-days="7" catchup-source="?offset=-${offset}&utcstart=${timestamp}" tvg-id="2na2" group-title="Познавательные", 2х2 (Архив)
 #EXTVLCOPT:http-user-agent=WINK/1.40.1 (AndroidTV/9) HlsWinkPlayer
 https://zabava-htlive.cdn.ngenix.net/hls/CH_2X2/variant.m3u8
@@ -1121,9 +1119,9 @@ http://178.217.72.66:8080/Rusong_TV/tracks-v1a1/mono.m3u8
 http://178.212.71.253:8000/play/142/index.m3u8
 #EXTINF:-1 group-title="Музыка", Bridge Этно
 http://tvip.btk.teleos.ru:8081/chid520/index.m3u8
-#EXTINF:-1 group-title="Музыка", CHD TV Rock HD
+#EXTINF:-1 group-title="Музыка", CHD Rock HD
 http://194.26.229.213/chdtv_rock/index.m3u8
-#EXTINF:-1 group-title="Музыка", CHD TV RU Rock HD
+#EXTINF:-1 group-title="Музыка", CHD RU Rock HD
 http://194.26.229.213/chdtv_ru_rock/index.m3u8
 #EXTINF:-1 group-title="Музыка", Deluxe Dance 
 https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8
