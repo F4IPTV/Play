@@ -137,15 +137,15 @@ http://planeta.mediacdn.ru/cdn/tnvplanet/tracks-v1a1/mono.m3u8
 #EXTINF:-1 group-title="Общие", CGTN Русский
 http://russian-livews.cgtn.com/hls/LSvexABhNipibK5KRuUkvHZ7220802LSTeze9o8tdFXMHsb1VosgoT220802cd/playlist.m3u8
 
-#EXTINF:-1 group-title="Кино", .black
+#EXTINF:-1 group-title="Кино", .Black
 http://176.62.72.48:8001/play/a03j/index.m3u8
-#EXTINF:-1 group-title="Кино", .red
+#EXTINF:-1 group-title="Кино", .Red
 http://178.124.152.238:8088/sony
-#EXTINF:-1 group-title="Кино", .red HD
+#EXTINF:-1 group-title="Кино", .Red HD
 http://77.235.1.19:8000/play/a07e/index.m3u8
-#EXTINF:-1 group-title="Кино", .sci-fi 
+#EXTINF:-1 group-title="Кино", .Sci-Fi 
 http://178.124.179.122:8088/Sci-Fi/index.m3u8
-#EXTINF:-1 group-title="Кино", .sci-fi HD
+#EXTINF:-1 group-title="Кино", .Sci-Fi HD
 http://45.159.74.22/Kinoseriya/mono.m3u8
 #EXTINF:-1 group-title="Кино", 312
 http://176.126.166.43:1935/live/312musik/chunklist_w1516016500.m3u8
@@ -700,9 +700,9 @@ http://77.235.1.19:8000/play/a07w/index.m3u8
 http://95.67.12.81:10619
 #EXTINF:-1 group-title="Познавательные", History HD
 http://45.159.74.22/Channel_123/mono.m3u8
-#EXTINF:-1 group-title="Познавательные", History 2 🛡️
+#EXTINF:-1 group-title="Познавательные", History 2 HD 🛡️
 http://95.67.12.81:10620
-#EXTINF:-1 group-title="Познавательные", Investigation Discovery
+#EXTINF:-1 group-title="Познавательные", Investigation Discovery HD
 http://45.159.74.22/InvestigationDiscovery/mono.m3u8
 #EXTINF:-1 group-title="Познавательные", Love Nature 4k
 https://d18dyiwu97wm6q.cloudfront.net/playlist2160p.m3u8
@@ -1073,7 +1073,7 @@ http://87.120.142.11:18000/Rossiya1
 http://178.134.1.158:8081/viasatsport/index.m3u8
 
 
-#EXTINF:-1 group-title="Музыка", 1HD
+#EXTINF:-1 group-title="Музыка", 1 HD Music
 http://91.247.68.229:8000/play/eee/index.m3u8
 #EXTINF:-1 group-title="Музыка", Жара 
 http://31.133.36.244:8000/155
