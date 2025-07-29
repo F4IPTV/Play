@@ -256,35 +256,35 @@
     }],
   "groups": {
     "1": {
-      "password": "1234",
+      "password": "",
       "tags": ["1"]
     },
     "2": {
-      "password": "1234",
+      "password": "",
       "tags": ["2"]
     },
     "3": {
-      "password": "1234",
+      "password": "",
       "tags": ["3"]
     },
     "4": {
-      "password": "1234",
+      "password": "",
       "tags": ["4"]
     },
     "5": {
-      "password": "1234",
+      "password": "",
       "tags": ["5"]
     },
     "6": {
-      "password": "1234",
+      "password": "",
       "tags": ["6"]
     },
     "7": {
-      "password": "1234",
+      "password": "",
       "tags": ["7"]
     },
     "8": {
-      "password": "1234",
+      "password": "",
       "tags": ["8"]
     }
   }
