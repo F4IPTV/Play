@@ -622,20 +622,12 @@ function openAutostartModal() {
   document.getElementById('autostartModal').style.display = 'block';
   const container = document.getElementById('appList');
   container.innerHTML = 'Загрузка...';
-  const appsJson = window.AndroidInterface.getInstalledApps();
-  const apps = JSON.parse(appsJson);
-  container.innerHTML = '';
-  apps.forEach(app => {
-    const btn = document.createElement('button');
-    btn.textContent = app.name + ' (' + app.package + ')';
-    btn.onclick = () => {
-      window.AndroidInterface.setAutostartPackage(app.package);
-      alert("Установлено: " + app.name);
-      closeAutostartModal();
-    };
-    container.appendChild(btn);
-    container.appendChild(document.createElement('br'));
-  });
+
+  if (window.AndroidInterface && window.AndroidInterface.getInstalledApps) {
+    window.AndroidInterface.getInstalledApps(); // вызов, а результат придёт позже
+  } else {
+    container.innerHTML = 'Интерфейс Android недоступен.';
+  }
 }
 
 function disableAutostart() {
@@ -750,6 +742,33 @@ function hideProgress() {
   if (container) container.style.display = 'none';
   if (bar) bar.style.width = '0%';
   if (text) text.innerText = '';
+}
+
+
+
+function onInstalledAppsReceived(appsJson) {
+  const container = document.getElementById('appList');
+  container.innerHTML = ''; // очистка "Загрузка..."
+
+  let apps;
+  try {
+    apps = JSON.parse(appsJson);
+  } catch (e) {
+    container.innerHTML = 'Ошибка чтения списка.';
+    return;
+  }
+
+  apps.forEach(app => {
+    const btn = document.createElement('button');
+    btn.textContent = `${app.name} (${app.package})`;
+    btn.onclick = () => {
+      window.AndroidInterface.setAutostartPackage(app.package);
+      alert("Установлено: " + app.name);
+      closeAutostartModal();
+    };
+    container.appendChild(btn);
+    container.appendChild(document.createElement('br'));
+  });
 }
 </script>
 
