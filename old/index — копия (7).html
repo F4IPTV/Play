@@ -256,47 +256,6 @@ button:focus {
   </button>
 </div>
 
-<button onclick="openAutostartModal()">⚙️ Автозапуск приложения</button>
-
-<div id="autostartModal" class="modal" style="display: none; background: black; color: white; padding: 20px;">
-  <h3>Выбери приложение для автозапуска:</h3>
-  <div id="appList">Загрузка...</div>
-  <br>
-  <button onclick="disableAutostart()">❌ Отключить автозапуск</button>
-  <button onclick="closeAutostartModal()">Закрыть</button>
-</div>
-
-<script>
-function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'block';
-  const container = document.getElementById('appList');
-  container.innerHTML = 'Загрузка...';
-  const appsJson = window.AndroidInterface.getInstalledApps();
-  const apps = JSON.parse(appsJson);
-  container.innerHTML = '';
-  apps.forEach(app => {
-    const btn = document.createElement('button');
-    btn.textContent = app.name + ' (' + app.package + ')';
-    btn.onclick = () => {
-      window.AndroidInterface.setAutostartPackage(app.package);
-      alert("Установлено: " + app.name);
-      closeAutostartModal();
-    };
-    container.appendChild(btn);
-    container.appendChild(document.createElement('br'));
-  });
-}
-
-function disableAutostart() {
-  window.AndroidInterface.clearAutostartPackage();
-  alert("Автозапуск отключён");
-  closeAutostartModal();
-}
-
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
-</script>
 
 
 <div id="modal" class="modal" style="display:none;">
@@ -597,43 +556,6 @@ document.addEventListener('keydown', function(e) {
 
 
 </script>
-
-
-<script>
-function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'block';
-  const container = document.getElementById('appList');
-  container.innerHTML = 'Загрузка...';
-  const appsJson = window.AndroidInterface.getInstalledApps();
-  const apps = JSON.parse(appsJson);
-  container.innerHTML = '';
-  apps.forEach(app => {
-    const btn = document.createElement('button');
-    btn.textContent = app.name + ' (' + app.package + ')';
-    btn.onclick = () => {
-      window.AndroidInterface.setAutostartPackage(app.package);
-      alert("Установлено: " + app.name);
-      closeAutostartModal();
-    };
-    container.appendChild(btn);
-    container.appendChild(document.createElement('br'));
-  });
-}
-
-function disableAutostart() {
-  window.AndroidInterface.clearAutostartPackage();
-  alert("Автозапуск отключён");
-  closeAutostartModal();
-}
-
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
-</script>
-
-
-
-
 <script>
   // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
   const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
