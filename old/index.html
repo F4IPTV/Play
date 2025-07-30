@@ -257,6 +257,16 @@ button:focus {
 </div>
 
 <button onclick="openAutostartModal()">⚙️ Автозапуск приложения</button>
+<button onclick="showAutostartSelector()">Автозапуск приложения</button>
+
+<div id="autostart-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#000000cc; color:white; padding:20px; overflow:auto; z-index:1000;">
+  <h3>Выберите приложение для автозапуска</h3>
+  <div id="autostart-list"></div>
+  <br>
+  <button onclick="window.AndroidInterface.clearAutostartPackage(); hideAutostartModal(); showStatus('❌ Автозапуск отключён', 'orange')">Отключить автозапуск</button>
+  <br><br>
+  <button onclick="hideAutostartModal()">Закрыть</button>
+</div>
 
 <div id="autostartModal" class="modal" style="display: none; background: black; color: white; padding: 20px;">
   <h3>Выбери приложение для автозапуска:</h3>
@@ -630,8 +640,38 @@ function closeAutostartModal() {
   document.getElementById('autostartModal').style.display = 'none';
 }
 </script>
+<script>
+function showAutostartSelector() {
+  const json = window.AndroidInterface.getInstalledApps();
+  try {
+    const apps = JSON.parse(json);
+    const container = document.getElementById('autostart-list');
+    container.innerHTML = '';
 
+    apps.forEach(app => {
+      const btn = document.createElement('button');
+      btn.innerText = app.name;
+      btn.style.margin = '5px';
+      btn.onclick = () => {
+        window.AndroidInterface.setAutostartPackage(app.package);
+        hideAutostartModal();
+        showStatus(`✅ Установлен автозапуск: ${app.name}`, 'green');
+      };
+      container.appendChild(btn);
+    });
 
+    document.getElementById('autostart-modal').style.display = 'block';
+  } catch (e) {
+    showStatus('❌ Ошибка загрузки приложений', 'red');
+    console.error(e);
+  }
+}
+
+function hideAutostartModal() {
+  document.getElementById('autostart-modal').style.display = 'none';
+}
+
+</script>
 
 
 <script>
