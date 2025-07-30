@@ -281,9 +281,26 @@ function openAutostartModal() {
   document.getElementById('autostartModal').style.display = 'block';
   const container = document.getElementById('appList');
   container.innerHTML = 'Загрузка...';
-  const appsJson = window.AndroidInterface.getInstalledApps();
-  const apps = JSON.parse(appsJson);
+
+  // запрос
+  if (window.AndroidInterface) {
+    window.AndroidInterface.getInstalledApps();
+  }
+}
+
+// ответ
+function onInstalledAppsReceived(json) {
+  const container = document.getElementById('appList');
   container.innerHTML = '';
+  let apps;
+
+  try {
+    apps = JSON.parse(json);
+  } catch (e) {
+    container.innerHTML = '❌ Ошибка чтения списка';
+    return;
+  }
+
   apps.forEach(app => {
     const btn = document.createElement('button');
     btn.textContent = app.name + ' (' + app.package + ')';
@@ -297,15 +314,6 @@ function openAutostartModal() {
   });
 }
 
-function disableAutostart() {
-  window.AndroidInterface.clearAutostartPackage();
-  alert("Автозапуск отключён");
-  closeAutostartModal();
-}
-
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
 </script>
 
 
