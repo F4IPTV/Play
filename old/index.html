@@ -150,40 +150,6 @@ button:focus {
     opacity: 1;
   }
 }
-.modal-content {
-  max-width: 90%;
-  max-height: 80vh;
-  overflow: hidden;
-  background: #222;
-  padding: 20px;
-  border-radius: 12px;
-  color: white;
-}
-
-.scrollable-list {
-  max-height: 50vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.scrollable-list button {
-  background: #333;
-  color: white;
-  border: none;
-  padding: 10px;
-  text-align: left;
-  font-size: 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.scrollable-list button:hover {
-  background: #444;
-}
 
 
 
@@ -290,17 +256,6 @@ button:focus {
   </button>
 </div>
 
-<button onclick="openAutostartModal()">⚙️ Автозапуск приложения</button>
-<button onclick="showAutostartSelector()">Автозапуск приложения</button>
-
-<div id="autostart-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#000000cc; color:white; padding:20px; overflow:auto; z-index:1000;">
-  <h3>Выберите приложение для автозапуска</h3>
-  <div id="autostart-list"></div>
-  <br>
-  <button onclick="window.AndroidInterface.clearAutostartPackage(); hideAutostartModal(); showStatus('❌ Автозапуск отключён', 'orange')">Отключить автозапуск</button>
-  <br><br>
-  <button onclick="hideAutostartModal()">Закрыть</button>
-</div>
 
 <button onclick="openAutostartModal()">⚙ Автозагрузка приложения1</button>
 
