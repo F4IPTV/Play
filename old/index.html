@@ -804,7 +804,7 @@ function onInstalledAppsReceived(appsJson) {
 <script>
 document.addEventListener('keydown', function(e) {
   const modal = document.getElementById('autostartModal');
-  if (modal.style.display !== 'flex') return;
+  if (!modal || modal.style.display !== 'flex') return;
 
   const buttons = Array.from(modal.querySelectorAll('.card, #autostartCloseBtn'));
   if (!buttons.length) return;
@@ -817,36 +817,36 @@ document.addEventListener('keydown', function(e) {
     return;
   }
 
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    const next = index + cols;
-    if (next < buttons.length) buttons[next].focus();
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const prev = index - cols;
-    if (prev >= 0) buttons[prev].focus();
-  } else if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    if (index % cols !== 0) buttons[index - 1]?.focus();
-  } else if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    if ((index + 1) % cols !== 0 && index + 1 < buttons.length) buttons[index + 1]?.focus();
-  } else if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    e.stopPropagation();
-    event.returnValue = false;
-    closeAutostartModal();
+  switch (e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      if (index + cols < buttons.length) buttons[index + cols].focus();
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      if (index - cols >= 0) buttons[index - cols].focus();
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      if (index % cols !== 0) buttons[index - 1]?.focus();
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      if ((index + 1) % cols !== 0 && index + 1 < buttons.length) buttons[index + 1]?.focus();
+      break;
+    case 'Back':
+    case 'Escape':
+      e.preventDefault();
+      e.stopPropagation();              // ⬅️ важно!
+      event.returnValue = false;        // ⬅️ тоже важно!
+      closeAutostartModal();            // ⬅️ твоя функция
+      break;
   }
 });
 </script>
 
 
-<script>
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
 
-</script>
 
 </body>
 </html>
