@@ -325,7 +325,7 @@ button:focus {
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
     <h3>Выберите приложение для автозапуска:</h3>
-    <div id="autostartList" class="card-container2" style="max-height: 80vh; overflow-y: auto;"></div>
+    <div id="autostartList" class="card-container2" style="max-height: 60vh; overflow-y: auto;"></div>
     <br>
     <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
   </div>
@@ -833,12 +833,13 @@ document.addEventListener('keydown', function(e) {
     if ((index + 1) % cols !== 0 && index + 1 < buttons.length) buttons[index + 1]?.focus();
   } else if (e.key === 'Back' || e.key === 'Escape') {
     e.preventDefault();
+    e.stopPropagation();
+    event.returnValue = false;
     closeAutostartModal();
-	return false;
   }
 });
-
 </script>
+
 
 <script>
 function closeAutostartModal() {
