@@ -272,45 +272,7 @@ button:focus {
 
 
 
-<script>
-function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'flex';
-  const container = document.getElementById('appList');
-  container.innerHTML = 'Загрузка...';
 
-  // запрос
-  if (window.AndroidInterface) {
-    window.AndroidInterface.getInstalledApps();
-  }
-}
-
-// ответ
-function onInstalledAppsReceived(json) {
-  const container = document.getElementById('appList');
-  container.innerHTML = '';
-  let apps;
-
-  try {
-    apps = JSON.parse(json);
-  } catch (e) {
-    container.innerHTML = '❌ Ошибка чтения списка';
-    return;
-  }
-
-  apps.forEach(app => {
-    const btn = document.createElement('button');
-    btn.textContent = app.name + ' (' + app.package + ')';
-    btn.onclick = () => {
-      window.AndroidInterface.setAutostartPackage(app.package);
-      alert("Установлено: " + app.name);
-      closeAutostartModal();
-    };
-    container.appendChild(btn);
-    container.appendChild(document.createElement('br'));
-  });
-}
-
-</script>
 
 
 <div id="modal" class="modal" style="display:none;">
@@ -613,29 +575,7 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 
-<script>
-function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'flex';
-  const container = document.getElementById('appList');
-  container.innerHTML = 'Загрузка...';
 
-  if (window.AndroidInterface && window.AndroidInterface.getInstalledApps) {
-    window.AndroidInterface.getInstalledApps(); // вызов, а результат придёт позже
-  } else {
-    container.innerHTML = 'Интерфейс Android недоступен.';
-  }
-}
-
-function disableAutostart() {
-  window.AndroidInterface.clearAutostartPackage();
-  alert("Автозапуск отключён");
-  closeAutostartModal();
-}
-
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
-</script>
 <script>
 function showAutostartSelector() {
   const json = window.AndroidInterface.getInstalledApps();
