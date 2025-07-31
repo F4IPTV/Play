@@ -576,38 +576,7 @@ document.addEventListener('keydown', function(e) {
 
 
 
-<script>
-function showAutostartSelector() {
-  const json = window.AndroidInterface.getInstalledApps();
-  try {
-    const apps = JSON.parse(json);
-    const container = document.getElementById('autostart-list');
-    container.innerHTML = '';
 
-    apps.forEach(app => {
-      const btn = document.createElement('button');
-      btn.innerText = app.name;
-      btn.style.margin = '5px';
-      btn.onclick = () => {
-        window.AndroidInterface.setAutostartPackage(app.package);
-        hideAutostartModal();
-        showStatus(`✅ Установлен автозапуск: ${app.name}`, 'green');
-      };
-      container.appendChild(btn);
-    });
-
-    document.getElementById('autostart-modal').style.display = 'block';
-  } catch (e) {
-    showStatus('❌ Ошибка загрузки приложений', 'red');
-    console.error(e);
-  }
-}
-
-function hideAutostartModal() {
-  document.getElementById('autostart-modal').style.display = 'none';
-}
-
-</script>
 
 
 <script>
