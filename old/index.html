@@ -151,6 +151,65 @@ button:focus {
   }
 }
 
+#autostartList button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #333;
+  border-radius: 12px;
+  padding: 10px;
+  color: white;
+  border: 2px solid transparent;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+#autostartList button:focus {
+  outline: none;
+  border-color: cyan;
+  background-color: #005;
+}
+#autostartList img {
+  margin-bottom: 6px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+
+.card-container2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  justify-content: center;
+}
+
+.card-container2 button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #333;
+  border-radius: 12px;
+  padding: 10px;
+  color: white;
+  border: 2px solid transparent;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.card-container2 button:focus {
+  outline: none;
+  border-color: cyan;
+  background-color: #005;
+}
+.card-container2 img {
+  margin-bottom: 6px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
 
 
 
@@ -263,7 +322,7 @@ button:focus {
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
     <h3>Выберите приложение для автозапуска:</h3>
-    <div id="autostartList" class="sys-btn" style="max-height: 60vh; overflow-y: auto;"></div>
+    <div id="autostartList" class="card-container2" style="max-height: 60vh; overflow-y: auto;"></div>
     <br>
     <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
   </div>
