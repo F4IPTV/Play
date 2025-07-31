@@ -257,16 +257,18 @@ button:focus {
 </div>
 
 
-<button onclick="openAutostartModal()">⚙ Автозагрузка приложения1</button>
+<button onclick="openAutostartModal()">⚙ Автозагрузка приложения</button>
+
 
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
     <h3>Выберите приложение для автозапуска:</h3>
-    <div id="autostartList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+    <div id="autostartList" class="card-container" style="max-height: 60vh; overflow-y: auto;"></div>
     <br>
     <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
   </div>
 </div>
+
 
 
 
