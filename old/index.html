@@ -513,23 +513,27 @@ document.addEventListener('keydown', function(e) {
   }
 
   if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    const next = index + cols;
-    if (next < buttons.length) {
-      allButtons[next].focus();
-    } else if (index < buttons.length) {
-      // если некуда вниз — фокус на первую доп.кнопку (Установить всё)
-      allButtons[buttons.length]?.focus();
-    }
+  e.preventDefault();
+  const next = index + cols;
+  if (next < allButtons.length) {
+    allButtons[next].focus();
+  } else {
+    // если вниз больше некуда — остаёмся на последней кнопке
+    allButtons[allButtons.length - 1].focus();
   }
+}
 
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const prev = index - cols;
-    if (prev >= 0) {
-      allButtons[prev].focus();
-    }
+if (e.key === 'ArrowUp') {
+  e.preventDefault();
+  const prev = index - cols;
+  if (prev >= 0) {
+    allButtons[prev].focus();
+  } else {
+    // если вверх с кнопки — вернуться к последней карточке
+    allButtons[buttons.length - 1]?.focus();
   }
+}
+
 
   if (e.key === 'ArrowRight') {
     e.preventDefault();
