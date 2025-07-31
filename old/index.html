@@ -268,13 +268,20 @@ button:focus {
   <button onclick="hideAutostartModal()">Закрыть</button>
 </div>
 
-<div id="autostartModal" class="modal" style="display: none; background: black; color: white; padding: 20px;">
-  <h3>Выбери приложение для автозапуска:</h3>
-  <div id="appList">Загрузка...</div>
-  <br>
-  <button onclick="disableAutostart()">❌ Отключить автозапуск</button>
-  <button onclick="closeAutostartModal()">Закрыть</button>
+<button onclick="openAutostartModal()">⚙ Автозагрузка приложения1</button>
+
+<div id="autostartModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Выберите приложение для автозапуска:</h3>
+    <div id="autostartList" class="scrollable-list"></div>
+    <br>
+    <button onclick="closeAutostartModal()">Закрыть</button>
+  </div>
 </div>
+
+
+
+
 
 <script>
 function openAutostartModal() {
@@ -731,8 +738,34 @@ function updateProgressWithLabel(current, total, percent, label) {
   }
 }
 </script>
+<script>
+function openAutostartModal() {
+  document.getElementById('autostartModal').style.display = 'block';
+  document.getElementById('autostartList').innerHTML = '⏳ Загрузка...';
+  AndroidInterface.getUserApps();
+}
 
+function closeAutostartModal() {
+  document.getElementById('autostartModal').style.display = 'none';
+}
 
+function renderAppSelection(json) {
+  const apps = JSON.parse(json);
+  const list = document.getElementById('autostartList');
+  list.innerHTML = '';
+  apps.forEach(app => {
+    const btn = document.createElement('button');
+    btn.innerHTML = `<img src="${app.icon}" height="40"> ${app.label}`;
+    btn.onclick = () => {
+      AndroidInterface.saveAutostartPackage(app.package);
+      closeAutostartModal();
+      showStatus(`✅ ${app.label} установлено как автозагрузка`, 'green', 3000);
+    };
+    list.appendChild(btn);
+  });
+}
+
+</script>
 <script>
 function hideProgress() {
   const container = document.getElementById('progress-container');
