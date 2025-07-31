@@ -256,35 +256,61 @@ button:focus {
   </button>
 </div>
 
-<div id="modal" class="modal" style="display:none;">
-   <div class="modal-content">
-    <h3>Список компонентов:</h3>
-    <div id="modalListContainer">
-      <div id="modalList"></div>
-    </div>
-    <br>
-    <button onclick="installAll()">Установить всё</button>
-    
-  </div>
-</div>
 
 <button onclick="openAutostartModal()">⚙ Автозагрузка приложения1</button>
 
 <div id="autostartModal" class="modal" style="display:none;">
-  <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
     <h3>Выберите приложение для автозапуска:</h3>
-    <div id="autostartCardContainer" class="card-container" style="max-height: 60vh; overflow-y: auto;"></div>
+    <div id="autostartList" class="scrollable-list"></div>
     <br>
     <button onclick="closeAutostartModal()">Закрыть</button>
   </div>
 </div>
 
-</div>
 
 
 
 
+<script>
+function openAutostartModal() {
+  document.getElementById('autostartModal').style.display = 'flex';
+  const container = document.getElementById('appList');
+  container.innerHTML = 'Загрузка...';
+
+  // запрос
+  if (window.AndroidInterface) {
+    window.AndroidInterface.getInstalledApps();
+  }
+}
+
+// ответ
+function onInstalledAppsReceived(json) {
+  const container = document.getElementById('appList');
+  container.innerHTML = '';
+  let apps;
+
+  try {
+    apps = JSON.parse(json);
+  } catch (e) {
+    container.innerHTML = '❌ Ошибка чтения списка';
+    return;
+  }
+
+  apps.forEach(app => {
+    const btn = document.createElement('button');
+    btn.textContent = app.name + ' (' + app.package + ')';
+    btn.onclick = () => {
+      window.AndroidInterface.setAutostartPackage(app.package);
+      alert("Установлено: " + app.name);
+      closeAutostartModal();
+    };
+    container.appendChild(btn);
+    container.appendChild(document.createElement('br'));
+  });
+}
+
+</script>
 
 
 <div id="modal" class="modal" style="display:none;">
@@ -587,7 +613,29 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 
+<script>
+function openAutostartModal() {
+  document.getElementById('autostartModal').style.display = 'flex';
+  const container = document.getElementById('appList');
+  container.innerHTML = 'Загрузка...';
 
+  if (window.AndroidInterface && window.AndroidInterface.getInstalledApps) {
+    window.AndroidInterface.getInstalledApps(); // вызов, а результат придёт позже
+  } else {
+    container.innerHTML = 'Интерфейс Android недоступен.';
+  }
+}
+
+function disableAutostart() {
+  window.AndroidInterface.clearAutostartPackage();
+  alert("Автозапуск отключён");
+  closeAutostartModal();
+}
+
+function closeAutostartModal() {
+  document.getElementById('autostartModal').style.display = 'none';
+}
+</script>
 <script>
 function showAutostartSelector() {
   const json = window.AndroidInterface.getInstalledApps();
@@ -763,57 +811,8 @@ function onInstalledAppsReceived(appsJson) {
     document.getElementById('main-content').style.display = 'block';
   }, 3000); // 3 секунды
 </script>
-<script>
-// 👇 Обработка клавиш внутри модалки автозагрузки
-document.addEventListener('keydown', function(e) {
-  const modal = document.getElementById('autostartModal');
-  if (modal.style.display !== 'flex') return;
 
-  const list = document.getElementById('autostartCardContainer');
-  const cards = Array.from(list.querySelectorAll('.card'));
-  const cols = 2;
-  const index = cards.indexOf(document.activeElement);
 
-  if (cards.length === 0) return;
-
-  if (index === -1) {
-    cards[0].focus();
-    return;
-  }
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    const next = index + cols;
-    if (next < cards.length) cards[next].focus();
-  }
-
-  if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    const prev = index - cols;
-    if (prev >= 0) cards[prev].focus();
-  }
-
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    if ((index % cols) < (cols - 1) && index + 1 < cards.length) cards[index + 1].focus();
-  }
-
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    if ((index % cols) > 0) cards[index - 1].focus();
-  }
-
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    closeAutostartModal();
-  }
-
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    document.activeElement.click();
-  }
-});
-</script>
 
 
 </body>
