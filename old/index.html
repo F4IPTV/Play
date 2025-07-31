@@ -639,7 +639,7 @@ function updateProgressWithLabel(current, total, percent, label) {
 <script>
 function openAutostartModal() {
   document.getElementById('autostartModal').style.display = 'flex';
-  document.getElementById('autostartList').innerHTML = '⏳ Загрузка...';
+document.getElementById('autostartCardContainer').innerHTML = '⏳ Загрузка...';
   AndroidInterface.getUserApps();
 }
 
