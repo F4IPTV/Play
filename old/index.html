@@ -274,7 +274,7 @@ button:focus {
 
 <script>
 function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'block';
+  document.getElementById('autostartModal').style.display = 'flex';
   const container = document.getElementById('appList');
   container.innerHTML = 'Загрузка...';
 
@@ -615,7 +615,7 @@ document.addEventListener('keydown', function(e) {
 
 <script>
 function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'block';
+  document.getElementById('autostartModal').style.display = 'flex';
   const container = document.getElementById('appList');
   container.innerHTML = 'Загрузка...';
 
@@ -729,7 +729,7 @@ function updateProgressWithLabel(current, total, percent, label) {
 </script>
 <script>
 function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'block';
+  document.getElementById('autostartModal').style.display = 'flex';
   document.getElementById('autostartList').innerHTML = '⏳ Загрузка...';
   AndroidInterface.getUserApps();
 }
