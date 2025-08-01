@@ -714,7 +714,7 @@ function renderAppSelection(json) {
 
 function disableAutostart() {
   if (window.AndroidInterface) {
-    window.AndroidInterface.saveAutostartPackage(""); // или null
+    window.AndroidInterface.DeleteAutostartPackage(""); // или null
     closeAutostartModal();
     showStatus("🚫 Автозапуск отключён", "orange", 3000);
   }
