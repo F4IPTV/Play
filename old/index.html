@@ -774,37 +774,50 @@ document.addEventListener('keydown', function (e) {
   const modal = document.getElementById('autostartModal');
   if (!modal || modal.style.display !== 'flex') return;
 
-  const list = document.getElementById('autostartList');
-  const cards = Array.from(list.querySelectorAll('.card'));
-  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
-  const all = [...cards, ...extraButtons];
-  if (!all.length) return;
+  const cards = Array.from(document.querySelectorAll('#autostartList .card'));
+  if (!cards.length) return;
 
-  const cols = 5; // ✅ Колонок больше, чем в обычной модалке
+  const cols = 5; // ✅ Твоя сетка на 5 колонок
   const active = document.activeElement;
-  const index = all.indexOf(active);
+  const index = cards.indexOf(active);
 
   if (index === -1) {
-    all[0].focus();
+    cards[0].focus();
     return;
   }
 
   switch (e.key) {
     case 'ArrowDown':
       e.preventDefault();
-      if (index + cols < all.length) all[index + cols].focus();
+      if (index + cols < cards.length) {
+        cards[index + cols].focus();
+      } else {
+        cards[cards.length - 1].focus(); // последняя
+      }
       break;
     case 'ArrowUp':
       e.preventDefault();
-      if (index - cols >= 0) all[index - cols].focus();
+      if (index - cols >= 0) {
+        cards[index - cols].focus();
+      } else {
+        cards[0].focus(); // первая
+      }
       break;
     case 'ArrowLeft':
       e.preventDefault();
-      if (index % cols !== 0) all[index - 1]?.focus();
+      if ((index % cols) > 0) {
+        cards[index - 1].focus();
+      }
       break;
     case 'ArrowRight':
       e.preventDefault();
-      if ((index + 1) % cols !== 0 && index + 1 < all.length) all[index + 1]?.focus();
+      if ((index % cols) < cols - 1 && index + 1 < cards.length) {
+        cards[index + 1].focus();
+      }
+      break;
+    case 'Enter':
+      e.preventDefault();
+      active.click(); // активируем выбранную карточку
       break;
     case 'Back':
     case 'Escape':
@@ -816,6 +829,7 @@ document.addEventListener('keydown', function (e) {
   }
 });
 </script>
+
 
 
 
