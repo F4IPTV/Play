@@ -324,7 +324,7 @@ button:focus {
 
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
-    <h3>Выберите приложение для автозапуска234:</h3>
+    <h3>Выберите приложение для автозапуска237:</h3>
 	<div id="autostartList" class="card-container2" style="justify-content: center;">
       <div id="modalList"></div>
     </div>
@@ -808,43 +808,63 @@ document.addEventListener('keydown', function(e) {
   const modal = document.getElementById('autostartModal');
   if (!modal || modal.style.display !== 'flex') return;
 
-  const buttons = Array.from(modal.querySelectorAll('.card, #autostartCloseBtn'));
-  if (!buttons.length) return;
+  const list = document.getElementById('autostartList');
+  const buttons = Array.from(list.querySelectorAll('.card'));
+  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
+  const allButtons = [...buttons, ...extraButtons];
+
+  if (allButtons.length === 0) return;
 
   const cols = 2;
-  const index = buttons.indexOf(document.activeElement);
+  const total = allButtons.length;
+
+  const active = document.activeElement;
+  const index = allButtons.indexOf(active);
 
   if (index === -1) {
-    buttons[0].focus();
+    allButtons[0].focus();
     return;
   }
 
-  // Управление стрелками
-  switch (e.key) {
-    case 'ArrowDown':
-      e.preventDefault();
-      if (index + cols < buttons.length) buttons[index + cols].focus();
-      break;
-    case 'ArrowUp':
-      e.preventDefault();
-      if (index - cols >= 0) buttons[index - cols].focus();
-      break;
-    case 'ArrowLeft':
-      e.preventDefault();
-      if (index % cols !== 0) buttons[index - 1]?.focus();
-      break;
-    case 'ArrowRight':
-      e.preventDefault();
-      if ((index + 1) % cols !== 0 && index + 1 < buttons.length) buttons[index + 1]?.focus();
-      break;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = index + cols;
+    if (next < allButtons.length) {
+      allButtons[next].focus();
+    } else {
+      allButtons[allButtons.length - 1].focus();
+    }
   }
 
-  // Обработка кнопки Назад
-  if (e.key === 'Escape' || e.key === 'Back' || e.keyCode === 4) {
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    const prev = index - cols;
+    if (prev >= 0) {
+      allButtons[prev].focus();
+    } else {
+      allButtons[buttons.length - 1]?.focus();
+    }
+  }
+
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    if ((index % cols) < (cols - 1) && (index + 1) < allButtons.length) {
+      allButtons[index + 1].focus();
+    }
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if ((index % cols) > 0) {
+      allButtons[index - 1].focus();
+    }
+  }
+
+  if (e.key === 'Back' || e.key === 'Escape' || e.keyCode === 4) {
     e.preventDefault();
     e.stopPropagation();
     event.returnValue = false;
-    closeAutostartModal(); // Закрываем модалку
+    closeAutostartModal();
   }
 });
 
