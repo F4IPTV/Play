@@ -324,7 +324,7 @@ button:focus {
 
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
-    <h3>Выберите приложение для автозапуска2378:</h3>
+    <h3>Выберите приложение для автозапуска2379:</h3>
 	<div id="autostartList" class="card-container2" style="justify-content: center;">
       <div id="modalList"></div>
     </div>
@@ -709,11 +709,29 @@ function updateProgressWithLabel(current, total, percent, label) {
 </script>
 <script>
 function openAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'flex';
+  const modal = document.getElementById('autostartModal');
   const list = document.getElementById('autostartList');
+
+  modal.style.display = 'flex';
   list.innerHTML = '<div style="grid-column: span 2;">⏳ Загрузка...</div>';
-  if (window.AndroidInterface) window.AndroidInterface.getUserApps();
+
+  // Запрос списка приложений из Android
+  if (window.AndroidInterface) {
+    window.AndroidInterface.getUserApps();
+  }
+
+  // Принудительный фокус на модалку или первый элемент — чтобы Back не сворачивал WebView
+  setTimeout(() => {
+    const first = list.querySelector('.card, button');
+    if (first) {
+      first.focus();
+    } else {
+      modal.setAttribute('tabindex', '-1');
+      modal.focus();
+    }
+  }, 400); // даём AndroidInterface время отрисовать кнопки
 }
+
 
 function closeAutostartModal() {
   document.getElementById('autostartModal').style.display = 'none';
