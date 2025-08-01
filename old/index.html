@@ -768,6 +768,7 @@ function onInstalledAppsReceived(appsJson) {
     document.getElementById('main-content').style.display = 'block';
   }, 3000); // 3 секунды
 </script>
+
 <script>
 document.addEventListener('keydown', function (e) {
   const modal = document.getElementById('autostartModal');
@@ -775,33 +776,26 @@ document.addEventListener('keydown', function (e) {
 
   const cards = Array.from(document.querySelectorAll('#autostartList .card'));
   const closeBtn = document.getElementById('autostartCloseBtn');
-  const cols = 5;
+  if (!cards.length) return;
 
+  const cols = 5;
   const active = document.activeElement;
   const index = cards.indexOf(active);
 
-  // 🔒 блокируем выход по Back даже если фокус вне карточек
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    e.stopPropagation();
-    e.returnValue = false;
-    closeAutostartModal();
-    return;
-  }
-
+  // если фокус на кнопке "Закрыть", позволим только вверх и Escape
   if (active === closeBtn) {
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      cards[cards.length - 1].focus();
+      const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
+      cards[cards.length - 1].focus(); // на последнюю карточку
+    } else if (e.key === 'Back' || e.key === 'Escape') {
+      e.preventDefault();
+      closeAutostartModal();
     }
     return;
   }
 
-  if (index === -1) {
-    cards[0].focus();
-    return;
-  }
-
+  const total = cards.length;
   const row = Math.floor(index / cols);
   const col = index % cols;
 
@@ -809,9 +803,10 @@ document.addEventListener('keydown', function (e) {
     case 'ArrowDown':
       e.preventDefault();
       const nextIndex = (row + 1) * cols + col;
-      if (nextIndex < cards.length) {
+      if (nextIndex < total) {
         cards[nextIndex].focus();
       } else {
+        // если это последний ряд — фокус на кнопку "Закрыть"
         closeBtn?.focus();
       }
       break;
@@ -831,19 +826,21 @@ document.addEventListener('keydown', function (e) {
 
     case 'ArrowRight':
       e.preventDefault();
-      if (index < cards.length - 1) cards[index + 1].focus();
+      if (index < total - 1) cards[index + 1].focus();
       break;
 
     case 'Enter':
       e.preventDefault();
       active.click();
       break;
-  }
-});
+
+    case 'Back':
+    case 'Escape':
+      e.preventDefault();
+      closeAutostartModal()
 
 
 
-</script>
 
 
 
