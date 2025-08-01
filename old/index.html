@@ -775,14 +775,23 @@ document.addEventListener('keydown', function (e) {
   if (!modal || modal.style.display !== 'flex') return;
 
   const cards = Array.from(document.querySelectorAll('#autostartList .card'));
+  const closeBtn = document.getElementById('autostartCloseBtn');
   if (!cards.length) return;
 
   const cols = 5;
   const active = document.activeElement;
   const index = cards.indexOf(active);
 
-  if (index === -1) {
-    cards[0].focus();
+  // если фокус на кнопке "Закрыть", позволим только вверх и Escape
+  if (active === closeBtn) {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
+      cards[cards.length - 1].focus(); // на последнюю карточку
+    } else if (e.key === 'Back' || e.key === 'Escape') {
+      e.preventDefault();
+      closeAutostartModal();
+    }
     return;
   }
 
@@ -793,28 +802,20 @@ document.addEventListener('keydown', function (e) {
   switch (e.key) {
     case 'ArrowDown':
       e.preventDefault();
-      const nextRowIndex = (row + 1) * cols + col;
-      if (nextRowIndex < total) {
-        cards[nextRowIndex].focus();
+      const nextIndex = (row + 1) * cols + col;
+      if (nextIndex < total) {
+        cards[nextIndex].focus();
       } else {
-        // ищем ближайший доступный элемент в нижнем ряду
-        const lastRowStart = Math.floor((total - 1) / cols) * cols;
-        const fallback = lastRowStart + col;
-        if (fallback < total) {
-          cards[fallback].focus();
-        } else {
-          cards[total - 1].focus();
-        }
+        // если это последний ряд — фокус на кнопку "Закрыть"
+        closeBtn?.focus();
       }
       break;
 
     case 'ArrowUp':
       e.preventDefault();
-      const prevRowIndex = (row - 1) * cols + col;
-      if (prevRowIndex >= 0) {
-        cards[prevRowIndex].focus();
-      } else {
-        cards[0].focus();
+      const prevIndex = (row - 1) * cols + col;
+      if (prevIndex >= 0) {
+        cards[prevIndex].focus();
       }
       break;
 
@@ -836,11 +837,8 @@ document.addEventListener('keydown', function (e) {
     case 'Back':
     case 'Escape':
       e.preventDefault();
-      closeAutostartModal();
-      break;
-  }
-});
-</script>
+      closeAutostartModal()
+
 
 
 
