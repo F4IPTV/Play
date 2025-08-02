@@ -1006,24 +1006,6 @@ document.addEventListener('keydown', function(e) {
   
 </script>
 
-<script>
-document.addEventListener('keydown', function (e) {
-  // Если любая модалка открыта — перехватываем Back
-  const anyModalOpen = Array.from(document.querySelectorAll('.modal'))
-    .some(m => m.style.display === 'flex');
-
-  if (!anyModalOpen) return;
-
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-
-    // Закрываем активную модалку, если она открыта
-    if (document.getElementById('miscModal').style.display === 'flex') closeMiscModal();
-    else if (document.getElementById('autostartModal').style.display === 'flex') closeAutostartModal();
-    else if (document.getElementById('modal').style.display === 'flex') closeModal();
-  }
-});
-</script>
 
 
 </body>
