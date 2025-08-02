@@ -896,45 +896,51 @@ document.addEventListener('keydown', function (e) {
   const current = document.activeElement;
   const index = buttons.indexOf(current);
 
+  // Обработка "назад"
   if (e.key === 'Backspace' || e.key === 'Escape') {
     e.preventDefault();
     closeMiscModal();
     return;
   }
 
+  // Если нет фокуса — ставим на первую кнопку
   if (index === -1) {
     buttons[0].focus();
     return;
   }
 
   const currentRect = current.getBoundingClientRect();
-
   let next;
+
   switch (e.key) {
-    case 'ArrowDown':
+    case 'ArrowDown': {
       next = buttons.find(btn => {
         const r = btn.getBoundingClientRect();
         return r.top > currentRect.top && Math.abs(r.left - currentRect.left) < r.width;
       });
       break;
-    case 'ArrowUp':
+    }
+    case 'ArrowUp': {
       next = [...buttons].reverse().find(btn => {
         const r = btn.getBoundingClientRect();
         return r.top < currentRect.top && Math.abs(r.left - currentRect.left) < r.width;
       });
       break;
-    case 'ArrowLeft':
+    }
+    case 'ArrowLeft': {
       next = [...buttons].reverse().find(btn => {
         const r = btn.getBoundingClientRect();
         return r.top === currentRect.top && r.left < currentRect.left;
       });
       break;
-    case 'ArrowRight':
+    }
+    case 'ArrowRight': {
       next = buttons.find(btn => {
         const r = btn.getBoundingClientRect();
         return r.top === currentRect.top && r.left > currentRect.left;
       });
       break;
+    }
   }
 
   if (next) {
@@ -942,6 +948,7 @@ document.addEventListener('keydown', function (e) {
     next.focus();
   }
 });
+
 </script>
 
 
