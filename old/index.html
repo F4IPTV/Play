@@ -288,30 +288,7 @@ body.modal-open {
 
 
 
-<div id="miscModal" class="modal" style="display: none;" tabindex="-1">
-  <div class="modal-content">
-    <h3>Разное</h3>
-    <div class="system-buttons">
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
-        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(11).svg" alt="" style="height: 24px;"><br>Меню приложений
-      </button>
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
-        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(12).svg" alt="" style="height: 24px;"><br>AnyDesk
-      </button>
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
-        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(13).svg" alt="" style="height: 20px;"><br>Google Play
-      </button>
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
-        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(20).png" alt="" style="height: 20px;"><br>Удаление бэкапов
-      </button>
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
-        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height: 26px;"><br>File Manager+
-      </button>
-    </div>
-    <br>
-    <button onclick="closeMiscModal()" class="sys-btn">Закрыть</button>
-  </div>
-</div>
+
 
 
 
@@ -883,6 +860,31 @@ document.addEventListener('keydown', function (e) {
       closeAutostartModal()
 
 </script>
+
+<div id="miscModal" class="modal" style="display: none;" tabindex="-1">
+  <div class="modal-content">
+    <h3>Разное</h3>
+    <div class="system-buttons">
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
+        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(11).svg" alt="" style="height: 24px;"><br>Меню приложений
+      </button>
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
+        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(12).svg" alt="" style="height: 24px;"><br>AnyDesk
+      </button>
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
+        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(13).svg" alt="" style="height: 20px;"><br>Google Play
+      </button>
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
+        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(20).png" alt="" style="height: 20px;"><br>Удаление бэкапов
+      </button>
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
+        <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height: 26px;"><br>File Manager+
+      </button>
+    </div>
+    <br>
+    <button onclick="closeMiscModal()" class="sys-btn">Закрыть</button>
+  </div>
+</div>
 
 <script>
 document.addEventListener('keydown', function (e) {
