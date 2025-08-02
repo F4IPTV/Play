@@ -154,6 +154,9 @@ button:focus {
   }
 }
 
+body.modal-open {
+  overflow: hidden;
+}
 
 
 
@@ -942,11 +945,22 @@ document.addEventListener('keydown', function (e) {
 
 <script>
   function openMiscModal() {
-    document.getElementById("miscModal").style.display = "flex";
+    const modal = document.getElementById("miscModal");
+  modal.style.display = "flex";
+  document.body.classList.add("modal-open");
+
+  // Автофокус первой кнопки
+  const firstBtn = modal.querySelector('.sys-btn');
+  if (firstBtn) {
+    setTimeout(() => firstBtn.focus(), 100);
   }
+}
 
   function closeMiscModal() {
-    document.getElementById("miscModal").style.display = "none";
+   const modal = document.getElementById("miscModal");
+  modal.style.display = "none";
+  document.body.classList.remove("modal-open");
+}
   }
 </script>
 
