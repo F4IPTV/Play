@@ -966,6 +966,97 @@ document.addEventListener('keydown', function (e) {
 
   function closeMiscModal() {
    const modal = document.getElementById("miscModal").style.display = "none";
+   
+   document.addEventListener('keydown', function(e) {
+	if (ignoreNextEnter) {
+	ignoreNextEnter = false;
+	return;
+	}
+
+  const modal = document.getElementById('miscModal');
+  if (modal.style.display !== 'flex') return;
+
+  const list = document.getElementById('modalList');
+  const buttons = Array.from(list.querySelectorAll('button'));
+  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
+  const allButtons = [...buttons, ...extraButtons];
+
+  if (allButtons.length === 0) return;
+
+  const cols = 2;
+  const total = allButtons.length;
+
+  const active = document.activeElement;
+  const index = allButtons.indexOf(active);
+
+  if (index === -1) {
+    allButtons[0].focus();
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+  e.preventDefault();
+  const next = index + cols;
+  if (next < allButtons.length) {
+    allButtons[next].focus();
+  } else {
+    // если вниз больше некуда — остаёмся на последней кнопке
+    allButtons[allButtons.length - 1].focus();
+  }
+}
+
+if (e.key === 'ArrowUp') {
+  e.preventDefault();
+  const prev = index - cols;
+  if (prev >= 0) {
+    allButtons[prev].focus();
+  } else {
+    // если вверх с кнопки — вернуться к последней карточке
+    allButtons[buttons.length - 1]?.focus();
+  }
+}
+
+
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    if ((index % cols) < (cols - 1) && (index + 1) < allButtons.length) {
+      allButtons[index + 1].focus();
+    }
+  }
+
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if ((index % cols) > 0) {
+      allButtons[index - 1].focus();
+    }
+  }
+
+  if (e.key === 'Back' || e.key === 'Escape') {
+    e.preventDefault();
+    closeModal();
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+  const active = document.activeElement;
+  const modal = document.getElementById('modal');
+  if (modal.style.display === 'flex') return;
+
+  // Если фокус на системных кнопках — ничего не делать
+  if (active && (active.textContent.includes("Неизвестные источники") || active.textContent.includes("Энергосбережение"))) {
+    return;
+  }
+
+  const selected = document.querySelector('.card.selected');
+  if (selected) {
+    startInstall();
+  }
+}
+
+});
+   
+   
+   
   
 }
 
