@@ -843,7 +843,7 @@ document.addEventListener('keydown', function (e) {
   const col = index % cols;
 
   switch (e.key) {
-    case 'ArrowDown':
+    case 'ArrowDown': {
       e.preventDefault();
       const nextIndex = (row + 1) * cols + col;
       if (nextIndex < total) {
@@ -852,35 +852,36 @@ document.addEventListener('keydown', function (e) {
         // если это последний ряд — фокус на кнопку "Закрыть"
         closeBtn?.focus();
       }
-      break;
+      break;}
 
-    case 'ArrowUp':
+    case 'ArrowUp': {
       e.preventDefault();
       const prevIndex = (row - 1) * cols + col;
       if (prevIndex >= 0) {
         cards[prevIndex].focus();
       }
-      break;
+      break;}
 
-    case 'ArrowLeft':
+    case 'ArrowLeft': {
       e.preventDefault();
       if (index > 0) cards[index - 1].focus();
-      break;
+      break;}
 
-    case 'ArrowRight':
+    case 'ArrowRight': {
       e.preventDefault();
       if (index < total - 1) cards[index + 1].focus();
-      break;
+      break;}
 
-    case 'Enter':
+    case 'Enter': {
       e.preventDefault();
       active.click();
-      break;
+      break;}
 
     case 'Backspace':
-    case 'Escape':
+    case 'Escape': {
       e.preventDefault();
       closeAutostartModal()
+	break;}
 
 </script>
 
