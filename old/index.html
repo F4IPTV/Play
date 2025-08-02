@@ -898,6 +898,7 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Backspace' || e.key === 'Escape') {
     e.preventDefault();
     closeMiscModal();
+    return;
   }
 
   if (index === -1) {
@@ -964,10 +965,6 @@ document.addEventListener('keydown', function (e) {
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
   
-  const firstBtn = modal.querySelector('.sys-btn');
-  if (firstBtn) {
-    setTimeout(() => firstBtn.focus(), 100);
-  }
 }
   
 </script>
