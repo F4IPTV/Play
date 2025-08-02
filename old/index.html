@@ -899,11 +899,11 @@ document.addEventListener('keydown', function (e) {
   const index = buttons.indexOf(current);
 
   // Обработка "назад"
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    closeMiscModal();
-    return;
-  }
+  if (e.key === 'Back' || e.key === 'Backspace' || e.key === 'Escape') {
+  e.preventDefault();
+  closeMiscModal();
+}
+
 
   // Если нет фокуса — ставим на первую кнопку
   if (index === -1) {
