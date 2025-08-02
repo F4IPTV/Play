@@ -87,8 +87,13 @@
       "tags": ["5", "6", "7"]
     },
     {
-      "file": "AceStream_Lite.apk",
+      "file": "AceStream_Lite",
       "url": "https://www.dropbox.com/scl/fi/7s2gbp4if4inl7jnj2zym/6_AceStreamEngine.apk?rlkey=dx1g4so5h1pznczamp4dr1lyg&dl=1",
+      "tags": ["6", "7"]
+  },
+    {
+      "file": "AceStart",
+      "url": "https://www.dropbox.com/scl/fi/nl6o4vsp6mqeb6f8f0rwd/7_acestart.apk?rlkey=12whuzxdwqiadie05jnhh86ax&dl=1",
       "tags": ["6", "7"]
   },
     {
