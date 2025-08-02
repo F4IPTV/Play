@@ -964,6 +964,11 @@ document.addEventListener('keydown', function (e) {
    const modal = document.getElementById("miscModal");
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
+  
+  const firstBtn = modal.querySelector('.sys-btn');
+  if (firstBtn) {
+    setTimeout(() => firstBtn.focus(), 100);
+  }
 }
   
 </script>
