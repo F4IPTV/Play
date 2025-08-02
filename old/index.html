@@ -884,7 +884,64 @@ document.addEventListener('keydown', function (e) {
 
 </script>
 
+<script>
+document.addEventListener('keydown', function (e) {
+  const modal = document.getElementById('miscModal');
+  if (!modal || modal.style.display !== 'flex') return;
 
+  const buttons = Array.from(modal.querySelectorAll('.sys-btn'));
+  if (!buttons.length) return;
+
+  const current = document.activeElement;
+  const index = buttons.indexOf(current);
+
+  if (e.key === 'Backspace' || e.key === 'Escape') {
+    e.preventDefault();
+    closeMiscModal();
+    return;
+  }
+
+  if (index === -1) {
+    buttons[0].focus();
+    return;
+  }
+
+  const currentRect = current.getBoundingClientRect();
+
+  let next;
+  switch (e.key) {
+    case 'ArrowDown':
+      next = buttons.find(btn => {
+        const r = btn.getBoundingClientRect();
+        return r.top > currentRect.top && Math.abs(r.left - currentRect.left) < r.width;
+      });
+      break;
+    case 'ArrowUp':
+      next = [...buttons].reverse().find(btn => {
+        const r = btn.getBoundingClientRect();
+        return r.top < currentRect.top && Math.abs(r.left - currentRect.left) < r.width;
+      });
+      break;
+    case 'ArrowLeft':
+      next = [...buttons].reverse().find(btn => {
+        const r = btn.getBoundingClientRect();
+        return r.top === currentRect.top && r.left < currentRect.left;
+      });
+      break;
+    case 'ArrowRight':
+      next = buttons.find(btn => {
+        const r = btn.getBoundingClientRect();
+        return r.top === currentRect.top && r.left > currentRect.left;
+      });
+      break;
+  }
+
+  if (next) {
+    e.preventDefault();
+    next.focus();
+  }
+});
+</script>
 
 
 <script>
@@ -908,104 +965,32 @@ document.addEventListener('keydown', function (e) {
 
 
   function closeMiscModal() {
-   const modal = document.getElementById("miscModal").style.display = "none";
-   
-   document.addEventListener('keydown', function(e) {
-	if (ignoreNextEnter) {
-	ignoreNextEnter = false;
-	return;
-	}
-
-  const modal = document.getElementById('miscModal');
-  if (modal.style.display !== 'flex') return;
-
-  const list = document.getElementById('modalList');
-  const buttons = Array.from(list.querySelectorAll('button'));
-  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
-  const allButtons = [...buttons, ...extraButtons];
-
-  if (allButtons.length === 0) return;
-
-  const cols = 2;
-  const total = allButtons.length;
-
-  const active = document.activeElement;
-  const index = allButtons.indexOf(active);
-
-  if (index === -1) {
-    allButtons[0].focus();
-    return;
-  }
-
-  if (e.key === 'ArrowDown') {
-  e.preventDefault();
-  const next = index + cols;
-  if (next < allButtons.length) {
-    allButtons[next].focus();
-  } else {
-    // если вниз больше некуда — остаёмся на последней кнопке
-    allButtons[allButtons.length - 1].focus();
-  }
-}
-
-if (e.key === 'ArrowUp') {
-  e.preventDefault();
-  const prev = index - cols;
-  if (prev >= 0) {
-    allButtons[prev].focus();
-  } else {
-    // если вверх с кнопки — вернуться к последней карточке
-    allButtons[buttons.length - 1]?.focus();
-  }
-}
-
-
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    if ((index % cols) < (cols - 1) && (index + 1) < allButtons.length) {
-      allButtons[index + 1].focus();
-    }
-  }
-
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    if ((index % cols) > 0) {
-      allButtons[index - 1].focus();
-    }
-  }
-
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    closeModal();
-  }
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-  const active = document.activeElement;
-  const modal = document.getElementById('modal');
-  if (modal.style.display === 'flex') return;
-
-  // Если фокус на системных кнопках — ничего не делать
-  if (active && (active.textContent.includes("Неизвестные источники") || active.textContent.includes("Энергосбережение"))) {
-    return;
-  }
-
-  const selected = document.querySelector('.card.selected');
-  if (selected) {
-    startInstall();
-  }
-}
-
-});
-   
-   
-   
+   const modal = document.getElementById("miscModal");
+  modal.style.display = "none";
+  document.body.classList.remove("modal-open");
   
 }
-
   
 </script>
 
+<script>
+document.addEventListener('keydown', function (e) {
+  // Если любая модалка открыта — перехватываем Back
+  const anyModalOpen = Array.from(document.querySelectorAll('.modal'))
+    .some(m => m.style.display === 'flex');
+
+  if (!anyModalOpen) return;
+
+  if (e.key === 'Back' || e.key === 'Escape') {
+    e.preventDefault();
+
+    // Закрываем активную модалку, если она открыта
+    if (document.getElementById('miscModal').style.display === 'flex') closeMiscModal();
+    else if (document.getElementById('autostartModal').style.display === 'flex') closeAutostartModal();
+    else if (document.getElementById('modal').style.display === 'flex') closeModal();
+  }
+});
+</script>
 
 
 </body>
