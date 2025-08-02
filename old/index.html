@@ -889,7 +889,7 @@ document.addEventListener('keydown', function (e) {
 <script>
 document.addEventListener('keydown', function (e) {
   const modal = document.getElementById('miscModal');
-  if (!modal || modal.style.display !== 'flex') return;
+  if (modal.style.display !== 'flex') return;
 
   const buttons = Array.from(modal.querySelectorAll('.sys-btn'));
   if (!buttons.length) return;
