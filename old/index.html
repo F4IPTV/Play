@@ -314,6 +314,7 @@ body.modal-open {
 </div>
 
 
+<div id="miscModal" class="modal" style="display: none;" tabindex="-1">
 
 
 
@@ -945,16 +946,19 @@ document.addEventListener('keydown', function (e) {
 
 <script>
   function openMiscModal() {
-    const modal = document.getElementById("miscModal");
+  const modal = document.getElementById("miscModal");
   modal.style.display = "flex";
   document.body.classList.add("modal-open");
 
-  // Автофокус первой кнопки
+  // Принудительный фокус на саму модалку — чтобы Back не проваливался
+  modal.focus();
+
   const firstBtn = modal.querySelector('.sys-btn');
   if (firstBtn) {
     setTimeout(() => firstBtn.focus(), 100);
   }
 }
+
 
   function closeMiscModal() {
    const modal = document.getElementById("miscModal");
