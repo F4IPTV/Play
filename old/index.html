@@ -691,15 +691,18 @@ document.addEventListener('keydown', function (e) {
 
 
 <script>
-  function handleBackFromNative() {
-    const modal = document.querySelector('.modal[style*="display: flex"]');
-    if (modal) {
-      if (modal.id === 'modal') closeModal();
-      else if (modal.id === 'miscModal') closeMiscModal();
-      else if (modal.id === 'autostartModal') closeAutostartModal();
-      else if (modal.id === 'testModal') closeTestModal();
-    }
+  function handleBackButton() {
+  if (document.getElementById('miscModal')?.style.display === 'flex') {
+    closeMiscModal();
+  } else if (document.getElementById('autostartModal')?.style.display === 'flex') {
+    closeAutostartModal();
+  } else if (document.getElementById('modal')?.style.display === 'flex') {
+    closeModal();
+  } else {
+    window.AndroidInterface.requestAppExit(); // ← вызывает двойной выход
   }
+}
+
 </script>
 
 
