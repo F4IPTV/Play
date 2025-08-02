@@ -966,10 +966,10 @@ document.addEventListener('keydown', function (e) {
 
 
   function closeMiscModal() {
-   const modal = document.getElementById("miscModal");
+  const modal = document.getElementById("miscModal");
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
-  
+  document.activeElement?.blur(); // убираем фокус после закрытия
 }
   
 </script>
