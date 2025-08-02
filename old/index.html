@@ -690,6 +690,17 @@ document.addEventListener('keydown', function (e) {
 
 
 
+<script>
+  function handleBackFromNative() {
+    const modal = document.querySelector('.modal[style*="display: flex"]');
+    if (modal) {
+      if (modal.id === 'modal') closeModal();
+      else if (modal.id === 'miscModal') closeMiscModal();
+      else if (modal.id === 'autostartModal') closeAutostartModal();
+      else if (modal.id === 'testModal') closeTestModal();
+    }
+  }
+</script>
 
 
 <script>
