@@ -965,10 +965,11 @@ document.addEventListener('keydown', function (e) {
 
 
   function closeMiscModal() {
-   const modal = document.getElementById("miscModal").style.display = "none";
+   const modal = document.getElementById("miscModal");
+  modal.style.display = "none";
+  document.body.classList.remove("modal-open");
   
 }
-
   
 </script>
 
