@@ -245,13 +245,14 @@ body.modal-open {
   <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (13).svg" alt="" style="height: 20px;"><br>Google Play
   </button>
-  <button onclick="openMiscModal()" class="sys-btn">
-    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height: 26px;"><br>Полезное
+ <button onclick="openAutostartModal()" class="sys-btn">⚙<br>Автозагрузка приложения
   </button>
   <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height: 26px;"><br>File Manager+
   </button>
-  
+   <button onclick="openMiscModal()" class="sys-btn">
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height: 26px;"><br>Полезное
+  </button>
   
 </div>
 
@@ -292,9 +293,7 @@ body.modal-open {
   <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (20).png" alt="" style="height: 26px;"><br>Очистить кеш
   </button>
-  <button onclick="openAutostartModal()" class="sys-btn">⚙<br>Автозагрузка приложения
-  </button>
-<button onclick="window.AndroidInterface.testAutostart()">🚀<br>Проверка автозапуска</button>
+<button onclick="window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
     </div>
     <br>
     <button onclick="closeMiscModal()" class="sys-btn">Закрыть</button>
