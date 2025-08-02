@@ -285,18 +285,6 @@ body.modal-open {
   </div>
 </div>
 
-<div id="testModal" class="modal" style="display: none;" tabindex="-1">
-  <div class="modal-content">
-    <h3>Тестовая модалка</h3>
-    <div class="card-container">
-      <button class="sys-btn" tabindex="0">Кнопка 1</button>
-      <button class="sys-btn" tabindex="0">Кнопка 2</button>
-      <button class="sys-btn" tabindex="0" onclick="closeTestModal()">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<button onclick="openTestModal()">Открыть тестовую модалку</button>
 
 
 
@@ -629,65 +617,10 @@ document.addEventListener('keydown', function(e) {
 
 });
 
-function openTestModal() {
-  const modal = document.getElementById("testModal");
-  modal.style.display = "flex";
-  document.body.classList.add("modal-open");
-
-  document.activeElement?.blur();
-
-  const firstBtn = modal.querySelector('.sys-btn');
-  if (firstBtn) {
-    firstBtn.focus();
-    setTimeout(() => firstBtn.focus(), 100);
-  }
-}
-
-function closeTestModal() {
-  const modal = document.getElementById("testModal");
-  modal.style.display = "none";
-  document.body.classList.remove("modal-open");
-}
-document.addEventListener('keydown', function (e) {
-  const modal = document.getElementById("testModal");
-  if (!modal || modal.style.display !== 'flex') return;
-
-  if (['Backspace', 'Back', 'Escape'].includes(e.key)) {
-    e.preventDefault();
-    closeTestModal();
-    return;
-  }
-
-  const buttons = Array.from(modal.querySelectorAll('.sys-btn'));
-  const index = buttons.indexOf(document.activeElement);
-  if (index === -1) {
-    buttons[0].focus();
-    return;
-  }
-
-  let next;
-  switch (e.key) {
-    case 'ArrowDown': {
-      next = buttons[index + 1];
-      break;
-    }
-    case 'ArrowUp': {
-      next = buttons[index - 1];
-      break;
-    }
-  }
-
-  if (next) {
-    e.preventDefault();
-    next.focus();
-  }
-});
 
 
 
 </script>
-
-
 
 
 <script>
@@ -704,6 +637,7 @@ document.addEventListener('keydown', function (e) {
 }
 
 </script>
+
 
 
 <script>
