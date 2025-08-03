@@ -731,13 +731,6 @@ function openAutostartModal() {
 function closeAutostartModal() {
   document.getElementById('autostartModal').style.display = 'none';
 }
-function setCurrentAutostartApp(packageName, label, icon) {
-  document.getElementById("autostartCurrent").innerHTML = `
-    <img src="${icon}" alt="" style="height: 20px; vertical-align: middle; margin-right: 6px;">
-    <span style="font-weight: bold; color: #00cfff; vertical-align: middle;">Выбрано: ${label}</span>
-  `;
-}
-
 
 function renderAppSelection(json) {
   const apps = JSON.parse(json);
@@ -755,10 +748,12 @@ function renderAppSelection(json) {
       showStatus(`✅ ${app.label} установлено как автозапуск`, 'green', 3000);
     };
     card.onfocus = () => {
-  document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-};
-
+      document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+	  document.getElementById("autostartCurrent").innerHTML = `
+  <img src="${app.icon}" alt="" style="height: 20px; vertical-align: middle; margin-right: 6px;">
+  <span style="vertical-align: middle;">Выбрано: ${app.label}</span>
+`;
     };
     list.appendChild(card);
   });
