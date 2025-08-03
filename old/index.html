@@ -730,7 +730,7 @@ function openAutostartModal() {
 function setCurrentAutostartApp(appLabel, appIcon) {
   const current = document.getElementById("autostartCurrent");
   current.innerHTML = `
-  <span style="font-weight: bold; color: lightgreen;">Выбрано:</span>
+  <span style="font-weight: bold; color: lightgreen;">Активное:</span>
   <img src="${appIcon}" alt="" style="height: 24px; vertical-align: middle; margin: 0 6px;">
   <span style="font-weight: bold;">${appLabel}</span>
 `;
