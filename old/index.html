@@ -699,6 +699,10 @@ function openAutostartModal() {
   const modal = document.getElementById('autostartModal');
   const list = document.getElementById('autostartList');
 
+  // Очистка текущего блока перед обновлением
+  const current = document.getElementById('autostartCurrent');
+  current.innerHTML = '<span style="color: gray;">⏳ Загрузка выбранного приложения...</span>';
+
   // Запрос текущего выбранного приложения
   if (window.AndroidInterface) {
     window.AndroidInterface.getCurrentAutostartApp();
@@ -711,6 +715,7 @@ function openAutostartModal() {
     window.AndroidInterface.getUserApps();
   }
 
+  // Фокусировка первого элемента
   setTimeout(() => {
     const first = list.querySelector('.card, button');
     if (first) {
@@ -720,6 +725,16 @@ function openAutostartModal() {
       modal.focus();
     }
   }, 400);
+}
+
+function setCurrentAutostartApp(appLabel, appIcon) {
+  const current = document.getElementById("autostartCurrent");
+  current.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="${appIcon}" alt="" style="height: 24px;">
+      <span style="font-weight: bold; color: lightgreen;">Выбрано: ${appLabel}</span>
+    </div>
+  `;
 }
 
 
