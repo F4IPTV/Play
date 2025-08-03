@@ -754,7 +754,7 @@ function renderAppSelection(json) {
     card.innerHTML = `<img src="${app.icon}" alt="" style="height:24px;"><br>${app.label}`;
     card.onclick = () => {
       window.AndroidInterface.saveAutostartPackage(app.package);
-      closeAutostartModal();
+      
       showStatus(`✅ ${app.label} установлено как автозапуск`, 'green', 3000);
     };
     card.onfocus = () => {
@@ -815,7 +815,7 @@ function onInstalledAppsReceived(appsJson) {
     btn.onclick = () => {
       window.AndroidInterface.setAutostartPackage(app.package);
       alert("Установлено: " + app.name);
-    
+      closeAutostartModal();
     };
     container.appendChild(btn);
     container.appendChild(document.createElement('br'));
