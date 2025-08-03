@@ -815,7 +815,7 @@ function onInstalledAppsReceived(appsJson) {
     btn.onclick = () => {
       window.AndroidInterface.setAutostartPackage(app.package);
       alert("Установлено: " + app.name);
-      closeAutostartModal();
+    
     };
     container.appendChild(btn);
     container.appendChild(document.createElement('br'));
