@@ -261,11 +261,6 @@ body.modal-open {
 
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
- 
- <div id="autostartCurrent" style="margin-bottom: 10px; font-weight: bold;">
-  Выбрано: Нет
-</div>
-
     <h3>Выберите приложение для автозапуска:</h3>
 	<button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
 	<button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
@@ -699,18 +694,15 @@ function openAutostartModal() {
   const modal = document.getElementById('autostartModal');
   const list = document.getElementById('autostartList');
 
-  // Запрос текущего выбранного приложения
-  if (window.AndroidInterface) {
-    window.AndroidInterface.getCurrentAutostartApp();
-  }
-
   modal.style.display = 'flex';
   list.innerHTML = '<div style="grid-column: span 2;">⏳ Загрузка...</div>';
 
+  // Запрос списка приложений из Android
   if (window.AndroidInterface) {
     window.AndroidInterface.getUserApps();
   }
 
+  // Принудительный фокус на модалку или первый элемент — чтобы Back не сворачивал WebView
   setTimeout(() => {
     const first = list.querySelector('.card, button');
     if (first) {
@@ -719,7 +711,7 @@ function openAutostartModal() {
       modal.setAttribute('tabindex', '-1');
       modal.focus();
     }
-  }, 400);
+  }, 400); // даём AndroidInterface время отрисовать кнопки
 }
 
 
@@ -745,7 +737,6 @@ function renderAppSelection(json) {
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + appLabel;
     };
     list.appendChild(card);
   });
