@@ -750,7 +750,10 @@ function renderAppSelection(json) {
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + appLabel;
+	  document.getElementById("autostartCurrent").innerHTML = `
+  <img src="${app.icon}" alt="" style="height: 20px; vertical-align: middle; margin-right: 6px;">
+  <span style="vertical-align: middle;">Выбрано: ${app.label}</span>
+`;
     };
     list.appendChild(card);
   });
