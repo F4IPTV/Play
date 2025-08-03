@@ -732,11 +732,19 @@ function closeAutostartModal() {
   document.getElementById('autostartModal').style.display = 'none';
 }
 function setCurrentAutostartApp(packageName, label, icon) {
-  document.getElementById("autostartCurrent").innerHTML = `
-    <img src="${icon}" alt="" style="height: 20px; vertical-align: middle; margin-right: 6px;">
-    <span style="font-weight: bold; color: #00cfff; vertical-align: middle;">Выбрано: ${label}</span>
-  `;
+  const container = document.getElementById("autostartCurrent");
+  if (icon) {
+    container.innerHTML = `
+      <img src="${icon}" alt="" style="height: 20px; vertical-align: middle; margin-right: 6px;">
+      <span style="font-weight: bold; color: #00cfff; vertical-align: middle;">Выбрано: ${label}</span>
+    `;
+  } else {
+    container.innerHTML = `
+      <span style="font-weight: bold; color: #888;">Выбрано: ${label}</span>
+    `;
+  }
 }
+
 
 function renderAppSelection(json) {
   const apps = JSON.parse(json);
