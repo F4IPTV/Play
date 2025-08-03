@@ -754,7 +754,7 @@ function renderAppSelection(json) {
     card.innerHTML = `<img src="${app.icon}" alt="" style="height:24px;"><br>${app.label}`;
     card.onclick = () => {
       window.AndroidInterface.saveAutostartPackage(app.package);
-      
+      setCurrentAutostartApp(app.label, app.icon);
       showStatus(`✅ ${app.label} установлено как автозапуск`, 'green', 3000);
     };
     card.onfocus = () => {
