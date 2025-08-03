@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Установщик</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
 
     body { font-family: sans-serif; text-align: center; padding: 40px;  background-color: black;
@@ -262,11 +264,14 @@ body.modal-open {
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
  
- <div id="autostartCurrent" style="margin-bottom: 10px; font-weight: bold; color: lightgreen;">
+ <div id="autostartCurrent" style="margin-bottom: 10px; font-weight: bold; color: #00cfff; font-family: 'Roboto', sans-serif;">
       Выбрано: Нет
     </div>
 
-    <h3>Выберите приложение для автозапуска:</h3>
+    <h3 style="font-family: 'Roboto', sans-serif; font-size: 22px; font-weight: 500; color: #ffffff; margin-bottom: 12px;">
+  Выберите приложение для автозапуска:
+</h3>
+
 	<button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
 	<button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
 
@@ -468,7 +473,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = app.file;
     btn.onclick = () => {
-      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "orange", 4000);
+      showStatus("<img src='https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(52).png' style='height: 20px; vertical-align: middle;'> Загрузка APK... <span class='spin'><img src='https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(52).png' style='height: 20px; vertical-align: middle;'></span>", "#00cfff", 4000);
       if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url, app.file || "Приложение");
     };
     list.appendChild(btn);
