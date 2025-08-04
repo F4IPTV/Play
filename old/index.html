@@ -778,7 +778,9 @@ function disableAutostart() {
     window.AndroidInterface.DeleteAutostartPackage(""); // или null
    
     showStatus("🚫 Автозапуск отключён", "orange", 3000);
-  }
+  };
+  current.innerHTML = '<span style="color: gray;">Не выбрано</span>';
+  
 }
 
 
