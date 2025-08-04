@@ -776,11 +776,13 @@ function renderAppSelection(json) {
 function disableAutostart() {
   if (window.AndroidInterface) {
     window.AndroidInterface.DeleteAutostartPackage(""); // или null
-   
+    // Обновляем статус на экране
+    const current = document.getElementById('autostartCurrent');
+    if (current) {
+      current.innerHTML = '<span style="color: gray;">Не выбрано</span>';
+    }
     showStatus("🚫 Автозапуск отключён", "orange", 3000);
-  };
-  current.innerHTML = '<span style="color: gray;">Не выбрано</span>';
-  
+  }
 }
 
 
