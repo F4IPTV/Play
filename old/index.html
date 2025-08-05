@@ -303,13 +303,6 @@ body.modal-open {
   
 <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска
 </button>
-
-<button onclick="openDeleteModal()" class="sys-btn">
-  <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height: 24px;"><br>
-  Удаление приложений
-</button>
-
-
   
     </div>
     <br>
@@ -332,19 +325,6 @@ body.modal-open {
     <br>
     <button onclick="installAll()">Установить всё</button>
     
-  </div>
-</div>
-
-<div id="deleteModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <h3>Удаление приложений</h3>
-    <div id="deleteSummary" style="margin-bottom: 10px; font-weight: bold; color: lightgreen;">
-      Выбрано: 0
-    </div>
-    <button onclick="toggleSelectAll()" class="sys-btn" id="selectAllBtn">✅ Выделить всё</button>
-    <div id="deleteList" class="card-container" style="max-height: 50vh; overflow-y: auto;"></div>
-    <button onclick="confirmDeleteSelectedApps()" class="sys-btn" id="deleteBtn" disabled>🗑️ Удалить выбранные</button>
-    <button onclick="closeDeleteModal()" class="sys-btn">❌ Закрыть</button>
   </div>
 </div>
 
@@ -1038,81 +1018,7 @@ document.addEventListener('keydown', function (e) {
 }
   
 </script>
-<script>
-let deleteQueue = [];
 
-function openDeleteModal() {
-  const modal = document.getElementById('deleteModal');
-  const list = document.getElementById('deleteList');
-  const summary = document.getElementById('deleteSummary');
-
-  list.innerHTML = '<div style="grid-column: span 2;">⏳ Загрузка...</div>';
-  summary.textContent = 'Выбрано: 0';
-  document.getElementById('deleteBtn').disabled = true;
-
-  if (window.AndroidInterface) {
-    window.AndroidInterface.getUserAppsForDelete();
-  }
-  modal.style.display = 'flex';
-}
-
-function closeDeleteModal() {
-  document.getElementById('deleteModal').style.display = 'none';
-}
-
-function renderDeleteList(json) {
-  const apps = JSON.parse(json);
-  const list = document.getElementById('deleteList');
-  list.innerHTML = '';
-
-  apps.forEach(app => {
-    const label = document.createElement('label');
-    label.className = 'card';
-    label.style.flexDirection = 'row';
-    label.style.justifyContent = 'flex-start';
-    label.innerHTML = `
-      <input type="checkbox" data-package="${app.package}" onchange="updateDeleteSummary()">
-      <img src="${app.icon}" style="height: 24px; margin-left: 10px;">
-      <span style="margin-left: 10px;">${app.label}</span>
-    `;
-    list.appendChild(label);
-  });
-}
-
-function updateDeleteSummary() {
-  const selected = document.querySelectorAll('#deleteList input[type=checkbox]:checked').length;
-  document.getElementById('deleteSummary').textContent = 'Выбрано: ' + selected;
-  document.getElementById('deleteBtn').disabled = selected === 0;
-  updateSelectAllText();
-}
-
-function toggleSelectAll() {
-  const all = document.querySelectorAll('#deleteList input[type=checkbox]');
-  const allChecked = Array.from(all).every(cb => cb.checked);
-  all.forEach(cb => cb.checked = !allChecked);
-  updateDeleteSummary();
-}
-
-function updateSelectAllText() {
-  const all = document.querySelectorAll('#deleteList input[type=checkbox]');
-  const allChecked = Array.from(all).every(cb => cb.checked);
-  document.getElementById('selectAllBtn').textContent = allChecked ? '❎ Снять выделение' : '✅ Выделить всё';
-}
-
-function confirmDeleteSelectedApps() {
-  const selected = Array.from(document.querySelectorAll('#deleteList input[type=checkbox]:checked'));
-  const packages = selected.map(cb => cb.getAttribute('data-package'));
-
-  if (packages.length === 0) return;
-
-  if (confirm('Вы действительно хотите удалить ' + packages.length + ' приложений?')) {
-    if (window.AndroidInterface) {
-      window.AndroidInterface.startDeleteQueue(JSON.stringify(packages));
-    }
-    closeDeleteModal();
-  }
-}
-</script>
 
 
 </body>
