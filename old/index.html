@@ -405,43 +405,37 @@ const isTV = (() => {
 })();
 
 const pwd = document.getElementById('passwordInput');
-let imeOpen = false;
+let editArmed = false;   // пользователь явно запросил редактирование (тап/клик)
+let imeOpen   = false;   // чтобы не дёргать клаву лишний раз
 
-// по умолчанию не поднимаем клавиатуру от программного фокуса
-pwd.setAttribute('readonly','');
-pwd.setAttribute('inputmode','none');
+// На телефонах держим input readonly, чтобы программный фокус не открывал IME
+if (!isTV) pwd.setAttribute('readonly', 'readonly');
 
-function beginEditFromUserGesture() {
+// Пользователь ткнул пальцем — разрешаем редактирование и открываем IME
+pwd.addEventListener('pointerdown', () => {
   if (isTV) return;
-  // снимаем блок, фокусируем И ПОСЛЕ кадра просим IME
+  editArmed = true;
   pwd.removeAttribute('readonly');
-  pwd.removeAttribute('inputmode');
-  // небольшой таймаут помогает движку зафиксировать фокус
-  setTimeout(() => {
+  // даём движку кадр, затем фокус/IME
+  requestAnimationFrame(() => {
     pwd.focus();
-    // просим IME только по пользовательскому жесту
     if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
       window.AndroidInterface.setTextInputEnabled(true);
       imeOpen = true;
     }
-  }, 0);
-}
-
-// три слушателя — чтобы покрыть максимум девайсов
-pwd.addEventListener('pointerdown', beginEditFromUserGesture);
-pwd.addEventListener('touchstart', beginEditFromUserGesture, {passive:true});
-pwd.addEventListener('click', beginEditFromUserGesture);
-
-// когда ушли из поля — снова «тихий режим» без IME
-pwd.addEventListener('blur', () => {
-  pwd.setAttribute('readonly','');
-  pwd.setAttribute('inputmode','none');
-  if (window.AndroidInterface?.setTextInputEnabled && imeOpen) {
-    window.AndroidInterface.setTextInputEnabled(false);
-    imeOpen = false;
-  }
+  });
 });
 
+// Программный фокус (через DPAD) НЕ открывает IME, если readonly стоит
+pwd.addEventListener('focus', () => {
+  if (isTV) return;
+  if (!editArmed) {
+    // пришли сюда программно — ничего не делаем, IME не трогаем
+    return;
+  }
+  // если пришли после pointerdown, всё уже сделано выше
+  editArmed = false;
+});
 
 // Потеря фокуса — закрываем IME и снова блокируем редактирование
 pwd.addEventListener('blur', () => {
