@@ -396,53 +396,48 @@ function selectCard(card) {
 
 
 
-document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    startInstall();
-  }
-});
-
+// 🔹 Блок, чтобы клавиатура на ТВ не всплывала при простом фокусе
 // 🔹 Блок, чтобы клавиатура на ТВ не всплывала при простом фокусе
 (function () {
-  const input = document.getElementById('passwordInput');
+  const pwd = document.getElementById('passwordInput');
 
-  function activate() {
-    if (input.hasAttribute('readonly')) {
-      input.removeAttribute('readonly');
-      input.focus();
-      const len = input.value.length;
-      try { input.setSelectionRange(len, len); } catch (e) {}
+  function activatePwd() {
+    if (pwd.hasAttribute('readonly')) {
+      pwd.removeAttribute('readonly');
+      pwd.focus();
+      const len = pwd.value.length;
+      try { pwd.setSelectionRange(len, len); } catch(e) {}
+      if (window.AndroidInterface?.showKeyboard) window.AndroidInterface.showKeyboard();
     }
   }
 
-  function deactivate() {
-    if (!input.hasAttribute('readonly')) {
-      input.setAttribute('readonly', '');
-    }
+  function deactivatePwd() {
+    if (!pwd.hasAttribute('readonly')) pwd.setAttribute('readonly', '');
   }
 
-  input.addEventListener('click', function (e) {
-    e.preventDefault();
-    activate();
-  });
-
-  input.addEventListener('keydown', function (e) {
-    const k = e.key;
-    if (k === 'Enter' || k === 'OK' || k === ' ') {
+  // 1-й OK/Enter — только активирует ввод, 2-й Enter — запускает startInstall
+  pwd.addEventListener('keydown', (e) => {
+    if (e.key === 'OK' || e.key === 'Enter') {
+      if (pwd.hasAttribute('readonly')) {
+        e.preventDefault();
+        activatePwd();
+        return;
+      }
       e.preventDefault();
-      activate();
+      startInstall();
       return;
     }
-    if (k === 'Escape') {
-      e.preventDefault();
-      deactivate();
-    }
+    if (e.key === ' ') { e.preventDefault(); activatePwd(); return; }
+    if (e.key === 'Escape') { e.preventDefault(); deactivatePwd(); return; }
   });
 
-  input.addEventListener('blur', deactivate);
-  window.addEventListener('load', () => input.setAttribute('readonly',''));
+  // Клик по полю — активирует ввод
+  pwd.addEventListener('click', (e) => { e.preventDefault(); activatePwd(); });
+
+  // Потеря фокуса — возвращаем readonly
+  pwd.addEventListener('blur', deactivatePwd);
 })();
+
 
 
 async function startInstall() {
@@ -647,6 +642,7 @@ if (e.key === 'ArrowUp') {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') {
   const active = document.activeElement;
+if (active && active.id === 'passwordInput') return; // ← не запускаем с поля пароля
   const modal = document.getElementById('modal');
   if (modal.style.display === 'flex') return;
 
