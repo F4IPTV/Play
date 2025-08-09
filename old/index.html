@@ -821,6 +821,63 @@ function moveFocusInGrid(containerSel, itemSel, cols, direction) {
 
 // ——— Общая точка входа для событий с Kotlin ———
 // === helpers ===
+function moveFocusByGeometry(containerSel, itemSel, direction) {
+  const container = document.querySelector(containerSel);
+  if (!container) return false;
+  const items = Array.from(container.querySelectorAll(itemSel));
+  if (!items.length) return false;
+
+  const current = document.activeElement;
+  const idx = items.indexOf(current);
+  if (idx === -1) { items[0].focus(); return true; }
+
+  const curRect = current.getBoundingClientRect();
+  const cx = curRect.left + curRect.width / 2;
+  const cy = curRect.top  + curRect.height / 2;
+
+  // Порог отклонения по «вторичной» оси
+  const xTol = curRect.width  * 0.75;
+  const yTol = curRect.height * 0.75;
+
+  // отфильтровать кандидатов по направлению
+  const candidates = items
+    .filter(el => el !== current)
+    .map(el => {
+      const r = el.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top  + r.height / 2;
+      return { el, r, dx: x - cx, dy: y - cy };
+    })
+    .filter(v => {
+      switch (direction) {
+        case 'right': return v.dx > 0 && Math.abs(v.dy) <= yTol;
+        case 'left':  return v.dx < 0 && Math.abs(v.dy) <= yTol;
+        case 'down':  return v.dy > 0 && Math.abs(v.dx) <= xTol;
+        case 'up':    return v.dy < 0 && Math.abs(v.dx) <= xTol;
+        default: return false;
+      }
+    })
+    // приоритет: по основной оси, затем по расстоянию
+    .sort((a, b) => {
+      if (direction === 'left' || direction === 'right') {
+        const pa = Math.abs(a.dx), pb = Math.abs(b.dx);
+        if (pa !== pb) return pa - pb;
+      } else {
+        const pa = Math.abs(a.dy), pb = Math.abs(b.dy);
+        if (pa !== pb) return pa - pb;
+      }
+      const da = a.dx * a.dx + a.dy * a.dy;
+      const db = b.dx * b.dx + b.dy * b.dy;
+      return da - db;
+    });
+
+  if (candidates.length) {
+    candidates[0].el.focus();
+    return true;
+  }
+  return false;
+}
+
 function tryMoveInGrid(containerSel, itemSel, cols, direction) {
   const container = document.querySelector(containerSel);
   if (!container) return false;
@@ -910,16 +967,18 @@ function handleKey(key) {
   }
 
   // если фокус на системной кнопке — линейная навигация
+    // если фокус на системной кнопке — геометрическая навигация (flex-wrap, любые ряды)
   const sysButtons = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
   if (sysButtons.includes(document.activeElement)) {
-    const idx = sysButtons.indexOf(document.activeElement);
-    if (key === 'up')    { pwd?.focus(); return; }
-    if (key === 'left')  { if (idx > 0) sysButtons[idx - 1].focus(); return; }
-    if (key === 'right') { if (idx < sysButtons.length - 1) sysButtons[idx + 1].focus(); return; }
-    if (key === 'down')  { return; }
-    if (key === 'ok')    { document.activeElement?.click(); return; }
+    if (key === 'ok') { document.activeElement?.click(); return; }
+
+    const moved = moveFocusByGeometry('.system-buttons', '.sys-btn', key);
+
+    // если вверх из верхнего ряда — уходим в поле пароля
+    if (!moved && key === 'up') { pwd?.focus(); }
     return;
   }
+
 
   // иначе — сетка карточек
   if (key === 'ok') { startInstall(); return; }
