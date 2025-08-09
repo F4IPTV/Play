@@ -1210,23 +1210,7 @@ let pwdEditing = false;
 pwd.setAttribute('readonly', '');
 pwd.setAttribute('inputmode', 'none');
 
-function beginPwdEdit() {
-  pwdEditing = true;
-  pwd.removeAttribute('readonly');
-  pwd.removeAttribute('inputmode');        // ← разрешаем IME
-  pwd.focus();
-  const len = pwd.value.length;
-  try { pwd.setSelectionRange(len, len); } catch(_) {}
-  window.AndroidInterface?.showKeyboard?.();
-}
 
-function endPwdEdit() {
-  if (!pwdEditing) return;
-  pwdEditing = false;
-  pwd.setAttribute('readonly', '');
-  pwd.setAttribute('inputmode', 'none');   // ← запрещаем IME на фокусе
-  window.AndroidInterface?.hideKeyboard?.();
-}
 
 // если поле сфокусировалось НЕ в режиме редактирования — гарантированно не поднимаем IME
 pwd.addEventListener('focus', () => {
