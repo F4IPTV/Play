@@ -1052,6 +1052,50 @@ if (document.getElementById('autostartModal')?.style.display === 'flex') {
   }
 }
 </script>
+<script>
+const pwd = document.getElementById('passwordInput');
+const startBtn = document.getElementById('startBtn');
+
+function focusFirstSysBtn() {
+  const btns = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
+  if (btns.length) btns[0].focus();
+}
+function focusLastCard() {
+  const cards = Array.from(document.querySelectorAll('.card-container .card'));
+  if (cards.length) cards[cards.length - 1].focus();
+}
+
+// Локальный перехват клавиш на поле пароля (важно!)
+pwd.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      // На ТВ startBtn скрыт — тогда уходим на карточки
+      if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
+      else focusLastCard();
+      break;
+
+    case 'ArrowDown':
+      e.preventDefault();
+      focusFirstSysBtn();
+      break;
+
+    case 'Enter':
+      e.preventDefault();
+      startInstall();
+      break;
+
+    // Удобство: Backspace на пустом поле — вверх
+    case 'Backspace':
+      if (!pwd.value) {
+        e.preventDefault();
+        if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
+        else focusLastCard();
+      }
+      break;
+  }
+});
+</script>
 
 
 </body>
