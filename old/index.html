@@ -766,28 +766,34 @@ function onInstalledAppsReceived(appsJson) {
 
 <script>
 function openMiscModal() {
-lastFocusedElement = document.activeElement;
+  lastFocusedElement = document.activeElement;   // запомнили
+
   const modal = document.getElementById("miscModal");
   modal.style.display = "flex";
   document.body.classList.add("modal-open");
-  if (window.AndroidInterface) window.AndroidInterface.setModalState('misc', true); // ← добавили
+  window.AndroidInterface?.setModalState('misc', true);
 
-  document.activeElement?.blur();
+  // чтобы можно было фокуснуть саму модалку при необходимости
+  if (!modal.hasAttribute('tabindex')) modal.setAttribute('tabindex', '-1');
+
   const firstBtn = modal.querySelector('.sys-btn');
-  if (firstBtn) setTimeout(() => firstBtn.focus(), 100);
-  else modal.focus();
+  setTimeout(() => (firstBtn || modal).focus(), 100);
 }
 
 function closeMiscModal() {
   const modal = document.getElementById("miscModal");
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
-  if (window.AndroidInterface) window.AndroidInterface.setModalState('misc', false); // ← добавили
+  window.AndroidInterface?.setModalState('misc', false);
+
+  // ⬅️ возврат фокуса туда, где был перед открытием
+  setTimeout(() => {
+    if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+      lastFocusedElement.focus();
+    }
+    lastFocusedElement = null; // чтобы не держать битую ссылку
+  }, 0);
 }
- // ⬅️ Возврат фокуса
-  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
-    lastFocusedElement.focus();
-  }
 
 </script>
 
