@@ -625,6 +625,10 @@ function closeAutostartModal() {
 </script>
 
 
+
+
+<script>
+
 function setCurrentAutostartApp(appLabel, appIcon) {
   const current = document.getElementById("autostartCurrent");
   current.innerHTML = `
@@ -635,7 +639,7 @@ function setCurrentAutostartApp(appLabel, appIcon) {
 
 }
 
-<script>
+
 
 function renderAppSelection(json) {
   const apps = JSON.parse(json);
