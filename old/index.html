@@ -511,6 +511,19 @@ lastFocusedElement = document.activeElement;
   }, 100);
 }
 
+function installAll() {
+  showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000);
+
+  if (window.AndroidInterface) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        window.AndroidInterface.startInstallation(currentGroup);
+      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+    });
+  }
+}
+
+
 function closeModal() {
   document.getElementById('modal').style.display = "none";
   if (window.AndroidInterface) window.AndroidInterface.setModalState('components', false); // ← добавили
