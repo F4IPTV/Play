@@ -328,7 +328,6 @@ body.modal-open {
 let currentGroup = "";
 let cachedConfig = null;
 let lastFocusedElement = null;
-let lastModalListIndex = -1; // последний фокус внутри #modalList
 
 
 let lastPassword = "";
@@ -454,7 +453,6 @@ function showStatus(message, color, timeout = 4000) {
 
 
 function showGroupList(config)  {
-lastModalListIndex = -1;
 lastFocusedElement = document.activeElement;
   const modal = document.getElementById('modal');
   const list = document.getElementById('modalList');
@@ -1027,33 +1025,27 @@ if (document.getElementById('modal')?.style.display === 'flex') {
   const el = document.activeElement;
 
   if (key === 'back') { closeModal(); return; }
-  if (key === 'ok')   { el?.click();  return; }
+  if (key === 'ok')   { el?.click();    return; }
 
-  const items = Array.from(document.querySelectorAll(listSel));
-
-  // --- Фокус на "Установить всё"
+  // Фокус на кнопке "Установить всё"
   if (footerBtn && el === footerBtn) {
     if (key === 'up') {
-      // вернуться туда, где мы были в списке; если не знаем — на самый последний (нижний ряд)
-      const targetIdx =
-        (lastModalListIndex >= 0 && lastModalListIndex < items.length)
-          ? lastModalListIndex
-          : (items.length - 1);
-      items[targetIdx]?.focus();
+      // вверх — к ближайшей кнопке списка (или последней, если что)
+      const moved = moveFocusByGeometry('#modal .modal-content', listSel, 'up');
+      if (!moved) {
+        const all = Array.from(document.querySelectorAll(listSel));
+        all[all.length - 1]?.focus();
+      }
     }
-    // left/right/down — остаёмся на футере
+    // left/right/down — остаёмся на месте
     return;
   }
 
-  // --- Фокус внутри списка
-  const idx = items.indexOf(el);
-  if (idx !== -1) {
-    // запоминаем, где мы сейчас в списке
-    lastModalListIndex = idx;
-
+  // Фокус внутри списка
+  if (el?.closest('#modalList')) {
     if (['left','right','up','down'].includes(key)) {
       const moved = tryMoveInGrid(listScope, 'button', 2, key);
-      // если вниз из нижнего ряда — прыгаем на футер
+      // если вниз из нижнего ряда — в футер
       if (!moved && key === 'down' && footerBtn) {
         footerBtn.focus();
       }
@@ -1061,11 +1053,10 @@ if (document.getElementById('modal')?.style.display === 'flex') {
     return;
   }
 
-  // --- Потеряли фокус — ставим на первый элемент списка
-  (items[0] || footerBtn)?.focus();
+  // Потеряли фокус — ставим на первый элемент списка
+  document.querySelector(listSel)?.focus();
   return;
 }
-
 
 
 
