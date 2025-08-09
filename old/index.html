@@ -223,7 +223,7 @@ body.modal-open {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input type="password" id="passwordInput" placeholder="Введите пароль">
+<button id="passwordBtn" class="sys-btn">🔑 Введите пароль</button>
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
@@ -334,9 +334,37 @@ let cachedConfig = null;
 
 let lastPassword = "";
 
+
 // 🔁 Очередь для последовательного копирования бэкапов
 let backupQueue = [];
 let backupTarget = "";
+let savedPassword = "";
+
+document.getElementById('passwordBtn').addEventListener('click', () => {
+  if (window.AndroidInterface?.requestPassword) {
+    // Если есть метод в Kotlin — используем его для вызова клавиатуры на ТВ
+    window.AndroidInterface.requestPassword();
+  } else {
+    // На телефонах/ПК
+    const pwd = prompt("Введите пароль");
+    if (pwd !== null) {
+      savedPassword = pwd.trim();
+      updatePasswordBtn();
+    }
+  }
+});
+
+function updatePasswordBtn() {
+  const btn = document.getElementById('passwordBtn');
+  if (savedPassword) {
+    btn.textContent = `🔑 Пароль: ${'*'.repeat(savedPassword.length)}`;
+  } else {
+    btn.textContent = "🔑 Введите пароль";
+  }
+}
+
+
+
 
 // 🔁 Для пропууска ложного энтера
 let ignoreNextEnter = false;
@@ -374,34 +402,23 @@ function onBackupCopied() {
 
 
 function selectCard(card) {
-  const passwordInput = document.getElementById('passwordInput');
-  passwordInput.blur();
-
-  lastPassword = passwordInput.value.trim();  // фиксируем актуальный ввод
-
+  // просто переключаем выбранную карточку
   document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
+
   currentGroup = card.dataset.group;
+
+  // очищаем статус
   document.getElementById('status').innerHTML = "";
   document.getElementById('status').classList.remove('visible');
 }
 
 
 
-document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    startInstall();
-  }
-});
-
-
 
 async function startInstall() {
-  const passwordInput = document.getElementById('passwordInput');
-passwordInput.blur();  // Принудительно снимаем фокус, чтобы браузер зафиксировал значение
   const group = currentGroup;
-  const password = lastPassword;
+  const password = savedPassword; // ← читаем из переменной
   const status = document.getElementById('status');
 
   if (!group) {
