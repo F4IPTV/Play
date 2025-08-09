@@ -587,8 +587,8 @@ function closeModal() {
 
 <script>
   // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
-  const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
-  if (isTV) {
+  const isTV2 = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
+  if (isTV2) {
     const startBtn = document.getElementById("startBtn");
     if (startBtn) startBtn.style.display = "none";
   }
