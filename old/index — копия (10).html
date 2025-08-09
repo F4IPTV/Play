@@ -216,10 +216,7 @@ body.modal-open {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input type="password" id="passwordInput"
-       placeholder="Введите пароль"
-       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-       inputmode="none">
+<input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
@@ -1047,9 +1044,9 @@ if (onCards) {
 
 // ——— Фокус на поле пароля ———
 if (document.activeElement === pwd) {
-  if (key === 'ok') { beginPwdEdit(); return; }  // ← по ОК включаем ввод
-  if (key === 'up')   { focusLastCard(); return; }
-  if (key === 'down') { focusFirstSysBtn(); return; }
+  if (key === 'up')   { focusLastCard(); return; }   // вверх — к карточкам
+  if (key === 'down') { focusFirstSysBtn(); return; } // вниз — к системным
+  // Enter обрабатывается отдельным слушателем на input (или здесь по желанию)
   return;
 }
 
@@ -1081,73 +1078,48 @@ if (key === 'down') {
 }
 </script>
 <script>
-// ---- Password edit gate ----
 const pwd = document.getElementById('passwordInput');
 const startBtn = document.getElementById('startBtn');
-let pwdEditing = false;
 
-// по умолчанию блокируем поднятие клавиатуры
-pwd.setAttribute('readonly', '');
-
-// начать редактирование по запросу
-function beginPwdEdit() {
-  pwdEditing = true;
-  pwd.removeAttribute('readonly');
-  // вернуть фокус и курсор в конец
-  pwd.focus();
-  const len = pwd.value.length;
-  try { pwd.setSelectionRange(len, len); } catch(_) {}
-  // если есть Kotlin-метод — можно явно попросить клавиатуру
-  window.AndroidInterface?.showKeyboard?.();
+function focusFirstSysBtn() {
+  const btns = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
+  if (btns.length) btns[0].focus();
+}
+function focusLastCard() {
+  const cards = Array.from(document.querySelectorAll('.card-container .card'));
+  if (cards.length) cards[cards.length - 1].focus();
 }
 
-// завершить редактирование и спрятать клавиатуру
-function endPwdEdit() {
-  pwdEditing = false;
-  pwd.setAttribute('readonly', '');
-  window.AndroidInterface?.hideKeyboard?.();
-  // оставим фокус на поле (чтобы стрелки работали), но ИМЕ больше не поднимется
-}
-
-// если поле случайно сфокусировалось не в режиме редактирования — не поднимаем клавиатуру
-pwd.addEventListener('focus', () => {
-  if (!pwdEditing) {
-    // небольшая задержка помогает на части приставок
-    setTimeout(() => pwd.setAttribute('readonly',''), 0);
-  }
-});
-
-// локальная навигация в поле
+// Локальный перехват клавиш на поле пароля (важно!)
 pwd.addEventListener('keydown', (e) => {
   switch (e.key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      // На ТВ startBtn скрыт — тогда уходим на карточки
+      if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
+      else focusLastCard();
+      break;
+
+    case 'ArrowDown':
+      e.preventDefault();
+      focusFirstSysBtn();
+      break;
+
     case 'Enter':
       e.preventDefault();
-      endPwdEdit();
-      startInstall();          // если нужно — запускаем
+      startInstall();
       break;
+
+    // Удобство: Backspace на пустом поле — вверх
     case 'Backspace':
-      // на пустом поле — наверх
       if (!pwd.value) {
         e.preventDefault();
         if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
         else focusLastCard();
-        endPwdEdit();
       }
-      break;
-    case 'ArrowUp':
-      e.preventDefault();
-      if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
-      else focusLastCard();
-      endPwdEdit();
-      break;
-    case 'ArrowDown':
-      e.preventDefault();
-      focusFirstSysBtn();
-      endPwdEdit();
       break;
   }
 });
-
 </script>
 
 
