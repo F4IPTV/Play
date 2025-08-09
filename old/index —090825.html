@@ -223,19 +223,8 @@ body.modal-open {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-
-
-<input
-  type="password"
-  id="passwordInput"
-  placeholder="Введите пароль"
-  autocomplete="off"
-  inputmode="none"
-  readonly
-  tabindex="0">
+<input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
-
-
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
   <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" class="sys-btn">
