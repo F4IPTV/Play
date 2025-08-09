@@ -540,8 +540,7 @@ function closeModal() {
 </script>
 
 
-</body>
-</html>
+
 
 <script>
 function updateProgress(current = null, total = null, percent = 0, label) {
@@ -587,7 +586,7 @@ function updateProgressWithLabel(current, total, percent, label) {
   }
 }
 </script>
-<script>
+
 <script>
 function openAutostartModal() {
   const modal = document.getElementById('autostartModal');
@@ -636,10 +635,7 @@ function setCurrentAutostartApp(appLabel, appIcon) {
 
 }
 
-
-function closeAutostartModal() {
-  document.getElementById('autostartModal').style.display = 'none';
-}
+<script>
 
 function renderAppSelection(json) {
   const apps = JSON.parse(json);
@@ -741,7 +737,15 @@ function onInstalledAppsReceived(appsJson) {
   setTimeout(() => {
     document.getElementById('splash').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
-  }, 3000); // 3 секунды
+
+    // Новое: автофокус на первую карту
+    const firstCard = document.querySelector('.card-container .card');
+    if (firstCard) {
+      firstCard.focus();
+      firstCard.classList.add('selected');
+      currentGroup = firstCard.dataset.group;
+    }
+  }, 3000);
 </script>
 
 
