@@ -990,17 +990,29 @@ if (document.getElementById('autostartModal')?.style.display === 'flex') {
 
 
   // 2) Полезное (misc)
-  if (document.getElementById('miscModal')?.style.display === 'flex') {
-    if (key === 'back') { closeMiscModal(); return; }
-    if (key === 'ok')   { document.activeElement?.click(); return; }
-    const btns = Array.from(document.querySelectorAll('#miscModal .system-buttons .sys-btn, #miscModal .modal-content > .sys-btn'));
-    if (!btns.length) return;
-    const idx = btns.indexOf(document.activeElement);
-    if (idx === -1) { btns[0].focus(); return; }
-    if (key === 'left' || key === 'up')   { btns[Math.max(0, idx - 1)].focus(); return; }
-    if (key === 'right' || key === 'down'){ btns[Math.min(btns.length - 1, idx + 1)].focus(); return; }
+if (document.getElementById('miscModal')?.style.display === 'flex') {
+  const scope    = '#miscModal .modal-content';
+  const selector = 'button, .sys-btn';      // все кнопки в модалке
+  const el = document.activeElement;
+
+  if (key === 'back') { closeMiscModal(); return; }
+  if (key === 'ok')   { el?.click(); return; }
+
+  // если фокус потерян — ставим на первую кнопку модалки
+  if (!el || !el.closest('#miscModal') || !el.matches(selector)) {
+    const first = document.querySelector(`${scope} ${selector}`);
+    if (first) first.focus();
     return;
   }
+
+  // геометрическая навигация в любом расположении кнопок
+  if (['left','right','up','down'].includes(key)) {
+    moveFocusByGeometry(scope, selector, key);
+    return;
+  }
+
+  return;
+}
 
   // 3) Список компонентов
   if (document.getElementById('modal')?.style.display === 'flex') {
