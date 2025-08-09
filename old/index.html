@@ -1012,45 +1012,58 @@ if (document.getElementById('autostartModal')?.style.display === 'flex') {
     return;
   }
 
-  // 4) Главный экран: карточки → пароль → системные кнопки
-  const pwd = document.getElementById('passwordInput');
+  // 4) Главный экран: карточки ↔ пароль ↔ системные кнопки
+const pwd = document.getElementById('passwordInput');
 
-  // если фокус на поле пароля
-  if (document.activeElement === pwd) {
-    if (key === 'up')   { focusLastCard(); return; }
-    if (key === 'down') { focusFirstSysBtn(); return; }
-    return;
-  }
+const onCards = document.activeElement?.closest('.card-container');
+const onSys   = document.activeElement?.closest('.system-buttons');
 
-  // если фокус на системной кнопке — линейная навигация
-    // если фокус на системной кнопке — геометрическая навигация (flex-wrap, любые ряды)
-  const sysButtons = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
-  if (sysButtons.includes(document.activeElement)) {
-    if (key === 'ok') { document.activeElement?.click(); return; }
-
-    const moved = moveFocusByGeometry('.system-buttons', '.sys-btn', key);
-
-    // если вверх из верхнего ряда — уходим в поле пароля
-    if (!moved && key === 'up') { pwd?.focus(); }
-    return;
-  }
-
-
-  // иначе — сетка карточек
+// ——— Фокус внутри сетки карточек ———
+if (onCards) {
   if (key === 'ok') { startInstall(); return; }
 
-  if (['left','right','up'].includes(key)) {
-    tryMoveInGrid('.card-container', '.card', 4, key);
-    return;
-  }
-
-  if (key === 'down') {
-    // попытка опуститься внутри сетки; если мы уже в нижнем ряду — фокус на пароль
-    const moved = tryMoveInGrid('.card-container', '.card', 4, 'down');
-    if (!moved) pwd?.focus();
+  if (['left','right','up','down'].includes(key)) {
+    const moved = moveFocusByGeometry('.card-container', '.card', key);
+    // если ↓ и ниже уже нет карточек — уходим в поле пароля
+    if (!moved && key === 'down') { pwd?.focus(); }
     return;
   }
 }
+
+// ——— Фокус на поле пароля ———
+if (document.activeElement === pwd) {
+  if (key === 'up')   { focusLastCard(); return; }   // вверх — к карточкам
+  if (key === 'down') { focusFirstSysBtn(); return; } // вниз — к системным
+  // Enter обрабатывается отдельным слушателем на input (или здесь по желанию)
+  return;
+}
+
+// ——— Фокус внутри блока системных кнопок ———
+if (onSys) {
+  if (key === 'ok') { document.activeElement?.click(); return; }
+
+  if (['left','right','up','down'].includes(key)) {
+    const moved = moveFocusByGeometry('.system-buttons', '.sys-btn', key);
+    // если ↑ и выше уже нет кнопок — поднимаемся в поле пароля
+    if (!moved && key === 'up') { pwd?.focus(); }
+    return;
+  }
+}
+
+// ——— Запасной вариант: если не попали ни в одну ветку —
+// стрелки управляют карточками, OK запускает установку
+if (key === 'ok') { startInstall(); return; }
+
+if (['left','right','up'].includes(key)) {
+  moveFocusByGeometry('.card-container', '.card', key);
+  return;
+}
+if (key === 'down') {
+  const moved = moveFocusByGeometry('.card-container', '.card', 'down');
+  if (!moved) { pwd?.focus(); }
+  return;
+}
+
 </script>
 <script>
 const pwd = document.getElementById('passwordInput');
