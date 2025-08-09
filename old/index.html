@@ -923,15 +923,45 @@ function focusLastCard() {
 
 // === main router ===
 function handleKey(key) {
-  // 1) Автозапуск (модалка)
-  if (document.getElementById('autostartModal')?.style.display === 'flex') {
+ // 1) Автозапуск (модалка)
+if (document.getElementById('autostartModal')?.style.display === 'flex') {
+  const headerBtns = Array.from(document.querySelectorAll(
+    '#autostartModal .modal-content > button, #autostartModal .modal-content > .sys-btn'
+  ));
+  const listFirst = document.querySelector('#autostartList .card');
+
+  const el = document.activeElement;
+
+  // — фокус на кнопках в шапке —
+  if (headerBtns.includes(el)) {
     if (key === 'back') { closeAutostartModal(); return; }
-    if (key === 'ok')   { document.activeElement?.click(); return; }
-    if (['up','down','left','right'].includes(key)) {
-      tryMoveInGrid('#autostartList', '.card', 5, key);
+    if (key === 'ok')   { el.click(); return; }
+    if (key === 'down') { listFirst?.focus(); return; }   // ↓ в список
+    // горизонтальная навигация по двум кнопкам
+    moveFocusByGeometry('#autostartModal .modal-content', 'button, .sys-btn', key);
+    return;
+  }
+
+  // — фокус в списке приложений —
+  if (el?.closest('#autostartList')) {
+    if (key === 'back') { closeAutostartModal(); return; }
+    if (key === 'ok')   { el.click(); return; }
+
+    // двигаемся по сетке карточек
+    const moved = tryMoveInGrid('#autostartList', '.card', 5, key);
+
+    // если ↑ с верхнего ряда — уходим в шапку (на правую кнопку)
+    if (!moved && key === 'up' && headerBtns.length) {
+      headerBtns[headerBtns.length - 1].focus();
     }
     return;
   }
+
+  // если фокус потерян — ставим на первую кнопку шапки
+  (headerBtns[0] || listFirst)?.focus();
+  return;
+}
+
 
   // 2) Полезное (misc)
   if (document.getElementById('miscModal')?.style.display === 'flex') {
