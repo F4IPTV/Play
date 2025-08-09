@@ -450,6 +450,7 @@ function showStatus(message, color, timeout = 4000) {
 
 
 function showGroupList(config)  {
+lastFocusedElement = document.activeElement;
   const modal = document.getElementById('modal');
   const list = document.getElementById('modalList');
   list.innerHTML = "";
@@ -508,6 +509,11 @@ function showGroupList(config)  {
 function closeModal() {
   document.getElementById('modal').style.display = "none";
   if (window.AndroidInterface) window.AndroidInterface.setModalState('components', false); // ← добавили
+  
+   // ⬅️ Возврат фокуса
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    lastFocusedElement.focus();
+  }
 }
 
 
