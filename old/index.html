@@ -216,10 +216,7 @@ body.modal-open {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input type="password" id="passwordInput"
-       placeholder="Введите пароль"
-       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-
+<input type="password" id="passwordInput" placeholder="Введите пароль">
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
 <div class="system-buttons">
@@ -1018,47 +1015,14 @@ if (document.getElementById('miscModal')?.style.display === 'flex') {
 }
 
   // 3) Список компонентов
-if (document.getElementById('modal')?.style.display === 'flex') {
-  const listScope   = '#modalList';
-  const listSel     = '#modalList button';
-  const footerBtn   = document.querySelector('#modal .modal-content > button'); // "Установить всё"
-  const el = document.activeElement;
-
-  if (key === 'back') { closeModal(); return; }
-  if (key === 'ok')   { el?.click();    return; }
-
-  // Фокус на кнопке "Установить всё"
-  if (footerBtn && el === footerBtn) {
-    if (key === 'up') {
-      // вверх — к ближайшей кнопке списка (или последней, если что)
-      const moved = moveFocusByGeometry('#modal .modal-content', listSel, 'up');
-      if (!moved) {
-        const all = Array.from(document.querySelectorAll(listSel));
-        all[all.length - 1]?.focus();
-      }
-    }
-    // left/right/down — остаёмся на месте
-    return;
-  }
-
-  // Фокус внутри списка
-  if (el?.closest('#modalList')) {
-    if (['left','right','up','down'].includes(key)) {
-      const moved = tryMoveInGrid(listScope, 'button', 2, key);
-      // если вниз из нижнего ряда — в футер
-      if (!moved && key === 'down' && footerBtn) {
-        footerBtn.focus();
-      }
+  if (document.getElementById('modal')?.style.display === 'flex') {
+    if (key === 'back') { closeModal(); return; }
+    if (key === 'ok')   { document.activeElement?.click(); return; }
+    if (['up','down','left','right'].includes(key)) {
+      tryMoveInGrid('#modalList', 'button', 2, key);
     }
     return;
   }
-
-  // Потеряли фокус — ставим на первый элемент списка
-  document.querySelector(listSel)?.focus();
-  return;
-}
-
-
 
   // 4) Главный экран: карточки ↔ пароль ↔ системные кнопки
 const pwd = document.getElementById('passwordInput');
@@ -1080,12 +1044,11 @@ if (onCards) {
 
 // ——— Фокус на поле пароля ———
 if (document.activeElement === pwd) {
-  if (key === 'ok') { beginPwdEdit(); return; }
-  if (key === 'up')   { focusLastCard(); return; }
-  if (key === 'down') { focusFirstSysBtn(); return; }
+  if (key === 'up')   { focusLastCard(); return; }   // вверх — к карточкам
+  if (key === 'down') { focusFirstSysBtn(); return; } // вниз — к системным
+  // Enter обрабатывается отдельным слушателем на input (или здесь по желанию)
   return;
 }
-
 
 // ——— Фокус внутри блока системных кнопок ———
 if (onSys) {
@@ -1115,88 +1078,48 @@ if (key === 'down') {
 }
 </script>
 <script>
-// ---- Password edit gate ----
 const pwd = document.getElementById('passwordInput');
 const startBtn = document.getElementById('startBtn');
-let pwdEditing = false;
 
-// по умолчанию: не редактируем => IME запрещён
-pwd.setAttribute('readonly', '');
-pwd.setAttribute('inputmode', 'none');
-
-function beginPwdEdit() {
-  pwdEditing = true;
-  pwd.removeAttribute('readonly');
-  pwd.removeAttribute('inputmode');        // ← разрешаем IME
-  pwd.focus();
-  const len = pwd.value.length;
-  try { pwd.setSelectionRange(len, len); } catch(_) {}
-  window.AndroidInterface?.showKeyboard?.();
+function focusFirstSysBtn() {
+  const btns = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
+  if (btns.length) btns[0].focus();
+}
+function focusLastCard() {
+  const cards = Array.from(document.querySelectorAll('.card-container .card'));
+  if (cards.length) cards[cards.length - 1].focus();
 }
 
-function endPwdEdit() {
-  if (!pwdEditing) return;
-  pwdEditing = false;
-  pwd.setAttribute('readonly', '');
-  pwd.setAttribute('inputmode', 'none');   // ← запрещаем IME на фокусе
-  window.AndroidInterface?.hideKeyboard?.();
-}
-
-// если поле сфокусировалось НЕ в режиме редактирования — гарантированно не поднимаем IME
-pwd.addEventListener('focus', () => {
-  if (!pwdEditing) {
-    // двойное подтверждение — на некоторых WebView важно успеть раньше IME
-    pwd.setAttribute('readonly','');
-    pwd.setAttribute('inputmode','none');
-  }
-});
-
-// при потере фокуса всегда выходим из режима редактирования
-pwd.addEventListener('blur', () => {
-  endPwdEdit();
-});
-
-// локальная навигация в поле
+// Локальный перехват клавиш на поле пароля (важно!)
 pwd.addEventListener('keydown', (e) => {
   switch (e.key) {
-    case 'Enter':
-      e.preventDefault();
-      endPwdEdit();
-      startInstall();
-      break;
-
-    case 'Backspace':
-      if (!pwd.value) {
-        e.preventDefault();
-        if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
-        else focusLastCard();
-        endPwdEdit();
-      }
-      break;
-
     case 'ArrowUp':
       e.preventDefault();
+      // На ТВ startBtn скрыт — тогда уходим на карточки
       if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
       else focusLastCard();
-      endPwdEdit();
       break;
 
     case 'ArrowDown':
       e.preventDefault();
       focusFirstSysBtn();
-      endPwdEdit();
       break;
 
-    // иногда DPAD_CENTER приходит как Enter прямо в инпут — подхватываем старт ввода
-    default:
-      if (e.key === 'Enter' && !pwdEditing) {
+    case 'Enter':
+      e.preventDefault();
+      startInstall();
+      break;
+
+    // Удобство: Backspace на пустом поле — вверх
+    case 'Backspace':
+      if (!pwd.value) {
         e.preventDefault();
-        beginPwdEdit();
+        if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
+        else focusLastCard();
       }
+      break;
   }
 });
-
-
 </script>
 
 
