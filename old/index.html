@@ -824,6 +824,7 @@ function moveFocusInGrid(containerSel, itemSel, cols, direction) {
 function tryMoveInGrid(containerSel, itemSel, cols, direction) {
   const container = document.querySelector(containerSel);
   if (!container) return false;
+
   const items = Array.from(container.querySelectorAll(itemSel));
   if (!items.length) return false;
 
@@ -832,16 +833,23 @@ function tryMoveInGrid(containerSel, itemSel, cols, direction) {
   if (index === -1) { items[0].focus(); return true; }
 
   const total = items.length;
-  const row = Math.floor(index / cols);
-  const col = index % cols;
-
   let nextIndex = index;
+
   switch (direction) {
-    case 'up':    if (row > 0) nextIndex = index - cols; break;
-    case 'down':  if ((row + 1) * cols < total) nextIndex = index + cols; break;
-    case 'left':  if (col > 0) nextIndex = index - 1; break;
-    case 'right': if (col < cols - 1 && index + 1 < total) nextIndex = index + 1; break;
+    case 'up':
+      if (index - cols >= 0) nextIndex = index - cols;
+      break;
+    case 'down':
+      if (index + cols < total) nextIndex = index + cols;
+      break;
+    case 'left':
+      if (index - 1 >= 0) nextIndex = index - 1;      // ← линейно влево
+      break;
+    case 'right':
+      if (index + 1 < total) nextIndex = index + 1;   // ← линейно вправо (на следующую строку)
+      break;
   }
+
   if (nextIndex !== index) { items[nextIndex].focus(); return true; }
   return false;
 }
