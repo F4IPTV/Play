@@ -714,6 +714,7 @@ function updateProgressWithLabel(current, total, percent, label) {
 </script>
 <script>
 function openAutostartModal() {
+lastFocusedElement = document.activeElement; // 💾 запоминаем, что было в фокусе
   const modal = document.getElementById('autostartModal');
   const list = document.getElementById('autostartList');
 
@@ -758,6 +759,10 @@ function setCurrentAutostartApp(appLabel, appIcon) {
 
 function closeAutostartModal() {
   document.getElementById('autostartModal').style.display = 'none';
+ // ⬅️ Возврат фокуса
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    lastFocusedElement.focus();
+  }
 }
 
 function renderAppSelection(json) {
