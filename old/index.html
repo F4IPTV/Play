@@ -1047,11 +1047,12 @@ if (onCards) {
 
 // ——— Фокус на поле пароля ———
 if (document.activeElement === pwd) {
-  if (key === 'ok') { beginPwdEdit(); return; }  // ← по ОК включаем ввод
+  if (key === 'ok') { beginPwdEdit(); return; }
   if (key === 'up')   { focusLastCard(); return; }
   if (key === 'down') { focusFirstSysBtn(); return; }
   return;
 }
+
 
 // ——— Фокус внутри блока системных кнопок ———
 if (onSys) {
@@ -1086,35 +1087,40 @@ const pwd = document.getElementById('passwordInput');
 const startBtn = document.getElementById('startBtn');
 let pwdEditing = false;
 
-// по умолчанию блокируем поднятие клавиатуры
+// по умолчанию: не редактируем => IME запрещён
 pwd.setAttribute('readonly', '');
+pwd.setAttribute('inputmode', 'none');
 
-// начать редактирование по запросу
 function beginPwdEdit() {
   pwdEditing = true;
   pwd.removeAttribute('readonly');
-  // вернуть фокус и курсор в конец
+  pwd.removeAttribute('inputmode');        // ← разрешаем IME
   pwd.focus();
   const len = pwd.value.length;
   try { pwd.setSelectionRange(len, len); } catch(_) {}
-  // если есть Kotlin-метод — можно явно попросить клавиатуру
   window.AndroidInterface?.showKeyboard?.();
 }
 
-// завершить редактирование и спрятать клавиатуру
 function endPwdEdit() {
+  if (!pwdEditing) return;
   pwdEditing = false;
   pwd.setAttribute('readonly', '');
+  pwd.setAttribute('inputmode', 'none');   // ← запрещаем IME на фокусе
   window.AndroidInterface?.hideKeyboard?.();
-  // оставим фокус на поле (чтобы стрелки работали), но ИМЕ больше не поднимется
 }
 
-// если поле случайно сфокусировалось не в режиме редактирования — не поднимаем клавиатуру
+// если поле сфокусировалось НЕ в режиме редактирования — гарантированно не поднимаем IME
 pwd.addEventListener('focus', () => {
   if (!pwdEditing) {
-    // небольшая задержка помогает на части приставок
-    setTimeout(() => pwd.setAttribute('readonly',''), 0);
+    // двойное подтверждение — на некоторых WebView важно успеть раньше IME
+    pwd.setAttribute('readonly','');
+    pwd.setAttribute('inputmode','none');
   }
+});
+
+// при потере фокуса всегда выходим из режима редактирования
+pwd.addEventListener('blur', () => {
+  endPwdEdit();
 });
 
 // локальная навигация в поле
@@ -1123,10 +1129,10 @@ pwd.addEventListener('keydown', (e) => {
     case 'Enter':
       e.preventDefault();
       endPwdEdit();
-      startInstall();          // если нужно — запускаем
+      startInstall();
       break;
+
     case 'Backspace':
-      // на пустом поле — наверх
       if (!pwd.value) {
         e.preventDefault();
         if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
@@ -1134,19 +1140,29 @@ pwd.addEventListener('keydown', (e) => {
         endPwdEdit();
       }
       break;
+
     case 'ArrowUp':
       e.preventDefault();
       if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
       else focusLastCard();
       endPwdEdit();
       break;
+
     case 'ArrowDown':
       e.preventDefault();
       focusFirstSysBtn();
       endPwdEdit();
       break;
+
+    // иногда DPAD_CENTER приходит как Enter прямо в инпут — подхватываем старт ввода
+    default:
+      if (e.key === 'Enter' && !pwdEditing) {
+        e.preventDefault();
+        beginPwdEdit();
+      }
   }
 });
+
 
 </script>
 
