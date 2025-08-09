@@ -1279,12 +1279,9 @@ pwd.addEventListener('keydown', (e) => {
 
     case 'ArrowUp':
   e.preventDefault();
-  const firstCard = document.querySelector('.card-container .card');
-  if (firstCard) {
-    firstCard.focus();
-  }
-  endPwdEdit();
-  break;
+      endPwdEdit();
+      startInstall();
+      break;
 
 
     case 'ArrowDown':
