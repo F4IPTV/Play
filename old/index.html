@@ -812,22 +812,58 @@ function moveFocusInGrid(containerSel, itemSel, cols, direction) {
 }
 
 // ——— Общая точка входа для событий с Kotlin ———
+// === helpers ===
+function tryMoveInGrid(containerSel, itemSel, cols, direction) {
+  const container = document.querySelector(containerSel);
+  if (!container) return false;
+  const items = Array.from(container.querySelectorAll(itemSel));
+  if (!items.length) return false;
+
+  const active = document.activeElement;
+  let index = items.indexOf(active);
+  if (index === -1) { items[0].focus(); return true; }
+
+  const total = items.length;
+  const row = Math.floor(index / cols);
+  const col = index % cols;
+
+  let nextIndex = index;
+  switch (direction) {
+    case 'up':    if (row > 0) nextIndex = index - cols; break;
+    case 'down':  if ((row + 1) * cols < total) nextIndex = index + cols; break;
+    case 'left':  if (col > 0) nextIndex = index - 1; break;
+    case 'right': if (col < cols - 1 && index + 1 < total) nextIndex = index + 1; break;
+  }
+  if (nextIndex !== index) { items[nextIndex].focus(); return true; }
+  return false;
+}
+
+function focusFirstSysBtn() {
+  const btns = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
+  if (btns.length) btns[0].focus();
+}
+
+function focusLastCard() {
+  const cards = Array.from(document.querySelectorAll('.card-container .card'));
+  if (cards.length) cards[cards.length - 1].focus();
+}
+
+// === main router ===
 function handleKey(key) {
-  // 1) Если открыта модалка автозапуска
+  // 1) Автозапуск (модалка)
   if (document.getElementById('autostartModal')?.style.display === 'flex') {
     if (key === 'back') { closeAutostartModal(); return; }
     if (key === 'ok')   { document.activeElement?.click(); return; }
-    // сетка карточек с иконками — 5 колонок
-    moveFocusInGrid('#autostartList', '.card', 5, key);
+    if (['up','down','left','right'].includes(key)) {
+      tryMoveInGrid('#autostartList', '.card', 5, key);
+    }
     return;
   }
 
-  // 2) Если открыта «Разное»
+  // 2) Полезное (misc)
   if (document.getElementById('miscModal')?.style.display === 'flex') {
     if (key === 'back') { closeMiscModal(); return; }
     if (key === 'ok')   { document.activeElement?.click(); return; }
-    // кнопки в блоке .system-buttons — колонок может быть 3, но они «потоковые».
-    // для стабильности пройдёмся как по линейному списку:
     const btns = Array.from(document.querySelectorAll('#miscModal .system-buttons .sys-btn, #miscModal .modal-content > .sys-btn'));
     if (!btns.length) return;
     const idx = btns.indexOf(document.activeElement);
@@ -837,18 +873,52 @@ function handleKey(key) {
     return;
   }
 
-  // 3) Если открыта модалка «Список компонентов»
+  // 3) Список компонентов
   if (document.getElementById('modal')?.style.display === 'flex') {
     if (key === 'back') { closeModal(); return; }
     if (key === 'ok')   { document.activeElement?.click(); return; }
-    // список кнопок + «Установить всё» — 2 колонки
-    moveFocusInGrid('#modalList', 'button', 2, key);
+    if (['up','down','left','right'].includes(key)) {
+      tryMoveInGrid('#modalList', 'button', 2, key);
+    }
     return;
   }
 
-  // 4) Иначе — главная сетка карточек групп
+  // 4) Главный экран: карточки → пароль → системные кнопки
+  const pwd = document.getElementById('passwordInput');
+
+  // если фокус на поле пароля
+  if (document.activeElement === pwd) {
+    if (key === 'up')   { focusLastCard(); return; }
+    if (key === 'down') { focusFirstSysBtn(); return; }
+    return;
+  }
+
+  // если фокус на системной кнопке — линейная навигация
+  const sysButtons = Array.from(document.querySelectorAll('.system-buttons .sys-btn'));
+  if (sysButtons.includes(document.activeElement)) {
+    const idx = sysButtons.indexOf(document.activeElement);
+    if (key === 'up')    { pwd?.focus(); return; }
+    if (key === 'left')  { if (idx > 0) sysButtons[idx - 1].focus(); return; }
+    if (key === 'right') { if (idx < sysButtons.length - 1) sysButtons[idx + 1].focus(); return; }
+    if (key === 'down')  { return; }
+    if (key === 'ok')    { document.activeElement?.click(); return; }
+    return;
+  }
+
+  // иначе — сетка карточек
   if (key === 'ok') { startInstall(); return; }
-  moveFocusInGrid('.card-container', '.card', 4, key); // 4 — визуально комфортно, можно поставить 3
+
+  if (['left','right','up'].includes(key)) {
+    tryMoveInGrid('.card-container', '.card', 4, key);
+    return;
+  }
+
+  if (key === 'down') {
+    // попытка опуститься внутри сетки; если мы уже в нижнем ряду — фокус на пароль
+    const moved = tryMoveInGrid('.card-container', '.card', 4, 'down');
+    if (!moved) pwd?.focus();
+    return;
+  }
 }
 </script>
 
