@@ -396,49 +396,31 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
 
 // 🔹 Авто-показ клавиатуры на телефонах
 // надежное определение ТВ из Kotlin
-// Надёжное определение ТВ из Kotlin (если добавлял isTv())
 const isTV = (function(){
-  try { return !!(window.AndroidInterface?.isTv && window.AndroidInterface.isTv()); }
-  catch(e){ return /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent); }
+  try {
+    // В WebView @JavascriptInterface возвращает значение синхронно
+    return !!(window.AndroidInterface && window.AndroidInterface.isTv && window.AndroidInterface.isTv());
+  } catch (e) { return false; }
 })();
-
 const pwd = document.getElementById('passwordInput');
 
-let wantIme = false;   // пользователь конкретно попросил клавиатуру (тап/клик)
-let imeOpen = false;   // чтобы не дергать повторно
-
-// Пользователь ткнул по полю — пометим, что хотим показать ИМЕ
-pwd.addEventListener('pointerdown', () => { wantIme = true; });
-
-// На focus открываем ИМЕ только если это был именно тап (wantIme=true)
 pwd.addEventListener('focus', () => {
-  if (!isTV && wantIme && window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
     window.AndroidInterface.setTextInputEnabled(true);
-    imeOpen = true;
   }
-  // сбрасываем желание — чтобы повторный программный фокус не открывал клаву
-  wantIme = false;
 });
 
-// На blur закрываем ИМЕ (если была)
 pwd.addEventListener('blur', () => {
-  if (!isTV && window.AndroidInterface?.setTextInputEnabled && imeOpen) {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
     window.AndroidInterface.setTextInputEnabled(false);
-    imeOpen = false;
   }
 });
 
-// Запасной вариант: явный клик тоже откроет ИМЕ один раз
 pwd.addEventListener('click', () => {
-  if (!isTV) {
-    wantIme = true; // если вдруг фокус уже был — следующая ветка не сработает, но клик обычно после focus
-    if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
-      window.AndroidInterface.setTextInputEnabled(true);
-      imeOpen = true;
-    }
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(true);
   }
 });
-
 
 
 
