@@ -1027,34 +1027,30 @@ if (document.getElementById('modal')?.style.display === 'flex') {
   if (key === 'back') { closeModal(); return; }
   if (key === 'ok')   { el?.click();    return; }
 
-  // Фокус на кнопке "Установить всё"
-  if (footerBtn && el === footerBtn) {
-    if (key === 'up') {
-      // вверх — к ближайшей кнопке списка (или последней, если что)
-      const moved = moveFocusByGeometry('#modal .modal-content', listSel, 'up');
-      if (!moved) {
-        const all = Array.from(document.querySelectorAll(listSel));
-        all[all.length - 1]?.focus();
-      }
-    }
-    // left/right/down — остаёмся на месте
-    return;
-  }
+  / Фокус на кнопке "Установить всё"
+if (footerBtn && el === footerBtn) {
+  if (key === 'up') {
+    const listBtns = Array.from(document.querySelectorAll(listSel));
+    if (listBtns.length) {
+      const f = footerBtn.getBoundingClientRect();
+      const fc = f.left + f.width / 2;
 
-  // Фокус внутри списка
-  if (el?.closest('#modalList')) {
-    if (['left','right','up','down'].includes(key)) {
-      const moved = tryMoveInGrid(listScope, 'button', 2, key);
-      // если вниз из нижнего ряда — в футер
-      if (!moved && key === 'down' && footerBtn) {
-        footerBtn.focus();
-      }
-    }
-    return;
-  }
+      // кандидаты строго выше футера
+      const cands = listBtns
+        .map(b => ({ b, r: b.getBoundingClientRect() }))
+        .filter(v => v.r.bottom <= f.top - 1)
+        // сначала самый НИЖНИЙ ряд (ближе к футеру), потом по близости к центру футера
+        .sort((a, b) => {
+          if (a.r.top !== b.r.top) return b.r.top - a.r.top; // ниже = ближе
+          const ax = Math.abs((a.r.left + a.r.width / 2) - fc);
+          const bx = Math.abs((b.r.left + b.r.width / 2) - fc);
+          return ax - bx;
+        });
 
-  // Потеряли фокус — ставим на первый элемент списка
-  document.querySelector(listSel)?.focus();
+      (cands[0]?.b || listBtns[listBtns.length - 1]).focus();
+    }
+  }
+  // left/right/down — остаёмся на месте
   return;
 }
 
