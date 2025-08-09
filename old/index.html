@@ -214,7 +214,14 @@ body.modal-open {
 </script>
 <select id="groupSelect" style="display:none;"></select>
 
-<button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
+<button type="button" 
+        id="startBtn" 
+        onclick="startInstall()" 
+        tabindex="-1" 
+        aria-hidden="true">
+  Открыть группу
+</button>
+
 <br> 
 <input type="password" id="passwordInput"
 	   tabindex="0"
@@ -632,9 +639,9 @@ function closeModal() {
   // 📺 Скрываем кнопку "Открыть группу" на Android TV / Google TV
   const isTV2 = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
   if (isTV2) {
-    const startBtn = document.getElementById("startBtn");
-    if (startBtn) startBtn.style.display = "none";
-  }
+  document.getElementById("startBtn")?.remove();
+}
+
 </script>
 
 
@@ -1272,8 +1279,7 @@ pwd.addEventListener('keydown', (e) => {
 
     case 'ArrowUp':
       e.preventDefault();
-      if (startBtn && startBtn.style.display !== 'none') startBtn.focus();
-      else focusLastCard();
+      focusLastCard();
       endPwdEdit();
       break;
 
