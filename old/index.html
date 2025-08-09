@@ -1019,30 +1019,45 @@ if (document.getElementById('miscModal')?.style.display === 'flex') {
 
   // 3) Список компонентов
 if (document.getElementById('modal')?.style.display === 'flex') {
-  const scope    = '#modal .modal-content';
-  // включаем и кнопки списка, и нижнюю кнопку "Установить всё"
-  const selector = '#modalList button, #modal .modal-content > button';
+  const listScope   = '#modalList';
+  const listSel     = '#modalList button';
+  const footerBtn   = document.querySelector('#modal .modal-content > button'); // "Установить всё"
   const el = document.activeElement;
 
   if (key === 'back') { closeModal(); return; }
-  if (key === 'ok')   { el?.click();  return; }
+  if (key === 'ok')   { el?.click();    return; }
 
-  // если фокус потерян — ставим на первый элемент списка
-  if (!el || !el.closest('#modal') || !el.matches('button')) {
-    const first = document.querySelector('#modalList button') 
-               || document.querySelector('#modal .modal-content > button');
-    if (first) first.focus();
+  // Фокус на кнопке "Установить всё"
+  if (footerBtn && el === footerBtn) {
+    if (key === 'up') {
+      // вверх — к ближайшей кнопке списка (или последней, если что)
+      const moved = moveFocusByGeometry('#modal .modal-content', listSel, 'up');
+      if (!moved) {
+        const all = Array.from(document.querySelectorAll(listSel));
+        all[all.length - 1]?.focus();
+      }
+    }
+    // left/right/down — остаёмся на месте
     return;
   }
 
-  // геометрическая навигация: влево/вправо по строке, вверх/вниз между рядами и в футер
-  if (['left','right','up','down'].includes(key)) {
-    moveFocusByGeometry(scope, selector, key);
+  // Фокус внутри списка
+  if (el?.closest('#modalList')) {
+    if (['left','right','up','down'].includes(key)) {
+      const moved = tryMoveInGrid(listScope, 'button', 2, key);
+      // если вниз из нижнего ряда — в футер
+      if (!moved && key === 'down' && footerBtn) {
+        footerBtn.focus();
+      }
+    }
     return;
   }
 
+  // Потеряли фокус — ставим на первый элемент списка
+  document.querySelector(listSel)?.focus();
   return;
 }
+
 
 
   // 4) Главный экран: карточки ↔ пароль ↔ системные кнопки
