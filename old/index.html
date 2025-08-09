@@ -394,6 +394,28 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
   }
 });
 
+// 🔹 Авто-показ клавиатуры на телефонах
+const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
+const pwd = document.getElementById('passwordInput');
+
+pwd.addEventListener('focus', () => {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(true);
+  }
+});
+
+pwd.addEventListener('blur', () => {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(false);
+  }
+});
+
+pwd.addEventListener('click', () => {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(true);
+  }
+});
+
 
 
 async function startInstall() {
