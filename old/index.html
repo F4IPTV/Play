@@ -216,14 +216,10 @@ body.modal-open {
 
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
-<input id="passwordInput"
-       type="password"
-       placeholder="•••"
-       tabindex="0"
-       readonly
-       inputmode="none"
-       autocomplete="off">
-
+<input type="password" id="passwordInput"
+	   tabindex="0"
+       placeholder="Введите пароль"
+       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
 <div id="status"></div>
 <!-- Кнопки системных настроек -->
@@ -409,49 +405,63 @@ const isTV = (() => {
 })();
 
 const pwd = document.getElementById('passwordInput');
+let editArmed = false;   // пользователь явно запросил редактирование (тап/клик)
+let imeOpen   = false;   // чтобы не дёргать клаву лишний раз
 
-// Разрешаем редактирование только по явному действию
-function activatePwd() {
-  pwd.dataset.activated = '1';
+// На телефонах держим input readonly, чтобы программный фокус не открывал IME
+if (!isTV) pwd.setAttribute('readonly', 'readonly');
+
+// Пользователь ткнул пальцем — разрешаем редактирование и открываем IME
+pwd.addEventListener('pointerdown', () => {
+  if (isTV) return;
+  editArmed = true;
   pwd.removeAttribute('readonly');
-  pwd.removeAttribute('inputmode'); // разрешаем ИМЕ
-  pwd.focus();
-  const len = pwd.value.length;
-  try { pwd.setSelectionRange(len, len); } catch(e) {}
-  if (window.AndroidInterface?.showKeyboard) {
-    AndroidInterface.showKeyboard();
-  }
-}
+  // даём движку кадр, затем фокус/IME
+  requestAnimationFrame(() => {
+    pwd.focus();
+    if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
+      window.AndroidInterface.setTextInputEnabled(true);
+      imeOpen = true;
+    }
+  });
+});
 
-// В обычном фокусе (стрелками) — не редактируем, прячем клавиатуру
-pwd.addEventListener('focusin', () => {
-  if (!pwd.dataset.activated) {
-    // оставляем фокус для навигации, но поле «не редактируемо»
-    if (window.AndroidInterface?.hideKeyboard) {
-      AndroidInterface.hideKeyboard();
+// Программный фокус (через DPAD) НЕ открывает IME, если readonly стоит
+pwd.addEventListener('focus', () => {
+  if (isTV) return;
+  if (!editArmed) {
+    // пришли сюда программно — ничего не делаем, IME не трогаем
+    return;
+  }
+  // если пришли после pointerdown, всё уже сделано выше
+  editArmed = false;
+});
+
+// Потеря фокуса — закрываем IME и снова блокируем редактирование
+pwd.addEventListener('blur', () => {
+  if (!isTV) {
+    pwd.setAttribute('readonly', 'readonly');
+    if (window.AndroidInterface?.setTextInputEnabled && imeOpen) {
+      window.AndroidInterface.setTextInputEnabled(false);
+      imeOpen = false;
     }
   }
 });
 
-// По клику/OK/Enter — активируем
-pwd.addEventListener('click', (e) => { activatePwd(); });
-pwd.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === 'OK' || e.keyCode === 23) {
-    e.preventDefault();
-    activatePwd();
-  }
-});
-
-// Ушли с поля — снова делаем его «глухим»
-pwd.addEventListener('blur', () => {
-  pwd.dataset.activated = '';
-  pwd.setAttribute('readonly', '');
-  pwd.setAttribute('inputmode', 'none');
-  if (window.AndroidInterface?.hideKeyboard) {
-    AndroidInterface.hideKeyboard();
-  }
-});
-
+// Дополнительно: если у тебя есть навигация «OK» по полю с пульта,
+// можно разрешить редактирование по OK:
+function enableEditFromDpad() {
+  if (isTV) return;
+  editArmed = true;
+  pwd.removeAttribute('readonly');
+  requestAnimationFrame(() => {
+    pwd.focus();
+    if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
+      window.AndroidInterface.setTextInputEnabled(true);
+      imeOpen = true;
+    }
+  });
+}
 
 
 
@@ -1210,7 +1220,23 @@ let pwdEditing = false;
 pwd.setAttribute('readonly', '');
 pwd.setAttribute('inputmode', 'none');
 
+function beginPwdEdit() {
+  pwdEditing = true;
+  pwd.removeAttribute('readonly');
+  pwd.removeAttribute('inputmode');        // ← разрешаем IME
+  pwd.focus();
+  const len = pwd.value.length;
+  try { pwd.setSelectionRange(len, len); } catch(_) {}
+  window.AndroidInterface?.showKeyboard?.();
+}
 
+function endPwdEdit() {
+  if (!pwdEditing) return;
+  pwdEditing = false;
+  pwd.setAttribute('readonly', '');
+  pwd.setAttribute('inputmode', 'none');   // ← запрещаем IME на фокусе
+  window.AndroidInterface?.hideKeyboard?.();
+}
 
 // если поле сфокусировалось НЕ в режиме редактирования — гарантированно не поднимаем IME
 pwd.addEventListener('focus', () => {
