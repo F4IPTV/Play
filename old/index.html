@@ -217,7 +217,6 @@ body.modal-open {
 <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
 <br> 
 <input type="password" id="passwordInput"
-	   tabindex="0"
        placeholder="Введите пароль"
        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
@@ -397,73 +396,31 @@ document.getElementById('passwordInput').addEventListener('keydown', function(e)
 
 // 🔹 Авто-показ клавиатуры на телефонах
 // надежное определение ТВ из Kotlin
-// Надёжное определение ТВ из Kotlin (если добавлял isTv())
-// Надёжное определение ТВ из Kotlin
-const isTV = (() => {
-  try { return !!(window.AndroidInterface?.isTv && window.AndroidInterface.isTv()); }
-  catch { return /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent); }
+const isTV = (function(){
+  try {
+    // В WebView @JavascriptInterface возвращает значение синхронно
+    return !!(window.AndroidInterface && window.AndroidInterface.isTv && window.AndroidInterface.isTv());
+  } catch (e) { return false; }
 })();
-
 const pwd = document.getElementById('passwordInput');
-let editArmed = false;   // пользователь явно запросил редактирование (тап/клик)
-let imeOpen   = false;   // чтобы не дёргать клаву лишний раз
 
-// На телефонах держим input readonly, чтобы программный фокус не открывал IME
-if (!isTV) pwd.setAttribute('readonly', 'readonly');
-
-// Пользователь ткнул пальцем — разрешаем редактирование и открываем IME
-pwd.addEventListener('pointerdown', () => {
-  if (isTV) return;
-  editArmed = true;
-  pwd.removeAttribute('readonly');
-  // даём движку кадр, затем фокус/IME
-  requestAnimationFrame(() => {
-    pwd.focus();
-    if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
-      window.AndroidInterface.setTextInputEnabled(true);
-      imeOpen = true;
-    }
-  });
-});
-
-// Программный фокус (через DPAD) НЕ открывает IME, если readonly стоит
 pwd.addEventListener('focus', () => {
-  if (isTV) return;
-  if (!editArmed) {
-    // пришли сюда программно — ничего не делаем, IME не трогаем
-    return;
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(true);
   }
-  // если пришли после pointerdown, всё уже сделано выше
-  editArmed = false;
 });
 
-// Потеря фокуса — закрываем IME и снова блокируем редактирование
 pwd.addEventListener('blur', () => {
-  if (!isTV) {
-    pwd.setAttribute('readonly', 'readonly');
-    if (window.AndroidInterface?.setTextInputEnabled && imeOpen) {
-      window.AndroidInterface.setTextInputEnabled(false);
-      imeOpen = false;
-    }
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(false);
   }
 });
 
-// Дополнительно: если у тебя есть навигация «OK» по полю с пульта,
-// можно разрешить редактирование по OK:
-function enableEditFromDpad() {
-  if (isTV) return;
-  editArmed = true;
-  pwd.removeAttribute('readonly');
-  requestAnimationFrame(() => {
-    pwd.focus();
-    if (window.AndroidInterface?.setTextInputEnabled && !imeOpen) {
-      window.AndroidInterface.setTextInputEnabled(true);
-      imeOpen = true;
-    }
-  });
-}
-
-
+pwd.addEventListener('click', () => {
+  if (!isTV && window.AndroidInterface?.setTextInputEnabled) {
+    window.AndroidInterface.setTextInputEnabled(true);
+  }
+});
 
 
 
@@ -1172,15 +1129,13 @@ if (onCards) {
   }
 }
 
-// внутри handleKey, в блоке:
-// if (document.activeElement === pwd) { ... }
+// ——— Фокус на поле пароля ———
 if (document.activeElement === pwd) {
-  if (key === 'ok') { enableEditFromDpad(); return; }
+  if (key === 'ok') { beginPwdEdit(); return; }
   if (key === 'up')   { focusLastCard(); return; }
   if (key === 'down') { focusFirstSysBtn(); return; }
   return;
 }
-
 
 
 // ——— Фокус внутри блока системных кнопок ———
