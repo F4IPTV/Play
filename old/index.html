@@ -1018,14 +1018,32 @@ if (document.getElementById('miscModal')?.style.display === 'flex') {
 }
 
   // 3) Список компонентов
-  if (document.getElementById('modal')?.style.display === 'flex') {
-    if (key === 'back') { closeModal(); return; }
-    if (key === 'ok')   { document.activeElement?.click(); return; }
-    if (['up','down','left','right'].includes(key)) {
-      tryMoveInGrid('#modalList', 'button', 2, key);
-    }
+if (document.getElementById('modal')?.style.display === 'flex') {
+  const scope    = '#modal .modal-content';
+  // включаем и кнопки списка, и нижнюю кнопку "Установить всё"
+  const selector = '#modalList button, #modal .modal-content > button';
+  const el = document.activeElement;
+
+  if (key === 'back') { closeModal(); return; }
+  if (key === 'ok')   { el?.click();  return; }
+
+  // если фокус потерян — ставим на первый элемент списка
+  if (!el || !el.closest('#modal') || !el.matches('button')) {
+    const first = document.querySelector('#modalList button') 
+               || document.querySelector('#modal .modal-content > button');
+    if (first) first.focus();
     return;
   }
+
+  // геометрическая навигация: влево/вправо по строке, вверх/вниз между рядами и в футер
+  if (['left','right','up','down'].includes(key)) {
+    moveFocusByGeometry(scope, selector, key);
+    return;
+  }
+
+  return;
+}
+
 
   // 4) Главный экран: карточки ↔ пароль ↔ системные кнопки
 const pwd = document.getElementById('passwordInput');
