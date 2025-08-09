@@ -1034,9 +1034,12 @@ document.addEventListener('keydown', function (e) {
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
   // ⬅️ Возврат фокуса
-  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
-    lastFocusedElement.focus();
-  }
+  setTimeout(() => {
+    if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+      lastFocusedElement.focus?.();
+    }
+    lastFocusedElement = null; // очистка ссылки
+  }, 50);
 }
   
 </script>
