@@ -1027,7 +1027,7 @@ if (document.getElementById('modal')?.style.display === 'flex') {
   if (key === 'back') { closeModal(); return; }
   if (key === 'ok')   { el?.click();    return; }
 
-  / Фокус на кнопке "Установить всё"
+  // Фокус на кнопке "Установить всё"
 if (footerBtn && el === footerBtn) {
   if (key === 'up') {
     const listBtns = Array.from(document.querySelectorAll(listSel));
@@ -1052,6 +1052,7 @@ if (footerBtn && el === footerBtn) {
   }
   // left/right/down — остаёмся на месте
   return;
+}
 }
 
 
