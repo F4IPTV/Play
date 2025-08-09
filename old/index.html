@@ -331,6 +331,7 @@ body.modal-open {
 <script>
 let currentGroup = "";
 let cachedConfig = null;
+let lastFocusedElement = null;
 
 let lastPassword = "";
 
@@ -1009,6 +1010,7 @@ document.addEventListener('keydown', function (e) {
 
 <script>
   function openMiscModal() {
+  lastFocusedElement = document.activeElement; // 💾 запоминаем, что было в фокусе
   const modal = document.getElementById("miscModal");
   modal.style.display = "flex";
   document.body.classList.add("modal-open");
@@ -1031,7 +1033,10 @@ document.addEventListener('keydown', function (e) {
    const modal = document.getElementById("miscModal");
   modal.style.display = "none";
   document.body.classList.remove("modal-open");
-  
+  / ⬅️ Возврат фокуса
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    lastFocusedElement.focus();
+  }
 }
   
 </script>
