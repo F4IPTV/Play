@@ -816,7 +816,7 @@ function renderAppSelection(json) {
     card.onclick = () => {
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showStatus(`✅ ${app.label} установлено как автозапуск`, 'green', 3000);
+      showStatus(`✅ ${app.label} установлено как автозапуск`, '#00cfff', 3000);
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
