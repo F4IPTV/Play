@@ -343,11 +343,11 @@ let savedPassword = "";
 
 document.getElementById('passwordBtn').addEventListener('click', () => {
   if (window.AndroidInterface?.requestPassword) {
-    // Если есть метод в Kotlin — используем его
+    // Если есть метод в Kotlin — используем его для вызова клавиатуры на ТВ
     window.AndroidInterface.requestPassword();
   } else {
-    // ПК/телефон: передаём текущее значение во второй аргумент prompt
-    const pwd = prompt("Введите пароль", savedPassword || "");
+    // На телефонах/ПК
+    const pwd = prompt("Введите пароль");
     if (pwd !== null) {
       savedPassword = pwd.trim();
       updatePasswordBtn();
