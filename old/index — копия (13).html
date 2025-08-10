@@ -132,32 +132,6 @@ button:focus {
   z-index: 9999;
 }
 
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh; /* ограничим высоту модалки */
-}
-
-.modal-header {
-  position: sticky;
-  top: 0;
-  background: #222; /* фон, чтобы при прокрутке не просвечивало */
-  padding-bottom: 10px;
-  z-index: 2;
-}
-
-.modal-body {
-  overflow-y: auto;
-  flex: 1; /* займёт всё доступное место */
-}
-
-.modal-footer {
-  padding-top: 10px;
-}
-
-
-
-
 #logo {
   width: 300px;
   height: 300px;
@@ -287,25 +261,19 @@ body.modal-open {
 
 <div id="autostartModal" class="modal" style="display:none;">
   <div class="modal-content">
-    
-    <div class="modal-header">
-      <div id="autostartCurrent" style="margin-bottom: 10px; font-weight: bold;">
-        Выбрано: Нет
-      </div>
-      <h3>Выберите приложение для автозапуска:</h3>
-      <button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
-    </div>
-
-    <div class="modal-body">
-      <div id="autostartList" class="card-container"></div>
-    </div>
-
-    <div class="modal-footer">
-      <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
-    </div>
-  </div>
+ 
+ <div id="autostartCurrent" style="margin-bottom: 10px; font-weight: bold;">
+  Выбрано: Нет
 </div>
 
+    <h3>Выберите приложение для автозапуска:</h3>
+	
+	<button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
+
+    <div id="autostartList" class="card-container"></div>
+    <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
+  </div>
+</div>
 
 
 
