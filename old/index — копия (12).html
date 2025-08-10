@@ -407,12 +407,7 @@ function copyNextBackup() {
 
   const url = backupQueue.shift();
   const fileName = url.split('/').pop();
-  showStatus(
-  `⏳ Копирование: ${fileName} <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
+  showStatus(`⏳ Копирование: ${fileName} <span class='spin'>⏳</span>`, "orange", 4000);
 
   if (window.AndroidInterface) {
     window.AndroidInterface.copyBackup(url, backupTarget);
@@ -509,12 +504,7 @@ function showGroupList(config)  {
     const btn = document.createElement('button');
     btn.textContent = app.file;
     btn.onclick = () => {
-      showStatus(
-  `Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
+      showStatus("⏳ Загрузка APK... <span class='spin'>⏳</span>", "orange", 4000);
       if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url, app.file || "Приложение");
     };
     list.appendChild(btn);
@@ -527,12 +517,7 @@ function showGroupList(config)  {
     const urls = backup.urls || (backup.url ? [backup.url] : []);
     if (!urls.length) return;
 
-    showStatus(
-  `Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
+    showStatus("⏳ Копирование бэкапов... <span class='spin'>⏳</span>", "orange", 4000);
 
     if (window.AndroidInterface) {
       window.AndroidInterface.copyMultipleBackups(JSON.stringify(urls), backup.target_folder);
@@ -562,12 +547,7 @@ function showGroupList(config)  {
 }
 
 function installAll() {
-  showStatus(
-  `Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
+  showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000);
 
   if (window.AndroidInterface) {
     requestAnimationFrame(() => {
@@ -842,7 +822,7 @@ function disableAutostart() {
     if (current) {
       current.innerHTML = '<span style="color: gray;">Не выбрано</span>';
     }
-    showStatus("🚫 Автозапуск отключён", "#00cfff", 3000);
+    showStatus("🚫 Автозапуск отключён", "orange", 3000);
   }
 }
 
