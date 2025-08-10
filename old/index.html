@@ -840,7 +840,7 @@ function disableAutostart() {
     // Обновляем статус на экране
     const current = document.getElementById('autostartCurrent');
     if (current) {
-      current.innerHTML = '<span style="color: gray;">Не выбрано</span>';
+      current.innerHTML = '<span style="color: lightgreen;">Не выбрано</span>';
     }
     showStatus("🚫 Автозапуск отключён", "#00cfff", 3000);
   }
