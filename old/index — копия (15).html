@@ -132,18 +132,30 @@ button:focus {
   z-index: 9999;
 }
 
-
-
-
-
 #logo {
-  position: fixed;       /* фиксируем поверх всего */
-  top: 0;
-  left: 0;
-  width: 100vw;          /* на всю ширину экрана */
-  height: 100vh;         /* на всю высоту экрана */
-  background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain;
-  z-index: 9999;         /* поверх всех элементов */
+  width: 300px;
+  height: 300px;
+  background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(8).svg') no-repeat center/contain;
+  animation: flyInRotate 3s ease-out forwards;
+}
+
+@keyframes flyInRotate {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.2) rotate(1080deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(1080deg);
+    opacity: 1;
+  }
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 
