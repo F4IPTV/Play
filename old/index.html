@@ -275,7 +275,7 @@ button:focus {
   </div>
 </div>
 
-
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 
 <div id="miscModal" class="modal" style="display: none;" tabindex="-1">
@@ -493,6 +493,21 @@ function showStatus(message, color, timeout = 4000) {
     status.classList.remove('visible');
   }, timeout);
 }
+
+function showToast(message, withSpin = false) {
+  const toast = document.getElementById("toast");
+  toast.innerHTML = withSpin 
+    ? `<span class="spin">⏳</span>${message}`
+    : message;
+  
+  toast.classList.add("show");
+
+  clearTimeout(window.toastTimeout);
+  window.toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
 
 
 function showGroupList(config)  {
