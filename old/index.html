@@ -848,7 +848,7 @@ function renderAppSelection(json) {
     card.onclick = () => {
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showToast(`✅ ${app.label} установлено как автозапуск`, '#00cfff', 3000);
+      showToast(`✅ ${app.label} установлено как автозапуск`);
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
@@ -874,7 +874,7 @@ function disableAutostart() {
     if (current) {
       current.innerHTML = '<span style="color: #00cfff;">Автозапуск отключён</span>';
     }
-    showToast("🚫 Автозапуск отключён", "#00cfff", 3000);
+    showToast("🚫 Автозапуск отключён");
   }
 }
 
