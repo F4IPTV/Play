@@ -813,15 +813,16 @@ function renderAppSelection(json) {
     card.className = 'card';
     card.setAttribute('tabindex', '0');
     card.innerHTML = `<img src="${app.icon}" alt="" style="height:24px;"><br>${app.label}`;
-    card.onclick = () => {
+    card.onclick = (ev) => {
+      ev.stopPropagation();
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showStatus(`✅ ${app.label} установлено как автозапуск`, '#00cfff', 3000);
+      showToast(`✅ ${app.label} установлено как автозапуск`);
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + appLabel;
+      document.getElementById("autostartCurrent").textContent = "Выбрано: " + app.label;
     };
     list.appendChild(card);
   });
@@ -832,8 +833,6 @@ function renderAppSelection(json) {
   }, 100);
 }
 
-
-
 function disableAutostart() {
   if (window.AndroidInterface) {
     window.AndroidInterface.DeleteAutostartPackage(""); // или null
@@ -842,9 +841,10 @@ function disableAutostart() {
     if (current) {
       current.innerHTML = '<span style="color: #00cfff;">Автозапуск отключён</span>';
     }
-    showStatus("🚫 Автозапуск отключён", "#00cfff", 3000);
+    showToast("🚫 Автозапуск отключён");
   }
 }
+
 
 
 
