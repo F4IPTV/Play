@@ -872,7 +872,7 @@ function renderAppSelection(json) {
 	  ev.stopPropagation();
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showToast(`✅ ${app.label} установлено как автозапуск`, false, app.icon);
+      showToast(`${app.label} установлено как автозапуск`, false, app.icon);
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
