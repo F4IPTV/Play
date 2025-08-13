@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -132,40 +133,7 @@ button:focus {
   z-index: 9999;
 }
 
-.toast {
-  visibility: hidden;
-  display: inline-block;                  /* ширина = по содержимому */
-  box-sizing: border-box;
-  background: rgba(200,200,55,0.85);
-  color: #fff;
-  text-align: center;
-  border-radius: 10px;
-  padding: 12px 18px;
-  position: fixed;
-  z-index: 9999;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 40px;
-  font-size: 18px;
-  line-height: 1.3;
-  opacity: 0;
-  transition: opacity 0.35s ease, bottom 0.35s ease;
 
-  /* компактная, но «умная» ширина */
-  min-width: 160px;                       /* не меньше небольшого бейджа */
-  max-width: min(70vw, 720px);            /* не растягиваемся на весь экран/тв */
-  white-space: normal;                    /* перенос строк */
-  overflow-wrap: anywhere;                /* перенос слов без пробелов */
-  word-break: break-word;                 /* запасной вариант */
-}
-
-
-
-.toast.show {
-  visibility: visible;
-  opacity: 1;
-  bottom: 60px;                           /* лёгкий «подскок» при показе */
-}
 
 
 
@@ -208,7 +176,7 @@ button:focus {
 </div>
 
 
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 
 
 <div class="card-container">
@@ -848,12 +816,12 @@ function renderAppSelection(json) {
     card.onclick = () => {
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showToast(`✅ ${app.label} установлено как автозапуск`);
+      showStatus(`✅ ${app.label} установлено как автозапуск`, '#00cfff', 3000);
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + app.Label;
+	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + appLabel;
     };
     list.appendChild(card);
   });
@@ -874,7 +842,7 @@ function disableAutostart() {
     if (current) {
       current.innerHTML = '<span style="color: #00cfff;">Автозапуск отключён</span>';
     }
-    showToast("🚫 Автозапуск отключён");
+    showStatus("🚫 Автозапуск отключён", "#00cfff", 3000);
   }
 }
 
@@ -1116,23 +1084,7 @@ document.addEventListener('keydown', function (e) {
     lastFocusedElement = null; // очистка ссылки
   }, 50);
 }
-
-function showToast(message, withSpin = false) {
-  const toast = document.getElementById("toast");
-  toast.innerHTML = withSpin 
-    ? `<span class="spin">⏳</span>${message}`
-    : message;
   
-  toast.classList.add("show");
-
-  clearTimeout(window.toastTimeout);
-  window.toastTimeout = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
-}
-
-
-
 </script>
 
 
