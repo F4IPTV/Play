@@ -245,13 +245,13 @@ button:focus {
     });
   });
    document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      const selected = document.querySelector('.card.selected');
-      if (selected) {
-        currentGroup = selected.dataset.group;
-      }
-    }
-  });
+  if (e.key !== 'Enter') return;
+  if (anyModalOpen()) return; // ← ключевая строка
+
+  const selected = document.querySelector('.card.selected');
+  if (selected) currentGroup = selected.dataset.group;
+});
+
 </script>
 <select id="groupSelect" style="display:none;"></select>
 
@@ -415,7 +415,10 @@ function updatePasswordBtn() {
     : "🔑 Введите пароль";
 }
 
-
+function anyModalOpen() {
+  return ['modal','autostartModal','miscModal']
+    .some(id => document.getElementById(id)?.style.display === 'flex');
+}
 
 
 // 🔁 Для пропууска ложного энтера
@@ -700,23 +703,17 @@ if (e.key === 'ArrowUp') {
   }
 });
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-  const active = document.activeElement;
-  const modal = document.getElementById('modal');
-  if (modal.style.display === 'flex') return;
+  if (e.key !== 'Enter') return;
+  if (anyModalOpen()) return; // ← учитываем все модалки
 
-  // Если фокус на системных кнопках — ничего не делать
-  if (active && (active.textContent.includes("Неизвестные источники") || active.textContent.includes("Энергосбережение"))) {
+  const active = document.activeElement;
+  if (active && (active.textContent?.includes("Неизвестные источники") || active.textContent?.includes("Энергосбережение"))) {
     return;
   }
-
   const selected = document.querySelector('.card.selected');
-  if (selected) {
-    startInstall();
-  }
-}
-
+  if (selected) startInstall();
 });
+
 
 
 
@@ -862,7 +859,8 @@ function renderAppSelection(json) {
     card.setAttribute('tabindex', '0');
     card.innerHTML = `<img src="${app.icon}" alt="" style="height:24px;"><br>${app.label}`;
     card.onclick = (ev) => {
-      ev.stopPropagation();
+      ev.preventDefault();
+	  ev.stopPropagation();
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
       showToast(`✅ ${app.label} установлено как автозапуск`);
@@ -958,6 +956,9 @@ function onInstalledAppsReceived(appsJson) {
 document.addEventListener('keydown', function (e) {
   const modal = document.getElementById('autostartModal');
   if (!modal || modal.style.display !== 'flex') return;
+  
+  e.stopPropagation();
+  e.stopImmediatePropagation();
 
   const cards = Array.from(document.querySelectorAll('#autostartList .card'));
   const closeBtn = document.getElementById('autostartCloseBtn');
