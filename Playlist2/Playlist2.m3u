@@ -371,6 +371,72 @@ https://river-1.rutube.ru/hls-vod/rbUTie-0_I_pvpBUXZxstg/1755363567/1846/0x5000c
 
 
 
+
+
+
+
+#EXTINF:-1 group-title="KABELNET",Россия 24
+http://87.246.54.249:8085/Rossia24/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Россия 1
+http://87.246.54.249:8085/RTR_Planeta/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Terra HD
+http://87.246.54.249:8085/TerraHD/index.m3u8
+#EXTINF:-1 group-title="KABELNET",THT4
+http://87.246.54.249:8085/THT4/index.m3u8
+#EXTINF:-1 group-title="KABELNET",THT HD
+http://87.246.54.249:8085/THT/index.m3u8
+#EXTINF:-1 group-title="KABELNET",HTB HD
+http://87.246.54.249:8085/HTB/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Техно 24
+http://87.246.54.249:8085/24Tehno/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Animal Planet
+http://87.246.54.249:8085/AnimalPlanet/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Точка РФ
+http://87.246.54.249:8085/HDL/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Авто плюс
+http://87.246.54.249:8085/AvtoPlus/index.m3u8
+#EXTINF:-1 group-title="KABELNET",CTC HD
+http://87.246.54.249:8085/CTC/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Еспресо TV
+http://87.246.54.249:8085/espressotv/index.m3u8
+#EXTINF:-1 group-title="KABELNET",TV1000
+http://87.246.54.249:8085/TV1000/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Кинохит HD
+http://87.246.54.249:8085/KinoHit/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Киномикс HD
+http://87.246.54.249:8085/Kinomiks/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Киносемья HD
+http://87.246.54.249:8085/kinosemia/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Мир сериала
+http://87.246.54.249:8085/MirSeriala/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Наше новое кино
+http://87.246.54.249:8085/NasheKino/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Пятница
+http://87.246.54.249:8085/piatnica/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Победа
+http://87.246.54.249:8085/Pobeda/index.m3u8
+#EXTINF:-1 group-title="KABELNET",TLC HD
+http://87.246.54.249:8085/TLC/index.m3u8
+#EXTINF:-1 group-title="KABELNET",ТНТ Music
+http://87.246.54.249:8085/THT_Music/index.m3u8
+#EXTINF:-1 group-title="KABELNET",СТС Kids
+http://87.246.54.249:8085/CTC_Kids/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Детский мир
+http://87.246.54.249:8085/DetskiMir/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Карусель
+http://87.246.54.249:8085/Karusel/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Удар
+http://87.246.54.249:8085/UDAR/index.m3u8
+#EXTINF:-1 group-title="KABELNET",KHL HD
+http://87.246.54.249:8085/KHL/index.m3u8
+#EXTINF:-1 group-title="KABELNET",MMA-TV.COM
+http://87.246.54.249:8085/MMATV/index.m3u8
+#EXTINF:-1 group-title="KABELNET",Viasat Nature
+http://87.246.54.249:8085/ViasatNature/index.m3u8
+
+
+
+
 #EXTINF:-1 group-title="Virusnet",Первый канал
 https://45.159.74.22/PerviyKanal/mono.m3u8
 #EXTINF:-1 group-title="Virusnet",Россия HD
@@ -7806,6 +7872,14 @@ https://v2.catcast.tv/content/40546/index.m3u8
 
 #EXTINF:-1 group-title="Спорткомплекс 🏆" ,Матч! HD
 https://livetv.mylifeisgood.net.ru/channels/matchhd_nocensored.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆" ,МАТЧ! БОЕЦ
+http://87.120.142.11:18000/Match!
+#EXTINF:-1 group-title="Спорткомплекс 🏆" ,МАТЧ! АРЕНА
+http://87.120.142.11:18000/Match!Arena
+#EXTINF:-1 group-title="Спорткомплекс 🏆" ,МАТЧ! Игра
+http://87.120.142.11:18000/Match!Igra
+#EXTINF:-1 group-title="Спорткомплекс 🏆" ,Trace Sport Stars HD
+http://87.120.142.11:18000/Rossiya1
 #EXTINF:-1 group-title="Спорткомплекс 🏆" ,Матч! Футбол 3
 http://185.57.68.33/110/mpegts
 #EXTINF:-1 group-title="Спорткомплекс 🏆" tvg-id="belarus5-inet" ,Беларусь 5
