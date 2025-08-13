@@ -868,7 +868,7 @@ function renderAppSelection(json) {
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-      document.getElementById("autostartCurrent").textContent = "Выбрано: " + app.label;
+      document.getElementById("autostartCurrent").textContent = "Выбрано: " + applabel;
     };
     list.appendChild(card);
   });
