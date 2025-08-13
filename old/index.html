@@ -853,7 +853,7 @@ function renderAppSelection(json) {
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
-	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + appLabel;
+	  document.getElementById("autostartCurrent").textContent = "Выбрано: " + app.Label;
     };
     list.appendChild(card);
   });
