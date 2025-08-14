@@ -522,7 +522,7 @@ async function startInstall() {
       status.innerHTML = "🔒 Неверный пароль!";
       status.style.color = "red";
       status.classList.add('visible');
-	  showToast({ message: `${app.label} установлено как автозапуск` });
+	  showToast({ message: "🔒 Неверный пароль!" });
 
       return;
     }
@@ -991,7 +991,11 @@ function renderAppSelection(json) {
 	  ev.stopPropagation();
       window.AndroidInterface.saveAutostartPackage(app.package);
       setCurrentAutostartApp(app.label, app.icon);
-      showToast(`${app.label} установлено как автозапуск`, false, app.icon);
+      showToast({
+  message: `${app.label} установлено как автозапуск`,
+  iconUrl: app.icon
+});
+
     };
     card.onfocus = () => {
       document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
