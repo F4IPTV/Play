@@ -147,58 +147,40 @@ button:focus {
   z-index: 9999;         /* поверх всех элементов */
 }
 
-/* Базовый стиль тоста */
 .toast {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  visibility: hidden;
+  display: inline-block;                  /* ширина = по содержимому */
   box-sizing: border-box;
-  background: rgba(0,0,0,0.85);
+  background: rgba(242,0,0,0.75);
   color: #fff;
+  text-align: center;
   border-radius: 10px;
   padding: 12px 18px;
-  font-size: 18px;
-  line-height: 1.3;
-  max-width: min(70vw, 720px);
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .25s ease, transform .25s ease;
-  pointer-events: auto;
-}
-.toast.show { opacity: 1; transform: translateY(0); }
-
-/* Варианты формы */
-.toast--pill    { border-radius: 999px; padding: 10px 16px; }
-.toast--compact { padding: 8px 12px; font-size: 16px; }
-.toast--card    { box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-
-/* Спин */
-.toast .spin { display:inline-block; animation: spin 1s linear infinite; }
-@keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
-
-/* Стеки по позициям (контейнеры) */
-.toast-stack {
   position: fixed;
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  pointer-events: none; /* чтобы клики проходили сквозь стек */
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 40px;
+  font-size: 14px;
+  line-height: 1.3;
+  opacity: 0;
+  transition: opacity 0.35s ease, bottom 0.35s ease;
+
+  /* компактная, но «умная» ширина */
+  min-width: 160px;                       /* не меньше небольшого бейджа */
+  max-width: min(70vw, 720px);            /* не растягиваемся на весь экран/тв */
+  white-space: normal;                    /* перенос строк */
+  overflow-wrap: anywhere;                /* перенос слов без пробелов */
+  word-break: break-word;                 /* запасной вариант */
 }
-.toast-stack--top    { top: 40px; }
-.toast-stack--bottom { bottom: 40px; }
-.toast-stack--center { top: 50%; transform: translateY(-50%); }
 
-.toast-stack--left   { left: 40px; align-items: flex-start; }
-.toast-stack--centerX{ left: 50%; transform: translateX(-50%); align-items: center; }
-.toast-stack--right  { right: 40px; align-items: flex-end; }
 
-/* Якорные тосты (позиционируются инлайново) */
-.toast--anchored { position: fixed; z-index: 10000; }
 
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 60px;                           /* лёгкий «подскок» при показе */
+}
 
 
 
@@ -522,8 +504,7 @@ async function startInstall() {
       status.innerHTML = "🔒 Неверный пароль!";
       status.style.color = "red";
       status.classList.add('visible');
-	  showToast({ message: "🔒 Неверный пароль!" });
-
+	  showToast("🔒 Неверный пароль!")
       return;
     }
 
@@ -550,126 +531,26 @@ function showStatus(message, color, timeout = 4000) {
   }, timeout);
 }
 
-// Создаёт/возвращает стек для позиции
-function getToastStack(position = 'bottom-center') {
-  const id = `toast-stack-${position}`;
-  let stack = document.getElementById(id);
-  if (stack) return stack;
+function showToast(message, withSpin = false, iconUrl = null) {
+  const toast = document.getElementById("toast");
 
-  const [v, h] = position.split('-'); // top|center|bottom  +  left|center|right
-  stack = document.createElement('div');
-  stack.id = id;
-  stack.className = `toast-stack toast-stack--${v} ${
-    h === 'center' ? 'toast-stack--centerX' : (h === 'left' ? 'toast-stack--left' : 'toast-stack--right')
-  } ${v === 'center' ? 'toast-stack--center' : ''}`;
-  document.body.appendChild(stack);
-  return stack;
-}
-
-/**
- * Показать тост
- * @param {Object} opts
- *  - message   : string              текст
- *  - type      : "info"|"success"|"error"|"warning"|... (цвета ниже)
- *  - iconUrl   : string|null         иконка слева (например, app.icon)
- *  - withSpin  : boolean             показать ⏳
- *  - position  : "bottom-center"|"top-right"|... или anchor
- *  - variant   : "default"|"pill"|"compact"|"card" (форма)
- *  - duration  : number              мс до скрытия (по умолчанию 3000)
- *  - anchor    : Element|Selector    привязать к DOM-элементу
- *  - offset    : number              отступ при anchor (по умолчанию 10)
- *  - colors    : {bg,text}           переопределить цвета прямо вызовом (необязательно)
- */
-function showToast({
-  message,
-  type = "info",
-  iconUrl = null,
-  withSpin = false,
-  position = "bottom-center",
-  variant = "default",
-  duration = 3000,
-  anchor = null,
-  offset = 10,
-  colors = null
-}) {
-  if (!message) return;
-
-  // Цветовые схемы (фон + шрифт). Добавляй свои сколько угодно.
-  const styles = {
-    success: { bg: "rgba(0,128,0,0.85)",  text: "#fff" },
-    error:   { bg: "rgba(220,0,0,0.9)",   text: "#fff" },
-    warning: { bg: "rgba(255,165,0,0.9)", text: "#000" },
-    info:    { bg: "rgba(242,0,0,0.85)",    text: "#fff" },
-    blue:    { bg: "rgba(0,123,255,0.9)", text: "#fff" },
-    pink:    { bg: "rgba(255,105,180,0.9)", text: "#000" }
-  };
-  const scheme = colors || styles[type] || styles.info;
-
-  // Элемент тоста
-  const toast = document.createElement('div');
-  toast.className = 'toast' +
-    (variant === 'pill'    ? ' toast--pill'    : '') +
-    (variant === 'compact' ? ' toast--compact' : '') +
-    (variant === 'card'    ? ' toast--card'    : '');
-
-  toast.style.backgroundColor = scheme.bg;
-  toast.style.color = scheme.text;
-
-  // Контент
-  let html = '';
+  let content = "";
   if (iconUrl) {
-    html += `<img src="${iconUrl}" alt="" style="height:20px; width:20px; object-fit:contain; vertical-align:middle;">`;
+    content += `<img src="${iconUrl}" alt="" style="height:16px; vertical-align:middle; margin-right:6px;">`;
   }
   if (withSpin) {
-    html += `<span class="spin">⏳</span>`;
+    content += `<span class="spin">⏳</span>`;
   }
-  html += `<span>${message}</span>`;
-  toast.innerHTML = html;
+  content += message;
 
-  // Размещение
-  let cleanup;
-  if (anchor) {
-    // Якорный режим — рядом с элементом
-    const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
-    const rect = el?.getBoundingClientRect();
-    toast.classList.add('toast--anchored');
-    document.body.appendChild(toast);
+  toast.innerHTML = content;
+  toast.classList.add("show");
 
-    // По умолчанию — под элементом по центру
-    const top = (rect?.bottom ?? 0) + offset;
-    const left = (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
-    toast.style.top = `${top}px`;
-    toast.style.left = `${left}px`;
-    toast.style.transform = 'translateX(-50%)';
-    cleanup = () => toast.remove();
-  } else {
-    // Стековый режим — по позиции
-    const stack = getToastStack(position);
-    stack.appendChild(toast);
-    cleanup = () => {
-      toast.remove();
-      // автоудаление пустого стека
-      if (!stack.children.length) stack.remove();
-    };
-  }
-
-  // Плавное появление
-  requestAnimationFrame(() => toast.classList.add('show'));
-
-  // Автоскрытие
-  const hide = () => {
-    toast.classList.remove('show');
-    setTimeout(cleanup, 250);
-  };
-  const timer = setTimeout(hide, duration);
-
-  // Закрытие по клику
-  toast.addEventListener('click', () => {
-    clearTimeout(timer);
-    hide();
-  });
+  clearTimeout(window.toastTimeout);
+  window.toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
 }
-
 
 
 
