@@ -522,7 +522,7 @@ async function startInstall() {
       status.innerHTML = "🔒 Неверный пароль!";
       status.style.color = "red";
       status.classList.add('visible');
-	  showToast({ message: "🔒 Неверный пароль!" });
+	  showToast({ message: `${app.label} установлено как автозапуск` });
 
       return;
     }
