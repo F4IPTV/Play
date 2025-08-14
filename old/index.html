@@ -1019,7 +1019,7 @@ function disableAutostart() {
     if (current) {
       current.innerHTML = '<span style="color: #00cfff;">Автозапуск отключён</span>';
     }
-    showToast("🚫 Автозапуск отключён");
+    showToast({ message: "🚫 Автозапуск отключён" });
   }
 }
 
