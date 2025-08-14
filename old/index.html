@@ -993,8 +993,10 @@ function renderAppSelection(json) {
       setCurrentAutostartApp(app.label, app.icon);
       showToast({
   message: `${app.label} установлено как автозапуск`,
-  iconUrl: app.icon
+  iconUrl: app.icon,
+  type: "success"
 });
+
 
     };
     card.onfocus = () => {
