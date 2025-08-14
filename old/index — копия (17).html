@@ -519,7 +519,9 @@ async function startInstall() {
     }
 
     if (groupInfo.password !== password) {
-      
+      status.innerHTML = "🔒 Неверный пароль!";
+      status.style.color = "red";
+      status.classList.add('visible');
 	  showToast({ message: "🔒 Неверный пароль!" });
 
       return;
