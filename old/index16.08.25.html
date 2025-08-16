@@ -306,45 +306,6 @@ button:focus {
     <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (19).png" alt="" style="height: 28px;"><br>Полезное
 </div>
 
-<div style="margin:20px;">
-  <h3>Выберите способ установки:</h3>
-  <button onclick="chooseStandard()">📦 Стандартный способ</button>
-  <button onclick="chooseAdb()">⚡ Через ADB</button>
-  <button onclick="testAdb()">🔍 Проверить ADB</button>
-</div>
-
-<script>
-  function chooseStandard() {
-    if (window.AndroidInterface?.setInstallMode) {
-      AndroidInterface.setInstallMode('standard');
-      showStatus("➡️ Выбран стандартный способ", "orange");
-    }
-  }
-
-  function chooseAdb() {
-    if (window.AndroidInterface?.setInstallMode) {
-      AndroidInterface.setInstallMode('adb');
-      showStatus("➡️ Выбран способ через ADB", "orange");
-    }
-  }
-
-  function testAdb() {
-    if (window.AndroidInterface?.checkAdb) {
-      AndroidInterface.checkAdb();
-    }
-  }
-
-  // Допустим у тебя уже есть showStatus или showToast
-  function showStatus(msg, color="white") {
-    const s = document.getElementById("status");
-    if (s) {
-      s.innerText = msg;
-      s.style.color = color;
-    } else {
-      alert(msg);
-    }
-  }
-</script>
 
 
 
