@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ваш проект — Главная</title>
+  <meta name="description" content="Краткое описание проекта" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1115; --bg2:#141821; --card:#0f141b; --text:#e9eef7; --muted:#9fb0c3; --brand:#3b82f6; --brand2:#22d3ee; --ok:#10b981; --warn:#f59e0b;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg),#0b0d12 40%,var(--bg));}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1140px;margin:0 auto;padding:0 18px}
+    /* Header */
+    header{position:sticky;top:0;z-index:40;background:rgba(15,17,21,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:.3px}
+    .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;box-shadow:var(--shadow)}
+    .logo svg{fill:white;width:20px;height:20px}
+    .menu{display:flex;gap:20px;align-items:center}
+    .menu a{padding:8px 12px;border-radius:12px;color:var(--muted)}
+    .menu a:hover,.menu a.active{background:rgba(255,255,255,.06);color:var(--text)}
+    .cta{padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));font-weight:600;box-shadow:var(--shadow)}
+    /* Hero */
+    .hero{padding:80px 0 40px}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}
+    .h1{font-size:44px;line-height:1.1;margin:0 0 14px}
+    .lead{color:var(--muted);font-size:18px;margin:0 0 22px}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);padding:8px 12px;border-radius:999px;color:#cfe3ff;margin-bottom:12px}
+    .hero-card{background:radial-gradient(1200px 400px at 20% -20%,rgba(59,130,246,.25),transparent),var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .badge{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.06);color:#d7e6ff}
+    .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .btn{padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:#0e1320}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));border:none;color:white;font-weight:600}
+    .preview{aspect-ratio:16/10;border-radius:var(--radius);background:linear-gradient(140deg,#0c1324,#0a0f1c);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow);display:grid;place-items:center}
+    .preview iframe{width:100%;height:100%;border:0;border-radius:inherit}
+    /* Hero background (image + gradients like on uspeh.tv) */
+    .hero{position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,.85) 0%, rgba(0,0,0,.85) 33%, rgba(0,0,0,0) 90%, rgba(0,0,0,.35) 100%);z-index:1}
+    .hero{position:relative;overflow:hidden;background-image:var(--hero-bg, none);background-size:cover;background-position:center;background-attachment:fixed}
+    .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,.85) 0%, rgba(0,0,0,.85) 33%, rgba(0,0,0,0) 90%, rgba(0,0,0,.35) 100%);z-index:1}
+    .hero-grid{position:relative;z-index:2}
+    @media (max-width:980px){.hero{background-attachment:scroll}}
+    
+    /* Features */
+    .section{padding:48px 0}
+    .section h2{margin:0 0 10px;font-size:30px}
+    .muted{color:var(--muted)}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(34,211,238,.25));margin-bottom:10px}
+    /* Instructions */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .step ol{margin:0 0 0 18px;padding:0}
+    .step ol li{margin:8px 0;color:#dfe8f6}
+    /* Video gallery */
+    .videos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .video-item{position:relative;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.06)}
+    .video-item iframe{width:100%;aspect-ratio:16/9;border:0}
+    /* FAQ */
+    .faq{max-width:860px;margin:0 auto}
+    .faq-item{border:1px solid rgba(255,255,255,.08);border-radius:16px;margin-bottom:12px;overflow:hidden;background:var(--card)}
+    .faq-q{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer}
+    .faq-a{display:none;padding:0 16px 16px;color:#d9e4f7}
+    /* Contact */
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form .full{grid-column:1/-1}
+    input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0e1220;color:var(--text)}
+    textarea{min-height:120px;resize:vertical}
+    .note{font-size:13px;color:var(--muted)}
+    /* Footer */
+    footer{padding:26px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,.06);background:#0c1018}
+    /* Responsive */
+    @media(max-width:980px){
+      .hero-grid{grid-template-columns:1fr}
+      .grid-3,.steps,.videos,.form{grid-template-columns:1fr}
+      .h1{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.77 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+      </div>Ваш проект</div>
+      <nav class="menu">
+        <a href="#top" class="active">Главная</a>
+        <a href="#videos">Видео</a>
+        <a href="#guides">Инструкции</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact" class="cta">Связаться</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="container hero" style="--hero-bg:url('https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&fit=crop&w=1600&q=80')">
+    <div class="hero-grid">
+      <div>
+        <div class="pill">Готово к запуску • 5 минут настройки</div>
+        <h1 class="h1">Ваш бесплатный пропуск в мир удобных инструкций и видео</h1>
+        <p class="lead">Простые шаги, наглядные ролики и поддержка. Делаем сложное — понятным.</p>
+        <div class="badges">
+          <div class="badge">✅ До 5 устройств</div>
+          <div class="badge">📺 4K видео</div>
+          <div class="badge">🗂️ Архив инструкций</div>
+          <div class="badge">⚡ Быстрый старт</div>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="#videos">Смотреть видео</a>
+          <a class="btn" href="#guides">Перейти к инструкциям</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="preview">
+          <!-- Замените на ваше промо-видео YouTube -->
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Promo" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="section">
+    <div class="container">
+      <h2>Почему это удобно</h2>
+      <p class="muted">Короткие понятные блоки и быстрые ссылки — всё по делу.</p>
+      <div class="grid-3" style="margin-top:16px">
+        <div class="card">
+          <div class="icon">📦</div>
+          <h3 style="margin:0 0 6px">Готовые наборы</h3>
+          <p class="muted">Собранные инструкции и пакеты файлов под разные задачи.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎬</div>
+          <h3 style="margin:0 0 6px">Наглядные видео</h3>
+          <p class="muted">Пошаговые ролики для быстрого старта на любом устройстве.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🛠️</div>
+          <h3 style="margin:0 0 6px">Поддержка</h3>
+          <p class="muted">FAQ, подсказки и контакт для обратной связи.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="guides" class="section" style="background:radial-gradient(1200px 500px at 20% -10%, rgba(34,211,238,.08), transparent)">
+    <div class="container">
+      <h2>Инструкции</h2>
+      <p class="muted">Выберите вашу платформу и следуйте шагам.</p>
+      <div class="steps" style="margin-top:16px">
+        <div class="card step">
+          <h3 style="margin:0 0 8px">Android TV</h3>
+          <ol>
+            <li>Скачайте установщик.</li>
+            <li>Разрешите установку из неизвестных источников.</li>
+            <li>Запустите и следуйте подсказкам.</li>
+          </ol>
+          <div class="actions"><a class="btn" href="#">Открыть инструкцию</a></div>
+        </div>
+        <div class="card step">
+          <h3 style="margin:0 0 8px">SMART TV</h3>
+          <ol>
+            <li>Откройте магазин приложений.</li>
+            <li>Найдите нужный плеер.</li>
+            <li>Подключите плейлист.</li>
+          </ol>
+          <div class="actions"><a class="btn" href="#">Открыть инструкцию</a></div>
+        </div>
+        <div class="card step">
+          <h3 style="margin:0 0 8px">ПК / Браузер</h3>
+          <ol>
+            <li>Перейдите в веб-версию.</li>
+            <li>Авторизуйтесь при необходимости.</li>
+            <li>Следуйте шагам на экране.</li>
+          </ol>
+          <div class="actions"><a class="btn" href="#">Открыть инструкцию</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="videos" class="section" style="background:radial-gradient(1200px 600px at 80% -10%, rgba(59,130,246,.08), transparent), radial-gradient(900px 400px at 10% 110%, rgba(34,211,238,.06), transparent)">
+    <div class="container">
+      <h2>Видео</h2>
+      <p class="muted">Подборка коротких роликов по настройке и использованию.</p>
+      <div class="videos" style="margin-top:16px">
+        <div class="video-item"><iframe src="https://www.youtube.com/embed/ysz5S6PUM-U" title="video1" allowfullscreen></iframe></div>
+        <div class="video-item"><iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="video2" allowfullscreen></iframe></div>
+        <div class="video-item"><iframe src="https://www.youtube.com/embed/bTqVqk7FSmY" title="video3" allowfullscreen></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section" style="background:radial-gradient(1200px 500px at 80% -10%, rgba(59,130,246,.08), transparent)">
+    <div class="container faq">
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <div class="faq-q"><span>Сколько это стоит?</span><span>＋</span></div>
+        <div class="faq-a">Базовые инструкции и видео — бесплатно. Расширенная поддержка по договорённости.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Работает ли на Android TV 12?</span><span>＋</span></div>
+        <div class="faq-a">Да, инструкции учитывают особенности версий Android TV 9–12.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Можно ли скачать материалы?</span><span>＋</span></div>
+        <div class="faq-a">Да, в инструкциях есть ссылки на загрузку необходимых файлов.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="container">
+      <h2>Связаться</h2>
+      <p class="muted">Оставьте сообщение — ответим в ближайшее время.</p>
+      <form class="card" onsubmit="event.preventDefault(); alert('Спасибо! Мы свяжемся с вами.');">
+        <div class="form" style="padding:16px">
+          <div><input required placeholder="Имя"/></div>
+          <div><input type="email" required placeholder="Email"/></div>
+          <div class="full"><textarea placeholder="Сообщение"></textarea></div>
+          <div class="full"><button class="btn primary" type="submit">Отправить</button> <span class="note" style="margin-left:10px">Нажимая, вы соглашаетесь с политикой конфиденциальности.</span></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <footer style="background-image:radial-gradient(800px 300px at 10% -10%, rgba(34,211,238,.06), transparent);">
+    <div class="container" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>© <span id="y"></span> Ваш проект. Все права защищены.</div>
+      <div class="note">Сделано с ❤ для людей</div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+      const id=a.getAttribute('href'); if(id==="#") return; const el=document.querySelector(id);
+      if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+    }));
+    // FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
+      const a=q.parentElement.querySelector('.faq-a'); const open=a.style.display==='block';
+      document.querySelectorAll('.faq-a').forEach(x=>x.style.display='none');
+      document.querySelectorAll('.faq-q span:last-child').forEach(x=>x.textContent='＋');
+      if(!open){ a.style.display='block'; q.querySelector('span:last-child').textContent='－'; }
+    }))
+    // Year
+    document.getElementById('y').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
