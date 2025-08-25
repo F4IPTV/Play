@@ -59,12 +59,12 @@
     {
       "file": "TorrServe_MatriX_135",
       "url": "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/4_TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1",
-      "tags": ["4", "7"]
+      "tags": ["4"]
     },
     {
       "file": "VimuMediaPlayerMD_10.83",
       "url": "https://www.dropbox.com/scl/fi/vbx0duku4c2dry50v8w53/4_VimuMediaPlayer.MD.apk?rlkey=818mnvher675omyq3bl5knr9b&dl=1",
-      "tags": ["4", "7"]
+      "tags": ["4"]
     },
     {
       "file": "Televizo-1.9.4.0",
@@ -94,7 +94,7 @@
     {
       "file": "AceStart",
       "url": "https://www.dropbox.com/scl/fi/nl6o4vsp6mqeb6f8f0rwd/7_acestart.apk?rlkey=12whuzxdwqiadie05jnhh86ax&dl=1",
-      "tags": ["6", "7"]
+      "tags": ["6"]
   },
     {
       "file": "AceStream_Full.apk",
@@ -104,7 +104,7 @@
     {
       "file": "LazyMediaDelux_3.395",
       "url": "https://www.dropbox.com/scl/fi/mwknfvp4xjcfmpqd422f7/7_-lazycatsoftware.lmd.apk?rlkey=49u2c88psa3xyk6mtr7wruwh9&dl=1",
-      "tags": ["8"]
+      "tags": ["7"]
      },
      {
       "file": "SmartTube_stable_28.75",
@@ -134,7 +134,7 @@
      {
       "file": "Виму10.40 DarkMoD",
       "url": "https://www.dropbox.com/scl/fi/4leiaco2l9o4mr5taadsl/8_-10.40-DarkMod-c-DV.apk?rlkey=bepb7bjt6exrib33jjidkaknb&dl=1",
-      "tags": ["8"]
+      "tags": ["7"]
      },
      {
       "file": "Button_Mapper_v3.35",
@@ -179,17 +179,17 @@
      {
       "file": "RUTUBE_29.11.1.TV-rus",
       "url": "https://www.dropbox.com/scl/fi/1h9g125u87svwb595v98g/8_RUTUBE-29.11.1.TV-rustore.apk?rlkey=0v2a4jxv87ptdmwmwu4fxuc0e&dl=1",
-      "tags": ["8"]
+      "tags": ["7"]
      },
      {
       "file": "SAI",
       "url": "https://www.dropbox.com/scl/fi/eaqnqb8fjmurxuye2cpex/8_SAI.apk?rlkey=r11pn9viovmpt4sf50qz0qjnd&dl=1",
-      "tags": ["8"]
+      "tags": ["7"]
      },
      {
       "file": "TDUK_ScrSavMan_1.0.2",
       "url": "https://www.dropbox.com/scl/fi/1w4tenkp0u15qduufr42b/8_TDUK_ScreensaverManager_1.0.2.apk?rlkey=k6tun483z42xaujwuyvs4tshy&dl=1",
-      "tags": ["8"]
+      "tags": ["7"]
      },
      {
       "file": "TVQA-3.5.5",
@@ -211,6 +211,12 @@
     {
       "file": "Televizo.backup",
       "url": "https://www.dropbox.com/scl/fi/nroii19ikc1jcihw9iyfz/Televizo.backup?rlkey=2m8tmg0acszz8ebwb8tmxofzo&dl=1",
+      "target_folder": "Download",
+      "tags": ["5", "7"]
+    },
+	{
+      "file": "TVQAMibox",
+      "url": "https://www.dropbox.com/scl/fi/okjeiuvs0dku40vcr4pvb/tvQA_20250720_MIBOX_3nd_GEN.zip?rlkey=lbp42y5fsr5szix8b39ovpezw&dl=1",
       "target_folder": "Download",
       "tags": ["5", "7"]
     },
