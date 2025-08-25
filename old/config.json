@@ -216,7 +216,11 @@
     },
 	{
       "file": "TVQAMibox",
-      "url": "https://www.dropbox.com/scl/fi/okjeiuvs0dku40vcr4pvb/tvQA_20250720_MIBOX_3nd_GEN.zip?rlkey=lbp42y5fsr5szix8b39ovpezw&dl=1",
+      "urls": [
+	  "https://www.dropbox.com/scl/fi/okjeiuvs0dku40vcr4pvb/tvQA_20250720_MIBOX_3nd_GEN.zip?rlkey=lbp42y5fsr5szix8b39ovpezw&dl=1",
+	  "https://www.dropbox.com/scl/fi/6pvdusf4epons2tnklveh/8_Tvquickactions-3.5.5.apk?rlkey=silxogle1qsxf8a13s7bw1ewl&dl=1",
+	  "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/4_TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1"
+	  ],
       "target_folder": "Download",
       "tags": ["5", "7"]
     },
