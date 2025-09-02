@@ -818,10 +818,11 @@ function closeModal() {
     return;
   }
     // троттлинг (съедаем auto-repeat)
-    if (navLock) return;
+    /* 
+	if (navLock) return;
     navLock = true;
     setTimeout(() => (navLock = false), 90);
-
+    */
     let next = index;
 
     if (e.key === 'ArrowDown') {
