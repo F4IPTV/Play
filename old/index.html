@@ -805,115 +805,123 @@ function closeModal() {
   const modal     = document.getElementById('modal');
   const list      = document.getElementById('modalList');
   const container = document.getElementById('modalListContainer');
-  const cols = 2;          // у тебя сетка 2 колонки
-  let navLock = false;     // лёгкий троттлинг от key-repeat
+  const cols = 2;
+  let navLock = false;
+  let lastIndexBeforeFooter = null; // ← запомним, с какого места ушли на кнопку
 
-  // Докрутка контейнера ровно до видимости элемента (без дерганья)
-  function ensureVisible(el, margin = 12) {
+  function focusAndReveal(el, margin = 12) {
     if (!el || !container) return;
     const cr = container.getBoundingClientRect();
     const er = el.getBoundingClientRect();
-
     if (er.top < cr.top + margin) {
       container.scrollTop -= (cr.top + margin - er.top);
     } else if (er.bottom > cr.bottom - margin) {
       container.scrollTop += (er.bottom - (cr.bottom - margin));
     }
+    requestAnimationFrame(() => el.focus({ preventScroll: true }));
   }
-
-  function focusAndReveal(el, margin = 12) {
-  if (!el || !container) return;
-
-  // 1) СНАЧАЛА аккуратно докручиваем контейнер (без автоскролла браузера)
-  const cr = container.getBoundingClientRect();
-  const er = el.getBoundingClientRect();
-  if (er.top < cr.top + margin) {
-    container.scrollTop -= (cr.top + margin - er.top);
-  } else if (er.bottom > cr.bottom - margin) {
-    container.scrollTop += ( er.bottom - (cr.bottom - margin) );
-  }
-
-  // 2) Затем, на следующий кадр, ставим фокус без прокрутки
-  requestAnimationFrame(() => {
-    el.focus({ preventScroll: true });
-  });
-}
-
 
   document.addEventListener('keydown', (e) => {
-    // работаем только если модалка групп открыта
     if (modal.style.display !== 'flex') return;
 
-    // интересуют стрелки + Enter
     const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'];
     if (!keys.includes(e.key)) return;
 
-    // блокируем авто-повтор, иначе будет «след»
     if (e.repeat) { e.preventDefault(); return; }
 
-    // навигация — только по кнопкам внутри списка
     const buttons = Array.from(list.querySelectorAll('.component-btn'));
     if (!buttons.length) return;
 
+    const installBtn = document.getElementById('installAllBtn');
     const active = document.activeElement;
-    let index = buttons.indexOf(active);
 
-    // если фокуса ещё не было — ставим на первую
+    // ----- Поведение, когда фокус на "Установить всё"
+    if (active === installBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // На "вниз" остаёмся на месте (упор)
+      if (e.key === 'ArrowDown') return;
+
+      // Вычислим целевой элемент в нижней строке для возврата
+      const lastRowStart = Math.floor((buttons.length - 1) / cols) * cols;
+      const fallbackCol = 0;
+      const colFromMemory = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : fallbackCol;
+      const targetIndex = Math.min(lastRowStart + colFromMemory, buttons.length - 1);
+
+      if (e.key === 'ArrowUp') {
+        focusAndReveal(buttons[targetIndex]);
+        return;
+      }
+
+      if (e.key === 'ArrowLeft') {
+        const leftIndex = Math.max(targetIndex - 1, lastRowStart);
+        focusAndReveal(buttons[leftIndex]);
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        const rowEnd = Math.min(lastRowStart + cols - 1, buttons.length - 1);
+        const rightIndex = Math.min(targetIndex + 1, rowEnd);
+        focusAndReveal(buttons[rightIndex]);
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        installBtn.click();
+        return;
+      }
+      return;
+    }
+
+    // ----- Обычная навигация по списку
+    let index = buttons.indexOf(active);
     if (index === -1) {
       e.preventDefault();
-      return focusAndReveal(buttons[0]);
+      focusAndReveal(buttons[0]);
+      return;
     }
 
     e.preventDefault();
     e.stopPropagation();
 
-    // Enter нажимает активную кнопку
-    if (e.key === 'Enter') {
-      active?.click();
-      return;
-    }
+    if (e.key === 'Enter') { active?.click(); return; }
 
-    // лёгкий троттлинг от «ручья» keydown с пульта
     if (navLock) return;
-    navLock = true;
-    setTimeout(() => (navLock = false), 90);
-
-    let next = index;
+    navLock = true; setTimeout(() => (navLock = false), 90);
 
     if (e.key === 'ArrowDown') {
       if (index + cols < buttons.length) {
-        next = index + cols;
-        return focusAndReveal(buttons[next]);
+        focusAndReveal(buttons[index + cols]);
       } else {
-        // низ списка — уводим фокус на «Установить всё», если она есть
-        document.getElementById('installAllBtn')
-          ?.focus({ preventScroll: true });
-        return;
+        // Уходим на "Установить всё" и запоминаем, откуда ушли
+        lastIndexBeforeFooter = index;
+        installBtn?.focus({ preventScroll: true });
       }
+      return;
     }
 
     if (e.key === 'ArrowUp') {
-      if (index - cols >= 0) next = index - cols;
-      return focusAndReveal(buttons[next]);
+      const prev = index - cols;
+      focusAndReveal(buttons[Math.max(prev, 0)]);
+      return;
     }
 
     if (e.key === 'ArrowRight') {
       if ((index % cols) < (cols - 1) && index + 1 < buttons.length) {
-        next = index + 1;
-        return focusAndReveal(buttons[next]);
+        focusAndReveal(buttons[index + 1]);
       }
       return;
     }
 
     if (e.key === 'ArrowLeft') {
       if ((index % cols) > 0) {
-        next = index - 1;
-        return focusAndReveal(buttons[next]);
+        focusAndReveal(buttons[index - 1]);
       }
       return;
     }
   });
 })();
+
 
 
 
