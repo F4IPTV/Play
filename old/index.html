@@ -54,13 +54,14 @@
   padding: 20px;
   border-radius: 10px;
   max-height: 80vh;
-  overflow-y: auto;
+  overflow: hidden;   /* ← скролл только внутри #modalListContainer */
   width: 80%;
   border: 1px solid #333; /* Тонкая светлая рамка для отделения */ }
      #modalListContainer { max-height:60vh;
   overflow-y:auto;
   overscroll-behavior:contain;
-  scroll-behavior:auto; /* ключевое — никакой плавности */ }
+  scroll-behavior:auto; /* ключевое — никакой плавности */
+  scrollbar-gutter: stable both-edges;	}
     #modalList {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Две колонки */
