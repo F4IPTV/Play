@@ -57,7 +57,10 @@
   overflow-y: auto;
   width: 80%;
   border: 1px solid #333; /* Тонкая светлая рамка для отделения */ }
-     #modalListContainer { max-height: 60vh; overflow-y: auto; margin-top: 10px; }
+     #modalListContainer { max-height:60vh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scroll-behavior:auto; /* ключевое — никакой плавности */ }
     #modalList {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Две колонки */
@@ -672,85 +675,86 @@ function showToast({
 
 
 
+// ===== Список группы =====
 function showGroupList(config)  {
   const modal = document.getElementById('modal');
   const list = document.getElementById('modalList');
   list.innerHTML = "";
-  const apps = config.apps.filter(app => app.tags.includes(currentGroup));
+
+  const apps    = config.apps.filter(app => app.tags.includes(currentGroup));
   const backups = config.backups.filter(backup => backup.tags.includes(currentGroup));
-  const links = config.links ? config.links.filter(link => link.tags.includes(currentGroup)) : [];
+  const links   = (config.links || []).filter(link => link.tags.includes(currentGroup));
+
   if (apps.length === 0 && backups.length === 0 && links.length === 0) {
     list.innerHTML = "Нет доступных компонентов.";
   }
+
+  // --- apps
   apps.forEach(app => {
     const btn = document.createElement('button');
+    btn.className = 'component-btn';
+    btn.setAttribute('tabindex','0');
     btn.textContent = app.file;
     btn.onclick = () => {
       showStatus(
-  `Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
-      if (window.AndroidInterface) window.AndroidInterface.installSingle(app.url, app.file || "Приложение");
+        `Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
+        "#00cfff", 4000
+      );
+      window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
     };
     list.appendChild(btn);
   });
+
+  // --- backups
   backups.forEach(backup => {
-  const btn = document.createElement('button');
-  btn.textContent = backup.file;
+    const btn = document.createElement('button');
+    btn.className = 'component-btn';
+    btn.setAttribute('tabindex','0');
+    btn.textContent = backup.file;
+    btn.onclick = () => {
+      const urls = backup.urls || (backup.url ? [backup.url] : []);
+      if (!urls.length) return;
+      showStatus(
+        `Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
+        "#00cfff", 4000
+      );
+      window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder);
+    };
+    list.appendChild(btn);
+  });
 
-  btn.onclick = () => {
-    const urls = backup.urls || (backup.url ? [backup.url] : []);
-    if (!urls.length) return;
-
-    showStatus(
-  `Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
-
-    if (window.AndroidInterface) {
-      window.AndroidInterface.copyMultipleBackups(JSON.stringify(urls), backup.target_folder);
-    }
-  };
-
-  list.appendChild(btn);
-});
-
-
-
-
+  // --- links
   links.forEach(link => {
     const btn = document.createElement('button');
+    btn.className = 'component-btn';
+    btn.setAttribute('tabindex','0');
     btn.textContent = link.file;
     btn.onclick = () => {
       showStatus("🔗 Открытие инструкции...", "green", 3000);
-      if (window.AndroidInterface) window.AndroidInterface.openLink(link.url);
+      window.AndroidInterface?.openLink(link.url);
     };
     list.appendChild(btn);
   });
+
   modal.style.display = "flex";
+
+  // важный момент: фокус без автоскролла браузера
   setTimeout(() => {
-    const firstBtn = list.querySelector('button');
-    if (firstBtn) firstBtn.focus();
-  }, 100);
+    const firstBtn = list.querySelector('.component-btn');
+    firstBtn?.focus({ preventScroll: true });
+  }, 80);
 }
 
 function installAll() {
   showStatus(
-  `Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
-  "#00cfff",
-  4000
-);
-
-
+    `Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
+    "#00cfff", 4000
+  );
   if (window.AndroidInterface) {
     requestAnimationFrame(() => {
       setTimeout(() => {
         window.AndroidInterface.startInstallation(currentGroup);
-      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+      }, 100);
     });
   }
 }
@@ -759,87 +763,85 @@ function closeModal() {
   document.getElementById('modal').style.display = "none";
 }
 
-document.addEventListener('keydown', function(e) {
-	if (ignoreNextEnter) {
-	ignoreNextEnter = false;
-	return;
-	}
-
+// ===== ЕДИНСТВЕННЫЙ обработчик стрелок для #modal =====
+// УДАЛИ или закомментируй свои старые обработчики для #modal (те где allButtons/extraButtons)!
+(function () {
   const modal = document.getElementById('modal');
-  if (modal.style.display !== 'flex') return;
+  const list  = document.getElementById('modalList');
+  const cols  = 2;
+  let navLock = false;
 
-  const list = document.getElementById('modalList');
-  const buttons = Array.from(list.querySelectorAll('button'));
-  const extraButtons = Array.from(modal.querySelectorAll('.modal-content > button'));
-  const allButtons = [...buttons, ...extraButtons];
-
-  if (allButtons.length === 0) return;
-
-  const cols = 2;
-  const total = allButtons.length;
-
-  const active = document.activeElement;
-  const index = allButtons.indexOf(active);
-
-  if (index === -1) {
-    allButtons[0].focus();
-    return;
+  function focusSafe(el){
+    if (!el) return;
+    el.focus({ preventScroll:true });
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ block:'nearest', inline:'nearest' });
+    });
   }
 
-  if (e.key === 'ArrowDown') {
-  e.preventDefault();
-  const next = index + cols;
-  if (next < allButtons.length) {
-    allButtons[next].focus();
-  } else {
-    // если вниз больше некуда — остаёмся на последней кнопке
-    allButtons[allButtons.length - 1].focus();
-  }
-}
+  document.addEventListener('keydown', (e) => {
+    // работаем ТОЛЬКО если модалка открыта
+    if (modal.style.display !== 'flex') return;
 
-if (e.key === 'ArrowUp') {
-  e.preventDefault();
-  const prev = index - cols;
-  if (prev >= 0) {
-    allButtons[prev].focus();
-  } else {
-    // если вверх с кнопки — вернуться к последней карточке
-    allButtons[buttons.length - 1]?.focus();
-  }
-}
+    // интересуют только стрелки
+    if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'].includes(e.key)) return;
 
+    // работаем ТОЛЬКО по кнопкам внутри списка
+    const buttons = Array.from(list.querySelectorAll('.component-btn'));
+    if (!buttons.length) return;
 
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    if ((index % cols) < (cols - 1) && (index + 1) < allButtons.length) {
-      allButtons[index + 1].focus();
+    const active = document.activeElement;
+    let index = buttons.indexOf(active);
+
+    // если фокуса ещё не было — ставим на первый
+    if (index === -1) {
+      e.preventDefault();
+      return focusSafe(buttons[0]);
     }
-  }
 
-  if (e.key === 'ArrowLeft') {
     e.preventDefault();
-    if ((index % cols) > 0) {
-      allButtons[index - 1].focus();
+    e.stopPropagation();
+
+    // троттлинг (съедаем auto-repeat)
+    if (navLock) return;
+    navLock = true;
+    setTimeout(() => (navLock = false), 90);
+
+    let next = index;
+
+    if (e.key === 'ArrowDown') {
+      if (index + cols < buttons.length) {
+        next = index + cols;
+        return focusSafe(buttons[next]);
+      } else {
+        // упёрлись в низ — переводим фокус на "Установить всё"
+        document.getElementById('installAllBtn')?.focus({ preventScroll:true });
+        return;
+      }
     }
-  }
 
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
-    closeModal();
-  }
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key !== 'Enter') return;
-  if (anyModalOpen()) return; // ← учитываем все модалки
+    if (e.key === 'ArrowUp') {
+      if (index - cols >= 0) next = index - cols;
+      return focusSafe(buttons[next]);
+    }
 
-  const active = document.activeElement;
-  if (active && (active.textContent?.includes("Неизвестные источники") || active.textContent?.includes("Энергосбережение"))) {
-    return;
-  }
-  const selected = document.querySelector('.card.selected');
-  if (selected) startInstall();
-});
+    if (e.key === 'ArrowRight') {
+      if ((index % cols) < (cols - 1) && index + 1 < buttons.length) {
+        next = index + 1;
+        return focusSafe(buttons[next]);
+      }
+      return;
+    }
 
+    if (e.key === 'ArrowLeft') {
+      if ((index % cols) > 0) {
+        next = index - 1;
+        return focusSafe(buttons[next]);
+      }
+      return;
+    }
+  });
+})();
 
 
 
