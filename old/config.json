@@ -44,7 +44,7 @@
     {
       "file": "NUM_1.0.143",
       "url": "https://www.dropbox.com/scl/fi/3qbrxl0i25mrksgyao51w/4_NUM.apk?rlkey=1m47zpabq21ebrvxj8j5sdout&dl=1",
-      "tags": ["4", "7"]
+      "tags": ["4", "7", "SAI"]
     },
     {
       "file": "KinoTrend_2.3.8",
@@ -59,7 +59,7 @@
     {
       "file": "TorrServe_MatriX_135",
       "url": "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/4_TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1",
-      "tags": ["4"]
+      "tags": ["4", "SAI"]
     },
     {
       "file": "VimuMediaPlayerMD_10.83",
@@ -94,12 +94,12 @@
     {
       "file": "AceStart",
       "url": "https://www.dropbox.com/scl/fi/nl6o4vsp6mqeb6f8f0rwd/7_acestart.apk?rlkey=12whuzxdwqiadie05jnhh86ax&dl=1",
-      "tags": ["6"]
+      "tags": ["6", "SAI"]
   },
     {
       "file": "AceStream_Full.apk",
       "url": "https://www.dropbox.com/scl/fi/15f62xgr5o98tviwvzl04/6_Ace-stream-engine_3.1.61.0_armeabi-v7a-mod.apk?rlkey=ycmvllgwnflw5k5kz9mrlkqs0&dl=1",
-      "tags": ["8"]
+      "tags": ["8", "SAI"]
   },
     {
       "file": "LazyMediaDelux_3.395",
