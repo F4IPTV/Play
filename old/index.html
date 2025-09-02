@@ -799,11 +799,24 @@ function closeModal() {
     }
   }
 
-  function focusAndReveal(el) {
-    if (!el) return;
-    ensureVisible(el);
-    el.focus({ preventScroll: true });
+  function focusAndReveal(el, margin = 12) {
+  if (!el || !container) return;
+
+  // 1. Фокусируем БЕЗ автоскролла
+  el.focus({ preventScroll: true });
+
+  // 2. Сами решаем, как докрутить контейнер
+  const cr = container.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+
+  if (er.top < cr.top + margin) {
+    // элемент слишком высоко — поднимаем контейнер
+    container.scrollTop -= (cr.top + margin - er.top);
+  } else if (er.bottom > cr.bottom - margin) {
+    // элемент слишком низко — опускаем контейнер
+    container.scrollTop += (er.bottom - (cr.bottom - margin));
   }
+}
 
   document.addEventListener('keydown', (e) => {
     // работаем только если модалка групп открыта
