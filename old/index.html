@@ -748,9 +748,10 @@ function showGroupList(config)  {
     list.appendChild(btn);
   });
 
+  // показать модалку
   modal.style.display = "flex";
 
-  // важный момент: фокус без автоскролла браузера
+  // сразу после открытия ставим фокус на первую кнопку, но без дёргания скролла
   setTimeout(() => {
     const firstBtn = list.querySelector('.component-btn');
     firstBtn?.focus({ preventScroll: true });
@@ -780,25 +781,43 @@ function closeModal() {
 (function () {
   const modal = document.getElementById('modal');
   const list  = document.getElementById('modalList');
+  const container = document.getElementById('modalListContainer'); // ← прокручиваемый контейнер
   const cols  = 2;
   let navLock = false;
 
-  function focusSafe(el){
+  // аккуратно докручиваем контейнер, без инерции и «двойного» скролла
+  function ensureVisible(el, margin = 12) {
+    if (!el || !container) return;
+    const cr = container.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+
+    if (er.top < cr.top + margin) {
+      // элемент выше видимой зоны — поднимем ровно на разницу
+      container.scrollTop -= (cr.top + margin - er.top);
+    } else if (er.bottom > cr.bottom - margin) {
+      // элемент ниже видимой зоны — опустим ровно на разницу
+      container.scrollTop += (er.bottom - (cr.bottom - margin));
+    }
+  }
+
+  function focusAndReveal(el) {
     if (!el) return;
-    el.focus({ preventScroll:true });
-    requestAnimationFrame(() => {
-      el.scrollIntoView({ block:'nearest', inline:'nearest' });
-    });
+    // 1) сначала докрутить контейнер
+    ensureVisible(el);
+    // 2) потом сфокусировать без автоскролла браузера
+    el.focus({ preventScroll: true });
   }
 
   document.addEventListener('keydown', (e) => {
-    // работаем ТОЛЬКО если модалка открыта
+    // работаем только когда эта модалка открыта
     if (modal.style.display !== 'flex') return;
 
-    // интересуют только стрелки
+    // интересуют стрелки и Enter
     if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
 
-    // работаем ТОЛЬКО по кнопкам внутри списка
+    // блокируем авто-повтор: на ТВ пульт шлёт «ручей» keydown
+    if (e.repeat) { e.preventDefault(); return; }
+
     const buttons = Array.from(list.querySelectorAll('.component-btn'));
     if (!buttons.length) return;
 
@@ -808,43 +827,44 @@ function closeModal() {
     // если фокуса ещё не было — ставим на первый
     if (index === -1) {
       e.preventDefault();
-      return focusSafe(buttons[0]);
+      return focusAndReveal(buttons[0]);
     }
 
     e.preventDefault();
     e.stopPropagation();
- if (e.key === 'Enter') {
-    active?.click(); // ← вот эта строка снова запускает действие кнопки
-    return;
-  }
-    // троттлинг (съедаем auto-repeat)
-    /* 
-	if (navLock) return;
+
+    // троттлинг — дополнительная защита
+    if (navLock) return;
     navLock = true;
     setTimeout(() => (navLock = false), 90);
-    */
+
+    if (e.key === 'Enter') {
+      active?.click();
+      return;
+    }
+
     let next = index;
 
     if (e.key === 'ArrowDown') {
       if (index + cols < buttons.length) {
         next = index + cols;
-        return focusSafe(buttons[next]);
+        return focusAndReveal(buttons[next]);
       } else {
-        // упёрлись в низ — переводим фокус на "Установить всё"
-        document.getElementById('installAllBtn')?.focus({ preventScroll:true });
+        // низ списка — уводим фокус на «Установить всё», если есть
+        document.getElementById('installAllBtn')?.focus({ preventScroll: true });
         return;
       }
     }
 
     if (e.key === 'ArrowUp') {
       if (index - cols >= 0) next = index - cols;
-      return focusSafe(buttons[next]);
+      return focusAndReveal(buttons[next]);
     }
 
     if (e.key === 'ArrowRight') {
       if ((index % cols) < (cols - 1) && index + 1 < buttons.length) {
         next = index + 1;
-        return focusSafe(buttons[next]);
+        return focusAndReveal(buttons[next]);
       }
       return;
     }
@@ -852,17 +872,10 @@ function closeModal() {
     if (e.key === 'ArrowLeft') {
       if ((index % cols) > 0) {
         next = index - 1;
-        return focusSafe(buttons[next]);
+        return focusAndReveal(buttons[next]);
       }
       return;
     }
-	  if (e.key === 'Enter') {
-  e.preventDefault();
-  e.stopPropagation();
-  active?.click(); // имитируем нажатие кнопки в списке
-  return;
-}
-
   });
 })();
 
