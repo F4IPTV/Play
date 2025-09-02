@@ -389,7 +389,7 @@ button:focus {
       <div id="modalList"></div>
     </div>
     <br>
-    <button onclick="installAll()">Установить всё</button>
+    <button id="installAllBtn" onclick="installAll()">Установить всё</button>
     
   </div>
 </div>
@@ -778,53 +778,52 @@ function closeModal() {
 
 // ===== ЕДИНСТВЕННЫЙ обработчик стрелок для #modal =====
 // УДАЛИ или закомментируй свои старые обработчики для #modal (те где allButtons/extraButtons)!
+// Навигация в модалке групп (#modal)
 (function () {
-  const modal = document.getElementById('modal');
-  const list  = document.getElementById('modalList');
-  const container = document.getElementById('modalListContainer'); // ← прокручиваемый контейнер
-  const cols  = 2;
-  let navLock = false;
+  const modal     = document.getElementById('modal');
+  const list      = document.getElementById('modalList');
+  const container = document.getElementById('modalListContainer');
+  const cols = 2;          // у тебя сетка 2 колонки
+  let navLock = false;     // лёгкий троттлинг от key-repeat
 
-  // аккуратно докручиваем контейнер, без инерции и «двойного» скролла
+  // Докрутка контейнера ровно до видимости элемента (без дерганья)
   function ensureVisible(el, margin = 12) {
     if (!el || !container) return;
     const cr = container.getBoundingClientRect();
     const er = el.getBoundingClientRect();
 
     if (er.top < cr.top + margin) {
-      // элемент выше видимой зоны — поднимем ровно на разницу
       container.scrollTop -= (cr.top + margin - er.top);
     } else if (er.bottom > cr.bottom - margin) {
-      // элемент ниже видимой зоны — опустим ровно на разницу
       container.scrollTop += (er.bottom - (cr.bottom - margin));
     }
   }
 
   function focusAndReveal(el) {
     if (!el) return;
-    // 1) сначала докрутить контейнер
     ensureVisible(el);
-    // 2) потом сфокусировать без автоскролла браузера
     el.focus({ preventScroll: true });
   }
 
   document.addEventListener('keydown', (e) => {
-    // работаем только когда эта модалка открыта
+    // работаем только если модалка групп открыта
     if (modal.style.display !== 'flex') return;
 
-    // интересуют стрелки и Enter
-    if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
+    // интересуют стрелки + Enter
+    const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'];
+    if (!keys.includes(e.key)) return;
 
-    // блокируем авто-повтор: на ТВ пульт шлёт «ручей» keydown
+    // блокируем авто-повтор, иначе будет «след»
     if (e.repeat) { e.preventDefault(); return; }
 
+    // навигация — только по кнопкам внутри списка
     const buttons = Array.from(list.querySelectorAll('.component-btn'));
     if (!buttons.length) return;
 
     const active = document.activeElement;
     let index = buttons.indexOf(active);
 
-    // если фокуса ещё не было — ставим на первый
+    // если фокуса ещё не было — ставим на первую
     if (index === -1) {
       e.preventDefault();
       return focusAndReveal(buttons[0]);
@@ -833,15 +832,16 @@ function closeModal() {
     e.preventDefault();
     e.stopPropagation();
 
-    // троттлинг — дополнительная защита
-    if (navLock) return;
-    navLock = true;
-    setTimeout(() => (navLock = false), 90);
-
+    // Enter нажимает активную кнопку
     if (e.key === 'Enter') {
       active?.click();
       return;
     }
+
+    // лёгкий троттлинг от «ручья» keydown с пульта
+    if (navLock) return;
+    navLock = true;
+    setTimeout(() => (navLock = false), 90);
 
     let next = index;
 
@@ -850,8 +850,9 @@ function closeModal() {
         next = index + cols;
         return focusAndReveal(buttons[next]);
       } else {
-        // низ списка — уводим фокус на «Установить всё», если есть
-        document.getElementById('installAllBtn')?.focus({ preventScroll: true });
+        // низ списка — уводим фокус на «Установить всё», если она есть
+        document.getElementById('installAllBtn')
+          ?.focus({ preventScroll: true });
         return;
       }
     }
@@ -878,7 +879,6 @@ function closeModal() {
     }
   });
 })();
-
 
 
 
