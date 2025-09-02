@@ -750,14 +750,15 @@ function showGroupList(config)  {
   });
 
   // показать модалку
-  modal.style.display = "flex";
+   modal.style.display = "flex";
 
-  // сразу после открытия ставим фокус на первую кнопку, но без дёргания скролла
+  // важный момент: ставим фокус на первую кнопку без автоскролла
   setTimeout(() => {
-    const firstBtn = list.querySelector('.component-btn');
-    firstBtn?.focus({ preventScroll: true });
+    document.querySelector('#modalList .component-btn')
+      ?.focus({ preventScroll: true });
   }, 80);
 }
+
 
 function installAll() {
   showStatus(
