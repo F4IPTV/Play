@@ -784,7 +784,7 @@ function closeModal() {
     if (modal.style.display !== 'flex') return;
 
     // интересуют только стрелки
-    if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight'].includes(e.key)) return;
+    if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
 
     // работаем ТОЛЬКО по кнопкам внутри списка
     const buttons = Array.from(list.querySelectorAll('.component-btn'));
@@ -801,7 +801,10 @@ function closeModal() {
 
     e.preventDefault();
     e.stopPropagation();
-
+ if (e.key === 'Enter') {
+    active?.click(); // ← вот эта строка снова запускает действие кнопки
+    return;
+  }
     // троттлинг (съедаем auto-repeat)
     if (navLock) return;
     navLock = true;
@@ -840,6 +843,13 @@ function closeModal() {
       }
       return;
     }
+	  if (e.key === 'Enter') {
+  e.preventDefault();
+  e.stopPropagation();
+  active?.click(); // имитируем нажатие кнопки в списке
+  return;
+}
+
   });
 })();
 
