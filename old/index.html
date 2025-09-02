@@ -265,13 +265,25 @@ button:focus {
       currentGroup = card.dataset.group;
     });
   });
-   document.addEventListener('keydown', function(e) {
-  if (e.key !== 'Enter') return;
-  if (anyModalOpen()) return; // ← ключевая строка
+   document.addEventListener('keydown', function (e) {
+  // поддержим и NumpadEnter/OK на некоторых ТВ
+  const isOk =
+    e.key === 'Enter' ||
+    e.key === 'NumpadEnter' ||
+    e.key === 'OK' ||
+    e.code === 'Enter';
+
+  if (!isOk) return;
+  if (anyModalOpen()) return; // если открыта модалка — ничего не делаем
 
   const selected = document.querySelector('.card.selected');
-  if (selected) currentGroup = selected.dataset.group;
+  if (!selected) return;
+
+  // зафиксируем выбранную группу и сразу откроем
+  currentGroup = selected.dataset.group;
+  startInstall();
 });
+
 
 </script>
 <select id="groupSelect" style="display:none;"></select>
