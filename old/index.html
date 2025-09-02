@@ -562,6 +562,8 @@ async function startInstall() {
     }
 
     cachedConfig = config;
+	// прямо перед showGroupList(config);
+    lastFocusedElement = document.activeElement; // 💾 запомним, где был фокус на главной 
     showGroupList(config);
   } catch (error) {
     status.innerHTML = "❌ Ошибка загрузки конфигурации.";
@@ -795,8 +797,20 @@ function installAll() {
 }
 
 function closeModal() {
-  document.getElementById('modal').style.display = "none";
+  const modal = document.getElementById('modal');
+  modal.style.display = "none";
+
+  // 🔙 вернуть фокус туда, откуда пришли
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    // вернём класс выделения, если это карточка
+    if (lastFocusedElement.classList?.contains('card')) {
+      selectCard(lastFocusedElement); // восстановит .selected и currentGroup
+    }
+    // вернуть фокус без автоскролла
+    lastFocusedElement.focus?.({ preventScroll: true });
+  }
 }
+
 
 // ===== ЕДИНСТВЕННЫЙ обработчик стрелок для #modal =====
 // УДАЛИ или закомментируй свои старые обработчики для #modal (те где allButtons/extraButtons)!
@@ -1149,14 +1163,13 @@ function onInstalledAppsReceived(appsJson) {
 
 
 <script>
-  // Убираем выделение с группы, если фокус на системной кнопке
-  document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("focus", () => {
-      if (!btn.classList.contains("card")) {
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
-      }
-    });
+  // Убираем выделение с группы ТОЛЬКО если фокус на системной кнопке (нижняя панель)
+document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").forEach(btn => {
+  btn.addEventListener("focus", () => {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
   });
+});
+
 </script>
 <script>
   setTimeout(() => {
