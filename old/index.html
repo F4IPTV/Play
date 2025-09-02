@@ -137,6 +137,26 @@ button:focus {
   z-index: 9999;
 }
 
+/* внутри списка модалки отключаем плавные переходы,
+   чтобы подсветка фокуса не "догоняла" и не мигала */
+#modalList .component-btn {
+  transition: none !important;
+}
+#modalList .component-btn:focus {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.6) !important;
+  border-color: white !important;
+  outline: none;
+}
+
+/* важно, чтобы скроллился ТОЛЬКО список, а не вся модалка */
+.modal-content { overflow: hidden; } /* вместо overflow-y:auto */
+#modalListContainer{
+  max-height:60vh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scroll-behavior:auto;
+  scrollbar-gutter: stable both-edges;
+}
 
 
 
@@ -756,7 +776,7 @@ function showGroupList(config)  {
   setTimeout(() => {
     document.querySelector('#modalList .component-btn')
       ?.focus({ preventScroll: true });
-  }, 80000); 
+  }, 80); 
 }
 
 
@@ -804,21 +824,21 @@ function closeModal() {
   function focusAndReveal(el, margin = 12) {
   if (!el || !container) return;
 
-  // 1. Фокусируем БЕЗ автоскролла
-  el.focus({ preventScroll: true });
-
-  // 2. Сами решаем, как докрутить контейнер
+  // 1) СНАЧАЛА аккуратно докручиваем контейнер (без автоскролла браузера)
   const cr = container.getBoundingClientRect();
   const er = el.getBoundingClientRect();
-
   if (er.top < cr.top + margin) {
-    // элемент слишком высоко — поднимаем контейнер
     container.scrollTop -= (cr.top + margin - er.top);
   } else if (er.bottom > cr.bottom - margin) {
-    // элемент слишком низко — опускаем контейнер
-    container.scrollTop += (er.bottom - (cr.bottom - margin));
+    container.scrollTop += ( er.bottom - (cr.bottom - margin) );
   }
+
+  // 2) Затем, на следующий кадр, ставим фокус без прокрутки
+  requestAnimationFrame(() => {
+    el.focus({ preventScroll: true });
+  });
 }
+
 
   document.addEventListener('keydown', (e) => {
     // работаем только если модалка групп открыта
