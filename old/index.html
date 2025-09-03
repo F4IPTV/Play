@@ -419,7 +419,7 @@ function groupClickGuard(e) {
 
   const now = Date.now();
   // Блокируем двойные клики чаще, чем раз в 600–800 мс
-  if ((now - __lastGroupClickTs) < 500) {
+  if ((now - __lastGroupClickTs) < 900) {
     e.preventDefault();
     e.stopImmediatePropagation();
     return;
