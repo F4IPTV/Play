@@ -405,49 +405,53 @@
       setTimeout(() => { document.querySelector('#modalList .component-btn')?.focus({ preventScroll: true }); }, 80);
     }
 
-// ==== guard только для модалки групп ====
-let __groupGuardBound = false;
+// ==== только для модалки групп: дебаунс кликов ====
+let __groupActionLock = false;
+let __lastGroupClickTs = 0;
+
 function isGroupModalOpen() {
   const m = document.getElementById('modal');
   return m && m.style.display === 'flex';
 }
-function bindGroupAutorepeatGuard() {
-  if (__groupGuardBound) return;
-  __groupGuardBound = true;
 
-  // На фазе capture: режем автоповтор и стандартную активацию Enter
-  const guardKeyDown = (e) => {
-    if (!isGroupModalOpen()) return;
-    const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter');
-    if (isEnter && e.repeat) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  };
-  const guardKeyUp = (e) => {
-    if (!isGroupModalOpen()) return;
-    const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter');
-    if (isEnter && e.repeat) {
-      // на всякий случай блокируем и keyup, чтобы WebView не сгенерил "клик"
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  };
+// Режем частые клики по компонентам и "Установить всё"
+function groupClickGuard(e) {
+  if (!isGroupModalOpen()) return;
+  const target = e.target.closest('.component-btn, #installAllBtn');
+  if (!target) return;
 
-  // Сохраним ссылки, чтобы можно было снять при закрытии (если захочешь)
-  window.__groupGuardKeyDown = guardKeyDown;
-  window.__groupGuardKeyUp   = guardKeyUp;
-
-  document.addEventListener('keydown', guardKeyDown, true);
-  document.addEventListener('keyup',   guardKeyUp,   true);
+  const now = Date.now();
+  // если уже в замке или клики идут чаще 800мс — блокируем
+  if (__groupActionLock || (now - __lastGroupClickTs) < 800) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return;
+  }
+  __groupActionLock = true;
+  __lastGroupClickTs = now;
+  setTimeout(() => { __groupActionLock = false; }, 800);
 }
+
+// навешиваем в CAPTURE, чтобы поймать до обычных onclick
+document.getElementById('modal').addEventListener('click', groupClickGuard, true);
 
     
 
     function installAll() {
-      showStatus(`Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
-      if (window.AndroidInterface) { requestAnimationFrame(() => setTimeout(() => window.AndroidInterface.startInstallation(currentGroup), 100)); }
-    }
+  // если guard уже схватил клик — сюда не дойдём; но на всякий пожарный:
+  if (__groupActionLock) return;
+  __groupActionLock = true;
+  setTimeout(() => { __groupActionLock = false; }, 800);
+
+  showStatus(
+    `Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
+    "#00cfff", 4000
+  );
+  if (window.AndroidInterface) {
+    requestAnimationFrame(() => setTimeout(() => window.AndroidInterface.startInstallation(currentGroup), 100));
+  }
+}
+
 
     function closeModal() {
       const modal = document.getElementById('modal');
