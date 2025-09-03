@@ -166,13 +166,13 @@ button:focus {
 }
 
 /* 📐 Сетка в автозапуске (ровная навигация на ТВ) */
+/* адаптивная сетка: кол-во колонок под ширину модалки */
 #autostartList {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 карточек в ряд */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* можно 180–220 */
   gap: 10px;
   justify-items: center;
 }
-
 
 
 #logo {
@@ -1123,12 +1123,13 @@ function renderAppSelection(json) {
 
     };
     card.onfocus = () => {
-  document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
+  // document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
+  // card.classList.add('selected');  // ← эти две строки удалить
   const cur = document.getElementById("autostartCurrent");
-  if (cur) cur.textContent = "Выбрано: " + app.label;
+  if (cur) cur.textContent = "Выбрано: " + applabel;
   focusAndRevealAuto(card);
 };
+
     list.appendChild(card);
   });
 
@@ -1203,6 +1204,7 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
 });
 
 </script>
+
 <script>
   setTimeout(() => {
     document.getElementById('splash').style.display = 'none';
@@ -1211,12 +1213,28 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
 </script>
 
 <script>
+(function attachAutostartFocusCleaner(){
+  const modal = document.getElementById('autostartModal');
+  if (!modal) return;
+
+  modal.addEventListener('focusin', (e) => {
+    // если фокус не на карточке — убрать выделение у всех карточек
+    if (!e.target.closest('#autostartList .card')) {
+      document.querySelectorAll('#autostartList .card.selected')
+        .forEach(c => c.classList.remove('selected'));
+    }
+  });
+})();
+</script>
+
+
+
+<script>
 (function attachAutostartNavOnce(){
   if (window.__autoStartNavBoundV2) return;
   window.__autoStartNavBoundV2 = true;
 
-  const cols = 5; // количество колонок в #autostartList
-
+ 
   let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
   let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
 
@@ -1233,7 +1251,10 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
     const headerBtn = modal.querySelector('.sys-btn'); // 🚫 Отключить автозапуск (первая sys-btn в модалке)
     const closeBtn  = document.getElementById('autostartCloseBtn');
 
+
     if (!cards.length) return;
+
+	 const cols = getAutostartCols();
 
     const active = document.activeElement;
 
