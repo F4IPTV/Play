@@ -83,8 +83,25 @@
     #autostartList .card { transition: none !important; }
     #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
 
-    /* Сделаем «Закрыть» видимой как "низ списка" */
-    #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
+    /* обе кнопки в модалке — одинаковые габариты */
+#autostartModal .modal-content .sys-btn{
+  display: block;
+  width: 100%;
+  max-width: 240px;     /* совпадает с .sys-btn из твоих стилей */
+  margin: 10px auto;
+}
+
+/* «Закрыть» — липкая внизу контейнера */
+#autostartCloseBtn.sys-btn{
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #004d61;  /* как у sys-btn */
+  box-shadow: 0 -6px 12px rgba(0,0,0,.35);
+  /* на всякий случай, чтобы при фокусе была видна целиком */
+  scroll-margin-block-start: 12px;
+  scroll-margin-block-end: 16px;
+}
   </style>
 </head>
 
@@ -195,7 +212,7 @@
       <!-- КОНТЕЙНЕР СО СКРОЛЛОМ (и здесь же кнопка Закрыть) -->
       <div id="autostartListContainer">
         <div id="autostartList"></div>
-        <button id="autostartCloseBtn" onclick="closeAutostartModal()">❌ Закрыть</button>
+        <button id="autostartCloseBtn" class="sys-btn" onclick="closeAutostartModal()">❌ Закрыть</button>
       </div>
     </div>
   </div>
