@@ -1213,46 +1213,96 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
 
 <script>
 (function attachAutostartNavOnce(){
-  // чтобы не подвесить несколько одинаковых слушателей
-  if (window.__autoStartNavBound) return;
-  window.__autoStartNavBound = true;
+  if (window.__autoStartNavBoundV2) return;
+  window.__autoStartNavBoundV2 = true;
+
+  const cols = 5; // количество колонок в #autostartList
+
+  let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
+  let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
 
   document.addEventListener('keydown', function (e) {
     const modal = document.getElementById('autostartModal');
     if (!modal || modal.style.display !== 'flex') return;
 
-    // ⚠️ не даём событию уйти наверх
+    // ловим событие внутри модалки
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    const cards = Array.from(document.querySelectorAll('#autostartList .card'));
-    const closeBtn = document.getElementById('autostartCloseBtn');
+    const list      = document.getElementById('autostartList');
+    const cards     = Array.from(list.querySelectorAll('.card'));
+    const headerBtn = modal.querySelector('.sys-btn'); // 🚫 Отключить автозапуск (первая sys-btn в модалке)
+    const closeBtn  = document.getElementById('autostartCloseBtn');
+
     if (!cards.length) return;
 
-    const cols = 5; // твоя сетка 5xN
     const active = document.activeElement;
 
-    // Если фокус на "Закрыть"
-    if (active === closeBtn) {
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const last = cards[cards.length - 1];
-        if (last) focusAndRevealAuto(last);
-      } else if (e.key === 'ArrowDown') {
-        // упираемся: остаёмся на Close
-        e.preventDefault();
-      } else if (e.key === 'Back' || e.key === 'Escape') {
-        e.preventDefault();
-        closeAutostartModal();
-      } else if (e.key.startsWith('Arrow')) {
-        // влево/вправо на Close никуда не двигаемся
-        e.preventDefault();
+    // ===== Поведение на верхней кнопке (headerBtn)
+    if (active === headerBtn) {
+      switch (e.key) {
+        case 'ArrowDown': {
+          e.preventDefault();
+          // вернуться в первую строку на запомненный столбец (или 0)
+          const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
+          const targetIndex = Math.min(col, cards.length - 1); // первая строка = индексы 0..cols-1
+          focusAndRevealAuto(cards[targetIndex]);
+          break;
+        }
+        case 'ArrowUp':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          // упираемся
+          e.preventDefault();
+          break;
+        case 'Enter':
+          e.preventDefault();
+          headerBtn.click();
+          break;
+        case 'Back':
+        case 'Escape':
+          e.preventDefault();
+          closeAutostartModal();
+          break;
       }
       return;
     }
 
+    // ===== Поведение на нижней кнопке (closeBtn)
+    if (active === closeBtn) {
+      switch (e.key) {
+        case 'ArrowUp': {
+          e.preventDefault();
+          // вернуться в последнюю строку на запомненный столбец (или 0)
+          const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
+          const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
+          const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
+          focusAndRevealAuto(cards[targetIndex]);
+          break;
+        }
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          // упираемся
+          e.preventDefault();
+          break;
+        case 'Enter':
+          e.preventDefault();
+          closeBtn.click();
+          break;
+        case 'Back':
+        case 'Escape':
+          e.preventDefault();
+          closeAutostartModal();
+          break;
+      }
+      return;
+    }
+
+    // ===== Обычная навигация по сетке карточек
     const index = cards.indexOf(active);
-    // если фокуса нет на карточке — поставим на первую по любой стрелке
+
+    // если фокуса нет на карточке — ставим на первую по любой стрелке
     if (index === -1 && e.key.startsWith('Arrow')) {
       e.preventDefault();
       focusAndRevealAuto(cards[0]);
@@ -1260,40 +1310,51 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
     }
 
     const total = cards.length;
-    const row = Math.floor(index / cols);
-    const col = index % cols;
+    const row   = Math.floor(index / cols);
+    const col   = index % cols;
 
     switch (e.key) {
       case 'ArrowDown': {
         e.preventDefault();
         const nextIndex = (row + 1) * cols + col;
         if (nextIndex < total) {
+          // вниз есть карточка
           focusAndRevealAuto(cards[nextIndex]);
         } else {
-          // нижняя кромка — уходим на кнопку "Закрыть"
+          // последняя видимая строка — уходим на "Закрыть", запоминаем позицию
+          lastIndexBeforeFooter = index;
           closeBtn?.focus({ preventScroll: true });
         }
         break;
       }
       case 'ArrowUp': {
         e.preventDefault();
-        // верхняя кромка — упираемся (остаёмся на месте)
-        if (row === 0) return;
-        const prevIndex = (row - 1) * cols + col;
-        if (prevIndex >= 0) focusAndRevealAuto(cards[prevIndex]);
+        if (row === 0) {
+          // верхняя кромка — уходим на кнопку "Отключить", запоминаем позицию
+          lastIndexBeforeHeader = index;
+          headerBtn?.focus({ preventScroll: true });
+        } else {
+          const prevIndex = (row - 1) * cols + col;
+          // prevIndex всегда валиден (мы не выходим за количество)
+          focusAndRevealAuto(cards[prevIndex]);
+        }
         break;
       }
       case 'ArrowLeft': {
         e.preventDefault();
-        // левая кромка — упираемся
-        if (col === 0) return;
-        focusAndRevealAuto(cards[index - 1]);
+        if (col === 0) {
+          // левая кромка — упираемся
+          return;
+        }
+        const target = index - 1;
+        if (target >= 0) focusAndRevealAuto(cards[target]);
         break;
       }
       case 'ArrowRight': {
         e.preventDefault();
-        // правая кромка — упираемся, если нет следующего
-        if (col === cols - 1 || index + 1 >= total) return;
+        // правая кромка — упираемся, если нет соседней карточки
+        const inRowEnd = (col === cols - 1) || (index + 1 >= total);
+        if (inRowEnd) return;
         focusAndRevealAuto(cards[index + 1]);
         break;
       }
