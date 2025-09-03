@@ -142,6 +142,22 @@
       border-color: white !important;
       outline: none;
     }
+    /* Только для модалки автозапуска — скролл по всей модалке */
+#autostartModal .modal-content {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  max-height: 80vh;
+}
+
+/* Список внутри автозапуска больше НЕ скроллим отдельно,
+   иначе получится вложенный скролл и "Закрыть" снова будет
+   вне зоны прокрутки внутреннего контейнера */
+#autostartModal #autostartListContainer {
+  max-height: unset !important;
+  overflow: visible !important;
+}
+
+    
   </style>
 </head>
 
@@ -646,6 +662,23 @@
       requestAnimationFrame(() => el.focus({ preventScroll: true }));
     }
 
+    // прокрутка самой модалки автозапуска (для верхней/нижней кнопок)
+function revealAutostartBox(el, margin = 12) {
+  const modalBox = document.querySelector('#autostartModal .modal-content');
+  if (!modalBox || !el) return;
+
+  const cr = modalBox.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+
+  if (er.top < cr.top + margin) {
+    modalBox.scrollTop -= (cr.top + margin - er.top);
+  } else if (er.bottom > cr.bottom - margin) {
+    modalBox.scrollTop += (er.bottom - (cr.bottom - margin));
+  }
+  requestAnimationFrame(() => el.focus({ preventScroll: true }));
+}
+    
+
     function renderAppSelection(json) {
       const apps = JSON.parse(json);
       const list = document.getElementById('autostartList');
@@ -789,7 +822,7 @@
           const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
           const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
           const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
-          focusAndRevealAuto(cards[targetIndex]);
+          revealAutostartBox(cards[targetIndex]);
           break;
         }
         case 'ArrowDown':
@@ -836,7 +869,7 @@
           // Уже в последней строке — уходим на "Закрыть"
           lastIndexBeforeFooter = index;
           cards[index]?.classList.remove('selected');
-          closeBtn?.focus({ preventScroll: true });
+          if (closeBtn) revealAutostartBox(closeBtn);
         }
         break;
       }
