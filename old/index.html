@@ -73,7 +73,7 @@
     .toast--anchored { position: fixed; z-index: 10000; }
 
     /* === АВТОЗАПУСК === */
-    #autostartListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
+    #autostartListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; padding: 8px 12px 72px; }
     #autostartList {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* адаптивно по ширине модалки */
@@ -84,7 +84,20 @@
     #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
 
     /* Сделаем «Закрыть» видимой как "низ списка" */
-    #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
+    /* было: #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; } */
+#autostartCloseBtn{
+  position: sticky;                /* фиксируем внутри скролл-контейнера */
+  bottom: 0;                       /* прилипает к низу контейнера */
+  margin: 12px auto 0;
+  width: 100%;
+  max-width: 320px;
+  z-index: 1;
+  background: #111;                /* чтобы не «сливалась» с контентом при прокрутке */
+  box-shadow: 0 -6px 12px rgba(0,0,0,.35); /* мягкий верхний тенёк */
+  /* чтобы при переходе к кнопке она гарантированно попадала в зону видимости */
+  scroll-margin-block-start: 12px;
+  scroll-margin-block-end: 16px;
+}
   </style>
 </head>
 
@@ -707,6 +720,12 @@
               break;
             }
             case 'ArrowDown':
+              if (closeBtn) {
+  focusAndRevealAuto(closeBtn);
+  // подстраховка для некоторых ТВ WebView
+  closeBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
             case 'ArrowLeft':
             case 'ArrowRight':
               e.preventDefault(); break; // упор внизу
