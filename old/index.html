@@ -137,43 +137,42 @@ button:focus {
   z-index: 9999;
 }
 
-/* внутри списка модалки отключаем плавные переходы,
-   чтобы подсветка фокуса не "догоняла" и не мигала */
-#modalList .component-btn {
+/* 🔧 Убираем шлейф/мигание фокуса во всех списках модалок */
+#modalList .component-btn,
+#autostartList .card {
   transition: none !important;
 }
-#modalList .component-btn:focus {
+
+/* 🧭 Единая подсветка фокуса */
+#modalList .component-btn:focus,
+#autostartList .card:focus {
   box-shadow: 0 0 0 3px rgba(255,255,255,0.6) !important;
   border-color: white !important;
   outline: none;
 }
 
-/* важно, чтобы скроллился ТОЛЬКО список, а не вся модалка */
-.modal-content { overflow: hidden; } /* вместо overflow-y:auto */
-#modalListContainer{
-  max-height:60vh;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  scroll-behavior:auto;
+/* 🧱 Скролл — только внутри внутренних контейнеров списков */
+.modal-content {
+  overflow: hidden; /* вместо overflow-y:auto у модалки */
+}
+
+#modalListContainer,
+#autostartListContainer {
+  max-height: 60vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: auto; /* без плавности — нет шлейфа */
   scrollbar-gutter: stable both-edges;
 }
 
-/* скролл только внутри списка автозапуска */
-#autostartListContainer{
-  max-height:60vh;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  scroll-behavior:auto;
-  scrollbar-gutter: stable both-edges;
-}
-
-/* можно оставить flex (card-container), но сетка на ТВ ведёт себя стабильнее */
-#autostartList{
+/* 📐 Сетка в автозапуске (ровная навигация на ТВ) */
+#autostartList {
   display: grid;
   grid-template-columns: repeat(5, 1fr); /* 5 карточек в ряд */
   gap: 10px;
   justify-items: center;
 }
+
 
 
 #logo {
