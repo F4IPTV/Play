@@ -834,5 +834,33 @@ document.getElementById('modal').addEventListener('click', groupClickGuard, true
     }
 
   </script>
+<script>
+// 1) Режем автоповтор клавиши Enter/OK по всему приложению (CAPTURE + immediate)
+document.addEventListener('keydown', function(e) {
+  const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK');
+  if (isEnter && e.repeat) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+}, true);
+
+// 2) Глобальный дебаунс «кликов от удержания» — пер-элементный
+const __lastClickByEl = new WeakMap();
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('button, [role="button"], .component-btn, #installAllBtn');
+  if (!target) return;
+  const now = Date.now();
+  const last = __lastClickByEl.get(target) || 0;
+  const interval = 700; // можно 500..900 мс
+
+  if (now - last < interval) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return;
+  }
+  __lastClickByEl.set(target, now);
+}, true);
+</script>
+  
 </body>
 </html>
