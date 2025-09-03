@@ -158,7 +158,22 @@ button:focus {
   scrollbar-gutter: stable both-edges;
 }
 
+/* скролл только внутри списка автозапуска */
+#autostartListContainer{
+  max-height:60vh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scroll-behavior:auto;
+  scrollbar-gutter: stable both-edges;
+}
 
+/* можно оставить flex (card-container), но сетка на ТВ ведёт себя стабильнее */
+#autostartList{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 карточек в ряд */
+  gap: 10px;
+  justify-items: center;
+}
 
 
 #logo {
@@ -357,7 +372,9 @@ button:focus {
 	
 	<button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
 
-    <div id="autostartList" class="card-container"></div>
+    <div id="autostartListContainer">
+  <div id="autostartList" class="card-container"></div>
+</div>
     <button onclick="closeAutostartModal()" id="autostartCloseBtn">❌ Закрыть</button>
   </div>
 </div>
@@ -941,6 +958,20 @@ function closeModal() {
 
 </script>
 
+<script>
+function focusAndRevealAuto(el, margin = 12) {
+  const container = document.getElementById('autostartListContainer');
+  if (!el || !container) return;
+  const cr = container.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  if (er.top < cr.top + margin) {
+    container.scrollTop -= (cr.top + margin - er.top);
+  } else if (er.bottom > cr.bottom - margin) {
+    container.scrollTop += (er.bottom - (cr.bottom - margin));
+  }
+  requestAnimationFrame(() => el.focus({ preventScroll: true }));
+}
+</script>
 
 <script>
   function handleBackButton() {
@@ -1093,17 +1124,19 @@ function renderAppSelection(json) {
 
     };
     card.onfocus = () => {
-      document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      document.getElementById("autostartCurrent").textContent = "Выбрано: " + applabel;
-    };
+  document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const cur = document.getElementById("autostartCurrent");
+  if (cur) cur.textContent = "Выбрано: " + app.label;
+  focusAndRevealAuto(card);
+};
     list.appendChild(card);
   });
 
   setTimeout(() => {
-    const first = list.querySelector('.card');
-    if (first) first.focus();
-  }, 100);
+  const first = list.querySelector('.card');
+  if (first) focusAndRevealAuto(first);
+}, 100);
 }
 
 function disableAutostart() {
@@ -1182,9 +1215,6 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
 document.addEventListener('keydown', function (e) {
   const modal = document.getElementById('autostartModal');
   if (!modal || modal.style.display !== 'flex') return;
-  
-  e.stopPropagation();
-  e.stopImmediatePropagation();
 
   const cards = Array.from(document.querySelectorAll('#autostartList .card'));
   const closeBtn = document.getElementById('autostartCloseBtn');
@@ -1192,17 +1222,25 @@ document.addEventListener('keydown', function (e) {
 
   const cols = 5;
   const active = document.activeElement;
-  const index = cards.indexOf(active);
 
-  // если фокус на кнопке "Закрыть", позволим только вверх и Escape
+  // если фокус на "Закрыть" — только вверх/Back/Escape
   if (active === closeBtn) {
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
-      cards[cards.length - 1].focus(); // на последнюю карточку
+      (cards[cards.length - 1] && focusAndRevealAuto(cards[cards.length - 1]));
     } else if (e.key === 'Back' || e.key === 'Escape') {
       e.preventDefault();
       closeAutostartModal();
+    }
+    return;
+  }
+
+  const index = cards.indexOf(active);
+  if (index === -1) {
+    // если фокуса нет на карточке — ставим на первую
+    if (e.key.startsWith('Arrow')) {
+      e.preventDefault();
+      focusAndRevealAuto(cards[0]);
     }
     return;
   }
@@ -1212,45 +1250,47 @@ document.addEventListener('keydown', function (e) {
   const col = index % cols;
 
   switch (e.key) {
-    case 'ArrowDown':
+    case 'ArrowDown': {
       e.preventDefault();
       const nextIndex = (row + 1) * cols + col;
       if (nextIndex < total) {
-        cards[nextIndex].focus();
+        focusAndRevealAuto(cards[nextIndex]);
       } else {
-        // если это последний ряд — фокус на кнопку "Закрыть"
-        closeBtn?.focus();
+        closeBtn?.focus({ preventScroll: true });
       }
       break;
-
-    case 'ArrowUp':
+    }
+    case 'ArrowUp': {
       e.preventDefault();
       const prevIndex = (row - 1) * cols + col;
-      if (prevIndex >= 0) {
-        cards[prevIndex].focus();
-      }
+      if (prevIndex >= 0) focusAndRevealAuto(cards[prevIndex]);
       break;
-
-    case 'ArrowLeft':
+    }
+    case 'ArrowLeft': {
       e.preventDefault();
-      if (index > 0) cards[index - 1].focus();
+      if (index > 0) focusAndRevealAuto(cards[index - 1]);
       break;
-
-    case 'ArrowRight':
+    }
+    case 'ArrowRight': {
       e.preventDefault();
-      if (index < total - 1) cards[index + 1].focus();
+      if (index < total - 1) focusAndRevealAuto(cards[index + 1]);
       break;
-
-    case 'Enter':
+    }
+    case 'Enter': {
       e.preventDefault();
       active.click();
       break;
-
+    }
     case 'Back':
-    case 'Escape':
+    case 'Escape': {
       e.preventDefault();
-      closeAutostartModal()
-
+      closeAutostartModal();
+      break;
+    }
+    default:
+      break;
+  }
+});
 </script>
 
 <script>
