@@ -733,154 +733,154 @@
 
     // === Навигация в автозапуске: адаптивные колонки + чистка подсветки ===
     (function attachAutostartNavOnce(){
-      if (window.__autoStartNavBoundV3) return;
-      window.__autoStartNavBoundV3 = true;
+  if (window.__autoStartNavBoundV3) return;
+  window.__autoStartNavBoundV3 = true;
 
-      let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
-      let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
+  let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
+  let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
 
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('autostartModal');
-        if (!modal || modal.style.display !== 'flex') return;
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('autostartModal');
+    if (!modal || modal.style.display !== 'flex') return;
 
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
-        const list      = document.getElementById('autostartList');
-        const cards     = Array.from(list.querySelectorAll('.card'));
-        const headerBtn = modal.querySelector('.sys-btn'); // 🚫 Отключить автозапуск (первая sys-btn)
-        const closeBtn  = document.getElementById('autostartCloseBtn');
+    const list      = document.getElementById('autostartList');
+    const cards     = Array.from(list.querySelectorAll('.card'));
+    const headerBtn = modal.querySelector('.sys-btn'); // 🚫 Отключить автозапуск
+    const closeBtn  = document.getElementById('autostartCloseBtn');
+    if (!cards.length) return;
 
-        if (!cards.length) return;
+    const cols   = getAutostartCols();
+    const active = document.activeElement;
 
-        const cols = getAutostartCols();
-        const active = document.activeElement;
-
-        // Верхняя кнопка
-        if (active === headerBtn) {
-          // чистим selected у карточек, чтобы подсветка не залипала
-          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
-          switch (e.key) {
-            case 'ArrowDown': {
-              e.preventDefault();
-              const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
-              const targetIndex = Math.min(col, cards.length - 1);
-              focusAndRevealAuto(cards[targetIndex]);
-              break;
-            }
-            case 'ArrowUp':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-              e.preventDefault(); // упираемся
-              break;
-            case 'Enter':
-              e.preventDefault();
-              headerBtn.click();
-              break;
-            case 'Back':
-            case 'Escape':
-              e.preventDefault();
-              closeAutostartModal();
-              break;
-          }
-          return;
-        }
-
-        // Нижняя кнопка
-        if (active === closeBtn) {
-          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
-          switch (e.key) {
-            case 'ArrowUp': {
-              e.preventDefault();
-              const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
-              const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
-              const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
-              focusAndRevealAuto(cards[targetIndex]);
-              break;
-            }
-            case 'ArrowDown':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-              e.preventDefault();
-              break;
-            case 'Enter':
-              e.preventDefault();
-              closeBtn.click();
-              break;
-            case 'Back':
-            case 'Escape':
-              e.preventDefault();
-              closeAutostartModal();
-              break;
-          }
-          return;
-        }
-
-        // Обычная сетка карточек
-        const index = cards.indexOf(active);
-        if (index === -1 && e.key.startsWith('Arrow')) {
+    // Верхняя кнопка
+    if (active === headerBtn) {
+      document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+      switch (e.key) {
+        case 'ArrowDown': {
           e.preventDefault();
-          focusAndRevealAuto(cards[0]);
-          return;
+          const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
+          const targetIndex = Math.min(col, cards.length - 1);
+          focusAndRevealAuto(cards[targetIndex]);
+          break;
         }
+        case 'ArrowUp':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          e.preventDefault(); // упор
+          break;
+        case 'Enter':
+          e.preventDefault(); headerBtn.click(); break;
+        case 'Back':
+        case 'Escape':
+          e.preventDefault(); closeAutostartModal(); break;
+      }
+      return;
+    }
 
-        const total = cards.length;
-        const row   = Math.floor(index / cols);
-        const col   = index % cols;
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            const nextIndex = (row + 1) * cols + col;
-            if (nextIndex < total) {
-              focusAndRevealAuto(cards[nextIndex]);
-            } else {
-              lastIndexBeforeFooter = index;
-              cards[index]?.classList.remove('selected');
-              closeBtn?.focus({ preventScroll: true });
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) {
-              lastIndexBeforeHeader = index;
-              cards[index]?.classList.remove('selected');
-              headerBtn?.focus({ preventScroll: true });
-            } else {
-              const prevIndex = (row - 1) * cols + col;
-              focusAndRevealAuto(cards[prevIndex]);
-            }
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
-            const target = index - 1;
-            if (target >= 0) focusAndRevealAuto(cards[target]);
-            break;
-          }
-          case 'ArrowRight': {
-            e.preventDefault();
-            const inRowEnd = (col === cols - 1) || (index + 1 >= total);
-            if (inRowEnd) return;
-            focusAndRevealAuto(cards[index + 1]);
-            break;
-          }
-          case 'Enter': {
-            e.preventDefault();
-            active?.click();
-            break;
-          }
-          case 'Back':
-          case 'Escape': {
-            e.preventDefault();
-            closeAutostartModal();
-            break;
-          }
+    // Нижняя кнопка
+    if (active === closeBtn) {
+      document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+      switch (e.key) {
+        case 'ArrowUp': {
+          e.preventDefault();
+          const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
+          const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
+          const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
+          focusAndRevealAuto(cards[targetIndex]);
+          break;
         }
-      });
-    })();
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          e.preventDefault(); break;
+        case 'Enter':
+          e.preventDefault(); closeBtn.click(); break;
+        case 'Back':
+        case 'Escape':
+          e.preventDefault(); closeAutostartModal(); break;
+      }
+      return;
+    }
+
+    // Обычная сетка карточек
+    const index = cards.indexOf(active);
+    if (index === -1 && e.key.startsWith('Arrow')) {
+      e.preventDefault();
+      focusAndRevealAuto(cards[0]);
+      return;
+    }
+
+    const total = cards.length;
+    const row   = Math.floor(index / cols);
+    const col   = index % cols;
+    const lastRow = Math.floor((total - 1) / cols);
+    const lastRowStart = lastRow * cols;
+
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        // Кандидат прямо под текущим
+        const nextIndex = (row + 1) * cols + col;
+
+        if (row < lastRow) {
+          // Есть строка ниже. Если ячейки нет (короткая последняя строка),
+          // прыгаем на последний существующий элемент этой строки.
+          const targetIndex = (nextIndex < total)
+            ? nextIndex
+            : Math.min(lastRowStart + col, total - 1);
+          focusAndRevealAuto(cards[targetIndex]);
+        } else {
+          // Уже в последней строке — уходим на "Закрыть"
+          lastIndexBeforeFooter = index;
+          cards[index]?.classList.remove('selected');
+          closeBtn?.focus({ preventScroll: true });
+        }
+        break;
+      }
+
+      case 'ArrowUp': {
+        e.preventDefault();
+        if (row === 0) {
+          lastIndexBeforeHeader = index;
+          cards[index]?.classList.remove('selected');
+          headerBtn?.focus({ preventScroll: true });
+        } else {
+          const prevIndex = (row - 1) * cols + col;
+          // prevIndex гарантированно валиден
+          focusAndRevealAuto(cards[prevIndex]);
+        }
+        break;
+      }
+
+      case 'ArrowLeft': {
+        e.preventDefault();
+        if (col === 0) return; // упор на левом краю
+        const target = index - 1;
+        if (target >= 0) focusAndRevealAuto(cards[target]);
+        break;
+      }
+
+      case 'ArrowRight': {
+        e.preventDefault();
+        // упор на правом краю или если следующей карточки нет
+        const inRowEnd = (col === cols - 1) || (index + 1 >= total);
+        if (inRowEnd) return;
+        focusAndRevealAuto(cards[index + 1]);
+        break;
+      }
+
+      case 'Enter':
+        e.preventDefault(); active?.click(); break;
+
+      case 'Back':
+      case 'Escape':
+        e.preventDefault(); closeAutostartModal(); break;
+    }
+  });
+})();
 
     // misc modal open/close
     function openMiscModal() {
