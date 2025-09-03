@@ -1212,86 +1212,107 @@ document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").f
 </script>
 
 <script>
-document.addEventListener('keydown', function (e) {
-  const modal = document.getElementById('autostartModal');
-  if (!modal || modal.style.display !== 'flex') return;
+(function attachAutostartNavOnce(){
+  // чтобы не подвесить несколько одинаковых слушателей
+  if (window.__autoStartNavBound) return;
+  window.__autoStartNavBound = true;
 
-  const cards = Array.from(document.querySelectorAll('#autostartList .card'));
-  const closeBtn = document.getElementById('autostartCloseBtn');
-  if (!cards.length) return;
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('autostartModal');
+    if (!modal || modal.style.display !== 'flex') return;
 
-  const cols = 5;
-  const active = document.activeElement;
+    // ⚠️ не даём событию уйти наверх
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
-  // если фокус на "Закрыть" — только вверх/Back/Escape
-  if (active === closeBtn) {
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      (cards[cards.length - 1] && focusAndRevealAuto(cards[cards.length - 1]));
-    } else if (e.key === 'Back' || e.key === 'Escape') {
-      e.preventDefault();
-      closeAutostartModal();
+    const cards = Array.from(document.querySelectorAll('#autostartList .card'));
+    const closeBtn = document.getElementById('autostartCloseBtn');
+    if (!cards.length) return;
+
+    const cols = 5; // твоя сетка 5xN
+    const active = document.activeElement;
+
+    // Если фокус на "Закрыть"
+    if (active === closeBtn) {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const last = cards[cards.length - 1];
+        if (last) focusAndRevealAuto(last);
+      } else if (e.key === 'ArrowDown') {
+        // упираемся: остаёмся на Close
+        e.preventDefault();
+      } else if (e.key === 'Back' || e.key === 'Escape') {
+        e.preventDefault();
+        closeAutostartModal();
+      } else if (e.key.startsWith('Arrow')) {
+        // влево/вправо на Close никуда не двигаемся
+        e.preventDefault();
+      }
+      return;
     }
-    return;
-  }
 
-  const index = cards.indexOf(active);
-  if (index === -1) {
-    // если фокуса нет на карточке — ставим на первую
-    if (e.key.startsWith('Arrow')) {
+    const index = cards.indexOf(active);
+    // если фокуса нет на карточке — поставим на первую по любой стрелке
+    if (index === -1 && e.key.startsWith('Arrow')) {
       e.preventDefault();
       focusAndRevealAuto(cards[0]);
+      return;
     }
-    return;
-  }
 
-  const total = cards.length;
-  const row = Math.floor(index / cols);
-  const col = index % cols;
+    const total = cards.length;
+    const row = Math.floor(index / cols);
+    const col = index % cols;
 
-  switch (e.key) {
-    case 'ArrowDown': {
-      e.preventDefault();
-      const nextIndex = (row + 1) * cols + col;
-      if (nextIndex < total) {
-        focusAndRevealAuto(cards[nextIndex]);
-      } else {
-        closeBtn?.focus({ preventScroll: true });
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        const nextIndex = (row + 1) * cols + col;
+        if (nextIndex < total) {
+          focusAndRevealAuto(cards[nextIndex]);
+        } else {
+          // нижняя кромка — уходим на кнопку "Закрыть"
+          closeBtn?.focus({ preventScroll: true });
+        }
+        break;
       }
-      break;
+      case 'ArrowUp': {
+        e.preventDefault();
+        // верхняя кромка — упираемся (остаёмся на месте)
+        if (row === 0) return;
+        const prevIndex = (row - 1) * cols + col;
+        if (prevIndex >= 0) focusAndRevealAuto(cards[prevIndex]);
+        break;
+      }
+      case 'ArrowLeft': {
+        e.preventDefault();
+        // левая кромка — упираемся
+        if (col === 0) return;
+        focusAndRevealAuto(cards[index - 1]);
+        break;
+      }
+      case 'ArrowRight': {
+        e.preventDefault();
+        // правая кромка — упираемся, если нет следующего
+        if (col === cols - 1 || index + 1 >= total) return;
+        focusAndRevealAuto(cards[index + 1]);
+        break;
+      }
+      case 'Enter': {
+        e.preventDefault();
+        active?.click();
+        break;
+      }
+      case 'Back':
+      case 'Escape': {
+        e.preventDefault();
+        closeAutostartModal();
+        break;
+      }
     }
-    case 'ArrowUp': {
-      e.preventDefault();
-      const prevIndex = (row - 1) * cols + col;
-      if (prevIndex >= 0) focusAndRevealAuto(cards[prevIndex]);
-      break;
-    }
-    case 'ArrowLeft': {
-      e.preventDefault();
-      if (index > 0) focusAndRevealAuto(cards[index - 1]);
-      break;
-    }
-    case 'ArrowRight': {
-      e.preventDefault();
-      if (index < total - 1) focusAndRevealAuto(cards[index + 1]);
-      break;
-    }
-    case 'Enter': {
-      e.preventDefault();
-      active.click();
-      break;
-    }
-    case 'Back':
-    case 'Escape': {
-      e.preventDefault();
-      closeAutostartModal();
-      break;
-    }
-    default:
-      break;
-  }
-});
+  });
+})();
 </script>
+
 
 <script>
 document.addEventListener('keydown', function (e) {
