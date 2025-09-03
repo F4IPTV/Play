@@ -401,8 +401,48 @@
       });
 
       modal.style.display = "flex";
+      bindGroupAutorepeatGuard(); // ← только внутри групп
       setTimeout(() => { document.querySelector('#modalList .component-btn')?.focus({ preventScroll: true }); }, 80);
     }
+
+// ==== guard только для модалки групп ====
+let __groupGuardBound = false;
+function isGroupModalOpen() {
+  const m = document.getElementById('modal');
+  return m && m.style.display === 'flex';
+}
+function bindGroupAutorepeatGuard() {
+  if (__groupGuardBound) return;
+  __groupGuardBound = true;
+
+  // На фазе capture: режем автоповтор и стандартную активацию Enter
+  const guardKeyDown = (e) => {
+    if (!isGroupModalOpen()) return;
+    const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter');
+    if (isEnter && e.repeat) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  };
+  const guardKeyUp = (e) => {
+    if (!isGroupModalOpen()) return;
+    const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter');
+    if (isEnter && e.repeat) {
+      // на всякий случай блокируем и keyup, чтобы WebView не сгенерил "клик"
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  };
+
+  // Сохраним ссылки, чтобы можно было снять при закрытии (если захочешь)
+  window.__groupGuardKeyDown = guardKeyDown;
+  window.__groupGuardKeyUp   = guardKeyUp;
+
+  document.addEventListener('keydown', guardKeyDown, true);
+  document.addEventListener('keyup',   guardKeyUp,   true);
+}
+
+    
 
     function installAll() {
       showStatus(`Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
@@ -800,15 +840,7 @@
       document.body.classList.remove("modal-open");
       setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
     }
-// Блокируем автоповтор кнопки ОК (Enter) в WebView
-document.addEventListener('keydown', (e) => {
-  const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter');
-  if (isEnter && e.repeat) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-});
-    
+
   </script>
 </body>
 </html>
