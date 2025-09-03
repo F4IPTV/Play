@@ -405,7 +405,6 @@
     }
 
 // ==== только для модалки групп: дебаунс кликов ====
-let __groupActionLock = false;
 let __lastGroupClickTs = 0;
 
 function isGroupModalOpen() {
@@ -413,35 +412,25 @@ function isGroupModalOpen() {
   return m && m.style.display === 'flex';
 }
 
-// Режем частые клики по компонентам и "Установить всё"
 function groupClickGuard(e) {
   if (!isGroupModalOpen()) return;
   const target = e.target.closest('.component-btn, #installAllBtn');
   if (!target) return;
 
   const now = Date.now();
-  // если уже в замке или клики идут чаще 800мс — блокируем
-  if (__groupActionLock || (now - __lastGroupClickTs) < 800) {
+  // Блокируем двойные клики чаще, чем раз в 600–800 мс
+  if ((now - __lastGroupClickTs) < 500) {
     e.preventDefault();
     e.stopImmediatePropagation();
     return;
   }
-  __groupActionLock = true;
-  __lastGroupClickTs = now;
-  setTimeout(() => { __groupActionLock = false; }, 800);
+  __lastGroupClickTs = now; // первый клик проходит
 }
 
-// навешиваем в CAPTURE, чтобы поймать до обычных onclick
 document.getElementById('modal').addEventListener('click', groupClickGuard, true);
-
     
 
     function installAll() {
-  // если guard уже схватил клик — сюда не дойдём; но на всякий пожарный:
-  if (__groupActionLock) return;
-  __groupActionLock = true;
-  setTimeout(() => { __groupActionLock = false; }, 800);
-
   showStatus(
     `Началась загрузка приложений, ожидайте...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`,
     "#00cfff", 4000
