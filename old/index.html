@@ -668,7 +668,7 @@
           document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
           const cur = document.getElementById("autostartCurrent");
-          if (cur) cur.textContent = "Выбрано: " + app.label;
+          if (cur) cur.textContent = "Выбрано: " + applabel;
           focusAndRevealAuto(card);
         };
 
