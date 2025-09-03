@@ -800,6 +800,15 @@
       document.body.classList.remove("modal-open");
       setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
     }
+// Блокируем автоповтор кнопки ОК (Enter) в WebView
+document.addEventListener('keydown', (e) => {
+  const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter');
+  if (isEnter && e.repeat) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+    
   </script>
 </body>
 </html>
