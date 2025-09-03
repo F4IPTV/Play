@@ -97,6 +97,15 @@
       outline: none;
     }
 
+/* Только для модалки автозапуска: скролл всей модалки, чтобы кнопка "Закрыть" появлялась */
+#autostartModal .modal-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 80vh;
+}
+
+    
+
     #logo {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain;
@@ -732,12 +741,28 @@
     }, 3000);
 
     // === Навигация в автозапуске: адаптивные колонки + чистка подсветки ===
-    (function attachAutostartNavOnce(){
-  if (window.__autoStartNavBoundV3) return;
-  window.__autoStartNavBoundV3 = true;
+  (function attachAutostartNavOnce(){
+  if (window.__autoStartNavBoundV6) return;
+  window.__autoStartNavBoundV6 = true;
 
   let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
   let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
+
+  function revealInAutostartModal(el, margin = 12) {
+    const modal = document.getElementById('autostartModal');
+    const box   = modal?.querySelector('.modal-content');
+    if (!box || !el) return;
+
+    const cr = box.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+
+    if (er.top < cr.top + margin) {
+      box.scrollTop -= (cr.top + margin - er.top);
+    } else if (er.bottom > cr.bottom - margin) {
+      box.scrollTop += (er.bottom - (cr.bottom - margin));
+    }
+    requestAnimationFrame(() => el.focus({ preventScroll: true }));
+  }
 
   document.addEventListener('keydown', function (e) {
     const modal = document.getElementById('autostartModal');
@@ -752,10 +777,10 @@
     const closeBtn  = document.getElementById('autostartCloseBtn');
     if (!cards.length) return;
 
-    const cols   = getAutostartCols();
+    const cols   = getAutostartCols(); // динамически по ширине
     const active = document.activeElement;
 
-    // Верхняя кнопка
+    // ===== Верхняя кнопка
     if (active === headerBtn) {
       document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
       switch (e.key) {
@@ -763,7 +788,7 @@
           e.preventDefault();
           const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
           const targetIndex = Math.min(col, cards.length - 1);
-          focusAndRevealAuto(cards[targetIndex]);
+          revealInAutostartModal(cards[targetIndex]);
           break;
         }
         case 'ArrowUp':
@@ -772,112 +797,117 @@
           e.preventDefault(); // упор
           break;
         case 'Enter':
-          e.preventDefault(); headerBtn.click(); break;
+          e.preventDefault();
+          headerBtn.click();
+          break;
         case 'Back':
         case 'Escape':
-          e.preventDefault(); closeAutostartModal(); break;
+          e.preventDefault();
+          closeAutostartModal();
+          break;
       }
       return;
     }
 
-    // Нижняя кнопка
+    // ===== Кнопка "Закрыть"
     if (active === closeBtn) {
-      document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
       switch (e.key) {
-        case 'ArrowUp': {
+        case 'ArrowDown': // упор вниз
+          e.preventDefault();
+          revealInAutostartModal(closeBtn);
+          break;
+        case 'ArrowUp': { // возврат в последнюю строку
           e.preventDefault();
           const lastRowStart = Math.floor((cards.length - 1) / cols) * cols;
+          const lastRowLen   = cards.length - lastRowStart;
           const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
-          const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
-          focusAndRevealAuto(cards[targetIndex]);
+          const targetIndex = Math.min(lastRowStart + Math.min(col, lastRowLen - 1), cards.length - 1);
+          revealInAutostartModal(cards[targetIndex]);
           break;
         }
-        case 'ArrowDown':
         case 'ArrowLeft':
         case 'ArrowRight':
-          e.preventDefault(); break;
+          e.preventDefault(); // упор по горизонтали
+          break;
         case 'Enter':
-          e.preventDefault(); closeBtn.click(); break;
+          e.preventDefault();
+          closeBtn.click();
+          break;
         case 'Back':
         case 'Escape':
-          e.preventDefault(); closeAutostartModal(); break;
+          e.preventDefault();
+          closeAutostartModal();
+          break;
       }
       return;
     }
 
-    // Обычная сетка карточек
+    // ===== Сетка карточек
     const index = cards.indexOf(active);
     if (index === -1 && e.key.startsWith('Arrow')) {
       e.preventDefault();
-      focusAndRevealAuto(cards[0]);
+      revealInAutostartModal(cards[0]);
       return;
     }
 
-    const total = cards.length;
-    const row   = Math.floor(index / cols);
-    const col   = index % cols;
-    const lastRow = Math.floor((total - 1) / cols);
-    const lastRowStart = lastRow * cols;
+    const total         = cards.length;
+    const row           = Math.floor(index / cols);
+    const col           = index % cols;
+    const lastRowStart  = Math.floor((total - 1) / cols) * cols;
+    const lastRowIndex  = Math.floor((total - 1) / cols);
+    const lastRowLen    = total - lastRowStart;
 
     switch (e.key) {
       case 'ArrowDown': {
         e.preventDefault();
-        // Кандидат прямо под текущим
-        const nextIndex = (row + 1) * cols + col;
-
-        if (row < lastRow) {
-          // Есть строка ниже. Если ячейки нет (короткая последняя строка),
-          // прыгаем на последний существующий элемент этой строки.
-          const targetIndex = (nextIndex < total)
-            ? nextIndex
-            : Math.min(lastRowStart + col, total - 1);
-          focusAndRevealAuto(cards[targetIndex]);
+        if (row < lastRowIndex) {
+          // спускаемся вниз; если внизу нет этой колонки — прыгаем на последнюю в строке
+          const targetCol = Math.min(col, lastRowLen - 1);
+          const target    = Math.min((row + 1) * cols + targetCol, total - 1);
+          revealInAutostartModal(cards[target]);
         } else {
-          // Уже в последней строке — уходим на "Закрыть"
+          // последняя строка — уходим на "Закрыть" и СКРОЛЛИМ модалку, чтобы её было видно
           lastIndexBeforeFooter = index;
-          cards[index]?.classList.remove('selected');
-          closeBtn?.focus({ preventScroll: true });
+          revealInAutostartModal(closeBtn);
         }
         break;
       }
-
       case 'ArrowUp': {
         e.preventDefault();
         if (row === 0) {
           lastIndexBeforeHeader = index;
-          cards[index]?.classList.remove('selected');
-          headerBtn?.focus({ preventScroll: true });
+          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+          revealInAutostartModal(headerBtn);
         } else {
-          const prevIndex = (row - 1) * cols + col;
-          // prevIndex гарантированно валиден
-          focusAndRevealAuto(cards[prevIndex]);
+          const target = (row - 1) * cols + col;
+          revealInAutostartModal(cards[target]);
         }
         break;
       }
-
       case 'ArrowLeft': {
         e.preventDefault();
-        if (col === 0) return; // упор на левом краю
-        const target = index - 1;
-        if (target >= 0) focusAndRevealAuto(cards[target]);
+        if (col > 0) revealInAutostartModal(cards[index - 1]);
         break;
       }
-
       case 'ArrowRight': {
         e.preventDefault();
-        // упор на правом краю или если следующей карточки нет
-        const inRowEnd = (col === cols - 1) || (index + 1 >= total);
-        if (inRowEnd) return;
-        focusAndRevealAuto(cards[index + 1]);
+        const right = index + 1;
+        if (right < total && Math.floor(right / cols) === row) {
+          revealInAutostartModal(cards[right]);
+        }
         break;
       }
-
-      case 'Enter':
-        e.preventDefault(); active?.click(); break;
-
+      case 'Enter': {
+        e.preventDefault();
+        active?.click();
+        break;
+      }
       case 'Back':
-      case 'Escape':
-        e.preventDefault(); closeAutostartModal(); break;
+      case 'Escape': {
+        e.preventDefault();
+        closeAutostartModal();
+        break;
+      }
     }
   });
 })();
