@@ -609,13 +609,19 @@
       if (isTV) { const startBtn = document.getElementById("startBtn"); if (startBtn) startBtn.style.display = "none"; }
     })();
 
-    function updateProgress(current=null, total=null, percent=0, label) {
+   function updateProgress(current=null, total=null, percent=0, label) {
       const container = document.getElementById("progress-container");
       const bar = document.getElementById("progress-bar");
       const text = document.getElementById("progress-text");
-      container.style.display = "block"; bar.style.width = percent + "%";
-      if (current !== null && total !== null) text.innerHTML = `Загрузка приложения:&nbsp;&nbsp; ${label}&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
-      else text.innerText = `Загрузка...`;
+      container.style.display = "block"; 
+      bar.style.width = percent + "%";
+      
+      // Проверяем на undefined и null значения
+      if (current !== null && total !== null && current !== undefined && total !== undefined && label) {
+        text.innerHTML = `Загрузка приложения:&nbsp;&nbsp; ${label}&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
+      } else {
+        text.innerText = `Загрузка...`;
+      }
       if (percent >= 100 && (current === null || current === total)) {
         setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerHTML = ""; }, 1500);
       }
