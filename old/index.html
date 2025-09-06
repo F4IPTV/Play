@@ -361,7 +361,7 @@
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -596,9 +596,9 @@
     })();
 
     function handleBackButton() {
-      if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
+      if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
-      else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
     }
@@ -1053,6 +1053,13 @@ function showInstallMethodSettings() {
     const radioBtn = document.getElementById('method_' + currentMethod);
     if (radioBtn) radioBtn.checked = true;
     
+    // freeze Разное, если открыто
+    const misc = document.getElementById('miscModal');
+    if (misc && misc.style.display === 'flex') {
+      misc.setAttribute('inert', '');
+      misc.style.pointerEvents = 'none';
+    }
+    
     // Показываем модалку
     const modal = document.getElementById("installMethodModal");
     modal.style.display = "flex";
@@ -1067,6 +1074,14 @@ function closeInstallMethodSettings() {
     const modal = document.getElementById("installMethodModal");
     modal.style.display = "none";
     document.body.classList.remove("modal-open");
+    
+    // unfreeze Разное
+    const misc = document.getElementById('miscModal');
+    if (misc) { 
+      misc.removeAttribute('inert'); 
+      misc.style.pointerEvents = ''; 
+    }
+    
     setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
 }
 
@@ -1228,14 +1243,14 @@ function selectInstallMethod(method, targetElement = null) {
   <div class="modal-content">
     <h3>Выбор метода установки</h3>
     <div class="install-method-settings">
-      <div class="method-option" onclick="selectInstallMethod('sai')" tabindex="0">
+      <div class="method-option" onclick="selectInstallMethod('sai', this)" tabindex="0">
         <input type="radio" id="method_sai" name="install_method" value="sai" checked>
         <label for="method_sai">
           <strong>Быстрая установка</strong><br>
           <small>SAI-метод (рекомендуется)</small>
         </label>
       </div>
-      <div class="method-option" onclick="selectInstallMethod('standard')" tabindex="0">
+      <div class="method-option" onclick="selectInstallMethod('standard', this)" tabindex="0">
         <input type="radio" id="method_standard" name="install_method" value="standard">
         <label for="method_standard">
           <strong>Обычная установка</strong><br>
