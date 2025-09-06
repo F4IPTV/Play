@@ -118,6 +118,10 @@
   }
 
 /* Стили для модалки настроек установки (как модалка "Разное") */
+#installMethodModal {
+  z-index: 1000 !important; /* Выше чем у модалки "Разное" (999) */
+}
+
 #installMethodModal .modal-content {
   display: flex;
   flex-direction: column;
@@ -1101,6 +1105,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('installMethodModal');
     if (!modal || modal.style.display !== 'flex') return;
 
+    // Блокируем ВСЕ события клавиатуры для модалки установки
+    e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
 
@@ -1115,7 +1121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (active === closeBtn) {
       switch (e.key) {
         case 'ArrowUp': {
-          e.preventDefault();
           const total = options.length;
           const lastRow = Math.floor((total - 1) / cols);
           const lastRowStart = lastRow * cols;
@@ -1127,12 +1132,12 @@ document.addEventListener('DOMContentLoaded', function() {
         case 'ArrowDown':
         case 'ArrowLeft':
         case 'ArrowRight':
-          e.preventDefault(); break;
+          break;
         case 'Enter':
-          e.preventDefault(); closeBtn.click(); break;
+          closeBtn.click(); break;
         case 'Back':
         case 'Escape':
-          e.preventDefault(); closeInstallMethodSettings(); break;
+          closeInstallMethodSettings(); break;
       }
       return;
     }
@@ -1140,7 +1145,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обычная сетка опций
     const index = options.indexOf(active);
     if (index === -1 && e.key.startsWith('Arrow')) {
-      e.preventDefault();
       options[0]?.focus({ preventScroll: true });
       return;
     }
@@ -1153,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     switch (e.key) {
       case 'ArrowDown': {
-        e.preventDefault();
         if (row < lastRow) {
           const nextIndex = (row + 1) * cols + col;
           const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
@@ -1165,7 +1168,6 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
       }
       case 'ArrowUp': {
-        e.preventDefault();
         if (row === 0) return; // упор вверху
         const prevIndex = (row - 1) * cols + col;
         options[prevIndex]?.focus({ preventScroll: true });
@@ -1173,9 +1175,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       case 'ArrowLeft':
       case 'ArrowRight':
-        e.preventDefault(); break; // не используем горизонтальную навигацию
+        break; // не используем горизонтальную навигацию
       case 'Enter':
-        e.preventDefault(); 
         if (index >= 0) {
           const method = options[index].querySelector('input[type="radio"]').value;
           selectInstallMethod(method);
@@ -1183,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
       case 'Back':
       case 'Escape':
-        e.preventDefault(); closeInstallMethodSettings(); break;
+        closeInstallMethodSettings(); break;
     }
   });
 })();
