@@ -96,18 +96,18 @@
   }
 
 /* Стили для модалки настроек установки */
-#installMethodModal.modal { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100vw; 
-  height: 100vh; 
-  background: rgba(0,0,0,.7); 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  z-index: 999; 
-  outline: none; 
+#installMethodModal { 
+  position: fixed !important; 
+  top: 0 !important; 
+  left: 0 !important; 
+  width: 100vw !important; 
+  height: 100vh !important; 
+  background: rgba(0,0,0,.7) !important; 
+  display: flex !important; 
+  justify-content: center !important; 
+  align-items: center !important; 
+  z-index: 999 !important; 
+  outline: none !important; 
 }
 
 #installMethodModal .modal-content {
@@ -150,7 +150,6 @@
   margin: 0;
   transform: scale(1.2);
   flex-shrink: 0;
-  pointer-events: none;
 }
 
 #installMethodModal .method-option label {
@@ -158,17 +157,6 @@
   display: block;
   margin: 0;
   flex: 1;
-  pointer-events: none;
-}
-
-#installMethodModal .method-option::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
 }
 
     
@@ -995,7 +983,9 @@ function selectInstallMethod(method) {
   document.getElementById('method_' + method).checked = true;
   
   // Сохраняем выбор
-  window.AndroidInterface.setInstallMethod(method);
+  if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
+    window.AndroidInterface.setInstallMethod(method);
+  }
 }
 
   
