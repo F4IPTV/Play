@@ -848,6 +848,87 @@ document.addEventListener('click', function(e) {
   __lastClickByEl.set(target, now);
 }, true);
 </script>
+
+<style>
+  /* Когда открыта модалка — фон не скроллится */
+  body.modal-open {
+    overflow: hidden;
+    height: 100vh;     /* страхует от прыжков */
+    touch-action: none;/* на всякий случай для тач/пульта */
+  }
+
+  /* Убедимся, что модалка именно фиксированная над страницей */
+  #miscModal.modal {
+    position: fixed;
+    inset: 0;          /* top:0; right:0; bottom:0; left:0 */
+  }
+</style>
+
+<script>
+(function () {
+  const MODAL_ID = 'miscModal';
+  const SCROLL_KEYS = new Set([
+    'ArrowUp','ArrowDown','PageUp','PageDown','Home','End','Space',' '
+  ]);
+
+  function miscModalOpened() {
+    const m = document.getElementById(MODAL_ID);
+    return m && m.style.display !== 'none';
+  }
+
+  // 1) Жёстко блокируем колёсико/тач-скролл, пока модалка открыта
+  function swallow(e) {
+    if (!miscModalOpened()) return;
+    // Если событие пришло не изнутри модалки — глушим
+    const modal = document.getElementById(MODAL_ID);
+    if (!modal.contains(e.target)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+  document.addEventListener('wheel', swallow, { passive:false, capture:true });
+  document.addEventListener('touchmove', swallow, { passive:false, capture:true });
+
+  // 2) Глушим клавиши, которые двигают страницу, когда открыта модалка
+  function keyGuard(e) {
+    if (!miscModalOpened()) return;
+    if (SCROLL_KEYS.has(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+  document.addEventListener('keydown', keyGuard, true);
+
+  // 3) Утилиты открыть/закрыть модалку (если у вас уже есть — просто оставьте body.classList)
+  window.openMiscModal = function () {
+    const m = document.getElementById(MODAL_ID);
+    if (!m) return;
+    m.style.display = 'block';
+    document.body.classList.add('modal-open');
+
+    // Поставим фокус внутрь, чтобы стрелки ходили по элементам модалки
+    const first = m.querySelector('[data-autofocus], button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (first) first.focus();
+
+    // Сделаем прокручиваемую область внутри модалки (если нужна)
+    const scrollBox = m.querySelector('[data-scrollbox]');
+    if (scrollBox && !scrollBox.style.maxHeight) {
+      scrollBox.style.maxHeight = '65vh';
+      scrollBox.style.overflow = 'auto';
+    }
+  };
+
+  window.closeMiscModal = function () {
+    const m = document.getElementById(MODAL_ID);
+    if (!m) return;
+    m.style.display = 'none';
+    document.body.classList.remove('modal-open');
+  };
+})();
+</script>
+
+
+
   
 </body>
 </html>
