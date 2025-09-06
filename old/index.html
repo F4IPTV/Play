@@ -94,6 +94,45 @@
     color: #00cfff;       /* оттенок бирюзового, как у кнопок */
     font-weight: 700;
   }
+
+.install-method-settings {
+  margin: 20px 0;
+}
+
+.method-option {
+  margin: 15px 0;
+  padding: 15px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.method-option:hover {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.method-option input[type="radio"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.method-option label {
+  cursor: pointer;
+  display: block;
+  margin: 0;
+}
+
+.method-option input[type="radio"]:checked + label {
+  color: #007bff;
+}
+
+.method-option input[type="radio"]:checked {
+  accent-color: #007bff;
+}
+
+    
     
   </style>
 </head>
@@ -238,6 +277,11 @@
         <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
   <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Установить APK
 </button>
+<!-- Кнопка настроек метода установки -->
+<button onclick="showInstallMethodSettings()" class="sys-btn">
+  <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Настройки установки
+</button>
+        
         <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
       </div>
       <br>
@@ -852,7 +896,71 @@ document.addEventListener('click', function(e) {
   }
   __lastClickByEl.set(target, now);
 }, true);
+
+// Показать настройки метода установки
+function showInstallMethodSettings() {
+    ignoreNextEnter = true;
+    
+    // Получаем текущий метод установки
+    const currentMethod = window.AndroidInterface.getInstallMethod();
+    
+    // Устанавливаем текущий метод в радиокнопки
+    document.getElementById('method_' + currentMethod).checked = true;
+    
+    // Показываем модалку
+    document.getElementById('installMethodModal').style.display = 'block';
+    document.getElementById('installMethodModal').focus();
+}
+
+// Закрыть настройки метода установки
+function closeInstallMethodSettings() {
+    document.getElementById('installMethodModal').style.display = 'none';
+}
+
+// Обработка изменения метода установки
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[name="install_method"]');
+    
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Сохраняем выбранный метод
+                window.AndroidInterface.setInstallMethod(this.value);
+            }
+        });
+    });
+});
+
+
+
+  
 </script>
+<!-- Модалка настроек метода установки -->
+<div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
+  <div class="modal-content">
+    <h3>Выбор метода установки</h3>
+    <div class="install-method-settings">
+      <div class="method-option">
+        <input type="radio" id="method_sai" name="install_method" value="sai" checked>
+        <label for="method_sai">
+          <strong>Быстрая установка</strong><br>
+          <small>SAI-метод (рекомендуется)</small>
+        </label>
+      </div>
+      <div class="method-option">
+        <input type="radio" id="method_standard" name="install_method" value="standard">
+        <label for="method_standard">
+          <strong>Обычная установка</strong><br>
+          <small>Через системный установщик</small>
+        </label>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button onclick="closeInstallMethodSettings()" class="btn-secondary">Закрыть</button>
+    </div>
+  </div>
+</div>
+  
   
 </body>
 </html>
