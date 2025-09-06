@@ -117,37 +117,11 @@
     font-weight: 700;
   }
 
-/* Стили для модалки настроек установки */
-#installMethodModal { 
-  position: fixed !important; 
-  top: 0 !important; 
-  left: 0 !important; 
-  width: 100vw !important; 
-  height: 100vh !important; 
-  background: rgba(0,0,0,.7) !important; 
-  display: flex !important;
-  justify-content: center !important; 
-  align-items: center !important; 
-  z-index: 999 !important; 
-  outline: none !important; 
-  pointer-events: auto !important;
-}
-
-#installMethodModal[style*="display: none"] {
-  display: none !important;
-}
-
+/* Стили для модалки настроек установки (как модалка "Разное") */
 #installMethodModal .modal-content {
-  background: #111; 
-  color: #fff; 
-  padding: 20px; 
-  border-radius: 10px;
-  max-height: 80vh; 
-  overflow: hidden; 
-  width: 80%; 
-  max-width: 600px;
-  border: 1px solid #333;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
 }
 
 #installMethodModal .method-option {
@@ -1074,9 +1048,8 @@ document.addEventListener('click', function(e) {
   __lastClickByEl.set(target, now);
 }, true);
 
-// Показать настройки метода установки
+// Показать настройки метода установки (как модалка "Разное")
 function showInstallMethodSettings() {
-    ignoreNextEnter = true;
     lastFocusedElement = document.activeElement;
     
     // Получаем текущий метод установки
@@ -1087,36 +1060,20 @@ function showInstallMethodSettings() {
     if (radioBtn) radioBtn.checked = true;
     
     // Показываем модалку
-    const modal = document.getElementById('installMethodModal');
-    modal.style.display = 'flex';
-    modal.style.visibility = 'visible';
-    
-    // Блокируем прокрутку фона
-    document.body.classList.add('modal-open');
-    
-    // Фокусируемся на первой опции
-    setTimeout(() => {
-        const firstOption = modal.querySelector('.method-option');
-        if (firstOption) firstOption.focus({ preventScroll: true });
-    }, 100);
+    const modal = document.getElementById("installMethodModal");
+    modal.style.display = "flex";
+    document.body.classList.add("modal-open");
+    document.activeElement?.blur();
+    const firstOption = modal.querySelector('.method-option');
+    if (firstOption) setTimeout(() => firstOption.focus(), 100); else modal.focus();
 }
 
-// Закрыть настройки метода установки
+// Закрыть настройки метода установки (как модалка "Разное")
 function closeInstallMethodSettings() {
-    const modal = document.getElementById('installMethodModal');
-    modal.style.display = 'none';
-    modal.style.visibility = 'hidden';
-    
-    // Разблокируем прокрутку фона
-    document.body.classList.remove('modal-open');
-    
-    // Возвращаем фокус
-    setTimeout(() => {
-        if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
-            lastFocusedElement.focus?.({ preventScroll: true });
-        }
-        lastFocusedElement = null;
-    }, 50);
+    const modal = document.getElementById("installMethodModal");
+    modal.style.display = "none";
+    document.body.classList.remove("modal-open");
+    setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
 }
 
 // Обработка изменения метода установки
@@ -1133,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Навигация в модалке настроек установки (простая линейная)
+// Навигация в модалке настроек установки (как модалка "Разное")
 (function attachInstallMethodNavOnce(){
   if (window.__installMethodNavBound) return;
   window.__installMethodNavBound = true;
@@ -1151,6 +1108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.querySelector('#installMethodModal .sys-btn');
     if (!options.length) return;
 
+    const cols = 1; // 1 колонка для модалки установки
     const active = document.activeElement;
 
     // Кнопка "Закрыть"
@@ -1158,10 +1116,12 @@ document.addEventListener('DOMContentLoaded', function() {
       switch (e.key) {
         case 'ArrowUp': {
           e.preventDefault();
-          const targetIndex = lastIndexBeforeFooter != null ? lastIndexBeforeFooter : options.length - 1;
-          if (targetIndex >= 0 && targetIndex < options.length) {
-            options[targetIndex].focus({ preventScroll: true });
-          }
+          const total = options.length;
+          const lastRow = Math.floor((total - 1) / cols);
+          const lastRowStart = lastRow * cols;
+          const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
+          const targetIndex = Math.min(lastRowStart + col, total - 1);
+          options[targetIndex]?.focus({ preventScroll: true });
           break;
         }
         case 'ArrowDown':
@@ -1177,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Обычные опции
+    // Обычная сетка опций
     const index = options.indexOf(active);
     if (index === -1 && e.key.startsWith('Arrow')) {
       e.preventDefault();
@@ -1185,11 +1145,19 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
+    const total = options.length;
+    const row   = Math.floor(index / cols);
+    const col   = index % cols;
+    const lastRow = Math.floor((total - 1) / cols);
+    const lastRowStart = lastRow * cols;
+
     switch (e.key) {
       case 'ArrowDown': {
         e.preventDefault();
-        if (index + 1 < options.length) {
-          options[index + 1].focus({ preventScroll: true });
+        if (row < lastRow) {
+          const nextIndex = (row + 1) * cols + col;
+          const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
+          options[targetIndex]?.focus({ preventScroll: true });
         } else {
           lastIndexBeforeFooter = index;
           closeBtn?.focus({ preventScroll: true });
@@ -1198,8 +1166,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       case 'ArrowUp': {
         e.preventDefault();
-        if (index === 0) return; // упор вверху
-        options[index - 1].focus({ preventScroll: true });
+        if (row === 0) return; // упор вверху
+        const prevIndex = (row - 1) * cols + col;
+        options[prevIndex]?.focus({ preventScroll: true });
         break;
       }
       case 'ArrowLeft':
@@ -1259,9 +1228,7 @@ function selectInstallMethod(method) {
         </label>
       </div>
     </div>
-    <div style="text-align: center; margin-top: 20px;">
-      <button onclick="closeInstallMethodSettings()" class="sys-btn" style="width: auto; padding: 10px 30px;">Закрыть</button>
-    </div>
+    <button onclick="closeInstallMethodSettings()" class="sys-btn">Закрыть</button>
   </div>
 </div>
   
