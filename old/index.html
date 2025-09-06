@@ -942,7 +942,10 @@
         
         // Если открыта модалка установки, не обрабатываем события
         const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
+        if (installModal && installModal.style.display === 'flex') {
+          // Полностью игнорируем события, если открыта модалка установки
+          return;
+        }
 
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -1170,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'Escape':
         closeInstallMethodSettings(); break;
     }
-  });
+  }, true); // Добавляем capture: true для более высокого приоритета
 })();
 
 function selectInstallMethod(method, targetElement = null) {
