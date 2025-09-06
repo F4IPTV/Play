@@ -50,6 +50,7 @@
       max-width: 320px;
       margin: 20px auto 0;
       display: block;
+      grid-column: 1 / -1; /* Занимает всю ширину сетки */
     }
     body.modal-open { overflow: hidden; }
 
@@ -329,8 +330,8 @@
   </button>
           
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
+          <button onclick="closeMiscModal()" class="sys-btn misc-close-btn">Закрыть</button>
         </div>
-        <button onclick="closeMiscModal()" class="sys-btn misc-close-btn">Закрыть</button>
       </div>
     </div>
   </div>
