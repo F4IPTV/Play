@@ -125,14 +125,16 @@
   width: 100vw !important; 
   height: 100vh !important; 
   background: rgba(0,0,0,.7) !important; 
+  display: flex !important;
   justify-content: center !important; 
   align-items: center !important; 
   z-index: 999 !important; 
   outline: none !important; 
+  pointer-events: auto !important;
 }
 
-#installMethodModal[style*="display: block"] {
-  display: flex !important;
+#installMethodModal[style*="display: none"] {
+  display: none !important;
 }
 
 #installMethodModal .modal-content {
@@ -613,7 +615,7 @@
     function handleBackButton() {
       if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
-      else if (document.getElementById('installMethodModal')?.style.display === 'block') closeInstallMethodSettings();
+      else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
     }
@@ -1086,7 +1088,11 @@ function showInstallMethodSettings() {
     
     // Показываем модалку
     const modal = document.getElementById('installMethodModal');
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    
+    // Блокируем прокрутку фона
+    document.body.classList.add('modal-open');
     
     // Фокусируемся на первой опции
     setTimeout(() => {
@@ -1099,6 +1105,10 @@ function showInstallMethodSettings() {
 function closeInstallMethodSettings() {
     const modal = document.getElementById('installMethodModal');
     modal.style.display = 'none';
+    modal.style.visibility = 'hidden';
+    
+    // Разблокируем прокрутку фона
+    document.body.classList.remove('modal-open');
     
     // Возвращаем фокус
     setTimeout(() => {
@@ -1132,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.addEventListener('keydown', function (e) {
     const modal = document.getElementById('installMethodModal');
-    if (!modal || modal.style.display !== 'block') return;
+    if (!modal || modal.style.display !== 'flex') return;
 
     e.stopPropagation();
     e.stopImmediatePropagation();
