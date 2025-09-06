@@ -947,6 +947,9 @@
           return;
         }
 
+        // Дополнительная проверка - если событие уже обработано, не трогаем
+        if (e.defaultPrevented) return;
+
         e.stopPropagation();
         e.stopImmediatePropagation();
 
@@ -1087,6 +1090,20 @@ document.addEventListener('DOMContentLoaded', function() {
   window.__installMethodNavBound = true;
 
   let lastIndexBeforeFooter = null;
+  
+  // Глобальный обработчик для кнопки Back с максимальным приоритетом
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Back' || e.key === 'Escape') {
+      const installModal = document.getElementById('installMethodModal');
+      if (installModal && installModal.style.display === 'flex') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        closeInstallMethodSettings();
+        return;
+      }
+    }
+  }, true);
 
   document.addEventListener('keydown', function (e) {
     const modal = document.getElementById('installMethodModal');
@@ -1096,6 +1113,13 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
+    
+    // Дополнительная блокировка для кнопки Back
+    if (e.key === 'Back' || e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
 
     const options = Array.from(document.querySelectorAll('#installMethodModal .method-option'));
     const closeBtn = document.querySelector('#installMethodModal .sys-btn');
