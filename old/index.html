@@ -545,6 +545,11 @@
 
       document.addEventListener('keydown', (e) => {
         if (modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+        
         const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'];
         if (!keys.includes(e.key)) return;
         if (e.repeat) { e.preventDefault(); return; }
@@ -763,6 +768,10 @@
       document.addEventListener('keydown', function (e) {
         const modal = document.getElementById('autostartModal');
         if (!modal || modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
 
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -930,6 +939,10 @@
       document.addEventListener('keydown', function (e) {
         const modal = document.getElementById('miscModal');
         if (!modal || modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
 
         e.stopPropagation();
         e.stopImmediatePropagation();
