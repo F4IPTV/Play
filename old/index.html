@@ -28,6 +28,22 @@
       background: #111; color: #fff; padding: 20px; border-radius: 10px;
       max-height: 80vh; overflow: hidden; width: 80%; border: 1px solid #333;
     }
+
+    /* Прокрутка для модалки "Разное" */
+    #miscModal .modal-content {
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+    }
+
+    #miscModal .misc-buttons-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: auto;
+      scrollbar-gutter: stable both-edges;
+      margin-bottom: 20px;
+    }
     body.modal-open { overflow: hidden; }
 
     /* Список компонентов внутри модалки групп */
@@ -291,36 +307,37 @@
   <div id="miscModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
       <h3>Разное</h3>
-      <div class="system-buttons">
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (11).svg" alt="" style="height:24px;"><br>Меню приложений
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height:28px;"><br>Удаление бэкапов
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (20).png" alt="" style="height:28px;"><br>Очистить кеш
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
-          <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (40).png" alt="" style="height:28px;"><br>Вход в аккаунт
-        </button>
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-  <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Установить APK
-</button>
-<!-- Кнопка настроек метода установки -->
-<button onclick="showInstallMethodSettings()" class="sys-btn">
-  <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Настройки установки
-</button>
-        
-        <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
+      <div class="misc-buttons-container">
+        <div class="system-buttons">
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (11).svg" alt="" style="height:24px;"><br>Меню приложений
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height:28px;"><br>Удаление бэкапов
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (20).png" alt="" style="height:28px;"><br>Очистить кеш
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (40).png" alt="" style="height:28px;"><br>Вход в аккаунт
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Установить APK
+  </button>
+  <!-- Кнопка настроек метода установки -->
+  <button onclick="showInstallMethodSettings()" class="sys-btn">
+    <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(15).svg" alt="" style="height:26px;"><br>Настройки установки
+  </button>
+          
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
+        </div>
       </div>
-      <br>
       <button onclick="closeMiscModal()" class="sys-btn">Закрыть</button>
     </div>
   </div>
