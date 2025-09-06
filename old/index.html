@@ -590,6 +590,7 @@
     function handleBackButton() {
       if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
+      else if (document.getElementById('installMethodModal')?.style.display === 'block') closeInstallMethodSettings();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
     }
@@ -936,21 +937,38 @@ document.addEventListener('click', function(e) {
 // Показать настройки метода установки
 function showInstallMethodSettings() {
     ignoreNextEnter = true;
+    lastFocusedElement = document.activeElement;
     
     // Получаем текущий метод установки
-    const currentMethod = window.AndroidInterface.getInstallMethod();
+    const currentMethod = window.AndroidInterface?.getInstallMethod?.() || 'sai';
     
     // Устанавливаем текущий метод в радиокнопки
-    document.getElementById('method_' + currentMethod).checked = true;
+    const radioBtn = document.getElementById('method_' + currentMethod);
+    if (radioBtn) radioBtn.checked = true;
     
     // Показываем модалку
-    document.getElementById('installMethodModal').style.display = 'block';
-    document.getElementById('installMethodModal').focus();
+    const modal = document.getElementById('installMethodModal');
+    modal.style.display = 'block';
+    
+    // Фокусируемся на первой опции
+    setTimeout(() => {
+        const firstOption = modal.querySelector('.method-option');
+        if (firstOption) firstOption.focus({ preventScroll: true });
+    }, 100);
 }
 
 // Закрыть настройки метода установки
 function closeInstallMethodSettings() {
-    document.getElementById('installMethodModal').style.display = 'none';
+    const modal = document.getElementById('installMethodModal');
+    modal.style.display = 'none';
+    
+    // Возвращаем фокус
+    setTimeout(() => {
+        if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+            lastFocusedElement.focus?.({ preventScroll: true });
+        }
+        lastFocusedElement = null;
+    }, 50);
 }
 
 // Обработка изменения метода установки
@@ -967,59 +985,74 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Добавляем обработчик кнопки Back для модалки настроек установки
-document.addEventListener('keydown', function(e) {
+// Навигация в модалке настроек установки (как в модалке групп)
+(function () {
   const modal = document.getElementById('installMethodModal');
-  if (!modal || modal.style.display !== 'block') return;
-  
-  // Блокируем все события клавиатуры для элементов под модалкой
-  e.preventDefault();
-  e.stopPropagation();
-  
-  const options = document.querySelectorAll('#installMethodModal .method-option');
-  const closeBtn = document.querySelector('#installMethodModal .sys-btn');
-  const activeElement = document.activeElement;
-  
-  if (e.key === 'Back' || e.key === 'Escape') {
-    closeInstallMethodSettings();
-    return;
-  }
-  
-  if (e.key === 'Enter') {
-    if (activeElement === closeBtn) {
-      closeInstallMethodSettings();
+  let navLock = false;
+  let lastIndexBeforeFooter = null;
+
+  document.addEventListener('keydown', (e) => {
+    if (modal.style.display !== 'block') return;
+    const keys = ['ArrowDown','ArrowUp','Enter','Back','Escape'];
+    if (!keys.includes(e.key)) return;
+    if (e.repeat) { e.preventDefault(); return; }
+
+    const options = Array.from(document.querySelectorAll('#installMethodModal .method-option'));
+    const closeBtn = document.querySelector('#installMethodModal .sys-btn');
+    const active = document.activeElement;
+
+    // Обработка кнопки "Закрыть"
+    if (active === closeBtn) {
+      e.preventDefault(); e.stopPropagation();
+      if (e.key === 'ArrowUp') {
+        const targetIndex = lastIndexBeforeFooter != null ? lastIndexBeforeFooter : options.length - 1;
+        if (targetIndex >= 0 && targetIndex < options.length) {
+          options[targetIndex].focus({ preventScroll: true });
+        }
+        return;
+      }
+      if (e.key === 'Enter') { closeBtn.click(); return; }
+      if (e.key === 'Back' || e.key === 'Escape') { closeInstallMethodSettings(); return; }
       return;
     }
-    // Если фокус на опции, выбираем её
-    const activeOption = activeElement.closest('.method-option');
-    if (activeOption) {
-      const method = activeOption.querySelector('input[type="radio"]').value;
-      selectInstallMethod(method);
+
+    // Обработка опций
+    let index = options.indexOf(active);
+    if (index === -1 && e.key.startsWith('Arrow')) {
+      e.preventDefault();
+      options[0]?.focus({ preventScroll: true });
       return;
     }
-  }
-  
-  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-    const currentIndex = Array.from(options).indexOf(activeElement.closest('.method-option'));
-    let nextIndex;
-    
-    if (e.key === 'ArrowUp') {
-      nextIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
-    } else {
-      nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+
+    e.preventDefault(); e.stopPropagation();
+    if (e.key === 'Enter') { 
+      if (index >= 0) {
+        const method = options[index].querySelector('input[type="radio"]').value;
+        selectInstallMethod(method);
+      }
+      return; 
     }
+    if (e.key === 'Back' || e.key === 'Escape') { closeInstallMethodSettings(); return; }
     
-    if (nextIndex >= 0 && nextIndex < options.length) {
-      options[nextIndex].focus();
+    if (navLock) return;
+    navLock = true; setTimeout(() => (navLock = false), 90);
+
+    if (e.key === 'ArrowDown') {
+      if (index + 1 < options.length) { 
+        options[index + 1].focus({ preventScroll: true }); 
+      } else { 
+        lastIndexBeforeFooter = index; 
+        closeBtn?.focus({ preventScroll: true }); 
+      }
+      return;
     }
-    return;
-  }
-  
-  // Если фокус ушёл за пределы модалки, возвращаем его
-  if (!modal.contains(activeElement)) {
-    options[0]?.focus();
-  }
-}, true);
+    if (e.key === 'ArrowUp') { 
+      const prev = index - 1; 
+      options[Math.max(prev, 0)].focus({ preventScroll: true }); 
+      return; 
+    }
+  });
+})();
 
 function selectInstallMethod(method) {
   // Снимаем выделение со всех опций
