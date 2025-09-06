@@ -146,6 +146,12 @@
   background-color: rgba(0, 123, 255, 0.1);
 }
 
+#installMethodModal .method-option:focus {
+  border-color: #00cfff;
+  background-color: rgba(0, 207, 255, 0.1);
+  outline: none;
+}
+
 #installMethodModal .method-option input[type="radio"] {
   margin: 0;
   transform: scale(1.2);
@@ -960,13 +966,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Добавляем обработчик кнопки Back для модалки настроек установки
 document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('installMethodModal');
+  if (!modal || modal.style.display !== 'block') return;
+  
+  // Блокируем все события клавиатуры для элементов под модалкой
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const options = document.querySelectorAll('#installMethodModal .method-option');
+  const closeBtn = document.querySelector('#installMethodModal .sys-btn');
+  const activeElement = document.activeElement;
+  
   if (e.key === 'Back' || e.key === 'Escape') {
-    const modal = document.getElementById('installMethodModal');
-    if (modal && modal.style.display === 'block') {
-      e.preventDefault();
-      e.stopPropagation();
+    closeInstallMethodSettings();
+    return;
+  }
+  
+  if (e.key === 'Enter') {
+    if (activeElement === closeBtn) {
       closeInstallMethodSettings();
+      return;
     }
+    // Если фокус на опции, выбираем её
+    const activeOption = activeElement.closest('.method-option');
+    if (activeOption) {
+      const method = activeOption.querySelector('input[type="radio"]').value;
+      selectInstallMethod(method);
+      return;
+    }
+  }
+  
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    const currentIndex = Array.from(options).indexOf(activeElement.closest('.method-option'));
+    let nextIndex;
+    
+    if (e.key === 'ArrowUp') {
+      nextIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+    } else {
+      nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+    }
+    
+    if (nextIndex >= 0 && nextIndex < options.length) {
+      options[nextIndex].focus();
+    }
+    return;
+  }
+  
+  // Если фокус ушёл за пределы модалки, возвращаем его
+  if (!modal.contains(activeElement)) {
+    options[0]?.focus();
   }
 }, true);
 
@@ -995,14 +1043,14 @@ function selectInstallMethod(method) {
   <div class="modal-content">
     <h3>Выбор метода установки</h3>
     <div class="install-method-settings">
-      <div class="method-option" onclick="selectInstallMethod('sai')">
+      <div class="method-option" onclick="selectInstallMethod('sai')" tabindex="0">
         <input type="radio" id="method_sai" name="install_method" value="sai" checked>
         <label for="method_sai">
           <strong>Быстрая установка</strong><br>
           <small>SAI-метод (рекомендуется)</small>
         </label>
       </div>
-      <div class="method-option" onclick="selectInstallMethod('standard')">
+      <div class="method-option" onclick="selectInstallMethod('standard')" tabindex="0">
         <input type="radio" id="method_standard" name="install_method" value="standard">
         <label for="method_standard">
           <strong>Обычная установка</strong><br>
