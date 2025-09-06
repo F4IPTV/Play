@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Установщик1</title>
+  <title>Установщик</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #000; color: #fff; }
     select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
@@ -1192,7 +1192,7 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'Enter':
         if (index >= 0) {
           const method = options[index].querySelector('input[type="radio"]').value;
-          selectInstallMethod(method);
+          selectInstallMethod(method, options[index]);
         }
         break;
       case 'Back':
@@ -1202,14 +1202,17 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
-function selectInstallMethod(method) {
+function selectInstallMethod(method, targetElement = null) {
   // Снимаем выделение со всех опций
   document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
     option.classList.remove('selected');
   });
   
   // Выделяем выбранную опцию
-  event.currentTarget.classList.add('selected');
+  const target = targetElement || (event && event.currentTarget);
+  if (target) {
+    target.classList.add('selected');
+  }
   
   // Устанавливаем радиокнопку
   document.getElementById('method_' + method).checked = true;
