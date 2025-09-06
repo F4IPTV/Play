@@ -100,8 +100,8 @@
   position: fixed; 
   top: 0; 
   left: 0; 
-  right: 0; 
-  bottom: 0; 
+  width: 100vw; 
+  height: 100vh; 
   background: rgba(0,0,0,.7); 
   display: flex; 
   justify-content: center; 
@@ -133,9 +133,15 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  position: relative;
 }
 
 #installMethodModal .method-option:hover {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+#installMethodModal .method-option.selected {
   border-color: #007bff;
   background-color: rgba(0, 123, 255, 0.1);
 }
@@ -144,6 +150,7 @@
   margin: 0;
   transform: scale(1.2);
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 #installMethodModal .method-option label {
@@ -151,6 +158,17 @@
   display: block;
   margin: 0;
   flex: 1;
+  pointer-events: none;
+}
+
+#installMethodModal .method-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 
     
@@ -955,12 +973,30 @@ document.addEventListener('DOMContentLoaded', function() {
 // Добавляем обработчик кнопки Back для модалки настроек установки
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Back' || e.key === 'Escape') {
-    if (document.getElementById('installMethodModal')?.style.display === 'block') {
+    const modal = document.getElementById('installMethodModal');
+    if (modal && modal.style.display === 'block') {
       e.preventDefault();
+      e.stopPropagation();
       closeInstallMethodSettings();
     }
   }
-});
+}, true);
+
+function selectInstallMethod(method) {
+  // Снимаем выделение со всех опций
+  document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
+    option.classList.remove('selected');
+  });
+  
+  // Выделяем выбранную опцию
+  event.currentTarget.classList.add('selected');
+  
+  // Устанавливаем радиокнопку
+  document.getElementById('method_' + method).checked = true;
+  
+  // Сохраняем выбор
+  window.AndroidInterface.setInstallMethod(method);
+}
 
   
 </script>
@@ -969,14 +1005,14 @@ document.addEventListener('keydown', function(e) {
   <div class="modal-content">
     <h3>Выбор метода установки</h3>
     <div class="install-method-settings">
-      <div class="method-option">
+      <div class="method-option" onclick="selectInstallMethod('sai')">
         <input type="radio" id="method_sai" name="install_method" value="sai" checked>
         <label for="method_sai">
           <strong>Быстрая установка</strong><br>
           <small>SAI-метод (рекомендуется)</small>
         </label>
       </div>
-      <div class="method-option">
+      <div class="method-option" onclick="selectInstallMethod('standard')">
         <input type="radio" id="method_standard" name="install_method" value="standard">
         <label for="method_standard">
           <strong>Обычная установка</strong><br>
