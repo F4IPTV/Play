@@ -45,13 +45,6 @@
       margin-bottom: 20px;
     }
 
-    #miscModal .misc-close-btn {
-      width: 100%;
-      max-width: 320px;
-      margin: 20px auto 0;
-      display: block;
-      grid-column: 1 / -1; /* Занимает всю ширину сетки */
-    }
     body.modal-open { overflow: hidden; }
 
     /* Список компонентов внутри модалки групп */
@@ -330,7 +323,6 @@
   </button>
           
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀<br>Проверка автозапуска</button>
-          <button onclick="closeMiscModal()" class="sys-btn misc-close-btn">Закрыть</button>
         </div>
       </div>
     </div>
@@ -956,37 +948,10 @@
         e.stopImmediatePropagation();
 
         const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
-        const closeBtn = modal.querySelector('.misc-close-btn');
         if (!buttons.length) return;
 
         const cols = 2; // 2 колонки как в автозапуске
         const active = document.activeElement;
-
-        // Кнопка "Закрыть"
-        if (active === closeBtn) {
-          switch (e.key) {
-            case 'ArrowUp': {
-              e.preventDefault();
-              const total = buttons.length;
-              const lastRow = Math.floor((total - 1) / cols);
-              const lastRowStart = lastRow * cols;
-              const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
-              const targetIndex = Math.min(lastRowStart + col, total - 1);
-              focusAndReveal(buttons[targetIndex]);
-              break;
-            }
-            case 'ArrowDown':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-              e.preventDefault(); break;
-            case 'Enter':
-              e.preventDefault(); closeBtn.click(); break;
-            case 'Back':
-            case 'Escape':
-              e.preventDefault(); closeMiscModal(); break;
-          }
-          return;
-        }
 
         // Обычная сетка кнопок
         const index = buttons.indexOf(active);
@@ -1009,10 +974,8 @@
               const nextIndex = (row + 1) * cols + col;
               const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
               focusAndReveal(buttons[targetIndex]);
-            } else {
-              lastIndexBeforeFooter = index;
-              closeBtn?.focus({ preventScroll: true });
             }
+            // Убираем переход к кнопке "Закрыть" - её больше нет
             break;
           }
           case 'ArrowUp': {
