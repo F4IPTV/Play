@@ -509,8 +509,8 @@
     
 
     function installAll() {
-  showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000);
-
+  /* showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000); */
+showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
   if (window.AndroidInterface) {
     requestAnimationFrame(() => {
       setTimeout(() => {
