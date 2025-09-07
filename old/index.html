@@ -437,8 +437,8 @@
       toast.className = 'toast' + (variant==='pill'?' toast--pill':'') + (variant==='compact'?' toast--compact':'') + (variant==='card'?' toast--card':'');
       toast.style.backgroundColor = scheme.bg; toast.style.color = scheme.text;
       let html = '';
-      if (iconUrl) html += `<img src="${iconUrl}" alt="" style="height:20px; width:20px; object-fit:contain; vertical-align:middle;">`;
       if (withSpin) html += `<span class="spin">⏳</span>`;
+      if (iconUrl) html += `<img src="${iconUrl}" alt="" style="height:20px; width:20px; object-fit:contain; vertical-align:middle;">`;
       html += `<span>${message}</span>`;
       toast.innerHTML = html;
 
