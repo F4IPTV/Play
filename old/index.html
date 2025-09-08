@@ -967,7 +967,19 @@ showStatus(`Началась загрузка приложений, ожидай
         const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
         if (!buttons.length) return;
 
-        const cols = 2; // 2 колонки как в автозапуске
+        // Автоопределение количества колонок по позиции кнопок
+        function getColumnsCount(buttons) {
+          if (buttons.length < 2) return 1;
+          const firstTop = buttons[0].getBoundingClientRect().top;
+          let cols = 1;
+          for (let i = 1; i < buttons.length; i++) {
+            if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
+              cols++;
+            } else break;
+          }
+          return cols;
+        }
+        const cols = getColumnsCount(buttons);
         const active = document.activeElement;
 
         // Обычная сетка кнопок
