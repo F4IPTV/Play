@@ -1,316 +1,56 @@
-
 {
   "apps": [
     {
-      "file": "Проводник 2.7.1",
-      "url": "https://www.dropbox.com/scl/fi/bx8vmyi3w5janvlo834lz/1_.apk?rlkey=l4naof18bbvlxyzuatx64z2k9&dl=1",
-      "tags": ["1", "7"]
-    },
-    {
-      "file": "Приложения_9.0_TV",
-      "url": "https://www.dropbox.com/scl/fi/y4iwlm7ieoqn5ktewiidp/1_-_v.9.0.apk?rlkey=2w8lv3b3lpdrcm4dru1hzjd5o&dl=1",
-      "tags": ["1", "7"]
-    },
-    {
-      "file": "AnyDesk_7.0.6",
-      "url": "https://www.dropbox.com/scl/fi/84jz9voz42142y0xow3dc/1_AnyDesk.apk?rlkey=zwevv6rg6moq51yp34karxcrv&dl=1",
-      "tags": ["1", "7"]
-    },
-    {
-      "file": "YouTube_5.30.304",
-      "url": "https://www.dropbox.com/scl/fi/ycrj3fu5j9fjczxep30sx/2_YouTube.apk?rlkey=me922wesij7y1nlepy9mznmlm&dl=1",
-      "tags": ["2", "7"]
-    },
-    
-    {
-      "file": "ByeByeDPI_1.6.1",
-      "url": "https://www.dropbox.com/scl/fi/hz7lebzyktv4m63no3a2j/2_ByeByeDPI.apk?rlkey=2qmw1x51ysgcqk7c21bbi1tgl&dl=1",
-      "tags": ["2", "7"]
-    },
-    {
-      "file": "STR_AmneziaWG_2.1",
-      "url": "https://www.dropbox.com/scl/fi/zkdhlhojiuex2m1yysqwk/2_STR_BYPASS_AmneziaWG.apk?rlkey=9t0yo9tn73hump2qzem4c38vn&dl=1",
-      "tags": ["2", "7"]
-    },
-    {
-      "file": "Zona_2.1.71",
-      "url": "https://www.dropbox.com/scl/fi/2lgoph8088lhy6e9h65s1/3_4_Zona.apk?rlkey=8e44niwzxchl2aikoa5udj70d&dl=1",
-      "tags": ["3", "4", "7"]
-    },
-    {
-      "file": "HDRezkaTV_1.4.0",
-      "url": "https://www.dropbox.com/scl/fi/gq2flgrkntphhfjkevsga/3_4_HDRezkaTV.apk?rlkey=20h54s5c42cgf66gf2z2soz12&dl=1",
-      "tags": ["3", "4", "7"]
-    },
-    {
-      "file": "NUM_1.0.143",
-      "url": "https://www.dropbox.com/scl/fi/3qbrxl0i25mrksgyao51w/4_NUM.apk?rlkey=1m47zpabq21ebrvxj8j5sdout&dl=1",
-      "tags": ["4", "7"]
-    },
-    {
-      "file": "KinoTrend_2.3.8",
-      "url": "https://www.dropbox.com/scl/fi/p34gwz45t7n64ioqydk86/4_KinoTrend.apk?rlkey=5bpgncqo2yq3a8n5oly2jw953&dl=1",
-      "tags": ["4", "7"]
-    },
-    {
-      "file": "LAMPA_ATV_1.12.2",
-      "url": "https://www.dropbox.com/scl/fi/ysnwt8ap6quwd4volku6f/4_LAMPA_ATV_Uncensored.apk?rlkey=tp0bu8vyqmsdx3xeyo1erftri&dl=1",
-      "tags": ["4", "7"]
-    },
-    {
-      "file": "TorrServe_MatriX_135",
-      "url": "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/4_TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1",
-      "tags": ["4", "7"]
-    },
-    {
-      "file": "VimuMediaPlayerMD_10.83",
-      "url": "https://www.dropbox.com/scl/fi/vbx0duku4c2dry50v8w53/4_VimuMediaPlayer.MD.apk?rlkey=818mnvher675omyq3bl5knr9b&dl=1",
-      "tags": ["4"]
-    },
-    {
-      "file": "Televizo-1.9.4.0",
-      "url": "https://www.dropbox.com/scl/fi/txsofb4zvemhe9sfptg37/5_6_Televizo-1.9.4.0-Premium.apk?rlkey=yo6pa486e8nblwku9klvggdcn&dl=1",
-      "tags": ["5", "6", "7"]
-    },
-    {
-      "file": "drm.lite_1.56.2",
-      "url": "https://www.dropbox.com/scl/fi/l2zjgeyle8192kdstd85o/5_6_drm-play.lite.apk?rlkey=o6b4nlxzl7xe8mjhhhcswwdsc&dl=1",
-      "tags": ["5", "6", "7"]
-    },
-    {
-      "file": "ЛаймHD+STB+1.12.9",
-      "url": "https://www.dropbox.com/scl/fi/p4236dbyrbxc1i6d1kg1b/5_6_-HD-STB-1.12.9.apk?rlkey=uz1jt50zvtahlh5fcvfw64r3c&dl=1",
-      "tags": ["5", "6"]
-    },
-    {
-      "file": "ЭфирТВ_3.7.3",
-      "url": "https://www.dropbox.com/scl/fi/t6fovhf7t2qgtuhjeqyx2/5_6_.apk?rlkey=1ef09as3hthqv8kwuni0voiea&dl=1",
-      "tags": ["5", "6", "7"]
-    },
-    {
-      "file": "AceStream_Lite",
-      "url": "https://www.dropbox.com/scl/fi/7s2gbp4if4inl7jnj2zym/6_AceStreamEngine.apk?rlkey=dx1g4so5h1pznczamp4dr1lyg&dl=1",
-      "tags": ["6", "7"]
-  },
-    {
-      "file": "AceStart",
-      "url": "https://www.dropbox.com/scl/fi/nl6o4vsp6mqeb6f8f0rwd/7_acestart.apk?rlkey=12whuzxdwqiadie05jnhh86ax&dl=1",
-      "tags": ["6"]
-  },
-    {
-      "file": "AceStream_Full.apk",
-      "url": "https://www.dropbox.com/scl/fi/15f62xgr5o98tviwvzl04/6_Ace-stream-engine_3.1.61.0_armeabi-v7a-mod.apk?rlkey=ycmvllgwnflw5k5kz9mrlkqs0&dl=1",
-      "tags": ["8"]
-  },
-    {
-      "file": "LazyMediaDelux_3.395",
+      "file": "7_ lazycatsoftware.lmd",
       "url": "https://www.dropbox.com/scl/fi/mwknfvp4xjcfmpqd422f7/7_-lazycatsoftware.lmd.apk?rlkey=49u2c88psa3xyk6mtr7wruwh9&dl=1",
-      "tags": ["7"]
-     },
-     {
-      "file": "SmartTube_stable_28.75",
-      "url": "https://www.dropbox.com/scl/fi/eigba447c7x650uu1xdlk/7_SmartTube_stable.apk?rlkey=m97xknnksq9y2pqm7xubvzwao&dl=1",
-      "tags": ["7"]
-    },
-     {
-      "file": "RuStoreTV_1.76.1.0",
-      "url": "https://www.dropbox.com/scl/fi/68o3p345ly7g24kaok61r/7_RuStoreTV.apk?rlkey=y1o2pgq4og4kgfrfuszjdqc7x&dl=1",
-      "tags": ["7"]
-     },
-     {
-      "file": "SerialTrend_0.0.4a",
-      "url": "https://www.dropbox.com/scl/fi/oba3taz2nfrvo6xcqz42k/7_-SerialTrend-0.0.4a.apk?rlkey=7btq14gq0fvxzrxbqfi775l61&dl=1",
-      "tags": ["4", "7"]
-     },
-     {
-      "file": "LeanKeyboard_6.1.32",
-      "url": "https://www.dropbox.com/scl/fi/jmgj9vmtapv55vknm2ji4/7_LeanKeyboard.apk?rlkey=cd5uiyjta9fsofn6a65kmzxrh&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "Projectivy_Launcher_4.65",
-      "url": "https://www.dropbox.com/scl/fi/ufwh5kjafy06jjrnho6r3/8_-Projectivy-Launcher-v4.65.apk?rlkey=xykvsrxgdue1mefyzpgphjy55&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "Виму10.40 DarkMoD",
-      "url": "https://www.dropbox.com/scl/fi/4leiaco2l9o4mr5taadsl/8_-10.40-DarkMod-c-DV.apk?rlkey=bepb7bjt6exrib33jjidkaknb&dl=1",
-      "tags": ["7"]
-     },
-     {
-      "file": "Button_Mapper_v3.35",
-      "url": "https://www.dropbox.com/scl/fi/tkkwz5pzmgv0b0ncaf0gl/8_Button_Mapper_v3.35-335.apk?rlkey=8sq3xnn0c7y0sizne40d5sky1&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "Air_receiver v.5.0.9",
-      "url": "https://www.dropbox.com/scl/fi/1x6zxbt8f4ils747svmu7/8_com.softmedia.receiver-v.5.0.9.apk?rlkey=7bz5132wwd0hkzl17wexl8sia&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "Lampishe_1.21",
-      "url": "https://www.dropbox.com/scl/fi/mobupaol89lfkdnmv5vdc/8_lampishe_1.21.apk?rlkey=zd8bqp5pebrt6g1tf8rxpn76x&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "LM(ATV)1.0.4",
-      "url": "https://www.dropbox.com/scl/fi/76jq8zlg35okkg7awlz35/8_Launcher-manager-ATV-1.0.4.apk?rlkey=3689clvobay5kpcisda5ylsy4&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "LostFilm_0.1.49",
-      "url": "https://www.dropbox.com/scl/fi/cjzlmwwv438qwd6f8500k/8_LostFilm_0.1.49.apk?rlkey=83z0o86jj59j6jgdzke2qe5go&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "OTTNavigator_1.7.3.3B",
-      "url": "https://www.dropbox.com/scl/fi/aqt48swt66eg573wcfwy1/8_OTT-Navigator.apk?rlkey=jgy1tooufk4jxxhznd169ni2j&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "Play_Store_ATV_Shortcut",
-      "url": "https://www.dropbox.com/scl/fi/d9re1tfcsx4bkpe4lvv5r/8_Play_Store_ATV_Shortcut.apk?rlkey=6pdy6gx7q9vacmcrp1y4lb27y&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "RBTV-LiveSports",
-      "url": "https://www.dropbox.com/scl/fi/ikfsp80n0vtfjpcphd26k/8_RBTV-LiveSports.apk?rlkey=xhsetkc9vmd8y0lgarogmg126&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "RUTUBE_29.11.1.TV-rus",
-      "url": "https://www.dropbox.com/scl/fi/1h9g125u87svwb595v98g/8_RUTUBE-29.11.1.TV-rustore.apk?rlkey=0v2a4jxv87ptdmwmwu4fxuc0e&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "SAI",
-      "url": "https://www.dropbox.com/scl/fi/eaqnqb8fjmurxuye2cpex/8_SAI.apk?rlkey=r11pn9viovmpt4sf50qz0qjnd&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "TDUK_ScrSavMan_1.0.2",
-      "url": "https://www.dropbox.com/scl/fi/1w4tenkp0u15qduufr42b/8_TDUK_ScreensaverManager_1.0.2.apk?rlkey=k6tun483z42xaujwuyvs4tshy&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "TVQA-3.5.5",
-      "url": "https://www.dropbox.com/scl/fi/6pvdusf4epons2tnklveh/8_Tvquickactions-3.5.5.apk?rlkey=silxogle1qsxf8a13s7bw1ewl&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "WebBrowser_Bro_v1.7.2",
-      "url": "https://www.dropbox.com/scl/fi/taysfhy1om0p8g9s2jh3f/8_WebBrowser_Bro_v1.7.2.apk?rlkey=p2umnr2dm3vmzr8a3m1tjkq96&dl=1",
-      "tags": ["8"]
-     },
-     {
-      "file": "VK_Video_ATV 2.43",
-      "url": "https://www.dropbox.com/scl/fi/xpgxrczxa31nsqu23rmdz/14-VK_Video_-AndroidTV-_v.2.43-22231-9.0-14.0-arm7a.apks?rlkey=lv2ad0qnjmyf0bt1gk88x2vsd&dl=1",
-      "tags": ["8"]
-     }
-  ],
-    "backups": [
-    {
-      "file": "Televizo.backup",
-      "url": "https://www.dropbox.com/scl/fi/nroii19ikc1jcihw9iyfz/Televizo.backup?rlkey=2m8tmg0acszz8ebwb8tmxofzo&dl=1",
-      "target_folder": "Download",
-      "tags": ["5", "7"]
-    },
-	{
-      "file": "TVQAMibox",
-      "urls": [
-	  "https://www.dropbox.com/scl/fi/okjeiuvs0dku40vcr4pvb/tvQA_20250720_MIBOX_3nd_GEN.zip?rlkey=lbp42y5fsr5szix8b39ovpezw&dl=1",
-	  "https://www.dropbox.com/scl/fi/6pvdusf4epons2tnklveh/8_Tvquickactions-3.5.5.apk?rlkey=silxogle1qsxf8a13s7bw1ewl&dl=1",
-	  "https://www.dropbox.com/scl/fi/j8j1gwitm9m63vam7hrsy/4_TorrServe_MatriX.apk?rlkey=s6tcdwfiyyhi7cgkspx39fa7h&dl=1"
-	  ],
-      "target_folder": "Download",
-      "tags": ["5", "8"]
-    },
-    {
-      "file": "ott-play.pref",
-      "url": "https://www.dropbox.com/scl/fi/0wd45j1go606p2ovwlf10/ott-play.pref?rlkey=35vrdaoe7k8s8ro1p564zsnbw&dl=1",
-      "target_folder": "Download",
-      "tags": ["5", "7"]
-    },
-    {
-      "file": "ByeByeDPI.backup",
-      "url": "https://www.dropbox.com/scl/fi/s74rwdhlf7cd8v7jvka7h/ByeByeDPI.json?rlkey=zjuyoc01tkhcssvcxq2w8h2qr&dl=1",
-      "target_folder": "Download",
-      "tags": ["2", "7"]
-    },
-      {
-      "file": "КонфигАмнезия.json",
-      "url": "https://www.dropbox.com/scl/fi/gmr6emv4crycofkw8h5fr/CONF-AMNESIA-3.zip?rlkey=p5c8jhfsyc7mrjhnunjxsanum&dl=3",
-      "target_folder": "Download",
-      "tags": ["2", "7"]
-    },
-    {
-      "file": "LampaATV.backup",
-      "urls": [
-		"https://www.dropbox.com/scl/fi/4eq7r48vd37klbniohzyy/settings.backup?rlkey=7sk6ksesmg7kzs14mgv8vrhsm&dl=1",
-		"https://www.dropbox.com/scl/fi/l15s4074odgo62ghd96af/storage.backup?rlkey=mmp85a5inhjpfp6rwpppa775d&dl=1"
-	      ],
-      "target_folder": "Documents/LAMPA ATV",
-      "tags": ["4", "7"]
-    },
-	{
-      "file": "LampaATV9.backup",
-      "urls": [
-		"https://www.dropbox.com/scl/fi/4eq7r48vd37klbniohzyy/settings.backup?rlkey=7sk6ksesmg7kzs14mgv8vrhsm&dl=1",
-		"https://www.dropbox.com/scl/fi/l15s4074odgo62ghd96af/storage.backup?rlkey=mmp85a5inhjpfp6rwpppa775d&dl=1"
-	      ],
-      "target_folder": "/storage/emulated/0/LAMPA_ATV",
-      "tags": ["4", "7"]
-    },
-    {
-      "file": "Num.backup",
-      "url": "https://www.dropbox.com/scl/fi/ezzuhcfmff1c13vnne2r1/settings.backup?rlkey=un0rbea21kk3ohryvbemi80he&dl=1",
-      "target_folder": "Documents/NUM",
-      "tags": ["4", "7"]
-    }
-  ],
-"links": [
-    {
-      "file": "Статья 1",
-      "url": "https://telegra.ph/telegraph-02-11-13",
-      "tags": [""]
-    },
-    {
-      "file": "Статья 2",
-      "url": "https://telegra.ph/telegraph-01-25",
-      "tags": [""]
-    }],
-  "groups": {
-    "1": {
-      "password": "",
       "tags": ["1"]
     },
-    "2": {
-      "password": "4444",
+    {
+      "file": "7_ SerialTrend-0.0.4a",
+      "url": "https://www.dropbox.com/scl/fi/oba3taz2nfrvo6xcqz42k/7_-SerialTrend-0.0.4a.apk?rlkey=7btq14gq0fvxzrxbqfi775l61&dl=1",
+      "tags": ["1"]
+    },
+    {
+      "file": "7_LeanKeyboard",
+      "url": "https://www.dropbox.com/scl/fi/jmgj9vmtapv55vknm2ji4/7_LeanKeyboard.apk?rlkey=cd5uiyjta9fsofn6a65kmzxrh&dl=1",
+      "tags": ["1"]
+    },
+    {
+      "file": "4_KinoTrend",
+      "url": "https://drive.google.com/uc?export=download&id=13bViFg19J_hBGLuTHNzddY2O4eDqshYQ",
       "tags": ["2"]
     },
-    "3": {
-      "password": "4444",
-      "tags": ["3"]
+    {
+      "file": "4_LAMPA_ATV_Uncensored",
+      "url": "https://drive.google.com/uc?export=download&id=1_CE4eZpzLUWAJy9JmjCQ64EEpEXIitfs",
+      "tags": ["2"]
     },
-    "4": {
-      "password": "4444",
-      "tags": ["4"]
+    {
+      "file": "4_NUM",
+      "url": "https://drive.google.com/uc?export=download&id=1ja2Z3GgDkN5RpzVf1pznUemlFy0UQH6J",
+      "tags": ["2"]
+    }
+  ],
+  "backups": [
+    {
+      "file": "LAMPA",
+      "target_folder": "Documents/LAMPA",
+      "tags": ["2"],
+      "urls": [
+        "https://drive.google.com/uc?export=download&id=1fzEdvnOJLY8n4PcyTX7wpgbC4fNzUdK4",
+        "https://drive.google.com/open?id=17NriU0E5HgT9--LtklHySkBh5claoAW4&usp=drive_fs"
+      ]
+    }
+  ],
+  "links": [],
+  "groups": {
+    "1": {
+      "tags": ["1"],
+      "password": ""
     },
-    "5": {
-      "password": "4444",
-      "tags": ["5"]
-    },
-    "6": {
-      "password": "4444",
-      "tags": ["6"]
-    },
-    "7": {
-      "password": "4444",
-      "tags": ["7"]
-    },
-    "8": {
-      "password": "4444",
-      "tags": ["8"]
+    "2": {
+      "tags": ["2"],
+      "password": ""
     }
   }
 }
