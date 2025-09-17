@@ -367,43 +367,31 @@
       return cfg;
     }
 
-    function tryInlineSvg(url, mountEl) {
-      fetch(url)
-        .then(r => r.text())
-        .then(txt => {
-          if (!/^\s*<svg[\s\S]*>/i.test(txt)) return;
-          const wrap = document.createElement('div');
-          wrap.innerHTML = txt;
-          const svg = wrap.querySelector('svg');
-          if (!svg) return;
-          svg.setAttribute('height', '25');
-          svg.style.height = '25px';
-          mountEl.replaceWith(svg);
-        })
-        .catch(() => {});
-    }
-
     function createGroupIcon(url) {
       const isSvg = /\.svg(\?|$)/i.test(url);
-      if (!isSvg) {
+      const makeImg = () => {
         const img = document.createElement('img');
         img.src = url;
         img.alt = '';
         img.style.height = '25px';
+        img.style.width = '25px';
+        img.style.objectFit = 'contain';
         return img;
-      }
+      };
 
-      const img = document.createElement('img');
-      img.src = url;
-      img.alt = '';
-      img.style.height = '25px';
+      if (!isSvg) return makeImg();
+
+      const img = makeImg();
       img.onerror = () => {
-        const obj = document.createElement('object');
-        obj.type = 'image/svg+xml';
-        obj.data = url;
-        obj.style.height = '25px';
-        obj.onerror = () => { tryInlineSvg(url, obj); };
-        img.replaceWith(obj);
+        // Фолбэк: CSS background-image (часто рендерится в WebView, когда <img> с SVG нет)
+        const box = document.createElement('div');
+        box.style.width = '25px';
+        box.style.height = '25px';
+        box.style.backgroundImage = `url("${url}")`;
+        box.style.backgroundRepeat = 'no-repeat';
+        box.style.backgroundSize = 'contain';
+        box.style.backgroundPosition = 'center';
+        img.replaceWith(box);
       };
       return img;
     }
