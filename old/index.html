@@ -367,6 +367,47 @@
       return cfg;
     }
 
+    function tryInlineSvg(url, mountEl) {
+      fetch(url)
+        .then(r => r.text())
+        .then(txt => {
+          if (!/^\s*<svg[\s\S]*>/i.test(txt)) return;
+          const wrap = document.createElement('div');
+          wrap.innerHTML = txt;
+          const svg = wrap.querySelector('svg');
+          if (!svg) return;
+          svg.setAttribute('height', '25');
+          svg.style.height = '25px';
+          mountEl.replaceWith(svg);
+        })
+        .catch(() => {});
+    }
+
+    function createGroupIcon(url) {
+      const isSvg = /\.svg(\?|$)/i.test(url);
+      if (!isSvg) {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = '';
+        img.style.height = '25px';
+        return img;
+      }
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      img.style.height = '25px';
+      img.onerror = () => {
+        const obj = document.createElement('object');
+        obj.type = 'image/svg+xml';
+        obj.data = url;
+        obj.style.height = '25px';
+        obj.onerror = () => { tryInlineSvg(url, obj); };
+        img.replaceWith(obj);
+      };
+      return img;
+    }
+
     function renderGroupsFromConfig(config) {
       const container = document.getElementById('groupCards') || document.querySelector('.card-container');
       if (!container) return;
@@ -386,11 +427,8 @@
         card.dataset.group = groupKey;
 
         if (groupObj && groupObj.icon) {
-          const img = document.createElement('img');
-          img.src = groupObj.icon;
-          img.alt = '';
-          img.style.height = '25px';
-          card.appendChild(img);
+          const iconEl = createGroupIcon(groupObj.icon);
+          card.appendChild(iconEl);
         }
         card.appendChild(document.createTextNode(groupKey));
 
