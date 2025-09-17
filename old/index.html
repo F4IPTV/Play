@@ -353,8 +353,8 @@
 
     // === Конфиг (только новый формат) и рендер групп ===
     function getConfigUrl() {
-      // Можно задать через AndroidInterface, иначе используем ваш новый URL
-      return window.AndroidInterface?.getConfigUrl?.() || "https://tvboxsetup.ru/fastinstaller/Client777/config.json";
+      // URL конфига всегда приходит из приложения
+      return window.AndroidInterface?.getConfigUrl?.() || "";
     }
 
     async function ensureConfig() {
