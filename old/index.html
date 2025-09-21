@@ -69,6 +69,8 @@
     }
     .sys-btn:hover { background-color: #00cfff; }
     .sys-btn:focus { border-color: #fff; box-shadow: 0 0 10px #004d61; }
+    /* Подсветка выбранной кнопки в модалке "Разное" */
+    #miscModal .sys-btn.selected { outline: none; border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6); }
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
     #logo { position: fixed; inset: 0; background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain; z-index: 9999; }
@@ -1007,12 +1009,19 @@ if (cards.includes(active)) {
       setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
     }
 
-    // Навигация в модалке "Разное" (как в автозапуске - по сетке 2 колонки)
+    // Навигация в модалке "Разное" 
     (function attachMiscNavOnce(){
       if (window.__miscNavBound) return;
       window.__miscNavBound = true;
 
       let lastIndexBeforeFooter = null;
+
+      function setSelected(el){
+        const modal = document.getElementById('miscModal');
+        if (!modal) return;
+        modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+      }
 
       function focusAndReveal(el, margin = 12) {
         if (!el) return;
@@ -1022,8 +1031,20 @@ if (cards.includes(active)) {
         const er = el.getBoundingClientRect();
         if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
         else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+        setSelected(el);
         requestAnimationFrame(() => el.focus({ preventScroll: true }));
       }
+
+      // Делегирование: отмечаем selected при клике/фокусе на кнопке
+      const misc = document.getElementById('miscModal');
+      misc?.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.misc-buttons-container .sys-btn');
+        if (btn) setSelected(btn);
+      }, true);
+      misc?.addEventListener('focusin', (e)=>{
+        const btn = e.target.closest('.misc-buttons-container .sys-btn');
+        if (btn) setSelected(btn);
+      });
 
       document.addEventListener('keydown', function (e) {
         const modal = document.getElementById('miscModal');
