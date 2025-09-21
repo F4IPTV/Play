@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -58,19 +59,15 @@
     /* Перенос длинных названий без пробелов и обрезка до 2 строк */
 #modalList .component-btn {
   white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  line-height: 1.25;
-}
-
-/* текст — ровно 2 строки */
-#modalList .component-btn .label{
+  overflow-wrap: anywhere;   /* для сплошных строк */
+  word-break: break-word;    /* fallback */
   line-height: 1.25;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2;     /* максимум 2 строки */
   overflow: hidden;
-  height: calc(2 * 1.25em); /* фикс на 2 строки */
+  text-overflow: ellipsis;
+  min-height: 48px;          /* чтобы высота не “прыгала” */
 }
     /* Кнопки в стиле Google TV */
     button {
