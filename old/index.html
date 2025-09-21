@@ -845,38 +845,58 @@ showStatus(`Началась загрузка приложений, ожидай
         e.stopPropagation();
         e.stopImmediatePropagation();
 
-        const list      = document.getElementById('autostartList');
-        const cards     = Array.from(list.querySelectorAll('.card'));
-        const headerBtn = modal.querySelector('.sys-btn'); // 🚫 Отключить автозапуск
-        const closeBtn  = document.getElementById('autostartCloseBtn');
-        if (!cards.length) return;
+const list      = document.getElementById('autostartList');
+const cards     = Array.from(list.querySelectorAll('.card'));
+const headerBtns = Array.from(modal.querySelectorAll('.sys-btn')); // обе верхние кнопки
+const closeBtn  = document.getElementById('autostartCloseBtn');
+if (!cards.length) return;
 
-        const cols   = getAutostartCols();
-        const active = document.activeElement;
+const cols   = getAutostartCols();
+const active = document.activeElement;
 
-        // Верхняя кнопка
-        if (active === headerBtn) {
-          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
-          switch (e.key) {
-            case 'ArrowDown': {
-              e.preventDefault();
-              const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
-              const targetIndex = Math.min(col, cards.length - 1);
-              focusAndRevealAuto(cards[targetIndex]);
-              break;
-            }
-            case 'ArrowUp':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-              e.preventDefault(); break;
-            case 'Enter':
-              e.preventDefault(); headerBtn.click(); break;
-            case 'Back':
-            case 'Escape':
-              e.preventDefault(); closeAutostartModal(); break;
-          }
-          return;
-        }
+// Фокус на верхних кнопках // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
+if (headerBtns.includes(active)) {
+  document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+  const i = headerBtns.indexOf(active);
+  switch (e.key) {
+    case 'ArrowLeft':
+      e.preventDefault();
+      headerBtns[(i - 1 + headerBtns.length) % headerBtns.length].focus();
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      headerBtns[(i + 1) % headerBtns.length].focus();
+      break;
+    case 'ArrowDown': {
+      e.preventDefault();
+      const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
+      const targetIndex = Math.min(col, cards.length - 1);
+      focusAndRevealAuto(cards[targetIndex]);
+      break;
+    }
+    case 'ArrowUp':
+      e.preventDefault(); // не уходим выше
+      break;
+    case 'Enter':
+      e.preventDefault(); active.click(); break;
+    case 'Back':
+    case 'Escape':
+      e.preventDefault(); closeAutostartModal(); break;
+  }
+  return;
+}
+
+// Фокус на карточках: стрелка Вверх из первой строки — к верхним кнопкам
+if (cards.includes(active)) {
+  const idx = cards.indexOf(active);
+  if (e.key === 'ArrowUp' && idx < cols) {
+    e.preventDefault();
+    lastIndexBeforeHeader = idx;
+    // Привязываем к ближайшей верхней кнопке: 0 -> первая, 1 -> вторая (если есть)
+    headerBtns[Math.min(idx, headerBtns.length - 1)].focus();
+    return;
+  }
+}
 
         // Нижняя кнопка (внутри того же контейнера)
         if (active === closeBtn) {
