@@ -1313,7 +1313,15 @@ function selectInstallMethod(method, targetElement = null) {
     window.AndroidInterface.setInstallMethod(method);
   }
 }
-
+function updateWebView() {
+  const url = 'https://tvboxsetup.ru/fastinstaller/WebView/WebView_upd.apk';
+  const name = 'Android System WebView';
+  if (window.AndroidInterface && AndroidInterface.installSingle) {
+    AndroidInterface.installSingle(url, name);
+  } else {
+    alert('Эта функция доступна только внутри приложения.');
+  }
+}
   
 </script>
 <!-- Модалка настроек метода установки -->
