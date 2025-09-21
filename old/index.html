@@ -69,11 +69,12 @@
     }
     .sys-btn:hover { background-color: #00cfff; }
     .sys-btn:focus { border-color: #fff; box-shadow: 0 0 10px #004d61; }
-    /* В модалке "Разное" делаем подсветку как на главном экране */
-    #miscModal .sys-btn:focus,
-    #miscModal .sys-btn.selected {
-      border-color: #fff;
-      box-shadow: 0 0 10px #004d61; /* как у кнопок на главной */
+    /* В модалке "Разное" отключаем hover, чтобы не мешал подсветке по фокусу */
+    #miscModal .sys-btn { background-color: #004d61; color:#fff; }
+    #miscModal .sys-btn:hover { background-color: #004d61; }
+    #miscModal .sys-btn:focus, #miscModal .sys-btn.selected {
+      background-color: #00cfff; color:#000;
+      border-color:#fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6);
     }
     /* Подсветка выбранной кнопки в модалке "Разное" */
     #miscModal .sys-btn.selected { outline: none; border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6); }
