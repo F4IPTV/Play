@@ -1016,13 +1016,6 @@ if (cards.includes(active)) {
 
       let lastIndexBeforeFooter = null;
 
-      function setSelected(el){
-        const modal = document.getElementById('miscModal');
-        if (!modal) return;
-        modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
-        if (el) el.classList.add('selected');
-      }
-
       function focusAndReveal(el, margin = 12) {
         if (!el) return;
         const container = document.querySelector('#miscModal .misc-buttons-container');
@@ -1031,20 +1024,22 @@ if (cards.includes(active)) {
         const er = el.getBoundingClientRect();
         if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
         else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
-        setSelected(el);
         requestAnimationFrame(() => el.focus({ preventScroll: true }));
       }
-
-      // Делегирование: отмечаем selected при клике/фокусе на кнопке
+      // Синхронизируем подсветку строго с реальным фокусом
       const misc = document.getElementById('miscModal');
+      misc?.addEventListener('focusin', (e)=>{
+        const modal = document.getElementById('miscModal');
+        if (!modal) return;
+        modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
+        const btn = e.target.closest('.misc-buttons-container .sys-btn');
+        if (btn) btn.classList.add('selected');
+      });
+      // При клике приводим фокус к нажатой кнопке, чтобы не расходился с подсветкой
       misc?.addEventListener('click', (e)=>{
         const btn = e.target.closest('.misc-buttons-container .sys-btn');
-        if (btn) setSelected(btn);
+        if (btn) btn.focus({ preventScroll: true });
       }, true);
-      misc?.addEventListener('focusin', (e)=>{
-        const btn = e.target.closest('.misc-buttons-container .sys-btn');
-        if (btn) setSelected(btn);
-      });
 
       document.addEventListener('keydown', function (e) {
         const modal = document.getElementById('miscModal');
