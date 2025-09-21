@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -72,10 +73,13 @@
     /* В модалке "Разное" отключаем hover, чтобы не мешал подсветке по фокусу */
     #miscModal .sys-btn { background-color: #004d61; color:#fff; }
     #miscModal .sys-btn:hover { background-color: #004d61; }
-    #miscModal .sys-btn:focus, #miscModal .sys-btn.selected {
-      background-color: #00cfff; color:#000;
-      border-color:#fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6);
-    }
+    #miscModal .sys-btn:focus,
+#miscModal .sys-btn.selected {
+  background-color: #004d61;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 10px #004d61;
+}
     /* Подсветка выбранной кнопки в модалке "Разное" */
     #miscModal .sys-btn.selected { outline: none; border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6); }
 
