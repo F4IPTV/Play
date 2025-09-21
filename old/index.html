@@ -73,12 +73,11 @@
     #miscModal .sys-btn { background-color: #004d61; color:#fff; }
     #miscModal .sys-btn:hover { background-color: #004d61; }
     #miscModal .sys-btn:focus, #miscModal .sys-btn.selected {
-      /* как в модалке групп: только рамка + свечение */
-      background-color: #004d61; color:#fff;
-      border-color:#fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6);
+      background-color: #00cfff; color:#000;
+      border-color:#fff; border: 2px rgba(255,255,255,.6);
     }
     /* Подсветка выбранной кнопки в модалке "Разное" */
-    #miscModal .sys-btn.selected { outline: none; border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.6); }
+    #miscModal .sys-btn.selected { outline: none; border-color: #fff; border: 2px rgba(255,255,255,.6); }
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
     #logo { position: fixed; inset: 0; background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain; z-index: 9999; }
@@ -1363,7 +1362,7 @@ function selectInstallMethod(method, targetElement = null) {
 
   
 </script>
-<!-- Модалка настроек метода установкии -->
+<!-- Модалка настроек метода установки -->
 <div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
   <div class="modal-content">
     <h3>Выбор метода установки</h3>
