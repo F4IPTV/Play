@@ -243,7 +243,7 @@
     <button onclick="openMiscModal()" class="sys-btn">
       <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (19).png" alt="" style="height:28px;"><br>Полезное
     </button>
-    <button onclick="updateWebView()" class="sys-btn">
+    <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (19).png" alt="" style="height:28px;"><br>Обновить Webview
     </button>
   </div>
@@ -1313,15 +1313,7 @@ function selectInstallMethod(method, targetElement = null) {
     window.AndroidInterface.setInstallMethod(method);
   }
 }
-function updateWebView() {
-  const url = 'https://tvboxsetup.ru/fastinstaller/WebView/WebView_upd.apk';
-  const name = 'Android System WebView';
-  if (window.AndroidInterface && AndroidInterface.installSingle) {
-    AndroidInterface.installSingle(url, name);
-  } else {
-    alert('Эта функция доступна только внутри приложения.');
-  }
-}
+
   
 </script>
 <!-- Модалка настроек метода установки -->
