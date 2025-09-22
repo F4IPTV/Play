@@ -340,7 +340,7 @@
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h3>Список компонентов:</h3>
+      <h3 id="modalGroupHeader" style="display:flex;gap:8px;align-items:center;justify-content:center;"></h3>
       <div id="modalListContainer"><div id="modalList"></div></div>
       <br>
       <button id="installAllBtn" onclick="installAll()" class="component-btn" >Установить всё</button>
@@ -550,12 +550,28 @@
     function showGroupList(config)  {
       const modal = document.getElementById('modal');
       const list  = document.getElementById('modalList');
+      const header = document.getElementById('modalGroupHeader');
       list.innerHTML = "";
 
       const apps    = (config.apps || []).filter(app => (app.tags || []).includes(currentGroup));
       const backups = (config.backups || []).filter(backup => (backup.tags || []).includes(currentGroup));
       const links   = (config.links || []).filter(link => (link.tags || []).includes(currentGroup));
       if (apps.length === 0 && backups.length === 0 && links.length === 0) list.innerHTML = "Нет доступных компонентов.";
+
+      // Заголовок: иконка + имя группы
+      if (header) {
+        header.innerHTML = "";
+        const groupInfo = (config.groups || {})[currentGroup];
+        if (groupInfo && groupInfo.icon) {
+          const iconEl = createGroupIcon(groupInfo.icon);
+          iconEl.style.height = '25px';
+          iconEl.style.width = '25px';
+          header.appendChild(iconEl);
+        }
+        const title = document.createElement('span');
+        title.textContent = currentGroup;
+        header.appendChild(title);
+      }
 
       apps.forEach(app => {
         const btn = document.createElement('button');
