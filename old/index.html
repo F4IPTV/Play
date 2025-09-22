@@ -697,7 +697,10 @@ showStatus(`Началась загрузка приложений, ожидай
 
         if (e.key === 'ArrowDown') {
           if (index + cols < buttons.length) { focusAndReveal(buttons[index + cols]); }
-          else { lastIndexBeforeFooter = index; installBtn?.focus({ preventScroll: true }); }
+          else {
+            lastIndexBeforeFooter = index;
+            if (installBtn) { focusAndReveal(installBtn); }
+          }
           return;
         }
         if (e.key === 'ArrowUp') { const prev = index - cols; focusAndReveal(buttons[Math.max(prev, 0)]); return; }
