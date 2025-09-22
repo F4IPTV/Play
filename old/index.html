@@ -458,7 +458,7 @@
         }
         card.appendChild(document.createTextNode(groupKey));
 
-        card.onclick = () => startInstall(card);
+        card.onclick = () => startInstall();
         card.onfocus = () => selectCard(card);
 
         container.appendChild(card);
