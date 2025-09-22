@@ -554,6 +554,20 @@
       const header = document.getElementById('modalGroupHeader');
       list.innerHTML = "";
 
+
+      document.activeElement?.blur();
+      document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+
+      if (header) {
+  header.innerHTML = "";
+  const groupInfo = (config.groups || {})[currentGroup];
+  if (groupInfo?.icon) header.appendChild(createGroupIcon(groupInfo.icon));
+  header.appendChild(document.createTextNode(currentGroup));
+}
+
+      modal.style.display = "flex";
+      setTimeout(() => { document.querySelector('#modalList .component-btn')?.focus({ preventScroll: true }); }, 80);
+
       const apps    = (config.apps || []).filter(app => (app.tags || []).includes(currentGroup));
       const backups = (config.backups || []).filter(backup => (backup.tags || []).includes(currentGroup));
       const links   = (config.links || []).filter(link => (link.tags || []).includes(currentGroup));
