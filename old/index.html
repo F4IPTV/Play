@@ -45,6 +45,7 @@
     }
 
     body.modal-open { overflow: hidden; }
+    body.splash-open { overflow: hidden; }
 
     /* Список компонентов внутри модалки групп */
     #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
@@ -205,7 +206,7 @@
   </style>
 </head>
 
-<body style="margin:0; padding:0;">
+<body style="margin:0; padding:0;" class="splash-open">
   <div id="splash"><div id="logo"></div></div>
   <div id="main-content" style="display:none;"></div>
 
@@ -912,6 +913,7 @@ showStatus(`Началась загрузка приложений, ожидай
     setTimeout(() => {
       document.getElementById('splash').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
+       document.body.classList.remove('splash-open');
     }, 4000);
 
     // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
