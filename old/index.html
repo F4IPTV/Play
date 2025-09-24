@@ -95,7 +95,7 @@
     
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-    #logo { position: fixed; inset: 0; background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain; z-index: 9999; }
+     #logo { position: fixed; inset: 0; z-index: 9999; background-repeat: no-repeat; background-position: center; background-size: contain; }
 
     /* Тосты */
     .toast {
@@ -208,6 +208,21 @@
 <body style="margin:0; padding:0;">
   <div id="splash"><div id="logo"></div></div>
   <div id="main-content" style="display:none;"></div>
+
+   <script>
+  (function(){
+    const logo = document.getElementById('logo');
+    if (!logo) return;
+    const LAND = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif')";
+    const PORT = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usrPort.gif')";
+    const mql = window.matchMedia('(orientation: portrait)');
+    function apply() { logo.style.backgroundImage = mql.matches ? PORT : LAND; }
+    apply();
+    if (mql.addEventListener) mql.addEventListener('change', apply);
+    else if (mql.addListener) mql.addListener(apply);
+    window.addEventListener('orientationchange', apply);
+  })();
+  </script>
 
   <h5 style="margin-top:0; display:inline-flex; align-items:center; gap:4px;">
   <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_launcher_round.png" alt="" style="height:18px; width:18px; object-fit:contain;">
