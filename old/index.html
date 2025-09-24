@@ -921,6 +921,9 @@ showStatus(`Началась загрузка приложений, ожидай
       document.getElementById('main-content').style.display = 'block';
       document.body.classList.remove('splash-open');
       document.documentElement.classList.remove('splash-open');
+      // вернуть прокрутку после сплэша (сбрасываем inline overflow у <html>)
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
     }, 4000);
 
     // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
