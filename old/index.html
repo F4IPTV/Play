@@ -1,8 +1,9 @@
 
 <!DOCTYPE html>
-<html lang="ru" class="splash-open">
+<html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <title>Установщик</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #000; color: #fff; }
@@ -46,8 +47,11 @@
     }
 
     body.modal-open { overflow: hidden; }
-    body.splash-open { overflow: hidden; }
-    html.splash-open { overflow: hidden; }
+    body.splash-open { overflow: hidden; height: 100vh; }
+    html.splash-open { overflow: hidden; height: 100vh; }
+    body.splash-open > :not(#splash) { display: none !important; }
+    html, body { overscroll-behavior: none; }
+    html.splash-open::-webkit-scrollbar, body.splash-open::-webkit-scrollbar { width: 0; height: 0; }
 
     /* Список компонентов внутри модалки групп */
     #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
