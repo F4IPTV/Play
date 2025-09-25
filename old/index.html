@@ -811,15 +811,18 @@ showStatus(`Началась загрузка приложений, ожидай
 
       window.AndroidInterface?.getCurrentAutostartApp();
 
+      // Сброс текущего фокуса перед открытием
+      document.activeElement?.blur();
       modal.style.display = 'flex';
       list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
 
       window.AndroidInterface?.getUserApps();
 
+      // Фолбэк-фокус, если список придёт поздно
       setTimeout(() => {
-        const first = list.querySelector('.card, button');
-        if (first) first.focus(); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
-      }, 400);
+        const first = list.querySelector('.card');
+        if (first) first.focus({ preventScroll: true }); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
+      }, 500);
     }
 
     function setCurrentAutostartApp(appLabel, appIcon) {
@@ -877,7 +880,7 @@ showStatus(`Началась загрузка приложений, ожидай
           document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
           const cur = document.getElementById("autostartCurrent");
-          if (cur) cur.textContent = "Выбрано: " + applabel; // ← по твоему требованию
+          if (cur) cur.textContent = "Выбрано: " + applabel;
           focusAndRevealAuto(card);
         };
         card.onblur = () => card.classList.remove('selected');
@@ -885,7 +888,16 @@ showStatus(`Началась загрузка приложений, ожидай
         list.appendChild(card);
       });
 
-      setTimeout(() => { const first = list.querySelector('.card'); if (first) focusAndRevealAuto(first); }, 100);
+      // Явно фокусируем первую карточку и страхуемся повторной установкой фокуса
+      const ensureFirstFocus = () => {
+        const first = list.querySelector('.card');
+        if (!first) return;
+        const active = document.activeElement;
+        if (!list.contains(active)) first.focus({ preventScroll: true });
+      };
+      setTimeout(ensureFirstFocus, 50);
+      setTimeout(ensureFirstFocus, 200);
+      setTimeout(ensureFirstFocus, 600);
     }
 
     function disableAutostart() {
