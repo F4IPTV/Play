@@ -1135,10 +1135,16 @@ if (cards.includes(active)) {
       lastFocusedElement = document.activeElement;
       const modal = document.getElementById("miscModal");
 
-      // Заголовок с иконкой и названием из кнопки-триггера
-      const header = document.getElementById('miscHeader');
+      // Заголовок с иконкой и названием из кнопки-триггера (fallback на обычный h3, если #miscHeader нет)
+      let header = document.getElementById('miscHeader') || modal.querySelector('h3');
       if (header) {
         header.innerHTML = '';
+        if (!header.id) header.id = 'miscHeader';
+        // Выровняем и добавим зазор между иконкой и текстом
+        header.style.display = 'flex';
+        header.style.gap = '8px';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'center';
         try {
           const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
           const img = btn?.querySelector('img');
