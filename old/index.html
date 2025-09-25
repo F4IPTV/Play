@@ -294,6 +294,9 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
       <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (13).svg" alt="" style="height:24px;"><br>Google Play
     </button>
+    <button onclick="openAutostartModal()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
+    </button>
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
@@ -329,9 +332,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK
           </button>
-          <button onclick="openAutostartModal()" class="sys-btn">
-      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
-    </button>
+          
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
           </button>
@@ -795,15 +796,7 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function openAutostartModal() {
-      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
-      const misc = document.getElementById('miscModal');
-      if (misc && misc.style.display === 'flex') {
-        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
-        lastFocusedElement = fastPlusBtn || document.activeElement;
-        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
-      } else {
-        lastFocusedElement = document.activeElement;
-      }
+      lastFocusedElement = document.activeElement;
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
@@ -811,18 +804,15 @@ showStatus(`Началась загрузка приложений, ожидай
 
       window.AndroidInterface?.getCurrentAutostartApp();
 
-      // Сброс текущего фокуса перед открытием
-      document.activeElement?.blur();
       modal.style.display = 'flex';
       list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
 
       window.AndroidInterface?.getUserApps();
 
-      // Фолбэк-фокус, если список придёт поздно
       setTimeout(() => {
-        const first = list.querySelector('.card');
-        if (first) first.focus({ preventScroll: true }); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
-      }, 500);
+        const first = list.querySelector('.card, button');
+        if (first) first.focus(); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
+      }, 400);
     }
 
     function setCurrentAutostartApp(appLabel, appIcon) {
@@ -880,7 +870,7 @@ showStatus(`Началась загрузка приложений, ожидай
           document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
           const cur = document.getElementById("autostartCurrent");
-          if (cur) cur.textContent = "Выбрано: " + applabel;
+          if (cur) cur.textContent = "Выбрано: " + applabel; // ← по твоему требованию
           focusAndRevealAuto(card);
         };
         card.onblur = () => card.classList.remove('selected');
@@ -888,16 +878,7 @@ showStatus(`Началась загрузка приложений, ожидай
         list.appendChild(card);
       });
 
-      // Явно фокусируем первую карточку и страхуемся повторной установкой фокуса
-      const ensureFirstFocus = () => {
-        const first = list.querySelector('.card');
-        if (!first) return;
-        const active = document.activeElement;
-        if (!list.contains(active)) first.focus({ preventScroll: true });
-      };
-      setTimeout(ensureFirstFocus, 50);
-      setTimeout(ensureFirstFocus, 200);
-      setTimeout(ensureFirstFocus, 600);
+      setTimeout(() => { const first = list.querySelector('.card'); if (first) focusAndRevealAuto(first); }, 100);
     }
 
     function disableAutostart() {
@@ -1122,19 +1103,11 @@ if (cards.includes(active)) {
       const firstBtn = modal.querySelector('.sys-btn');
       if (firstBtn) setTimeout(() => firstBtn.focus(), 100); else modal.focus();
     }
-    function closeMiscModal(restoreFocus = true) {
+    function closeMiscModal() {
       const modal = document.getElementById("miscModal");
-      if (!modal) return;
       modal.style.display = "none";
       document.body.classList.remove("modal-open");
-      // Сброс подсветки выбранных кнопок внутри «Разное», чтобы не оставалась фиктивная подсветка
-      modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
-      if (restoreFocus) {
-        setTimeout(() => {
-          if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.();
-          lastFocusedElement = null;
-        }, 50);
-      }
+      setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
     }
 
     // Навигация в модалке "Разное" 
