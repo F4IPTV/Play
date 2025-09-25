@@ -795,7 +795,15 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function openAutostartModal() {
-      lastFocusedElement = document.activeElement;
+      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
+      const misc = document.getElementById('miscModal');
+      if (misc && misc.style.display === 'flex') {
+        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
+        lastFocusedElement = fastPlusBtn || document.activeElement;
+        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
+      } else {
+        lastFocusedElement = document.activeElement;
+      }
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
@@ -1102,11 +1110,19 @@ if (cards.includes(active)) {
       const firstBtn = modal.querySelector('.sys-btn');
       if (firstBtn) setTimeout(() => firstBtn.focus(), 100); else modal.focus();
     }
-    function closeMiscModal() {
+    function closeMiscModal(restoreFocus = true) {
       const modal = document.getElementById("miscModal");
+      if (!modal) return;
       modal.style.display = "none";
       document.body.classList.remove("modal-open");
-      setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
+      // Сброс подсветки выбранных кнопок внутри «Разное», чтобы не оставалась фиктивная подсветка
+      modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
+      if (restoreFocus) {
+        setTimeout(() => {
+          if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.();
+          lastFocusedElement = null;
+        }, 50);
+      }
     }
 
     // Навигация в модалке "Разное" 
