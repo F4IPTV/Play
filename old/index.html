@@ -285,7 +285,7 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager+
     </button>
-    <button onclick="openMiscModal()" class="sys-btn">
+    <button onclick="openMiscModal(this)" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller+
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
@@ -1131,9 +1131,34 @@ if (cards.includes(active)) {
     })();
 
     // misc modal open/close
-    function openMiscModal() {
+    function openMiscModal(triggerBtn=null) {
       lastFocusedElement = document.activeElement;
       const modal = document.getElementById("miscModal");
+
+      // Заголовок с иконкой и названием из кнопки-триггера
+      const header = document.getElementById('miscHeader');
+      if (header) {
+        header.innerHTML = '';
+        try {
+          const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
+          const img = btn?.querySelector('img');
+          const titleText = btn?.innerText?.trim() || 'Разное';
+          if (img) {
+            const icon = document.createElement('img');
+            icon.src = img.src;
+            icon.alt = '';
+            icon.style.height = '25px';
+            icon.style.width = '25px';
+            icon.style.objectFit = 'contain';
+            header.appendChild(icon);
+          }
+          const title = document.createElement('span');
+          title.textContent = titleText;
+          header.appendChild(title);
+        } catch(e) {
+          header.textContent = 'Разное';
+        }
+      }
       modal.style.display = "flex";
       document.body.classList.add("modal-open");
       document.activeElement?.blur();
