@@ -132,6 +132,9 @@
     }
     #autostartList .card { transition: none !important; }
     #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
+    /* Отключаем hover в автозапуске, чтобы мышь не давала "ложную" подсветку */
+    #autostartList .card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
+    #autostartList .card.selected:hover { background-color: #00cfff; color:#000; border: 2px solid #fff; }
 
     /* Сделаем «Закрыть» видимой как "низ списка" */
     #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
@@ -900,7 +903,7 @@ showStatus(`Началась загрузка приложений, ожидай
       setTimeout(ensureFirstFocus, 600);
 
       // Принудительно сбрасываем любые старые выделения и выставляем выделение на первой карточке
-      requestAnimationFrame(() => {
+      const hardResetFocus = () => {
         const container = document.getElementById('autostartListContainer');
         if (container) container.scrollTop = 0;
         list.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
@@ -909,7 +912,10 @@ showStatus(`Началась загрузка приложений, ожидай
           first.classList.add('selected');
           first.focus({ preventScroll: true });
         }
-      });
+      };
+      requestAnimationFrame(hardResetFocus);
+      setTimeout(hardResetFocus, 0);
+      setTimeout(hardResetFocus, 150);
     }
 
     function disableAutostart() {
