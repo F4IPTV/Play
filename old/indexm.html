@@ -1,0 +1,1561 @@
+
+<!DOCTYPE html>
+<html lang="ru" class="splash-open" style="overflow:hidden;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <title>FastInstaller_cloud</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #000; color: #fff; }
+    select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
+    #status { margin-top: 20px; font-weight: bold; min-height: 24px; transition: opacity .5s ease; opacity: 0; position: fixed; top: 10px; left: 0; right: 0; text-align: center; z-index: 1001; }
+    #status.visible { opacity: 1; }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+    select:focus, input:focus, button:focus { outline: none; box-shadow: 0 0 8px red; border-color: red; }
+
+    .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
+    .card {
+      background-color: #2a2a2a; border-radius: 16px; padding: 20px;
+      width: 80px; height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; border: 2px solid transparent; transition: all .2s ease; cursor: pointer;
+    }
+    .card:hover, .card:focus { background-color: #004d61; border-color: #00cfff; box-shadow: 0 0 10px rgba(0,0,0,.5); outline: none; }
+    .card.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: flex; justify-content: center; align-items: center; z-index: 999; outline: none; }
+    .modal-content {
+      background: #111; color: #fff; padding: 20px; border-radius: 10px;
+      max-height: 80vh; overflow: hidden; width: 80%; border: 1px solid #333;
+    }
+
+    /* Прокрутка для модалки "Разное" */
+    #miscModal .modal-content {
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+    }
+
+    #miscModal .misc-buttons-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: auto;
+      scrollbar-gutter: stable both-edges;
+      margin-bottom: 20px;
+    }
+
+    body.modal-open { overflow: hidden; }
+    body.splash-open { overflow: hidden; height: 100vh; }
+    html.splash-open { overflow: hidden; height: 100vh; }
+    body.splash-open > :not(#splash) { display: none !important; }
+    html, body { overscroll-behavior: none; }
+    html.splash-open::-webkit-scrollbar, body.splash-open::-webkit-scrollbar { width: 0; height: 0; }
+
+    /* Список компонентов внутри модалки групп */
+    #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
+    #modalList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; justify-items: center; }
+    #modalList .component-btn { transition: none !important; }
+    #modalList .component-btn:focus,
+    #installAllBtn:focus,
+    #installAllBtn.selected { background-color: #00cfff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0) !important; border-color: #fff !important; outline: none; }
+    /* Перенос длинных названий без пробелов и обрезка до 2 строк */
+#modalList .component-btn {
+  white-space: normal;
+  overflow-wrap: anywhere;   /* для сплошных строк */
+  word-break: break-word;    /* fallback */
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;     /* максимум 2 строки */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 48px;          /* чтобы высота не “прыгала” */
+  max-height: 48px; 
+}
+    /* Кнопки в стиле Google TV */
+    button {
+      background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; width: 250px; cursor: pointer;
+      transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease; box-sizing: border-box;
+    }
+    button:hover { background-color: #00cfff; }
+    button:focus { outline: none; border-color: #fff; box-shadow: 0 0 10px #004d61; }
+
+    .system-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
+    .sys-btn {
+      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px; padding: 10px; font-size: 13px; text-align: center;
+      background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: background-color .3s ease;
+    }
+    .sys-btn:hover { background-color: #00cfff; }
+    .sys-btn:focus { border-color: #fff; box-shadow: 0 0 10px #004d61; }
+    /* В модалке "Разное" отключаем hover, чтобы не мешал подсветке по фокусу */
+    #miscModal .sys-btn { background-color: #004d61; color:#fff; }
+    #miscModal .sys-btn:hover { background-color: #004d61; }
+    #miscModal .sys-btn:focus {
+      background-color: #00cfff; color:#000;
+       border: 2px solid #fff;
+    }
+    /* Подсветка выбранной кнопки в модалке "Разное" */
+    #miscModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+    
+
+    #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+     #logo { position: fixed; inset: 0; z-index: 9999; background-repeat: no-repeat; background-position: center; background-size: cover; }
+
+    /* Тосты */
+    .toast {
+      display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; background: rgba(0,0,0,.85); color: #fff;
+      border-radius: 10px; padding: 12px 18px; font-size: 14px; line-height: 1.3; max-width: min(70vw,720px);
+      white-space: normal; overflow-wrap: anywhere; word-break: break-word; opacity: 0; transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease; pointer-events: auto;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast--pill { border-radius: 999px; padding: 10px 16px; }
+    .toast--compact { padding: 8px 12px; font-size: 16px; }
+    .toast--card { box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    .toast .spin { display:inline-block; animation: spin 1s linear infinite; }
+    .toast-stack { position: fixed; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast-stack--top{ top: 40px; } .toast-stack--bottom{ bottom: 40px; } .toast-stack--center{ top: 50%; transform: translateY(-50%); }
+    .toast-stack--left{ left: 40px; align-items: flex-start; } .toast-stack--centerX{ left: 50%; transform: translateX(-50%); align-items: center; }
+    .toast-stack--right{ right: 40px; align-items: flex-end; }
+    .toast--anchored { position: fixed; z-index: 10000; }
+
+    /* === АВТОЗАПУСК === */
+    #autostartListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
+    #autostartList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* адаптивно по ширине модалки */
+      gap: 10px;
+      justify-items: center;
+    }
+    #autostartList .card { transition: none !important; }
+    #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
+    /* Отключаем hover в автозапуске, чтобы мышь не давала "ложную" подсветку */
+    #autostartList .card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
+    #autostartList .card.selected:hover { background-color: #00cfff; color:#000; border: 2px solid #fff; }
+
+    /* Сделаем «Закрыть» видимой как "низ списка" */
+    #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
+
+
+     /* Красим имя приложения*/
+  .app-name {
+    color: #00cfff;       /* оттенок бирюзового, как у кнопок */
+    font-weight: 700;
+  }
+
+/* Стили для модалки настроек установки (как модалка "Разное") */
+#installMethodModal {
+  z-index: 1000 !important; /* Выше чем у модалки "Разное" (999) */
+}
+
+#installMethodModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+#installMethodModal .sys-btn {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+#installMethodModal .method-option {
+  margin: 10px 0;
+  padding: 10px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  position: relative;
+}
+/* Уплотняем и центрируем радио-опции */
+#installMethodModal .install-method-settings{
+  max-width: 560px;         /* список уже, не на всю ширину экрана */
+  margin: 0 auto;
+}
+
+#installMethodModal .method-option:hover {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+#installMethodModal .method-option.selected {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+#installMethodModal .method-option:focus {
+  border-color: #00cfff;
+  background-color: rgba(0, 207, 255, 0.1);
+  outline: none;
+}
+
+#installMethodModal .method-option input[type="radio"] {
+  margin: 0;
+  transform: scale(1.2);
+  flex-shrink: 0;
+}
+
+#installMethodModal .method-option label {
+  cursor: pointer;
+  display: block;
+  margin: 0;
+  flex: 1;
+}
+
+    
+    
+  </style>
+</head>
+
+<body style="margin:0; padding:0;" class="splash-open">
+  <div id="splash"><div id="logo"></div></div>
+  <div id="main-content" style="display:none;"></div>
+
+   <script>
+  (function(){
+    const logo = document.getElementById('logo');
+    if (!logo) return;
+    const LAND = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif')";
+    const PORT = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usrPort.gif')";
+    const mql = window.matchMedia('(orientation: portrait)');
+    function apply() { logo.style.backgroundImage = mql.matches ? PORT : LAND; }
+    apply();
+    if (mql.addEventListener) mql.addEventListener('change', apply);
+    else if (mql.addListener) mql.addListener(apply);
+    window.addEventListener('orientationchange', apply);
+  })();
+  </script>
+
+  <h5 style="margin-top:0; display:inline-flex; align-items:center; gap:4px;">
+  <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_launcher_round.png" alt="" style="height:18px; width:18px; object-fit:contain;">
+  FastInstaller
+</h5>
+
+  <div id="progress-container" style="display:none; width:100%; background:#000; padding:5px; z-index:1002; position:fixed; bottom:0; left:0; right:0;">
+    <div id="progress-text" style="color:#fff; margin-bottom:5px;">Загрузка...</div>
+    <div style="width:100%; background:#000; height:8px; border-radius:6px;">
+      <div id="progress-bar" style="height:8px; width:0%; background:#42A5F5; border-radius:6px;"></div>
+    </div>
+  </div>
+
+  <div class="card-container" id="groupCards"></div>
+
+  <script>
+    // Enter/OK на главном экране
+    document.addEventListener('keydown', function (e) {
+      const isOk = e.key === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK' || e.code === 'Enter';
+      if (!isOk) return;
+      if (anyModalOpen()) return;
+
+      const selected = document.querySelector('.card.selected');
+      if (!selected) return;
+      currentGroup = selected.dataset.group;
+      startInstall();
+    });
+  </script>
+
+  <select id="groupSelect" style="display:none;"></select>
+  <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
+  <button type="button" id="passwordBtn">🔑 Введите пароль</button>
+  <div id="status"></div>
+
+  <div class="system-buttons">
+    <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_unknow.png" alt="" style="height:30px;"><br>Неизвестные источники
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_accessibility.png" alt="" style="height:28px;"><br>Спец возможности
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
+    </button>
+    
+
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager+
+    </button>
+    <button onclick="openMiscModal(this)" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller Cloud+
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_appsdriver.svg" alt="" style="height:28px;"><br>Меню приложений
+          </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (12).svg" alt="" style="height:28px;"><br>AnyDesk
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (13).svg" alt="" style="height:24px;"><br>Google Play
+    </button>
+    <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
+      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
+    </button>
+  </div>
+
+  <!-- Модалка автозапуска -->
+  <div id="autostartModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div id="autostartCurrent" style="margin-bottom:10px; font-weight:bold;">Выбрано: Нет</div>
+      <h3>Выберите приложение для автозапуска:</h3>
+      <button onclick="disableAutostart()" class="sys-btn">🚫 Отключить автозапуск</button>
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.testAutostart()" class="sys-btn">🚀 Проверка автозапуска</button>
+
+      <!-- КОНТЕЙНЕР СО СКРОЛЛОМ (и здесь же кнопка Закрыть) -->
+      <div id="autostartListContainer">
+        <div id="autostartList"></div>
+        <button id="autostartCloseBtn" onclick="closeAutostartModal()">❌ Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Модалка «Разное» -->
+  <div id="miscModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3>Разное</h3>
+      <div class="misc-buttons-container">
+        <div class="system-buttons">
+          <!-- <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
+          </button> -->
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK+
+          </button>
+          <button onclick="openAutostartModal()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
+    </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (40).png" alt="" style="height:28px;"><br>Вход в аккаунт
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (20).png" alt="" style="height:28px;"><br>Очистить кеш
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height:28px;"><br>Удаление бэкапов
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+          </button>
+          
+  <!-- Кнопка настроек метода установки -->
+  <button onclick="showInstallMethodSettings()" class="sys-btn">
+    <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_tools.png" alt="" style="height:26px;"><br>Выбор метода установки
+  </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.tv.frameworkpackagestubs')" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_AndroidWebView.png" alt="" style="height:24px;"><br> Activity Stub
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_Files.webp" alt="" style="height:22px;"><br> Файлы
+          </button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка списка компонентов -->
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 id="modalGroupHeader" style="display:flex;gap:8px;align-items:center;justify-content:center;"></h3>
+      <div id="modalListContainer">
+        <div id="modalList"></div>
+        <button id="installAllBtn" onclick="installAll()" class="component-btn">Установить всё</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentGroup = "";
+    let cachedConfig = null;
+    let lastFocusedElement = null;
+    let lastPassword = "";
+    let backupQueue = [];
+    let backupTarget = "";
+    let savedPassword = "";
+    let ignoreNextEnter = false;
+
+    document.getElementById('passwordBtn').addEventListener('click', () => {
+      const ai = window.AndroidInterface;
+      if (ai?.requestPasswordPrefill) { ai.requestPasswordPrefill(savedPassword || ""); return; }
+      if (ai?.requestPassword) { try { ai.requestPassword(savedPassword || ""); return; } catch (e) { ai.requestPassword(); return; } }
+      const pwd = prompt("Введите пароль", savedPassword || "");
+      if (pwd !== null) { savedPassword = pwd.trim(); updatePasswordBtn(); }
+    });
+
+    function setPasswordFromAndroid(pwd) { savedPassword = (pwd || "").trim(); updatePasswordBtn(); }
+    function updatePasswordBtn() {
+      const btn = document.getElementById('passwordBtn');
+      btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
+    }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+
+    function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
+    function copyNextBackup() {
+      if (backupQueue.length === 0) { showStatus("✅ Все бэкапы скопированы", "green"); return; }
+      const url = backupQueue.shift(); const fileName = url.split('/').pop();
+      showStatus(`⏳ Копирование: ${fileName} <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+      window.AndroidInterface?.copyBackup(url, backupTarget);
+    }
+    function onBackupCopied() { copyNextBackup(); }
+
+    function selectCard(card) {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      currentGroup = card.dataset.group;
+      const s = document.getElementById('status'); s.innerHTML = ""; s.classList.remove('visible');
+    }
+
+    // === Конфиг (только новый формат) и рендер групп ===
+    function getConfigUrl() {
+      // URL конфига всегда приходит из приложения
+      return window.AndroidInterface?.getConfigUrl?.() || "";
+    }
+
+    async function ensureConfig() {
+      if (cachedConfig) return cachedConfig;
+      const url = getConfigUrl();
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('Не удалось загрузить конфиг');
+      const cfg = await r.json();
+      cachedConfig = cfg;
+      return cfg;
+    }
+
+    function createGroupIcon(url) {
+      const isSvg = /\.svg(\?|$)/i.test(url);
+      const makeImg = () => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = '';
+        img.style.height = '25px';
+        img.style.width = '25px';
+        img.style.objectFit = 'contain';
+        return img;
+      };
+
+      if (!isSvg) return makeImg();
+
+      const img = makeImg();
+      img.onerror = () => {
+        // Фолбэк: CSS background-image (часто рендерится в WebView, когда <img> с SVG нет)
+        const box = document.createElement('div');
+        box.style.width = '25px';
+        box.style.height = '25px';
+        box.style.backgroundImage = `url("${url}")`;
+        box.style.backgroundRepeat = 'no-repeat';
+        box.style.backgroundSize = 'contain';
+        box.style.backgroundPosition = 'center';
+        img.replaceWith(box);
+      };
+      return img;
+    }
+
+    function renderGroupsFromConfig(config) {
+      const container = document.getElementById('groupCards') || document.querySelector('.card-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const groups = config.groups || {};
+      const entries = Object.entries(groups);
+      if (!entries.length) {
+        container.innerHTML = '<div style="opacity:.7">Нет групп</div>';
+        return;
+      }
+
+      entries.forEach(([groupKey, groupObj]) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('tabindex', '0');
+        card.dataset.group = groupKey;
+
+        if (groupObj && groupObj.icon) {
+          const iconEl = createGroupIcon(groupObj.icon);
+          card.appendChild(iconEl);
+        }
+        card.appendChild(document.createTextNode(groupKey));
+
+        card.onclick = () => { selectCard(card); startInstall(); };
+        card.onfocus = () => selectCard(card);
+
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureConfig()
+        .then(cfg => { renderGroupsFromConfig(cfg); })
+        .catch(() => { /* покажем ошибку при попытке открыть */ });
+    });
+
+    async function startInstall() {
+      const group = currentGroup;
+      const password = savedPassword;
+      const status = document.getElementById('status');
+      if (!group) { status.innerHTML = "❗ Пожалуйста, выберите пакет."; status.style.color = "red"; status.classList.add('visible'); return; }
+
+      try {
+        const config = await ensureConfig();
+        const groupInfo = (config.groups || {})[group];
+        if (!groupInfo) { status.innerHTML = "❌ Группа не найдена!"; status.style.color = "red"; status.classList.add('visible'); return; }
+        if ((groupInfo.password || "") !== (password || "")) { showToast({ message: "🔒 Неверный пароль!" }); return; }
+        cachedConfig = config;
+        lastFocusedElement = document.activeElement;
+        showGroupList(config);
+      } catch (error) {
+        status.innerHTML = "❌ Ошибка загрузки конфигурации."; status.style.color = "red"; status.classList.add('visible');
+      }
+    }
+
+    function showStatus(message, color, timeout = 4000) {
+      const status = document.getElementById('status');
+      status.innerHTML = message; status.style.color = color; status.classList.add('visible');
+      clearTimeout(status.hideTimer);
+      status.hideTimer = setTimeout(() => status.classList.remove('visible'), timeout);
+    }
+
+    function getToastStack(position = 'bottom-center') {
+      const id = `toast-stack-${position}`; let stack = document.getElementById(id);
+      if (stack) return stack;
+      const [v,h] = position.split('-');
+      stack = document.createElement('div');
+      stack.id = id;
+      stack.className = `toast-stack toast-stack--${v} ${h === 'center' ? 'toast-stack--centerX' : (h === 'left' ? 'toast-stack--left' : 'toast-stack--right')} ${v === 'center' ? 'toast-stack--center' : ''}`;
+      document.body.appendChild(stack);
+      return stack;
+    }
+    function showToast({ message, type="info", iconUrl=null, withSpin=false, position="bottom-center", variant="default", duration=3000, anchor=null, offset=10, colors=null }) {
+      if (!message) return;
+      const styles = {
+        success: { bg: "rgba(0,128,0,.85)", text: "#fff" },
+        error:   { bg: "rgba(220,0,0,.9)",  text: "#fff" },
+        warning: { bg: "rgba(255,165,0,.9)", text: "#000" },
+        info:    { bg: "rgba(242,0,0,.85)", text: "#fff" },
+        blue:    { bg: "rgba(0,123,255,.9)", text: "#fff" },
+        pink:    { bg: "rgba(255,105,180,.9)", text: "#000" }
+      };
+      const scheme = colors || styles[type] || styles.info;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast' + (variant==='pill'?' toast--pill':'') + (variant==='compact'?' toast--compact':'') + (variant==='card'?' toast--card':'');
+      toast.style.backgroundColor = scheme.bg; toast.style.color = scheme.text;
+      let html = '';
+      if (withSpin) html += `<span class="spin">⏳</span>`;
+      html += `<span>${message}</span>`;
+      if (iconUrl) html += `<img src="${iconUrl}" alt="" style="height:20px; width:20px; object-fit:contain; vertical-align:middle;">`;
+      toast.innerHTML = html;
+
+      let cleanup;
+      if (anchor) {
+        const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
+        const rect = el?.getBoundingClientRect();
+        toast.classList.add('toast--anchored'); document.body.appendChild(toast);
+        const top = (rect?.bottom ?? 0) + offset;
+        const left = (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
+        toast.style.top = `${top}px`; toast.style.left = `${left}px`; toast.style.transform = 'translateX(-50%)';
+        cleanup = () => toast.remove();
+      } else {
+        const stack = getToastStack(position); stack.appendChild(toast);
+        cleanup = () => { toast.remove(); if (!stack.children.length) stack.remove(); };
+      }
+      requestAnimationFrame(() => toast.classList.add('show'));
+      const hide = () => { toast.classList.remove('show'); setTimeout(cleanup, 250); };
+      const timer = setTimeout(hide, duration);
+      toast.addEventListener('click', () => { clearTimeout(timer); hide(); });
+    }
+
+    // ===== Список группы =====
+    function showGroupList(config)  {
+      const modal = document.getElementById('modal');
+      const list  = document.getElementById('modalList');
+      const header = document.getElementById('modalGroupHeader');
+      list.innerHTML = "";
+
+
+      document.activeElement?.blur();
+      document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+
+      if (header) {
+  header.innerHTML = "";
+  const groupInfo = (config.groups || {})[currentGroup];
+  if (groupInfo?.icon) header.appendChild(createGroupIcon(groupInfo.icon));
+  header.appendChild(document.createTextNode(currentGroup));
+}
+
+      modal.style.display = "flex";
+      setTimeout(() => { document.querySelector('#modalList .component-btn')?.focus({ preventScroll: true }); }, 80);
+
+      const apps    = (config.apps || []).filter(app => (app.tags || []).includes(currentGroup));
+      const backups = (config.backups || []).filter(backup => (backup.tags || []).includes(currentGroup));
+      const links   = (config.links || []).filter(link => (link.tags || []).includes(currentGroup));
+      if (apps.length === 0 && backups.length === 0 && links.length === 0) list.innerHTML = "Нет доступных компонентов.";
+
+      // Заголовок: иконка + имя группы
+      if (header) {
+        header.innerHTML = "";
+        const groupInfo = (config.groups || {})[currentGroup];
+        if (groupInfo && groupInfo.icon) {
+          const iconEl = createGroupIcon(groupInfo.icon);
+          iconEl.style.height = '25px';
+          iconEl.style.width = '25px';
+          header.appendChild(iconEl);
+        }
+        const title = document.createElement('span');
+        title.textContent = currentGroup;
+        header.appendChild(title);
+      }
+
+      apps.forEach(app => {
+        const btn = document.createElement('button');
+        btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = app.file;
+        btn.onclick = () => {
+          showStatus(`Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+          window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
+        };
+        list.appendChild(btn);
+      });
+
+      backups.forEach(backup => {
+        const btn = document.createElement('button');
+        btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = backup.file;
+        btn.onclick = () => {
+  if (backup.files) {
+    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+    window.AndroidInterface?.copyFilesWithTargets(JSON.stringify(backup.files));
+  } else {
+    const urls = backup.urls || (backup.url ? [backup.url] : []);
+    if (!urls.length) return;
+    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+    window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder || 'Download');
+  }
+};
+        list.appendChild(btn);
+      });
+
+      links.forEach(link => {
+        const btn = document.createElement('button');
+        btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = link.file;
+        btn.onclick = () => { showStatus("🔗 Открытие инструкции...", "green", 3000); window.AndroidInterface?.openLink(link.url); };
+        list.appendChild(btn);
+      });
+
+      modal.style.display = "flex";
+      setTimeout(() => { document.querySelector('#modalList .component-btn')?.focus({ preventScroll: true }); }, 80);
+    }
+
+
+    
+
+    function installAll() {
+  if (window.AndroidInterface) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        window.AndroidInterface.startInstallation(currentGroup);
+      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+    });
+  }
+}
+
+ function installAllSend() {
+  /* showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000); */
+showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+ }
+    
+
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      modal.style.display = "none";
+      if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+        if (lastFocusedElement.classList?.contains('card')) selectCard(lastFocusedElement);
+        lastFocusedElement.focus?.({ preventScroll: true });
+      }
+    }
+
+    // Навигация в модалке групп (2 колонки)
+    (function () {
+      const modal     = document.getElementById('modal');
+      const list      = document.getElementById('modalList');
+      const container = document.getElementById('modalListContainer');
+      const cols = 2;
+      let navLock = false;
+      let lastIndexBeforeFooter = null;
+
+      function focusAndReveal(el, margin = 12) {
+        if (!el || !container) return;
+        const cr = container.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
+        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+        requestAnimationFrame(() => el.focus({ preventScroll: true }));
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+        
+        const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'];
+        if (!keys.includes(e.key)) return;
+        if (e.repeat) { e.preventDefault(); return; }
+
+        const buttons = Array.from(list.querySelectorAll('.component-btn'));
+        if (!buttons.length) return;
+
+        const installBtn = document.getElementById('installAllBtn');
+        const active = document.activeElement;
+
+        if (active === installBtn) {
+          e.preventDefault(); e.stopPropagation();
+          if (e.key === 'ArrowDown') return;
+
+          const lastRowStart = Math.floor((buttons.length - 1) / cols) * cols;
+          const fallbackCol = 0;
+          const colFromMemory = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : fallbackCol;
+          const targetIndex = Math.min(lastRowStart + colFromMemory, buttons.length - 1);
+
+          if (e.key === 'ArrowUp') { focusAndReveal(buttons[targetIndex]); return; }
+          if (e.key === 'ArrowLeft') { const leftIndex = Math.max(targetIndex - 1, lastRowStart); focusAndReveal(buttons[leftIndex]); return; }
+          if (e.key === 'ArrowRight') { const rowEnd = Math.min(lastRowStart + cols - 1, buttons.length - 1); const rightIndex = Math.min(targetIndex + 1, rowEnd); focusAndReveal(buttons[rightIndex]); return; }
+          if (e.key === 'Enter') { installBtn.click(); return; }
+          return;
+        }
+
+        let index = buttons.indexOf(active);
+        if (index === -1) { e.preventDefault(); focusAndReveal(buttons[0]); return; }
+
+        e.preventDefault(); e.stopPropagation();
+        if (e.key === 'Enter') { active?.click(); return; }
+        if (navLock) return;
+        navLock = true; setTimeout(() => (navLock = false), 90);
+
+        if (e.key === 'ArrowDown') {
+          if (index + cols < buttons.length) { focusAndReveal(buttons[index + cols]); }
+          else {
+            lastIndexBeforeFooter = index;
+            if (installBtn) { focusAndReveal(installBtn); }
+          }
+          return;
+        }
+        if (e.key === 'ArrowUp') { const prev = index - cols; focusAndReveal(buttons[Math.max(prev, 0)]); return; }
+        if (e.key === 'ArrowRight') { if ((index % cols) < (cols - 1) && index + 1 < buttons.length) focusAndReveal(buttons[index + 1]); return; }
+        if (e.key === 'ArrowLeft') { if ((index % cols) > 0) focusAndReveal(buttons[index - 1]); return; }
+      });
+    })();
+
+    function handleBackButton() {
+      if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
+      else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
+      else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
+      else { window.AndroidInterface.requestAppExit(); }
+    }
+
+    // Скрыть кнопку "Открыть группу" на ТВ
+    (function(){
+      const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
+      if (isTV) { const startBtn = document.getElementById("startBtn"); if (startBtn) startBtn.style.display = "none"; }
+    })();
+
+   function updateProgress(current=null, total=null, percent=0, label) {
+      const container = document.getElementById("progress-container");
+      const bar = document.getElementById("progress-bar");
+      const text = document.getElementById("progress-text");
+      container.style.display = "block"; 
+      bar.style.width = percent + "%";
+      
+      // Проверяем на undefined и null значения
+      if (current !== null && total !== null && current !== undefined && total !== undefined && label) {
+        text.innerHTML = `Загрузка приложения:&nbsp;&nbsp; ${label}&nbsp;&nbsp;&nbsp;&nbsp;${percent}%`;
+      } else {
+        text.innerText = `Загрузка...`;
+      }
+      if (percent >= 100 && (current === null || current === total)) {
+        setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerHTML = ""; }, 1500);
+      }
+    }
+    function updateProgressWithLabel(current, total, percent, label) {
+      const container = document.getElementById("progress-container");
+      const bar = document.getElementById("progress-bar");
+      const text = document.getElementById("progress-text");
+      container.style.display = "block"; bar.style.width = percent + "%"; text.innerText = `Загрузка ${label}: ${percent}%`;
+      if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
+    }
+
+    function openAutostartModal() {
+      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
+      const misc = document.getElementById('miscModal');
+      if (misc && misc.style.display === 'flex') {
+        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
+        lastFocusedElement = fastPlusBtn || document.activeElement;
+        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
+      } else {
+        lastFocusedElement = document.activeElement;
+      }
+      const modal = document.getElementById('autostartModal');
+      const list = document.getElementById('autostartList');
+      const current = document.getElementById('autostartCurrent');
+      current.innerHTML = '<span style="color:#00cfff;">Без автозапуска</span>';
+
+      window.AndroidInterface?.getCurrentAutostartApp();
+
+      // Сброс текущего фокуса перед открытием
+      document.activeElement?.blur();
+      modal.style.display = 'flex';
+      list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
+
+      window.AndroidInterface?.getUserApps();
+
+      // Фолбэк-фокус, если список придёт поздно
+      setTimeout(() => {
+        const first = list.querySelector('.card');
+        if (first) first.focus({ preventScroll: true }); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
+      }, 500);
+    }
+
+    function setCurrentAutostartApp(appLabel, appIcon) {
+      const current = document.getElementById("autostartCurrent");
+      current.innerHTML = `
+        <span style="font-weight:bold; color:#00cfff;">Активное:</span>
+        <img src="${appIcon}" alt="" style="height:24px; vertical-align:middle; margin:0 6px;">
+        <span style="font-weight:bold;">${appLabel}</span>`;
+    }
+
+    function closeAutostartModal() {
+      document.getElementById('autostartModal').style.display = 'none';
+      if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus();
+    }
+
+    /* === helpers для автозапуска === */
+    function getAutostartCols() {
+      const grid = document.getElementById('autostartList');
+      if (!grid) return 5;
+      const cs = getComputedStyle(grid);
+      const tpl = cs.getPropertyValue('grid-template-columns');
+      const count = (tpl || '').split(' ').filter(Boolean).length;
+      return count || 5;
+    }
+    function focusAndRevealAuto(el, margin = 12) {
+      const container = document.getElementById('autostartListContainer');
+      if (!el || !container) return;
+      const cr = container.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
+      else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+      requestAnimationFrame(() => el.focus({ preventScroll: true }));
+    }
+
+    function renderAppSelection(json) {
+      const apps = JSON.parse(json);
+      const list = document.getElementById('autostartList');
+      list.innerHTML = '';
+
+      apps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('tabindex', '0');
+        card.innerHTML = `<img src="${app.icon}" alt="" style="height:24px;"><br>${app.label}`;
+
+        card.onclick = (ev) => {
+          ev.preventDefault(); ev.stopPropagation();
+          window.AndroidInterface.saveAutostartPackage(app.package);
+          setCurrentAutostartApp(app.label, app.icon);
+          showToast({ message: `${app.label} установлено как автозапуск`, iconUrl: app.icon, type: "success" });
+        };
+
+        // ВАЖНО: не менять "Выбрано" при навигации — оставляем как ты просил
+        card.onfocus = () => {
+          document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          const cur = document.getElementById("autostartCurrent");
+          if (cur) cur.textContent = "Выбрано: " + applabel;
+          focusAndRevealAuto(card);
+        };
+        card.onblur = () => card.classList.remove('selected');
+
+        list.appendChild(card);
+      });
+
+      // Явно фокусируем первую карточку и страхуемся повторной установкой фокуса
+      const ensureFirstFocus = () => {
+        const first = list.querySelector('.card');
+        if (!first) return;
+        const active = document.activeElement;
+        if (!list.contains(active)) first.focus({ preventScroll: true });
+      };
+      setTimeout(ensureFirstFocus, 50);
+      setTimeout(ensureFirstFocus, 200);
+      setTimeout(ensureFirstFocus, 600);
+
+      // Принудительно сбрасываем любые старые выделения и выставляем выделение на первой карточке
+      const hardResetFocus = () => {
+        const container = document.getElementById('autostartListContainer');
+        if (container) container.scrollTop = 0;
+        list.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+        const first = list.querySelector('.card');
+        if (first) {
+          first.classList.add('selected');
+          first.focus({ preventScroll: true });
+        }
+      };
+      requestAnimationFrame(hardResetFocus);
+      setTimeout(hardResetFocus, 0);
+      setTimeout(hardResetFocus, 150);
+    }
+
+    function disableAutostart() {
+      window.AndroidInterface?.DeleteAutostartPackage("");
+      const current = document.getElementById('autostartCurrent');
+      if (current) current.innerHTML = '<span style="color:#00cfff;">Автозапуск отключён</span>';
+      showToast({ message: "Автозапуск отключён" });
+    }
+
+    function hideProgress() {
+      const container = document.getElementById('progress-container');
+      const bar = document.getElementById('progress-bar');
+      const text = document.getElementById('progress-text');
+      if (container) container.style.display = 'none';
+      if (bar) bar.style.width = '0%';
+      if (text) text.innerText = '';
+    }
+
+    function onInstalledAppsReceived(appsJson) {
+      const container = document.getElementById('appList');
+      if (!container) return;
+      container.innerHTML = '';
+      let apps;
+      try { apps = JSON.parse(appsJson); }
+      catch (e) { container.innerHTML = 'Ошибка чтения списка.'; return; }
+
+      apps.forEach(app => {
+        const btn = document.createElement('button');
+        btn.textContent = `${app.name} (${app.package})`;
+        btn.onclick = () => { window.AndroidInterface.setAutostartPackage(app.package); alert("Установлено: " + app.name); closeAutostartModal(); };
+        container.appendChild(btn);
+        container.appendChild(document.createElement('br'));
+      });
+    }
+
+    // Снятие выделения с группы при фокусе на нижних кнопках
+    document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").forEach(btn => {
+      btn.addEventListener("focus", () => { document.querySelectorAll(".card").forEach(c => c.classList.remove("selected")); });
+    });
+
+    setTimeout(() => {
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      document.body.classList.remove('splash-open');
+      document.documentElement.classList.remove('splash-open');
+      // вернуть прокрутку после сплэша (сбрасываем inline overflow у <html>)
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    }, 4000);
+
+    // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
+    (function attachAutostartNavOnce(){
+      if (window.__autoStartNavBoundV4) return;
+      window.__autoStartNavBoundV4 = true;
+
+      let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
+      let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
+
+      document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('autostartModal');
+        if (!modal || modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+const list      = document.getElementById('autostartList');
+const cards     = Array.from(list.querySelectorAll('.card'));
+const headerBtns = Array.from(modal.querySelectorAll('.sys-btn')); // обе верхние кнопки
+const closeBtn  = document.getElementById('autostartCloseBtn');
+if (!cards.length) return;
+
+const cols   = getAutostartCols();
+const active = document.activeElement;
+
+// Фокус на верхних кнопках // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
+if (headerBtns.includes(active)) {
+  document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+  const i = headerBtns.indexOf(active);
+  switch (e.key) {
+    case 'ArrowLeft':
+      e.preventDefault();
+      headerBtns[(i - 1 + headerBtns.length) % headerBtns.length].focus();
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      headerBtns[(i + 1) % headerBtns.length].focus();
+      break;
+    case 'ArrowDown': {
+      e.preventDefault();
+      const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
+      const targetIndex = Math.min(col, cards.length - 1);
+      focusAndRevealAuto(cards[targetIndex]);
+      break;
+    }
+    case 'ArrowUp':
+      e.preventDefault(); // не уходим выше
+      break;
+    case 'Enter':
+      e.preventDefault(); active.click(); break;
+    case 'Back':
+    case 'Escape':
+      e.preventDefault(); closeAutostartModal(); break;
+  }
+  return;
+}
+
+// Фокус на карточках: стрелка Вверх из первой строки — к верхним кнопкам
+if (cards.includes(active)) {
+  const idx = cards.indexOf(active);
+  if (e.key === 'ArrowUp' && idx < cols) {
+    e.preventDefault();
+    lastIndexBeforeHeader = idx;
+    // Привязываем к ближайшей верхней кнопке: 0 -> первая, 1 -> вторая (если есть)
+    headerBtns[Math.min(idx, headerBtns.length - 1)].focus();
+    return;
+  }
+}
+
+        // Нижняя кнопка (внутри того же контейнера)
+        if (active === closeBtn) {
+          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
+          switch (e.key) {
+            case 'ArrowUp': {
+              e.preventDefault();
+              const total = cards.length;
+              const lastRow = Math.floor((total - 1) / cols);
+              const lastRowStart = lastRow * cols;
+              const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
+              const targetIndex = Math.min(lastRowStart + col, total - 1);
+              focusAndRevealAuto(cards[targetIndex]);
+              break;
+            }
+            case 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+              e.preventDefault(); break; // упор внизу
+            case 'Enter':
+              e.preventDefault(); closeBtn.click(); break;
+            case 'Back':
+            case 'Escape':
+              e.preventDefault(); closeAutostartModal(); break;
+          }
+          return;
+        }
+
+        // Обычная сетка карточек
+        const index = cards.indexOf(active);
+        if (index === -1 && e.key.startsWith('Arrow')) {
+          e.preventDefault();
+          focusAndRevealAuto(cards[0]);
+          return;
+        }
+
+        const total = cards.length;
+        const row   = Math.floor(index / cols);
+        const col   = index % cols;
+        const lastRow = Math.floor((total - 1) / cols);
+        const lastRowStart = lastRow * cols;
+
+        switch (e.key) {
+          case 'ArrowDown': {
+            e.preventDefault();
+            if (row < lastRow) {
+              // Кандидат под нами
+              const nextIndex = (row + 1) * cols + col;
+              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
+              focusAndRevealAuto(cards[targetIndex]);
+            } else {
+              // Уже на последней строке — уходим на «Закрыть»
+              lastIndexBeforeFooter = index;
+              cards[index]?.classList.remove('selected');
+              if (closeBtn) focusAndRevealAuto(closeBtn);
+            }
+            break;
+          }
+          case 'ArrowUp': {
+            e.preventDefault();
+            if (row === 0) {
+              lastIndexBeforeHeader = index;
+              cards[index]?.classList.remove('selected');
+              headerBtn?.focus({ preventScroll: true });
+            } else {
+              const prevIndex = (row - 1) * cols + col;
+              focusAndRevealAuto(cards[prevIndex]);
+            }
+            break;
+          }
+          case 'ArrowLeft': {
+            e.preventDefault();
+            if (col === 0) return;
+            const target = index - 1;
+            if (target >= 0) focusAndRevealAuto(cards[target]);
+            break;
+          }
+          case 'ArrowRight': {
+            e.preventDefault();
+            const inRowEnd = (col === cols - 1) || (index + 1 >= total);
+            if (inRowEnd) return;
+            focusAndRevealAuto(cards[index + 1]);
+            break;
+          }
+          case 'Enter':
+            e.preventDefault(); active?.click(); break;
+          case 'Back':
+          case 'Escape':
+            e.preventDefault(); closeAutostartModal(); break;
+        }
+      });
+    })();
+
+    // misc modal open/close
+    function openMiscModal(triggerBtn=null) {
+      lastFocusedElement = document.activeElement;
+      const modal = document.getElementById("miscModal");
+
+      // Заголовок с иконкой и названием из кнопки-триггера (fallback на обычный h3, если #miscHeader нет)
+      let header = document.getElementById('miscHeader') || modal.querySelector('h3');
+      if (header) {
+        header.innerHTML = '';
+        if (!header.id) header.id = 'miscHeader';
+        // Выровняем и добавим зазор между иконкой и текстом
+        header.style.display = 'flex';
+        header.style.gap = '8px';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'center';
+        try {
+          const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
+          const img = btn?.querySelector('img');
+          const titleText = btn?.innerText?.trim() || 'Разное';
+          if (img) {
+            const icon = document.createElement('img');
+            icon.src = img.src;
+            icon.alt = '';
+            icon.style.height = '25px';
+            icon.style.width = '25px';
+            icon.style.objectFit = 'contain';
+            header.appendChild(icon);
+          }
+          const title = document.createElement('span');
+          title.textContent = titleText;
+          header.appendChild(title);
+        } catch(e) {
+          header.textContent = 'Разное';
+        }
+      }
+      modal.style.display = "flex";
+      document.body.classList.add("modal-open");
+      document.activeElement?.blur();
+      const firstBtn = modal.querySelector('.sys-btn');
+      if (firstBtn) setTimeout(() => firstBtn.focus(), 100); else modal.focus();
+    }
+    function closeMiscModal(restoreFocus = true) {
+      const modal = document.getElementById("miscModal");
+      if (!modal) return;
+      modal.style.display = "none";
+      document.body.classList.remove("modal-open");
+      // Сброс подсветки выбранных кнопок внутри «Разное», чтобы не оставалась фиктивная подсветка
+      modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
+      if (restoreFocus) {
+        setTimeout(() => {
+          if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.();
+          lastFocusedElement = null;
+        }, 50);
+      }
+    }
+
+    // Навигация в модалке "Разное" 
+    (function attachMiscNavOnce(){
+      if (window.__miscNavBound) return;
+      window.__miscNavBound = true;
+
+      let lastIndexBeforeFooter = null;
+
+      function focusAndReveal(el, margin = 12) {
+        if (!el) return;
+        const container = document.querySelector('#miscModal .misc-buttons-container');
+        if (!container) return;
+        const cr = container.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
+        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+        requestAnimationFrame(() => el.focus({ preventScroll: true }));
+      }
+      // Синхронизируем подсветку строго с реальным фокусом
+      const misc = document.getElementById('miscModal');
+      misc?.addEventListener('focusin', (e)=>{
+        const modal = document.getElementById('miscModal');
+        if (!modal) return;
+        modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
+        const btn = e.target.closest('.misc-buttons-container .sys-btn');
+        if (btn) btn.classList.add('selected');
+      });
+      // При клике приводим фокус к нажатой кнопке, чтобы не расходился с подсветкой
+      misc?.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.misc-buttons-container .sys-btn');
+        if (btn) btn.focus({ preventScroll: true });
+      }, true);
+
+      document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('miscModal');
+        if (!modal || modal.style.display !== 'flex') return;
+        
+        // Если открыта модалка установки, не обрабатываем события
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') {
+          // Полностью игнорируем события, если открыта модалка установки
+          return;
+        }
+
+        // Дополнительная проверка - если событие уже обработано, не трогаем
+        if (e.defaultPrevented) return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
+        if (!buttons.length) return;
+
+        // Автоопределение количества колонок по позиции кнопок
+        function getColumnsCount(buttons) {
+          if (buttons.length < 2) return 1;
+          const firstTop = buttons[0].getBoundingClientRect().top;
+          let cols = 1;
+          for (let i = 1; i < buttons.length; i++) {
+            if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
+              cols++;
+            } else break;
+          }
+          return cols;
+        }
+        const cols = getColumnsCount(buttons);
+        const active = document.activeElement;
+
+        // Обычная сетка кнопок
+        const index = buttons.indexOf(active);
+        if (index === -1 && e.key.startsWith('Arrow')) {
+          e.preventDefault();
+          focusAndReveal(buttons[0]);
+          return;
+        }
+
+        const total = buttons.length;
+        const row   = Math.floor(index / cols);
+        const col   = index % cols;
+        const lastRow = Math.floor((total - 1) / cols);
+        const lastRowStart = lastRow * cols;
+
+        switch (e.key) {
+          case 'ArrowDown': {
+            e.preventDefault();
+            if (row < lastRow) {
+              const nextIndex = (row + 1) * cols + col;
+              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
+              focusAndReveal(buttons[targetIndex]);
+            }
+            // Убираем переход к кнопке "Закрыть" - её больше нет
+            break;
+          }
+          case 'ArrowUp': {
+            e.preventDefault();
+            if (row === 0) return; // упор вверху
+            const prevIndex = (row - 1) * cols + col;
+            focusAndReveal(buttons[prevIndex]);
+            break;
+          }
+          case 'ArrowLeft': {
+            e.preventDefault();
+            if (col === 0) return;
+            const target = index - 1;
+            if (target >= 0) focusAndReveal(buttons[target]);
+            break;
+          }
+          case 'ArrowRight': {
+            e.preventDefault();
+            const inRowEnd = (col === cols - 1) || (index + 1 >= total);
+            if (inRowEnd) return;
+            focusAndReveal(buttons[index + 1]);
+            break;
+          }
+          case 'Enter':
+            e.preventDefault(); active?.click(); break;
+          case 'Back':
+          case 'Escape':
+            e.preventDefault(); closeMiscModal(); break;
+        }
+      });
+    })();
+
+  </script>
+<script>
+// 1) Режем автоповтор клавиши Enter/OK по всему приложению (CAPTURE + immediate)
+document.addEventListener('keydown', function(e) {
+  const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK');
+  if (isEnter && e.repeat) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+}, true);
+
+// 2) Глобальный дебаунс «кликов от удержания» — пер-элементный
+const __lastClickByEl = new WeakMap();
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('button, [role="button"], .component-btn, #installAllBtn');
+  if (!target) return;
+  const now = Date.now();
+  const last = __lastClickByEl.get(target) || 0;
+  const interval = 700; // можно 500..900 мс
+
+  if (now - last < interval) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return;
+  }
+  __lastClickByEl.set(target, now);
+}, true);
+
+// Показать настройки метода установки (как модалка "Разное")
+function showInstallMethodSettings() {
+    lastFocusedElement = document.activeElement;
+    
+    // Получаем текущий метод установки
+    const currentMethod = window.AndroidInterface?.getInstallMethod?.() || 'sai';
+    
+    // Устанавливаем текущий метод в радиокнопки
+    const radioBtn = document.getElementById('method_' + currentMethod);
+    if (radioBtn) radioBtn.checked = true;
+    
+    // freeze Разное, если открыто
+    const misc = document.getElementById('miscModal');
+    if (misc && misc.style.display === 'flex') {
+      misc.setAttribute('inert', '');
+      misc.style.pointerEvents = 'none';
+    }
+    
+    // Показываем модалку
+    const modal = document.getElementById("installMethodModal");
+    modal.style.display = "flex";
+    document.body.classList.add("modal-open");
+    document.activeElement?.blur();
+    const firstOption = modal.querySelector('.method-option');
+    if (firstOption) setTimeout(() => firstOption.focus(), 100); else modal.focus();
+}
+
+// Закрыть настройки метода установки (как модалка "Разное")
+function closeInstallMethodSettings() {
+    const modal = document.getElementById("installMethodModal");
+    modal.style.display = "none";
+    document.body.classList.remove("modal-open");
+    
+    // unfreeze Разное
+    const misc = document.getElementById('miscModal');
+    if (misc) { 
+      misc.removeAttribute('inert'); 
+      misc.style.pointerEvents = ''; 
+    }
+    
+    setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
+}
+
+// Обработка изменения метода установки
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[name="install_method"]');
+    
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                // Сохраняем выбранный метод
+                window.AndroidInterface.setInstallMethod(this.value);
+            }
+        });
+    });
+});
+
+// Навигация в модалке настроек установки (как модалка "Разное")
+(function attachInstallMethodNavOnce(){
+  if (window.__installMethodNavBound) return;
+  window.__installMethodNavBound = true;
+
+  let lastIndexBeforeFooter = null;
+  
+  // Глобальный обработчик для кнопки Back с максимальным приоритетом
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Back' || e.key === 'Escape') {
+      const installModal = document.getElementById('installMethodModal');
+      if (installModal && installModal.style.display === 'flex') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        closeInstallMethodSettings();
+        return;
+      }
+    }
+  }, true);
+
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('installMethodModal');
+    if (!modal || modal.style.display !== 'flex') return;
+
+    // Блокируем ВСЕ события клавиатуры для модалки установки
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    // Дополнительная блокировка для кнопки Back
+    if (e.key === 'Back' || e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }
+
+    const options = Array.from(document.querySelectorAll('#installMethodModal .method-option'));
+    const closeBtn = document.querySelector('#installMethodModal .sys-btn');
+    if (!options.length) return;
+
+    const cols = 1; // 1 колонка для модалки установки
+    const active = document.activeElement;
+
+    // Кнопка "Закрыть"
+    if (active === closeBtn) {
+      switch (e.key) {
+        case 'ArrowUp': {
+          const total = options.length;
+          const lastRow = Math.floor((total - 1) / cols);
+          const lastRowStart = lastRow * cols;
+          const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
+          const targetIndex = Math.min(lastRowStart + col, total - 1);
+          options[targetIndex]?.focus({ preventScroll: true });
+          break;
+        }
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          break;
+        case 'Enter':
+          closeBtn.click(); break;
+        case 'Back':
+        case 'Escape':
+          closeInstallMethodSettings(); break;
+      }
+      return;
+    }
+
+    // Обычная сетка опций
+    const index = options.indexOf(active);
+    if (index === -1 && e.key.startsWith('Arrow')) {
+      options[0]?.focus({ preventScroll: true });
+      return;
+    }
+
+    const total = options.length;
+    const row   = Math.floor(index / cols);
+    const col   = index % cols;
+    const lastRow = Math.floor((total - 1) / cols);
+    const lastRowStart = lastRow * cols;
+
+    switch (e.key) {
+      case 'ArrowDown': {
+        if (row < lastRow) {
+          const nextIndex = (row + 1) * cols + col;
+          const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
+          options[targetIndex]?.focus({ preventScroll: true });
+        } else {
+          lastIndexBeforeFooter = index;
+          closeBtn?.focus({ preventScroll: true });
+        }
+        break;
+      }
+      case 'ArrowUp': {
+        if (row === 0) return; // упор вверху
+        const prevIndex = (row - 1) * cols + col;
+        options[prevIndex]?.focus({ preventScroll: true });
+        break;
+      }
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        break; // не используем горизонтальную навигацию
+      case 'Enter':
+        if (index >= 0) {
+          const method = options[index].querySelector('input[type="radio"]').value;
+          selectInstallMethod(method, options[index]);
+        }
+        break;
+      case 'Back':
+      case 'Escape':
+        closeInstallMethodSettings(); break;
+    }
+  }, true); // Добавляем capture: true для более высокого приоритета
+})();
+
+function selectInstallMethod(method, targetElement = null) {
+  // Снимаем выделение со всех опций
+  document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
+    option.classList.remove('selected');
+  });
+  
+  // Выделяем выбранную опцию
+  const target = targetElement || (event && event.currentTarget);
+  if (target) {
+    target.classList.add('selected');
+  }
+  
+  // Устанавливаем радиокнопку
+  document.getElementById('method_' + method).checked = true;
+  
+  // Сохраняем выбор
+  if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
+    window.AndroidInterface.setInstallMethod(method);
+  }
+}
+
+  
+</script>
+<!-- Модалка настроек метода установки -->
+<div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
+  <div class="modal-content">
+    <h3>Выбор метода установки</h3>
+    <div class="install-method-settings">
+      <div class="method-option" onclick="selectInstallMethod('sai', this)" tabindex="0">
+        <input type="radio" id="method_sai" name="install_method" value="sai" checked>
+        <label for="method_sai">
+          <strong>Быстрая установка</strong><br>
+          <small>FAST-метод (рекомендуется)</small>
+        </label>
+      </div>
+      <div class="method-option" onclick="selectInstallMethod('standard', this)" tabindex="0">
+        <input type="radio" id="method_standard" name="install_method" value="standard">
+        <label for="method_standard">
+          <strong>Обычная установка</strong><br>
+          <small>Через системный установщик</small>
+        </label>
+      </div>
+    </div>
+    <button onclick="closeInstallMethodSettings()" class="sys-btn">Закрыть</button>
+  </div>
+</div>
+  
+  
+</body>
+</html>
