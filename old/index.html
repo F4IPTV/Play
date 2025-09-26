@@ -209,6 +209,15 @@
   flex: 1;
 }
 
+#installMethodModal .method-option label small {
+  color: #d0d0d0;
+  transition: color 0.2s ease;
+}
+
+#installMethodModal .method-option.selected label small {
+  color: #4caf50;
+}
+
     
     
   </style>
@@ -328,12 +337,21 @@
           <!-- <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK+
-          </button>
+		  <!-- Кнопка настроек метода установки -->
+  <button onclick="showInstallMethodSettings()" class="sys-btn">
+    <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_tools.png" alt="" style="height:26px;"><br>Выбор метода установки
+  </button>
+          
           <button onclick="openAutostartModal()" class="sys-btn">
       <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
     </button>
+	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer0.png" alt="" style="height:26px;"><br>Для разработчиков
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer1.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
+          </button>
+	
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
           </button>
@@ -346,22 +364,15 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height:28px;"><br>Удаление бэкапов
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer.png" alt="" style="height:26px;"><br>Для разработчиков
-          </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
-          </button>
           
-  <!-- Кнопка настроек метода установки -->
-  <button onclick="showInstallMethodSettings()" class="sys-btn">
-    <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_tools.png" alt="" style="height:26px;"><br>Выбор метода установки
-  </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.tv.frameworkpackagestubs')" class="sys-btn">
             <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_AndroidWebView.png" alt="" style="height:24px;"><br> Activity Stub
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
             <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_Files.webp" alt="" style="height:22px;"><br> Файлы
+          </button>
+		  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
           
         </div>
@@ -389,6 +400,7 @@
     let backupTarget = "";
     let savedPassword = "";
     let ignoreNextEnter = false;
+let __installMethodApplying = false;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1351,7 +1363,11 @@ function showInstallMethodSettings() {
     
     // Устанавливаем текущий метод в радиокнопки
     const radioBtn = document.getElementById('method_' + currentMethod);
-    if (radioBtn) radioBtn.checked = true;
+    if (radioBtn) {
+        radioBtn.checked = true;
+        document.querySelectorAll('#installMethodModal .method-option').forEach(option => option.classList.remove('selected'));
+        radioBtn.closest('.method-option')?.classList.add('selected');
+    }
     
     // freeze Разное, если открыто
     const misc = document.getElementById('miscModal');
@@ -1392,8 +1408,7 @@ document.addEventListener('DOMContentLoaded', function() {
     radioButtons.forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.checked) {
-                // Сохраняем выбранный метод
-                window.AndroidInterface.setInstallMethod(this.value);
+                selectInstallMethod(this.value, this.closest('.method-option'));
             }
         });
     });
@@ -1516,23 +1531,30 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 function selectInstallMethod(method, targetElement = null) {
-  // Снимаем выделение со всех опций
-  document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
-    option.classList.remove('selected');
-  });
-  
-  // Выделяем выбранную опцию
-  const target = targetElement || (event && event.currentTarget);
-  if (target) {
-    target.classList.add('selected');
-  }
-  
-  // Устанавливаем радиокнопку
-  document.getElementById('method_' + method).checked = true;
-  
-  // Сохраняем выбор
-  if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
-    window.AndroidInterface.setInstallMethod(method);
+  if (__installMethodApplying) return;
+  __installMethodApplying = true;
+  try {
+    // Снимаем выделение со всех опций
+    document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+
+    const radio = document.getElementById('method_' + method);
+    const target = targetElement || radio?.closest('.method-option');
+
+    if (target) {
+      target.classList.add('selected');
+    }
+
+    if (radio && !radio.checked) {
+      radio.checked = true;
+    }
+
+    if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
+      window.AndroidInterface.setInstallMethod(method);
+    }
+  } finally {
+    setTimeout(() => { __installMethodApplying = false; }, 0);
   }
 }
 
@@ -1553,15 +1575,15 @@ function selectInstallMethod(method, targetElement = null) {
       <div class="method-option" onclick="selectInstallMethod('standard', this)" tabindex="0">
         <input type="radio" id="method_standard" name="install_method" value="standard">
         <label for="method_standard">
-          <strong>Обычная установка</strong><br>
-          <small>Через системный установщик</small>
+          <strong>Стандартная установка</strong><br>
+          <small>Встроенный установщик пакетов</small>
         </label>
       </div>
       <div class="method-option" onclick="selectInstallMethod('adb', this)" tabindex="0">
         <input type="radio" id="method_adb" name="install_method" value="adb">
         <label for="method_adb">
-          <strong>ADB установка</strong><br>
-          <small>Требуется беспроводная отладка и RSA-подключение</small>
+          <strong>Установка через ADB</strong><br>
+          <small>Требуется в меню для разработчиков включить «Отладку по USB</small>
         </label>
       </div>
     </div>
