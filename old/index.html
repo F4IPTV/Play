@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="ru" class="splash-open" style="overflow:hidden;">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-  <title>FastInstaller_cloud</title>
+  <title>Установщик</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px; background-color: #000; color: #fff; }
     select, input, button { font-size: 18px; padding: 10px; margin: 10px; width: 250px; }
@@ -46,11 +45,6 @@
     }
 
     body.modal-open { overflow: hidden; }
-    body.splash-open { overflow: hidden; height: 100vh; }
-    html.splash-open { overflow: hidden; height: 100vh; }
-    body.splash-open > :not(#splash) { display: none !important; }
-    html, body { overscroll-behavior: none; }
-    html.splash-open::-webkit-scrollbar, body.splash-open::-webkit-scrollbar { width: 0; height: 0; }
 
     /* Список компонентов внутри модалки групп */
     #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
@@ -70,7 +64,7 @@
   -webkit-line-clamp: 2;     /* максимум 2 строки */
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 48px;          /* чтобы высота не "прыгала" */
+  min-height: 48px;          /* чтобы высота не “прыгала” */
   max-height: 48px; 
 }
     /* Кнопки в стиле Google TV */
@@ -101,7 +95,7 @@
     
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-     #logo { position: fixed; inset: 0; z-index: 9999; background-repeat: no-repeat; background-position: center; background-size: cover; }
+    #logo { position: fixed; inset: 0; background: url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif') no-repeat center/contain; z-index: 9999; }
 
     /* Тосты */
     .toast {
@@ -131,9 +125,6 @@
     }
     #autostartList .card { transition: none !important; }
     #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
-    /* Отключаем hover в автозапуске, чтобы мышь не давала "ложную" подсветку */
-    #autostartList .card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
-    #autostartList .card.selected:hover { background-color: #00cfff; color:#000; border: 2px solid #fff; }
 
     /* Сделаем «Закрыть» видимой как "низ списка" */
     #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
@@ -209,42 +200,18 @@
   flex: 1;
 }
 
-#installMethodModal .method-option label small {
-  color: #d0d0d0;
-  transition: color 0.2s ease;
-}
-
-#installMethodModal .method-option.selected label small {
-  color: #4caf50;
-}
-
     
     
   </style>
 </head>
 
-<body style="margin:0; padding:0;" class="splash-open">
+<body style="margin:0; padding:0;">
   <div id="splash"><div id="logo"></div></div>
   <div id="main-content" style="display:none;"></div>
 
-   <script>
-  (function(){
-    const logo = document.getElementById('logo');
-    if (!logo) return;
-    const LAND = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usr.gif')";
-    const PORT = "url('https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/usrPort.gif')";
-    const mql = window.matchMedia('(orientation: portrait)');
-    function apply() { logo.style.backgroundImage = mql.matches ? PORT : LAND; }
-    apply();
-    if (mql.addEventListener) mql.addEventListener('change', apply);
-    else if (mql.addListener) mql.addListener(apply);
-    window.addEventListener('orientationchange', apply);
-  })();
-  </script>
-
   <h5 style="margin-top:0; display:inline-flex; align-items:center; gap:4px;">
-  <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_launcher_round.png" alt="" style="height:18px; width:18px; object-fit:contain;">
-  FastInstaller
+  <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/Telegram_2019_Logo.svg.webp" alt="" style="height:18px; width:18px; object-fit:contain;">
+  @Filin4ik_ATV
 </h5>
 
   <div id="progress-container" style="display:none; width:100%; background:#000; padding:5px; z-index:1002; position:fixed; bottom:0; left:0; right:0;">
@@ -277,33 +244,31 @@
 
   <div class="system-buttons">
     <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" class="sys-btn">
-      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_unknow.png" alt="" style="height:30px;"><br>Неизвестные источники
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (8).svg" alt="" style="height:18px;"><br>Неизвестные источники
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()" class="sys-btn">
-      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (42).png" alt="" style="height:24px;"><br>Приложения
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_accessibility.png" alt="" style="height:28px;"><br>Спец возможности
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
-      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (34).png" alt="" style="height:24px;"><br>Системные настройки
     </button>
-    
-
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (12).svg" alt="" style="height:24px;"><br>AnyDesk
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (13).svg" alt="" style="height:20px;"><br>Google Play
+    </button>
+    <button onclick="openAutostartModal()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
+    </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager+
     </button>
-    <button onclick="openMiscModal(this)" class="sys-btn">
-      <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller Cloud+
-    </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_appsdriver.png" alt="" style="height:28px;"><br>Меню приложений
-          </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
-      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (12).svg" alt="" style="height:28px;"><br>AnyDesk
-    </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
-      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (13).svg" alt="" style="height:24px;"><br>Google Play
+    <button onclick="openMiscModal()" class="sys-btn">
+      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (19).png" alt="" style="height:28px;"><br>Полезное
     </button>
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
@@ -337,21 +302,12 @@
           <!-- <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
-		  <!-- Кнопка настроек метода установки -->
-  <button onclick="showInstallMethodSettings()" class="sys-btn">
-    <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
-  </button>
-          
-          <button onclick="openAutostartModal()" class="sys-btn">
-      <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (38).png" alt="" style="height:28px;"><br>Автозагрузка приложения
-    </button>
-	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer0.png" alt="" style="height:26px;"><br>Для разработчиков
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_developer1.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
+            <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (11).svg" alt="" style="height:24px;"><br>Меню приложений
           </button>
-	
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (6).svg" alt="" style="height:24px;"><br>Google Katniss
           </button>
@@ -365,14 +321,15 @@
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (27).png" alt="" style="height:28px;"><br>Удаление бэкапов
           </button>
           
+  <!-- Кнопка настроек метода установки -->
+  <button onclick="showInstallMethodSettings()" class="sys-btn">
+    <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_tools.png" alt="" style="height:26px;"><br>Настройки установки
+  </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.tv.frameworkpackagestubs')" class="sys-btn">
             <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_AndroidWebView.png" alt="" style="height:24px;"><br> Activity Stub
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_Files.webp" alt="" style="height:22px;"><br> Файлы
-          </button>
-		  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_usb.png" alt="" style="height:26px;"><br>Установить APK+
+            <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_Files.webp" alt="" style="height:22px;"><br> Documentsui
           </button>
           
         </div>
@@ -400,7 +357,6 @@
     let backupTarget = "";
     let savedPassword = "";
     let ignoreNextEnter = false;
-let __installMethodApplying = false;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -636,11 +592,7 @@ let __installMethodApplying = false;
         const btn = document.createElement('button');
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = app.file;
         btn.onclick = () => {
-          const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
-          const statusMsg = method === 'adb'
-            ? `ADB установка...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`
-            : `Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`;
-          showStatus(statusMsg, "#00cfff", 4000);
+          showStatus(`Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
           window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
         };
         list.appendChild(btn);
@@ -650,16 +602,11 @@ let __installMethodApplying = false;
         const btn = document.createElement('button');
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = backup.file;
         btn.onclick = () => {
-  if (backup.files) {
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
-    window.AndroidInterface?.copyFilesWithTargets(JSON.stringify(backup.files));
-  } else {
-    const urls = backup.urls || (backup.url ? [backup.url] : []);
-    if (!urls.length) return;
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
-    window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder || 'Download');
-  }
-};
+          const urls = backup.urls || (backup.url ? [backup.url] : []);
+          if (!urls.length) return;
+          showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+          window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder);
+        };
         list.appendChild(btn);
       });
 
@@ -816,15 +763,7 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function openAutostartModal() {
-      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
-      const misc = document.getElementById('miscModal');
-      if (misc && misc.style.display === 'flex') {
-        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
-        lastFocusedElement = fastPlusBtn || document.activeElement;
-        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
-      } else {
-        lastFocusedElement = document.activeElement;
-      }
+      lastFocusedElement = document.activeElement;
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
@@ -832,18 +771,15 @@ showStatus(`Началась загрузка приложений, ожидай
 
       window.AndroidInterface?.getCurrentAutostartApp();
 
-      // Сброс текущего фокуса перед открытием
-      document.activeElement?.blur();
       modal.style.display = 'flex';
       list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
 
       window.AndroidInterface?.getUserApps();
 
-      // Фолбэк-фокус, если список придёт поздно
       setTimeout(() => {
-        const first = list.querySelector('.card');
-        if (first) first.focus({ preventScroll: true }); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
-      }, 500);
+        const first = list.querySelector('.card, button');
+        if (first) first.focus(); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
+      }, 400);
     }
 
     function setCurrentAutostartApp(appLabel, appIcon) {
@@ -901,7 +837,7 @@ showStatus(`Началась загрузка приложений, ожидай
           document.querySelectorAll('#autostartList .card').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
           const cur = document.getElementById("autostartCurrent");
-          if (cur) cur.textContent = "Выбрано: " + applabel;
+          if (cur) cur.textContent = "Выбрано: " + applabel; // ← по твоему требованию
           focusAndRevealAuto(card);
         };
         card.onblur = () => card.classList.remove('selected');
@@ -909,31 +845,7 @@ showStatus(`Началась загрузка приложений, ожидай
         list.appendChild(card);
       });
 
-      // Явно фокусируем первую карточку и страхуемся повторной установкой фокуса
-      const ensureFirstFocus = () => {
-        const first = list.querySelector('.card');
-        if (!first) return;
-        const active = document.activeElement;
-        if (!list.contains(active)) first.focus({ preventScroll: true });
-      };
-      setTimeout(ensureFirstFocus, 50);
-      setTimeout(ensureFirstFocus, 200);
-      setTimeout(ensureFirstFocus, 600);
-
-      // Принудительно сбрасываем любые старые выделения и выставляем выделение на первой карточке
-      const hardResetFocus = () => {
-        const container = document.getElementById('autostartListContainer');
-        if (container) container.scrollTop = 0;
-        list.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
-        const first = list.querySelector('.card');
-        if (first) {
-          first.classList.add('selected');
-          first.focus({ preventScroll: true });
-        }
-      };
-      requestAnimationFrame(hardResetFocus);
-      setTimeout(hardResetFocus, 0);
-      setTimeout(hardResetFocus, 150);
+      setTimeout(() => { const first = list.querySelector('.card'); if (first) focusAndRevealAuto(first); }, 100);
     }
 
     function disableAutostart() {
@@ -977,12 +889,7 @@ showStatus(`Началась загрузка приложений, ожидай
     setTimeout(() => {
       document.getElementById('splash').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
-      document.body.classList.remove('splash-open');
-      document.documentElement.classList.remove('splash-open');
-      // вернуть прокрутку после сплэша (сбрасываем inline overflow у <html>)
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    }, 4000);
+    }, 3000);
 
     // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
     (function attachAutostartNavOnce(){
@@ -1149,59 +1056,20 @@ if (cards.includes(active)) {
     })();
 
     // misc modal open/close
-    function openMiscModal(triggerBtn=null) {
+    function openMiscModal() {
       lastFocusedElement = document.activeElement;
       const modal = document.getElementById("miscModal");
-
-      // Заголовок с иконкой и названием из кнопки-триггера (fallback на обычный h3, если #miscHeader нет)
-      let header = document.getElementById('miscHeader') || modal.querySelector('h3');
-      if (header) {
-        header.innerHTML = '';
-        if (!header.id) header.id = 'miscHeader';
-        // Выровняем и добавим зазор между иконкой и текстом
-        header.style.display = 'flex';
-        header.style.gap = '8px';
-        header.style.alignItems = 'center';
-        header.style.justifyContent = 'center';
-        try {
-          const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
-          const img = btn?.querySelector('img');
-          const titleText = btn?.innerText?.trim() || 'Разное';
-          if (img) {
-            const icon = document.createElement('img');
-            icon.src = img.src;
-            icon.alt = '';
-            icon.style.height = '25px';
-            icon.style.width = '25px';
-            icon.style.objectFit = 'contain';
-            header.appendChild(icon);
-          }
-          const title = document.createElement('span');
-          title.textContent = titleText;
-          header.appendChild(title);
-        } catch(e) {
-          header.textContent = 'Разное';
-        }
-      }
       modal.style.display = "flex";
       document.body.classList.add("modal-open");
       document.activeElement?.blur();
       const firstBtn = modal.querySelector('.sys-btn');
       if (firstBtn) setTimeout(() => firstBtn.focus(), 100); else modal.focus();
     }
-    function closeMiscModal(restoreFocus = true) {
+    function closeMiscModal() {
       const modal = document.getElementById("miscModal");
-      if (!modal) return;
       modal.style.display = "none";
       document.body.classList.remove("modal-open");
-      // Сброс подсветки выбранных кнопок внутри «Разное», чтобы не оставалась фиктивная подсветка
-      modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
-      if (restoreFocus) {
-        setTimeout(() => {
-          if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.();
-          lastFocusedElement = null;
-        }, 50);
-      }
+      setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
     }
 
     // Навигация в модалке "Разное" 
@@ -1363,11 +1231,7 @@ function showInstallMethodSettings() {
     
     // Устанавливаем текущий метод в радиокнопки
     const radioBtn = document.getElementById('method_' + currentMethod);
-    if (radioBtn) {
-        radioBtn.checked = true;
-        document.querySelectorAll('#installMethodModal .method-option').forEach(option => option.classList.remove('selected'));
-        radioBtn.closest('.method-option')?.classList.add('selected');
-    }
+    if (radioBtn) radioBtn.checked = true;
     
     // freeze Разное, если открыто
     const misc = document.getElementById('miscModal');
@@ -1408,7 +1272,8 @@ document.addEventListener('DOMContentLoaded', function() {
     radioButtons.forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.checked) {
-                selectInstallMethod(this.value, this.closest('.method-option'));
+                // Сохраняем выбранный метод
+                window.AndroidInterface.setInstallMethod(this.value);
             }
         });
     });
@@ -1531,30 +1396,23 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 
 function selectInstallMethod(method, targetElement = null) {
-  if (__installMethodApplying) return;
-  __installMethodApplying = true;
-  try {
-    // Снимаем выделение со всех опций
-    document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
-      option.classList.remove('selected');
-    });
-
-    const radio = document.getElementById('method_' + method);
-    const target = targetElement || radio?.closest('.method-option');
-
-    if (target) {
-      target.classList.add('selected');
-    }
-
-    if (radio && !radio.checked) {
-      radio.checked = true;
-    }
-
-    if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
-      window.AndroidInterface.setInstallMethod(method);
-    }
-  } finally {
-    setTimeout(() => { __installMethodApplying = false; }, 0);
+  // Снимаем выделение со всех опций
+  document.querySelectorAll('#installMethodModal .method-option').forEach(option => {
+    option.classList.remove('selected');
+  });
+  
+  // Выделяем выбранную опцию
+  const target = targetElement || (event && event.currentTarget);
+  if (target) {
+    target.classList.add('selected');
+  }
+  
+  // Устанавливаем радиокнопку
+  document.getElementById('method_' + method).checked = true;
+  
+  // Сохраняем выбор
+  if (window.AndroidInterface && window.AndroidInterface.setInstallMethod) {
+    window.AndroidInterface.setInstallMethod(method);
   }
 }
 
@@ -1569,21 +1427,14 @@ function selectInstallMethod(method, targetElement = null) {
         <input type="radio" id="method_sai" name="install_method" value="sai" checked>
         <label for="method_sai">
           <strong>Быстрая установка</strong><br>
-          <small>FAST-метод (рекомендуется)</small>
+          <small>SAI-метод (рекомендуется)</small>
         </label>
       </div>
       <div class="method-option" onclick="selectInstallMethod('standard', this)" tabindex="0">
         <input type="radio" id="method_standard" name="install_method" value="standard">
         <label for="method_standard">
-          <strong>Стандартная установка</strong><br>
-          <small>Встроенный установщик пакетов</small>
-        </label>
-      </div>
-      <div class="method-option" onclick="selectInstallMethod('adb', this)" tabindex="0">
-        <input type="radio" id="method_adb" name="install_method" value="adb">
-        <label for="method_adb">
-          <strong>Установка через ADB</strong><br>
-          <small>Требуется в меню для разработчиков включить «Отладку по USB</small>
+          <strong>Обычная установка</strong><br>
+          <small>Через системный установщик</small>
         </label>
       </div>
     </div>
