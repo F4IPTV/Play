@@ -282,7 +282,6 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <button type="button" id="startBtn" onclick="startInstall()">Открыть группу</button>
   <button type="button" id="passwordBtn">🔑 Введите пароль</button>
   <div id="status"></div>
 
@@ -797,11 +796,7 @@ showStatus(`Началась загрузка приложений, ожидай
       else { window.AndroidInterface.requestAppExit(); }
     }
 
-    // Скрыть кнопку "Открыть группу" на ТВ
-    (function(){
-      const isTV = /TV|AFT|GoogleTV|SHIELD/i.test(navigator.userAgent);
-      if (isTV) { const startBtn = document.getElementById("startBtn"); if (startBtn) startBtn.style.display = "none"; }
-    })();
+    
 
    function updateProgress(current=null, total=null, percent=0, label) {
       const container = document.getElementById("progress-container");
