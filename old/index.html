@@ -161,6 +161,15 @@
   margin: 0 auto;
 }
 
+#miscMoreModal .misc-buttons-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable both-edges;
+  margin-bottom: 20px;
+}
+
 #installMethodModal .method-option {
   margin: 10px 0;
   padding: 10px;
@@ -347,9 +356,12 @@
           <!-- <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
-		  <!-- Кнопка настроек метода установки -->
+	  <!-- Кнопка настроек метода установки -->
   <button onclick="showInstallMethodSettings()" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+  </button>
+  <button onclick="openMiscMoreModal(this)" class="sys-btn">
+    <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic_more.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
           
           <button onclick="openAutostartModal()" class="sys-btn">
@@ -392,6 +404,27 @@
     </div>
   </div>
 
+  <!-- Дополнительная модалка внутри «Разное» -->
+  <div id="miscMoreModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3>Дополнительные функции</h3>
+      <div class="misc-buttons-container">
+        <div class="system-buttons">
+          <button onclick="showInstallMethodSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+          </button>
+          <button onclick="openAutostartModal()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+          </button>
+        </div>
+      </div>
+      <button class="sys-btn" onclick="closeMiscMoreModal()">❌ Закрыть</button>
+    </div>
+  </div>
+
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -413,6 +446,7 @@
     let savedPassword = "";
     let ignoreNextEnter = false;
 let __installMethodApplying = false;
+let lastFocusedElementMiscMore = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1211,6 +1245,150 @@ if (cards.includes(active)) {
         }, 50);
       }
     }
+
+    function openMiscMoreModal(triggerBtn = null) {
+      const mainModal = document.getElementById("miscModal");
+      const moreModal = document.getElementById("miscMoreModal");
+      if (!moreModal) return;
+
+      lastFocusedElementMiscMore = triggerBtn || document.activeElement;
+
+      if (mainModal) {
+        mainModal.setAttribute("inert", "");
+        mainModal.style.pointerEvents = "none";
+      }
+
+      document.activeElement?.blur();
+      moreModal.style.display = "flex";
+      document.body.classList.add("modal-open");
+
+      const firstBtn = moreModal.querySelector('.sys-btn');
+      if (firstBtn) setTimeout(() => firstBtn.focus({ preventScroll: true }), 100);
+      else moreModal.focus();
+    }
+
+    function closeMiscMoreModal() {
+      const mainModal = document.getElementById("miscModal");
+      const moreModal = document.getElementById("miscMoreModal");
+      if (!moreModal) return;
+
+      moreModal.style.display = "none";
+      document.body.classList.remove("modal-open");
+
+      if (mainModal) {
+        mainModal.removeAttribute("inert");
+        mainModal.style.pointerEvents = "";
+        document.body.classList.add("modal-open");
+      }
+
+      setTimeout(() => {
+        if (lastFocusedElementMiscMore && document.body.contains(lastFocusedElementMiscMore)) {
+          lastFocusedElementMiscMore.focus?.({ preventScroll: true });
+        }
+        lastFocusedElementMiscMore = null;
+      }, 50);
+    }
+
+    (function attachMiscMoreNavOnce(){
+      if (window.__miscMoreNavBound) return;
+      window.__miscMoreNavBound = true;
+
+      function focusAndRevealMore(el, margin = 12) {
+        if (!el) return;
+        const container = document.querySelector('#miscMoreModal .misc-buttons-container');
+        if (!container) return;
+        const cr = container.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
+        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+        requestAnimationFrame(() => el.focus({ preventScroll: true }));
+      }
+
+      document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('miscMoreModal');
+        if (!modal || modal.style.display !== 'flex') return;
+
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
+        if (!buttons.length) {
+          if (e.key === 'Back' || e.key === 'Escape') {
+            e.preventDefault();
+            closeMiscMoreModal();
+          }
+          return;
+        }
+
+        const active = document.activeElement;
+        const index = buttons.indexOf(active);
+        const cols = (() => {
+          if (buttons.length < 2) return 1;
+          const firstTop = buttons[0].getBoundingClientRect().top;
+          let c = 1;
+          for (let i = 1; i < buttons.length; i++) {
+            if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) c++;
+            else break;
+          }
+          return c;
+        })();
+
+        if (index === -1 && e.key.startsWith('Arrow')) {
+          e.preventDefault();
+          focusAndRevealMore(buttons[0]);
+          return;
+        }
+
+        const total = buttons.length;
+        const row   = Math.floor(index / cols);
+        const col   = index % cols;
+        const lastRow = Math.floor((total - 1) / cols);
+        const lastRowStart = lastRow * cols;
+
+        switch (e.key) {
+          case 'ArrowDown': {
+            e.preventDefault();
+            if (row < lastRow) {
+              const nextIndex = (row + 1) * cols + col;
+              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
+              focusAndRevealMore(buttons[targetIndex]);
+            }
+            break;
+          }
+          case 'ArrowUp': {
+            e.preventDefault();
+            if (row === 0) return;
+            const prevIndex = (row - 1) * cols + col;
+            focusAndRevealMore(buttons[prevIndex]);
+            break;
+          }
+          case 'ArrowLeft': {
+            e.preventDefault();
+            if (col === 0) return;
+            focusAndRevealMore(buttons[index - 1]);
+            break;
+          }
+          case 'ArrowRight': {
+            e.preventDefault();
+            if ((col === cols - 1) || (index + 1 >= total)) return;
+            focusAndRevealMore(buttons[index + 1]);
+            break;
+          }
+          case 'Enter':
+            e.preventDefault();
+            active?.click();
+            break;
+          case 'Back':
+          case 'Escape':
+            e.preventDefault();
+            closeMiscMoreModal();
+            break;
+        }
+      });
+    })();
 
     // Навигация в модалке "Разное" 
     (function attachMiscNavOnce(){
