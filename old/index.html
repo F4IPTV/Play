@@ -307,7 +307,7 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
     </button>
-    <button onclick="window.AndroidInterface.disablePackage('org.amnezia.awg')" class="sys-btn">
+    <button onclick="disablePackages(['com.netflix.ninja','org.amnezia.awg'])" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_disable.png" alt="" style="height:28px;"><br>Отключить MX Explorer
     </button>
     
@@ -479,6 +479,23 @@ let lastFocusedElementMiscMore = null;
       card.classList.add('selected');
       currentGroup = card.dataset.group;
       const s = document.getElementById('status'); s.innerHTML = ""; s.classList.remove('visible');
+    }
+
+    function disablePackages(packages) {
+      const list = Array.isArray(packages)
+        ? packages
+        : String(packages || "")
+            .split(',')
+            .map(p => p.trim())
+            .filter(Boolean);
+
+      if (!list.length) return;
+
+      try {
+        window.AndroidInterface?.disablePackage(JSON.stringify(list));
+      } catch (e) {
+        window.AndroidInterface?.disablePackage(list.join(','));
+      }
     }
 
     // === Конфиг (только новый формат) и рендер групп ===
