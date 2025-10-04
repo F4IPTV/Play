@@ -474,6 +474,8 @@ let lastFocusedElementMiscMore = null;
     }
     function onBackupCopied() { copyNextBackup(); }
 
+    const disablePackageStates = new Map();
+
     function selectCard(card) {
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -491,10 +493,16 @@ let lastFocusedElementMiscMore = null;
 
       if (!list.length) return;
 
+      const key = list.join('|').toLowerCase();
+      const nextDisable = !(disablePackageStates.get(key) ?? false);
+      disablePackageStates.set(key, nextDisable);
+
+      const payload = { packages: list, disable: nextDisable };
+
       try {
-        window.AndroidInterface?.disablePackage(JSON.stringify(list));
+        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
       } catch (e) {
-        window.AndroidInterface?.disablePackage(list.join(','));
+        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
       }
     }
 
