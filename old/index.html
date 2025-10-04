@@ -823,6 +823,7 @@ showStatus(`Началась загрузка приложений, ожидай
 
     function handleBackButton() {
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
@@ -1424,6 +1425,8 @@ if (cards.includes(active)) {
       document.addEventListener('keydown', function (e) {
         const modal = document.getElementById('miscModal');
         if (!modal || modal.style.display !== 'flex') return;
+        const childModal = document.getElementById('miscMoreModal');
+        if (childModal && childModal.style.display === 'flex') return;
         
         // Если открыта модалка установки, не обрабатываем события
         const installModal = document.getElementById('installMethodModal');
