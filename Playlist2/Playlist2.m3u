@@ -57,12 +57,36 @@ http://213.169.39.30:5241
 https://iptv.itv.uz/hls/live/t/UAcSEExX5UamlFqFOIaXIA/e/1767191403/4000/index.m3u8
 #EXTINF:-1 group-title="TEST ⓵" tvg-logo="https://i.postimg.cc/MTbNhVZc/i-TV-Music-Logo.png",ITV Music
 https://iptv.itv.uz/hls/live/t/IDvfbmZ5Ibmqs0plMhNejg/e/1767191403/4001/index.m3u8
-#EXTINF:-1 group-title="TEST ⓵",Bolt HD
-http://84.245.224.71/BoltHD/mono.m3u8
 #EXTINF:-1 group-title="TEST ⓵",Star Family HD
 http://84.245.224.71/StarFamilyHD/mono.m3u8
 #EXTINF:-1 group-title="TEST ⓵",Star Cinema HD
 http://84.245.224.71/StarCinemaHD/mono.m3u8
+#EXTINF:-1 group-title="TEST ⓵",Bolt HD
+http://84.245.224.71/BoltHD/mono.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Уникум
+https://flussonic.salomtv.uz/Detskiy/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Первый канал
+https://flussonic.salomtv.uz/perviy_kanal/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Дом кино
+https://flussonic.salomtv.uz/domkino/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", EURONEWS
+https://flussonic.salomtv.uz/EURONEWS/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Makon TV
+https://flussonic.salomtv.uz/Makon_TV/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Русский детектив
+https://flussonic.salomtv.uz/russkiy_detektiv/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", RU.TV
+https://flussonic.salomtv.uz/rutv/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Телекафе
+https://flussonic.salomtv.uz/telekafe/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", TV1000 Action
+https://flussonic.salomtv.uz/vijuTV1000action/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Звезда
+https://flussonic.salomtv.uz/zvezda/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Eurosport 2 HD
+https://flussonic.salomtv.uz/eurosport_2/video.m3u8
+#EXTINF:-1 group-title="TEST ⓵", Futbol TV
+https://flussonic.salomtv.uz/FutbolTV/video.m3u8
 #EXTINF:-1 group-title="TEST ⓵",OTV HD
 http://84.245.224.71/OTV/mono.m3u8
 #EXTINF:-1 group-title="TEST ⓵",1+2
@@ -79,8 +103,6 @@ http://84.245.224.71/FashionTVHD/mono.m3u8
 http://84.245.224.71/KHLHD/mono.m3u8
 #EXTINF:-1 group-title="TEST ⓵" tvg-id="skif-vitebsk",Скиф ТВ
 http://95.46.208.8:24432/skif
-#EXTINF:-1 group-title="TEST ⓵" tvg-logo="https://cvy.okis.ru/file/cvy/9.gif",Релакс
-http://185.57.68.33/232/mpegts
 #EXTINF:-1 group-title="TEST ⓵",OstWest
 http://95.67.12.82:9077
 #EXTINF:-1 group-title="TEST ⓵",Continent E
@@ -101,6 +123,8 @@ http://95.67.12.82:9086
 http://95.67.12.82:9098
 #EXTINF:-1 group-title="TEST ⓵" tvg-id="kinokazka",Киноказка       
 http://95.67.12.82:9084
+#EXTINF:-1 group-title="TEST ⓵",Загородная жизнь
+http://185.57.68.33/40/index.m3u8
 #EXTINF:-1 group-title="TEST ⓵",CGTN Русский
 https://english-livetx.cgtn.com/hls/LSvexABhNipibK5KRuUkvHZ7220802LSTeze9o8tdFXMHsb1VosgoT220802_hd.m3u8
 #EXTINF:-1 group-title="TEST ⓵", Київ HD
