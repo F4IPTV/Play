@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -307,11 +308,6 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
     </button>
-    <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','org.amnezia.awg','com.mitv.dream'])" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_disable.png" alt="" style="height:28px;"><br>Отключить MX Explorer
-    </button>
-    
-
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager+
     </button>
@@ -363,10 +359,7 @@
   <button onclick="showInstallMethodSettings()" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
   </button>
-  <button onclick="openMiscMoreModal(this)" class="sys-btn">
-    <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic_more.png" alt="" style="height:26px;"><br>Доп. функции
-  </button>
-          
+  
           <button onclick="openAutostartModal()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
     </button>
@@ -376,7 +369,12 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
           </button>
-	
+			<button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','org.amnezia.awg','com.mitv.dream'])" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_disable.png" alt="" style="height:28px;"><br>Отключить MX Explorer
+    </button>
+	<button onclick="openMiscMoreModal(this)" class="sys-btn">
+    <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic_more.png" alt="" style="height:26px;"><br>Доп. функции
+  </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
           </button>
@@ -413,8 +411,8 @@
       <h3>Дополнительные функции</h3>
       <div class="misc-buttons-container">
         <div class="system-buttons">
-          <button onclick="whitelistBattery(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','org.amnezia.awg','com.mitv.dream'])" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Отменить экономию энергии
+          <button onclick="showInstallMethodSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
           </button>
           <button onclick="openAutostartModal()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
@@ -476,16 +474,6 @@ let lastFocusedElementMiscMore = null;
 
     const disablePackageStates = new Map();
 
-    function safeInvoke(method, payload) {
-      const ai = window.AndroidInterface;
-      if (!ai || typeof ai[method] !== 'function') return;
-      try {
-        ai[method](payload);
-      } catch (err) {
-        console.error(`Invoke ${method} failed`, err);
-      }
-    }
-
     function selectCard(card) {
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -509,20 +497,11 @@ let lastFocusedElementMiscMore = null;
 
       const payload = { packages: list, disable: nextDisable };
 
-      safeInvoke('disablePackage', JSON.stringify(payload));
-    }
-
-    function whitelistBattery(packages) {
-      const list = Array.isArray(packages)
-        ? packages
-        : String(packages || "")
-            .split(',')
-            .map(p => p.trim())
-            .filter(Boolean);
-
-      if (!list.length) return;
-
-      safeInvoke('whitelistBattery', JSON.stringify(list));
+      try {
+        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+      } catch (e) {
+        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+      }
     }
 
     // === Конфиг (только новый формат) и рендер групп ===
