@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -586,7 +587,14 @@ let lastFocusedElementMiscMore = null;
         .catch(() => { /* покажем ошибку при попытке открыть */ });
     });
 
+    let lastStartAttempt = 0;
+    const START_DEBOUNCE_MS = 500;
+
     async function startInstall() {
+      const now = Date.now();
+      if (now - lastStartAttempt < START_DEBOUNCE_MS) return;
+      lastStartAttempt = now;
+
       const group = currentGroup;
       const password = savedPassword;
       const status = document.getElementById('status');
