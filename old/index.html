@@ -1790,6 +1790,30 @@ function selectInstallMethod(method, targetElement = null) {
 
   
 </script>
+
+	<script>
+  function openExternal(url) {
+    try {
+      if (window.AndroidInterface) {
+        if (typeof AndroidInterface.openExternalLink === 'function') {
+          AndroidInterface.openExternalLink(url);   // ваш предпочтительный метод
+          return;
+        }
+        if (typeof AndroidInterface.openLink === 'function') {
+          AndroidInterface.openLink(url);
+          return;
+        }
+        if (typeof AndroidInterface.openUrl === 'function') {
+          AndroidInterface.openUrl(url);
+          return;
+        }
+      }
+    } catch (e) { console.log(e); }
+    // Фолбэк: откроется внутри WebView, если не перехватывать shouldOverrideUrlLoading
+    window.location.href = url;
+  }
+</script>
+
 <!-- Модалка настроек метода установки -->
 <div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
   <div class="modal-content">
