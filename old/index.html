@@ -1814,17 +1814,15 @@ function selectInstallMethod(method, targetElement = null) {
     window.location.href = url;
   }
 	 function openInternal(url) {
-    // Если есть метод в AndroidInterface — используем его
     try {
-      if (window.AndroidInterface && typeof AndroidInterface.openInWebView === 'function') {
-        AndroidInterface.openInWebView(url);
+      if (window.AndroidInterface && typeof AndroidInterface.openInternalLink === 'function') {
+        AndroidInterface.openInternalLink(url);
         return;
       }
     } catch(e){ console.log(e); }
 
-    // Иначе просто меняем location — страница откроется в этом же WebView
     window.location.assign(url);
-  }	
+  }
 </script>
 
 <!-- Модалка настроек метода установки -->
