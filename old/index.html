@@ -310,10 +310,10 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager+
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager
     </button>
     <button onclick="openMiscModal(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic6_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller Cloud+
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic6_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller+
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" style="height:28px;"><br>Меню приложений
@@ -370,12 +370,16 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
           </button>
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+          </button>
 			<button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','org.amnezia.awg','com.mitv.dream'])" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_disable.png" alt="" style="height:28px;"><br>Отключить MX Explorer
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_disable.png" alt="" style="height:28px;"><br>Отк/вкл ненужные приложения
     </button>
-	<button onclick="openMiscMoreModal(this)" class="sys-btn">
+			
+	<!-- <button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic_more.png" alt="" style="height:26px;"><br>Доп. функции
-  </button>
+  </button> -->
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
           </button>
@@ -397,9 +401,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic10_Files.webp" alt="" style="height:22px;"><br> Файлы
           </button>
-		  <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
-          </button>
+		  
           
         </div>
       </div>
