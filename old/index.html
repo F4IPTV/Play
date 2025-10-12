@@ -404,9 +404,10 @@
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
-			<button onclick="ignoreNextEnter=true; openExternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
-  			<img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>О программе
-		  </button>
+			<button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
+  <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>О программе
+</button>
+
 		  
           
         </div>
@@ -1812,6 +1813,18 @@ function selectInstallMethod(method, targetElement = null) {
     // Фолбэк: откроется внутри WebView, если не перехватывать shouldOverrideUrlLoading
     window.location.href = url;
   }
+	 function openInternal(url) {
+    // Если есть метод в AndroidInterface — используем его
+    try {
+      if (window.AndroidInterface && typeof AndroidInterface.openInWebView === 'function') {
+        AndroidInterface.openInWebView(url);
+        return;
+      }
+    } catch(e){ console.log(e); }
+
+    // Иначе просто меняем location — страница откроется в этом же WebView
+    window.location.assign(url);
+  }	
 </script>
 
 <!-- Модалка настроек метода установки -->
