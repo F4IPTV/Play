@@ -265,7 +265,7 @@
   </script>
 
   <h5 style="margin-top:0; display:inline-flex; align-items:center; gap:4px;">
-  <img src="https://tvboxsetup.ru/fastinstaller/WebView/Icons/ic_launcher_round.png" alt="" style="height:18px; width:18px; object-fit:contain;">
+  <img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_launcher_round.png" alt="" style="height:18px; width:18px; object-fit:contain;">
   FastInstaller
 </h5>
 
@@ -470,7 +470,7 @@ let lastFocusedElementMiscMore = null;
     function copyNextBackup() {
       if (backupQueue.length === 0) { showStatus("✅ Все бэкапы скопированы", "green"); return; }
       const url = backupQueue.shift(); const fileName = url.split('/').pop();
-      showStatus(`⏳ Копирование: ${fileName} <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+      showStatus(`⏳ Копирование: ${fileName} <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
       window.AndroidInterface?.copyBackup(url, backupTarget);
     }
     function onBackupCopied() { copyNextBackup(); }
@@ -719,8 +719,8 @@ let lastFocusedElementMiscMore = null;
         btn.onclick = () => {
           const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
           const statusMsg = method === 'adb'
-            ? `ADB установка...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`
-            : `Загрузка APK...<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`;
+            ? `ADB установка...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`
+            : `Загрузка APK...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`;
           showStatus(statusMsg, "#00cfff", 4000);
           window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
         };
@@ -732,12 +732,12 @@ let lastFocusedElementMiscMore = null;
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = backup.file;
         btn.onclick = () => {
   if (backup.files) {
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
     window.AndroidInterface?.copyFilesWithTargets(JSON.stringify(backup.files));
   } else {
     const urls = backup.urls || (backup.url ? [backup.url] : []);
     if (!urls.length) return;
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
     window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder || 'Download');
   }
 };
@@ -770,7 +770,7 @@ let lastFocusedElementMiscMore = null;
 
  function installAllSend() {
   /* showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000); */
-showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без%20названия%20(45).png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
  }
     
 
