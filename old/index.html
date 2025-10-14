@@ -100,6 +100,16 @@
     /* Подсветка выбранной кнопки в модалке "Разное" */
     #miscModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
+    /* В модалке "Дополнительные функции" отключаем hover, чтобы не мешал подсветке по фокусу */
+    #miscMoreModal .sys-btn { background-color: #004d61; color:#fff; }
+    #miscMoreModal .sys-btn:hover { background-color: #004d61; }
+    #miscMoreModal .sys-btn:focus {
+      background-color: #00cfff; color:#000;
+      border: 2px solid #fff;
+    }
+    /* Подсветка выбранной кнопки в модалке "Дополнительные функции" */
+    #miscMoreModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+    
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
      #logo { position: fixed; inset: 0; z-index: 9999; background-repeat: no-repeat; background-position: center; background-size: cover; }
@@ -161,6 +171,12 @@
   width: 100%;
   max-width: 320px;
   margin: 0 auto;
+}
+
+#miscMoreModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
 }
 
 #miscMoreModal .misc-buttons-container {
