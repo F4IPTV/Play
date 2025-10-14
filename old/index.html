@@ -327,6 +327,9 @@
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
+	  <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
+  <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>О программе
+</button>
   </div>
 
   <!-- Модалка автозапуска -->
@@ -377,38 +380,13 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:28px;"><br>Отк/вкл ненужные приложения
     </button>
 			
-	<!-- <button onclick="openMiscMoreModal(this)" class="sys-btn">
+	<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic_more.png" alt="" style="height:26px;"><br>Доп. функции
-  </button> -->
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
-          </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
-          </button>
-          
-          <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>
-  Activity Stub
-</button>
-
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic10_Files.webp" alt="" style="height:22px;"><br> Файлы
-          </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:28px;"><br>Очистить кеш
-          </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление бэкапов
-          </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
-          </button>
-			<button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>О программе
-</button>
+  </button>
+         
+			
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Разрешения
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Доступ к памяти
           </button>
 			
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettingsForPackage('com.anydesk.anydeskandroid')" class="sys-btn">
@@ -428,14 +406,31 @@
       <h3>Дополнительные функции</h3>
       <div class="misc-buttons-container">
         <div class="system-buttons">
-          <button onclick="showInstallMethodSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+
+			  <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
+  <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>
+  Activity Stub
+</button>
+
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic10_Files.webp" alt="" style="height:22px;"><br> Файлы
           </button>
-          <button onclick="openAutostartModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:28px;"><br>Очистить кеш
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление бэкапов
+          </button>
+           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
+          </button>
+          
+        
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
         </div>
       </div>
