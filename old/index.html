@@ -407,6 +407,9 @@
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
+			<button onclick="ignoreNextEnter=true;whitelistBatteryPackages()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Отключить оптимизацию (ADB)
+          </button>
 
 		  
           
@@ -531,6 +534,28 @@ let lastFocusedElementMiscMore = null;
       }
     }
 
+   function whitelistBatteryPackages() {
+      // Список приложений для добавления в whitelist оптимизации батареи
+      const packages = [
+        "dev.vodik7.tvquickactions",
+        "org.acestream.media",
+        "org.acestream.start",
+        "org.acestream.core",
+        "ru.yourok.torrserve",
+        "com.anydesk.anydeskandroid",
+        "io.github.romanvht.byedpi",
+        "org.amnezia.awg"
+      ];
+
+      try {
+        window.AndroidInterface.whitelistBattery(JSON.stringify(packages));
+      } catch (e) {
+        console.error("Ошибка вызова whitelistBattery:", e);
+        alert("Ошибка: Android интерфейс недоступен");
+      }
+    }
+
+	  
     // === Конфиг (только новый формат) и рендер групп ===
     function getConfigUrl() {
       // URL конфига всегда приходит из приложения
