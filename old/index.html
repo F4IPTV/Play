@@ -407,7 +407,7 @@
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
-			<button onclick="ignoreNextEnter=true;whitelistBatteryPackages()" class="sys-btn">
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.whitelistBattery()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Отключить оптимизацию (ADB)
           </button>
 
@@ -534,17 +534,7 @@ let lastFocusedElementMiscMore = null;
       }
     }
 
-  function whitelistBatteryPackages() {
-      // Открываем общие настройки экономии энергии
-      // (список пакетов больше не нужен, так как настройки общие)
-      try {
-        window.AndroidInterface.whitelistBattery("");
-      } catch (e) {
-        console.error("Ошибка вызова whitelistBattery:", e);
-        alert("Ошибка: Android интерфейс недоступен");
-      }
-    }
-
+  
 	  
     // === Конфиг (только новый формат) и рендер групп ===
     function getConfigUrl() {
