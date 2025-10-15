@@ -534,21 +534,11 @@ let lastFocusedElementMiscMore = null;
       }
     }
 
-   function whitelistBatteryPackages() {
-      // Список приложений для добавления в whitelist оптимизации батареи
-      const packages = [
-        "dev.vodik7.tvquickactions",
-        "org.acestream.media",
-        "org.acestream.start",
-        "org.acestream.core",
-        "ru.yourok.torrserve",
-        "com.anydesk.anydeskandroid",
-        "io.github.romanvht.byedpi",
-        "org.amnezia.awg"
-      ];
-
+  function whitelistBatteryPackages() {
+      // Открываем общие настройки экономии энергии
+      // (список пакетов больше не нужен, так как настройки общие)
       try {
-        window.AndroidInterface.whitelistBattery(JSON.stringify(packages));
+        window.AndroidInterface.whitelistBattery("");
       } catch (e) {
         console.error("Ошибка вызова whitelistBattery:", e);
         alert("Ошибка: Android интерфейс недоступен");
