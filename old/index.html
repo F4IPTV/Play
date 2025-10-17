@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -89,7 +87,16 @@
       background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: background-color .3s ease;
     }
     .sys-btn:hover { background-color: #00cfff; }
-    .sys-btn:focus { border-color: #fff; box-shadow: 0 0 10px #004d61; }
+    .sys-btn:focus {
+      border-color: #fff;
+      box-shadow: 0 0 10px #004d61;
+    }
+    #mainSystemButtons .sys-btn:focus {
+      background-color: #00cfff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 0 10px #004d61;
+    }
     /* В модалке "Разное" отключаем hover, чтобы не мешал подсветке по фокусу */
     #miscModal .sys-btn { background-color: #004d61; color:#fff; }
     #miscModal .sys-btn:hover { background-color: #004d61; }
@@ -312,7 +319,7 @@
   <button type="button" id="passwordBtn">🔑 Введите пароль</button>
   <div id="status"></div>
 
-  <div class="system-buttons">
+  <div class="system-buttons" id="mainSystemButtons">
     <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" style="height:30px;"><br>Неизвестные источники
     </button>
@@ -369,7 +376,7 @@
   <!-- Модалка «Разное» -->
   <div id="miscModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <h3>Разное</h3>
+      <h3 id="miscHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">Разное</h3>
       <div class="misc-buttons-container">
         <div class="system-buttons">
           <!-- <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilePicker()" class="sys-btn">
@@ -418,7 +425,7 @@
   <!-- Дополнительная модалка внутри «Разное» -->
   <div id="miscMoreModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <h3>Дополнительные функции</h3>
+      <h3 id="miscMoreHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">Дополнительные функции</h3>
       <div class="misc-buttons-container">
         <div class="system-buttons">
 
@@ -1258,11 +1265,9 @@ if (cards.includes(active)) {
       const modal = document.getElementById("miscModal");
 
       // Заголовок с иконкой и названием из кнопки-триггера (fallback на обычный h3, если #miscHeader нет)
-      let header = document.getElementById('miscHeader') || modal.querySelector('h3');
+      const header = document.getElementById('miscHeader');
       if (header) {
         header.innerHTML = '';
-        if (!header.id) header.id = 'miscHeader';
-        // Выровняем и добавим зазор между иконкой и текстом
         header.style.display = 'flex';
         header.style.gap = '8px';
         header.style.alignItems = 'center';
@@ -1315,6 +1320,30 @@ if (cards.includes(active)) {
 
       lastFocusedElementMiscMore = triggerBtn || document.activeElement;
 
+      const header = document.getElementById('miscMoreHeader');
+      if (header) {
+        header.innerHTML = '';
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'center';
+        header.style.gap = '8px';
+        const btn = triggerBtn || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]');
+        const img = btn?.querySelector('img');
+        const titleText = btn?.innerText?.trim() || 'Дополнительные функции';
+        if (img) {
+          const icon = document.createElement('img');
+          icon.src = img.src;
+          icon.alt = '';
+          icon.style.height = '25px';
+          icon.style.width = '25px';
+          icon.style.objectFit = 'contain';
+          header.appendChild(icon);
+        }
+        const title = document.createElement('span');
+        title.textContent = titleText;
+        header.appendChild(title);
+      }
+
       if (mainModal) {
         mainModal.setAttribute("inert", "");
         mainModal.style.pointerEvents = "none";
@@ -1323,6 +1352,11 @@ if (cards.includes(active)) {
       document.activeElement?.blur();
       moreModal.style.display = "flex";
       document.body.classList.add("modal-open");
+
+      const scrollContainer = moreModal.querySelector('.misc-buttons-container');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+      }
 
       const firstBtn = moreModal.querySelector('.sys-btn');
       if (firstBtn) setTimeout(() => firstBtn.focus({ preventScroll: true }), 100);
