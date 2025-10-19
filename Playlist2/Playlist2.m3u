@@ -507,8 +507,6 @@ http://iptv46.mcx-ix.ru:8077/zhivaya-planeta/index.m3u8
 http://iptv46.mcx-ix.ru:8077/jivi/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",История
 http://iptv46.mcx-ix.ru:8077/istoriya/index.m3u8
-#EXTINF:-1 group-title="Маяк Нетворк",ОХОТНИК
-http://iptv46.mcx-ix.ru:8077/ohotnik/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",Охотник и рыболов HD
 http://iptv46.mcx-ix.ru:8077/ohot_i_rybolov_hd/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",Планета HD
@@ -521,7 +519,7 @@ http://iptv46.mcx-ix.ru:8077/teletravel_hd/index.m3u8
 http://iptv46.mcx-ix.ru:8077/t24/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",Animal Planet HD
 http://iptv46.mcx-ix.ru:8077/AnimalPlanetRussiaHD/index.m3u8
-#EXTINF:-1 group-title="Маяк Нетворк",2х2
+#EXTINF:-1 group-title="Маяк Нетворк",2x2
 http://iptv46.mcx-ix.ru:8077/2x2/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",360°
 http://iptv46.mcx-ix.ru:8077/360tv_hd/index.m3u8
@@ -615,7 +613,7 @@ http://iptv46.mcx-ix.ru:8077/crimea24/index.m3u8
 http://iptv46.mcx-ix.ru:8077/ldpr/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",ЛЕН ТВ 24 HD
 http://iptv46.mcx-ix.ru:8077/lot/index.m3u8
-#EXTINF:-1 group-title="Маяк Нетворк",МИР ТВ
+#EXTINF:-1 group-title="Маяк Нетворк",Мир
 http://iptv46.mcx-ix.ru:8077/mir/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",Москва 24
 http://iptv46.mcx-ix.ru:8077/moskva_24/index.m3u8
@@ -643,7 +641,7 @@ http://iptv46.mcx-ix.ru:8077/nstv/index.m3u8
 http://iptv46.mcx-ix.ru:8077/oruzhie/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",ОТР
 http://iptv46.mcx-ix.ru:8077/otr/index.m3u8
-#EXTINF:-1 group-title="Маяк Нетворк",ПЕС И КОТ
+#EXTINF:-1 group-title="Маяк Нетворк",Пес и Ко
 http://iptv46.mcx-ix.ru:8077/pes_i_ko/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",ПОБЕДА HD
 http://iptv46.mcx-ix.ru:8077/pobeda_hd/index.m3u8
@@ -699,7 +697,7 @@ http://iptv46.mcx-ix.ru:8077/strk_hd/index.m3u8
 http://iptv46.mcx-ix.ru:8077/teledom_hd/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",Тлум HD
 http://iptv46.mcx-ix.ru:8077/thlum_hd/index.m3u8
-#EXTINF:-1 group-title="Маяк Нетворк",ТОНУС
+#EXTINF:-1 group-title="Маяк Нетворк",Тонус ТВ
 http://iptv46.mcx-ix.ru:8077/tonus/index.m3u8
 #EXTINF:-1 group-title="Маяк Нетворк",ТОЧКА ТВ
 http://iptv46.mcx-ix.ru:8077/tochka/index.m3u8
@@ -2367,6 +2365,59 @@ https://simf.1tvcrimea.ru/simferopol24.m3u8
 https://qazaqstantv-stream.qazcdn.com/qazaqstantv/qazaqstantv/qazaqstantv/qazaqstantv_720/chunks.m3u8
 #EXTINF:-1 group-title="С сайтов (VPN)" tvg-logo="https://www.samru.ru/content/Image/News/logo/gis_logo1.jpg",Телеканал ГИС Самара
 https://tvsamaragis.tk/new/new/tracks-v1a1/mono.m3u8
+
+
+
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Первый канал
+http://93.170.254.17/perviy/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Рен ТВ
+http://93.170.254.17/RenTV/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", НТВ
+http://93.170.254.17/HTB/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", ТНТ
+http://93.170.254.17/TNT/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Россия 1
+http://93.170.254.17/Rossiya1/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Россия 24
+http://93.170.254.17/Rossiya24/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Россия К
+http://93.170.254.17/RossiyaK/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", 5 Канал
+http://93.170.254.17/5Channel/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Домашний
+http://93.170.254.17/Domashniy/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Киномикс
+http://93.170.254.17/Kinomiks/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Киносвидание
+http://93.170.254.17/Kinosvidanie/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", КВН ТВ
+http://93.170.254.17/KVN/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", ОТР
+http://93.170.254.17/OTR/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Пятница
+http://93.170.254.17/Pyatnica/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Спас
+http://93.170.254.17/Spas/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", СТС
+http://93.170.254.17/STS/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", ТВ3
+http://93.170.254.17/TV3/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", ТВЦ
+http://93.170.254.17/TVCentr/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Усадьба
+http://93.170.254.17/Usadba/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Звезда
+http://93.170.254.17/Zvezda/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Карусель
+http://93.170.254.17/Karusel/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", МузТВ
+http://93.170.254.17/MuzTV/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", MMA-TV.COM
+http://93.170.254.17/MMATV/index.m3u8
+#EXTINF:-1 group-title="Contact+ Ltd (VPN)", Матч ТВ
+http://93.170.254.17/match/index.m3u8
+
+
 
 
 
