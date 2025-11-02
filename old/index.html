@@ -54,6 +54,28 @@
     /* Список компонентов внутри модалки групп */
     #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
     #modalList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; justify-items: center; }
+    
+    /* Адаптация модального списка для портретной ориентации - 1 колонка для лучшей эстетики на телефонах */
+    @media (orientation: portrait) {
+      #modalList { 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+        max-width: 320px; 
+        margin: 0 auto; 
+      }
+      
+      #modalList .component-btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+      
+      #installAllBtn {
+        width: 100%;
+        max-width: 300px;
+        margin: 12px auto 0;
+      }
+    }
     #modalList .component-btn { transition: none !important; }
     #modalList .component-btn:focus,
     #installAllBtn:focus,
@@ -867,14 +889,28 @@ showStatus(`Началась загрузка приложений, ожидай
       }
     }
 
-    // Навигация в модалке групп (2 колонки)
+    // Навигация в модалке групп (адаптивные колонки)
     (function () {
       const modal     = document.getElementById('modal');
       const list      = document.getElementById('modalList');
       const container = document.getElementById('modalListContainer');
-      const cols = 2;
       let navLock = false;
       let lastIndexBeforeFooter = null;
+      
+      // Функция для динамического определения количества колонок
+      function getColumnsCount() {
+        const buttons = Array.from(list.querySelectorAll('.component-btn'));
+        if (buttons.length < 2) return 1;
+        
+        const firstTop = buttons[0].getBoundingClientRect().top;
+        let cols = 1;
+        for (let i = 1; i < buttons.length; i++) {
+          if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
+            cols++;
+          } else break;
+        }
+        return cols;
+      }
 
       function focusAndReveal(el, margin = 12) {
         if (!el || !container) return;
@@ -898,7 +934,8 @@ showStatus(`Началась загрузка приложений, ожидай
 
         const buttons = Array.from(list.querySelectorAll('.component-btn'));
         if (!buttons.length) return;
-
+        
+        const cols = getColumnsCount(); // Динамическое определение колонок
         const installBtn = document.getElementById('installAllBtn');
         const active = document.activeElement;
 
@@ -912,8 +949,8 @@ showStatus(`Началась загрузка приложений, ожидай
           const targetIndex = Math.min(lastRowStart + colFromMemory, buttons.length - 1);
 
           if (e.key === 'ArrowUp') { focusAndReveal(buttons[targetIndex]); return; }
-          if (e.key === 'ArrowLeft') { const leftIndex = Math.max(targetIndex - 1, lastRowStart); focusAndReveal(buttons[leftIndex]); return; }
-          if (e.key === 'ArrowRight') { const rowEnd = Math.min(lastRowStart + cols - 1, buttons.length - 1); const rightIndex = Math.min(targetIndex + 1, rowEnd); focusAndReveal(buttons[rightIndex]); return; }
+          if (e.key === 'ArrowLeft' && cols > 1) { const leftIndex = Math.max(targetIndex - 1, lastRowStart); focusAndReveal(buttons[leftIndex]); return; }
+          if (e.key === 'ArrowRight' && cols > 1) { const rowEnd = Math.min(lastRowStart + cols - 1, buttons.length - 1); const rightIndex = Math.min(targetIndex + 1, rowEnd); focusAndReveal(buttons[rightIndex]); return; }
           if (e.key === 'Enter') { installBtn.click(); return; }
           return;
         }
@@ -935,8 +972,8 @@ showStatus(`Началась загрузка приложений, ожидай
           return;
         }
         if (e.key === 'ArrowUp') { const prev = index - cols; focusAndReveal(buttons[Math.max(prev, 0)]); return; }
-        if (e.key === 'ArrowRight') { if ((index % cols) < (cols - 1) && index + 1 < buttons.length) focusAndReveal(buttons[index + 1]); return; }
-        if (e.key === 'ArrowLeft') { if ((index % cols) > 0) focusAndReveal(buttons[index - 1]); return; }
+        if (e.key === 'ArrowRight' && cols > 1) { if ((index % cols) < (cols - 1) && index + 1 < buttons.length) focusAndReveal(buttons[index + 1]); return; }
+        if (e.key === 'ArrowLeft' && cols > 1) { if ((index % cols) > 0) focusAndReveal(buttons[index - 1]); return; }
       });
     })();
 
