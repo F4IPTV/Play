@@ -67,6 +67,7 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;     /* максимум 2 строки */
+  line-clamp: 2;             /* стандартное свойство для совместимости */
   overflow: hidden;
   text-overflow: ellipsis;
   min-height: 48px;          /* чтобы высота не "прыгала" */
@@ -264,6 +265,55 @@
 }
 
     
+    /* Отключение системного масштабирования шрифтов */
+    html {
+      -webkit-text-size-adjust: 100% !important;
+      -moz-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
+      font-size: 16px !important; /* базовый размер */
+    }
+
+    body {
+      font-size: 1rem !important; /* относительно html */
+      -webkit-text-size-adjust: none !important;
+      -moz-text-size-adjust: none !important;
+      -ms-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
+
+    /* Фиксированные размеры для всех элементов */
+    *, *::before, *::after {
+      -webkit-text-size-adjust: none !important;
+      -moz-text-size-adjust: none !important;
+      -ms-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
+
+    /* Специально для элементов интерфейса - принудительное фиксирование размеров */
+    select, input, button {
+      font-size: 18px !important; /* фиксированный размер */
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
+
+    .card {
+      font-size: 13px !important;
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
+
+    .sys-btn {
+      font-size: 13px !important;
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
+
+    button {
+      font-size: 14px !important;
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
+    }
     
   </style>
 </head>
