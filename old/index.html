@@ -739,6 +739,16 @@ async function startAdbScan() {
 }
 
 async function probeAdbPort(ip, port, timeout = ADB_PROBE_TIMEOUT) {
+  if (window.AndroidInterface?.probeAdbHost) {
+    try {
+      const latency = window.AndroidInterface.probeAdbHost(ip, port, timeout);
+      if (typeof latency === 'number') return latency >= 0 ? latency : null;
+      const parsed = Number(latency);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+    } catch (e) {
+      // fallback to fetch
+    }
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   const started = performance.now();
