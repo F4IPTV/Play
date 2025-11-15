@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -383,10 +384,6 @@
   FastInstaller
 </h5>
 
-  <div id="installTargetBanner" style="margin:10px auto 20px; padding:8px 14px; background:#111; border-radius:12px; display:inline-flex; align-items:center; gap:8px; font-size:14px; color:#0cf;">
-    <span>📱 Активная цель: локальное устройство</span>
-  </div>
-
   <div id="progress-container" style="display:none; width:100%; background:#000; padding:5px; z-index:1002; position:fixed; bottom:0; left:0; right:0;">
     <div id="progress-text" style="color:#fff; margin-bottom:5px;">Загрузка...</div>
     <div style="width:100%; background:#000; height:8px; border-radius:6px;">
@@ -488,9 +485,12 @@
 	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
           </button>
-          <button onclick="openAdbModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>ADB-устройства (LAN)
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
 		  </button>
+			   <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdbTo()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
+          </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
@@ -513,40 +513,6 @@
 		  
           
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка для ADB-устройств -->
-  <div id="adbModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content" style="max-width: 500px;">
-      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:25px;">
-        <span>ADB-устройства (LAN)</span>
-      </h3>
-      
-      <!-- Индикатор активной цели -->
-      <div id="adbTargetStatus" style="padding: 10px; background: #222; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 14px;">
-        <strong>Активная цель:</strong> <span id="adbTargetText">Локальное устройство</span>
-      </div>
-      <div id="adbFingerprint" style="font-size:12px;color:#888;margin:-10px 0 15px;display:none;text-align:center;"></div>
-      
-      <!-- Кнопка сканирования -->
-      <button id="adbScanBtn" onclick="startAdbScan()" class="sys-btn" style="width: 100%; margin-bottom: 15px;">
-        🔍 Найти ADB-устройства в сети
-      </button>
-      
-      <!-- Список найденных устройств -->
-      <div id="adbDeviceList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
-      
-      <!-- Кнопки управления -->
-      <div style="display: flex; gap: 10px; justify-content: center;">
-        <button id="adbDisconnectBtn" onclick="disconnectAdb()" class="sys-btn" style="flex: 1; display: none;">
-          🔌 Отключиться
-        </button>
-        <button onclick="closeAdbModal()" class="sys-btn" style="flex: 1;">
-          Закрыть
-        </button>
       </div>
     </div>
   </div>
@@ -2022,297 +1988,6 @@ function selectInstallMethod(method, targetElement = null) {
 
     window.location.assign(url);
   }
-  
-  // ================= ADB over TCP функции =================
-  
-  // Открыть модалку ADB-устройств
-  function openAdbModal() {
-    const modal = document.getElementById('adbModal');
-    if (!modal) return;
-    
-    // Закрываем модалку "Разное" если открыта
-    const miscModal = document.getElementById('miscModal');
-    if (miscModal && miscModal.style.display === 'flex') {
-      closeMiscModal(false);
-    }
-    
-    modal.style.display = 'flex';
-    document.body.classList.add('modal-open');
-    
-    // Обновляем статус активной цели
-    updateAdbTargetDisplay();
-    updateAdbDeviceList();
-  }
-  
-  // Закрыть модалку ADB-устройств
-  function closeAdbModal() {
-    const modal = document.getElementById('adbModal');
-    if (!modal) return;
-    
-    modal.style.display = 'none';
-    document.body.classList.remove('modal-open');
-    
-    // Останавливаем сканирование при закрытии
-    try {
-      if (window.AndroidInterface && typeof AndroidInterface.adbScanStop === 'function') {
-        AndroidInterface.adbScanStop();
-      }
-    } catch(e) { console.log(e); }
-  }
-  
-  // Начать сканирование ADB-устройств
-  function startAdbScan() {
-    try {
-      if (!window.AndroidInterface || typeof AndroidInterface.adbScanStart !== 'function') {
-        alert('ADB сканирование не поддерживается');
-        return;
-      }
-      
-      const btn = document.getElementById('adbScanBtn');
-      const deviceList = document.getElementById('adbDeviceList');
-      
-      if (btn) btn.disabled = true;
-      if (deviceList) deviceList.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">⏳ Поиск устройств...</div>';
-      
-      AndroidInterface.adbScanStart();
-      
-      // Через 3 секунды обновляем список устройств
-      setTimeout(() => {
-        updateAdbDeviceList();
-        if (btn) btn.disabled = false;
-      }, 3000);
-    } catch(e) {
-      console.log('Ошибка сканирования ADB:', e);
-      alert('Ошибка: ' + e.message);
-    }
-  }
-  
-  function renderAdbDevices(devices) {
-    const deviceList = document.getElementById('adbDeviceList');
-    const scanBtn = document.getElementById('adbScanBtn');
-    if (scanBtn) scanBtn.disabled = false;
-    if (!deviceList) return;
-
-    if (!Array.isArray(devices) || devices.length === 0) {
-      deviceList.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">Устройства не найдены</div>';
-      return;
-    }
-
-    deviceList.innerHTML = '';
-    devices.forEach(device => {
-      const deviceItem = document.createElement('div');
-      deviceItem.style.cssText = 'background:#222;padding:15px;margin-bottom:10px;border-radius:8px;cursor:pointer;transition:background 0.2s;';
-      deviceItem.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-weight:bold;color:#00cfff;">${device.ip}:${device.port}</div>
-            <div style="font-size:12px;color:#888;">Задержка: ${device.latencyMs}ms</div>
-          </div>
-          <button onclick="connectToAdb('${device.ip}', ${device.port})" class="sys-btn" style="padding:8px 15px;margin:0;">
-            Подключиться
-          </button>
-        </div>
-      `;
-      deviceItem.onmouseover = () => deviceItem.style.background = '#333';
-      deviceItem.onmouseout = () => deviceItem.style.background = '#222';
-      deviceList.appendChild(deviceItem);
-    });
-  }
-
-  // Обновить список найденных устройств
-  function updateAdbDeviceList(devicesOverride) {
-    try {
-      if (Array.isArray(devicesOverride)) {
-        renderAdbDevices(devicesOverride);
-        return;
-      }
-
-      if (!window.AndroidInterface || typeof AndroidInterface.adbGetDiscovered !== 'function') {
-        renderAdbDevices([]);
-        return;
-      }
-      
-      const devicesJson = AndroidInterface.adbGetDiscovered();
-      const devices = JSON.parse(devicesJson || '[]');
-      renderAdbDevices(devices);
-    } catch(e) {
-      console.log('Ошибка обновления списка устройств:', e);
-    }
-  }
-  
-  // Подключиться к ADB-устройству
-  function connectToAdb(ip, port) {
-    try {
-      if (!window.AndroidInterface || typeof AndroidInterface.adbConnect !== 'function') {
-        alert('ADB подключение не поддерживается');
-        return;
-      }
-      
-      AndroidInterface.adbConnect(ip, port);
-      
-      // Обновим статус через 2 секунды
-      setTimeout(() => {
-        updateAdbTargetDisplay();
-      }, 2000);
-    } catch(e) {
-      console.log('Ошибка подключения к ADB:', e);
-      alert('Ошибка: ' + e.message);
-    }
-  }
-  
-  // Отключиться от ADB
-  function disconnectAdb() {
-    try {
-      if (!window.AndroidInterface || typeof AndroidInterface.adbDisconnect !== 'function') {
-        alert('ADB отключение не поддерживается');
-        return;
-      }
-      
-      AndroidInterface.adbDisconnect();
-      
-      setTimeout(() => {
-        updateAdbTargetDisplay();
-      }, 500);
-    } catch(e) {
-      console.log('Ошибка отключения от ADB:', e);
-      alert('Ошибка: ' + e.message);
-    }
-  }
-  
-  // Обновить отображение активной цели
-  function updateAdbTargetDisplay() {
-    try {
-      if (!window.AndroidInterface || typeof AndroidInterface.adbGetActiveTarget !== 'function') {
-        return;
-      }
-      
-      const targetJson = AndroidInterface.adbGetActiveTarget();
-      const target = JSON.parse(targetJson || '{}');
-      
-      const targetText = document.getElementById('adbTargetText');
-      const disconnectBtn = document.getElementById('adbDisconnectBtn');
-      const fingerprintEl = document.getElementById('adbFingerprint');
-      const banner = document.getElementById('installTargetBanner');
-      
-      if (targetText) {
-        const status = (target.status || (target.connected ? 'connected' : '')).toLowerCase();
-        const message = target.message ? `<div style="font-size:12px;color:#888;margin-top:4px;">${target.message}</div>` : '';
-        if (target.type === 'ADB' && target.connected) {
-          targetText.innerHTML = `<span style="color:#0f0;">🌐 ADB ${target.ip}:${target.port}</span>${message}`;
-          if (disconnectBtn) disconnectBtn.style.display = 'block';
-        } else if (target.type === 'ADB' && !target.connected) {
-          let statusText = 'не подключено';
-          if (status === 'unauthorized') statusText = 'требует подтверждения';
-          if (status === 'offline') statusText = 'offline';
-          targetText.innerHTML = `<span style="color:#fa0;">⚠️ ADB ${target.ip}:${target.port} (${statusText})</span>${message}`;
-          if (disconnectBtn) disconnectBtn.style.display = 'block';
-        } else {
-          targetText.innerHTML = '<span style="color:#0cf;">📱 Локальное устройство</span>';
-          if (disconnectBtn) disconnectBtn.style.display = 'none';
-        }
-      }
-
-      if (fingerprintEl && window.AndroidInterface && typeof AndroidInterface.adbGetFingerprint === 'function') {
-        const fp = AndroidInterface.adbGetFingerprint();
-        if (fp) {
-          fingerprintEl.style.display = 'block';
-          fingerprintEl.textContent = `Отпечаток ключа: ${fp}`;
-        } else {
-          fingerprintEl.style.display = 'none';
-        }
-      }
-
-      if (banner) {
-        if (target.type === 'ADB') {
-          let bannerColor = '#ffa000';
-          let bannerText = `⚠️ Активная цель: ADB ${target.ip}:${target.port}`;
-          if (target.connected) {
-            bannerColor = '#0f0';
-            bannerText = `🌐 Активная цель: ADB ${target.ip}:${target.port}`;
-          } else if (status === 'unauthorized') {
-            bannerText = `⚠️ Активная цель: ADB ${target.ip}:${target.port} — подтвердите отладку`;
-          } else if (status === 'offline') {
-            bannerText = `⚠️ Активная цель: ADB ${target.ip}:${target.port} — offline`;
-          }
-          banner.innerHTML = bannerText;
-          banner.style.color = bannerColor;
-        } else {
-          banner.innerHTML = '📱 Активная цель: локальное устройство';
-          banner.style.color = '#0cf';
-        }
-      }
-    } catch(e) {
-      console.log('Ошибка обновления статуса цели:', e);
-    }
-  }
-  
-  // Обработчик событий ADB
-  function onAdbEvent(event) {
-    try {
-      if (!event || typeof event !== 'object') return;
-      console.log('ADB Event:', event);
-      const type = event.type || '';
-      switch (type) {
-        case 'scan_start':
-          showStatus('Запущен поиск ADB-устройств…', '#00cfff', 3000);
-          break;
-        case 'scan_stop':
-          showStatus('Сканирование остановлено', '#00cfff', 3000);
-          break;
-        case 'scan_state':
-          updateAdbDeviceList(Array.isArray(event.devices) ? event.devices : []);
-          break;
-        case 'scan_diff':
-          updateAdbDeviceList();
-          break;
-        case 'connect_request':
-        case 'authorize_prompt':
-        case 'log':
-          if (event.message) showStatus(event.message, '#00cfff', 4000);
-          break;
-        case 'connect_success':
-          if (event.message) showStatus(event.message, '#00ff66', 5000);
-          updateAdbTargetDisplay();
-          break;
-        case 'connect_failed':
-        case 'connect_error':
-          if (event.message) showStatus(event.message, '#ff6666', 6000);
-          updateAdbTargetDisplay();
-          break;
-        case 'disconnected':
-        case 'target_cleared':
-          if (event.message) showStatus(event.message, '#00cfff', 4000);
-          updateAdbTargetDisplay();
-          break;
-        default:
-          if (event.message) showStatus(event.message, '#00cfff', 4000);
-      }
-    } catch (e) {
-      console.log('Ошибка обработки события ADB:', e);
-    }
-  }
-  
-  // Обработчик изменения активной цели
-  function onInstallTargetChanged(target) {
-    try {
-      console.log('Install Target Changed:', target);
-      updateAdbTargetDisplay();
-      if (target && target.message) {
-        const color = target.connected ? '#00ff66' : '#ffa000';
-        showStatus(target.message, color, 5000);
-      }
-    } catch (e) {
-      console.log('Ошибка обработки смены цели установки:', e);
-    }
-  }
-  
-  // Периодическое обновление статуса (каждые 5 секунд)
-  setInterval(() => {
-    const modal = document.getElementById('adbModal');
-    if (modal && modal.style.display === 'flex') {
-      updateAdbTargetDisplay();
-    }
-  }, 5000);
 </script>
 
 <!-- Модалка настроек метода установки -->
