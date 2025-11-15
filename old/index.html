@@ -488,7 +488,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
 		  </button>
-			   <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdbTo()" class="sys-btn">
+			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
           </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
@@ -556,6 +556,22 @@
     </div>
   </div>
 
+  <!-- Модалка сканера ADB -->
+  <div id="adbScannerModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content" style="max-width:640px;">
+      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:24px;">
+        Сканирование устройств ADB
+      </h3>
+      <div id="adbScanStatus" style="font-size:13px;opacity:.85;margin-bottom:12px;">Ожидание...</div>
+      <div id="adbScanList" style="margin-top:4px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;justify-content:center;">
+        <button class="sys-btn" onclick="restartAdbScan()">↻ Пересканировать</button>
+        <button class="sys-btn" onclick="closeAdbScanner()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -592,7 +608,7 @@ let lastFocusedElementMiscMore = null;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -604,6 +620,238 @@ let lastFocusedElementMiscMore = null;
     function onBackupCopied() { copyNextBackup(); }
 
     const disablePackageStates = new Map();
+
+const ADB_PORTS = [5555, 5556, 5557];
+const ADB_MAX_WORKERS = 64;
+const ADB_PROBE_TIMEOUT = 700;
+const adbScanState = {
+  hosts: new Map(),
+  stopRequested: false,
+  running: false,
+  subnet: null,
+  timer: null
+};
+
+function openAdbScanner() {
+  const modal = document.getElementById('adbScannerModal');
+  if (!modal) return;
+  lastFocusedElement = document.activeElement;
+  adbScanState.hosts.clear();
+  const list = document.getElementById('adbScanList');
+  if (list) list.innerHTML = '';
+  updateAdbScanStatus('Сканирование сети...');
+  adbScanState.stopRequested = false;
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+  document.activeElement?.blur();
+  setTimeout(() => {
+    modal.querySelector('button.sys-btn')?.focus({ preventScroll: true });
+  }, 80);
+  startAdbScan();
+}
+
+function closeAdbScanner() {
+  const modal = document.getElementById('adbScannerModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.classList.remove('modal-open');
+  stopAdbScan();
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    lastFocusedElement.focus({ preventScroll: true });
+  }
+  lastFocusedElement = null;
+}
+
+function restartAdbScan() {
+  const list = document.getElementById('adbScanList');
+  if (list) list.innerHTML = '';
+  adbScanState.hosts.clear();
+  updateAdbScanStatus('Сканирование сети...');
+  adbScanState.subnet = null;
+  stopAdbScan();
+  startAdbScan();
+}
+
+function stopAdbScan() {
+  adbScanState.stopRequested = true;
+  clearTimeout(adbScanState.timer);
+  adbScanState.timer = null;
+}
+
+function resolveLocalSubnet() {
+  if (adbScanState.subnet) return adbScanState.subnet;
+  const localIp = window.AndroidInterface?.getLocalIpv4?.();
+  if (!localIp) return null;
+  const octets = localIp.split('.').map(p => p.trim()).filter(Boolean);
+  if (octets.length !== 4) return null;
+  adbScanState.subnet = `${octets[0]}.${octets[1]}.${octets[2]}`;
+  return adbScanState.subnet;
+}
+
+async function startAdbScan() {
+  if (adbScanState.running || adbScanState.stopRequested) return;
+  const subnet = resolveLocalSubnet();
+  if (!subnet) {
+    updateAdbScanStatus('Не удалось определить IP этой сети');
+    return;
+  }
+  adbScanState.running = true;
+  adbScanState.stopRequested = false;
+  updateAdbScanStatus('Сканирование сети...');
+
+  const tasks = [];
+  for (let host = 1; host <= 254; host++) {
+    const ip = `${subnet}.${host}`;
+    ADB_PORTS.forEach(port => tasks.push({ ip, port }));
+  }
+
+  const seenThisPass = new Set();
+  let cursor = 0;
+  const workerCount = Math.min(ADB_MAX_WORKERS, navigator.hardwareConcurrency || ADB_MAX_WORKERS);
+
+  async function worker() {
+    while (!adbScanState.stopRequested) {
+      const currentIndex = cursor++;
+      if (currentIndex >= tasks.length) break;
+      const task = tasks[currentIndex];
+      const latency = await probeAdbPort(task.ip, task.port);
+      if (adbScanState.stopRequested) break;
+      if (latency !== null) {
+        const key = formatAdbHostKey(task.ip, task.port);
+        seenThisPass.add(key);
+        registerAdbHost(task.ip, task.port, latency);
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  adbScanState.running = false;
+  if (adbScanState.stopRequested) {
+    updateAdbScanStatus('Сканирование остановлено');
+    return;
+  }
+
+  cleanupMissingAdbHosts(seenThisPass);
+  updateAdbScanStatus('Сканирование завершено');
+  adbScanState.timer = setTimeout(() => {
+    if (!adbScanState.stopRequested) startAdbScan();
+  }, 6000);
+}
+
+async function probeAdbPort(ip, port, timeout = ADB_PROBE_TIMEOUT) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  const started = performance.now();
+  try {
+    await fetch(`http://${ip}:${port}/`, {
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    return Math.round(performance.now() - started);
+  } catch (err) {
+    if (err?.name === 'AbortError') return null;
+    return Math.round(performance.now() - started);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function formatAdbHostKey(ip, port) {
+  return `${ip}:${port}`;
+}
+
+function registerAdbHost(ip, port, latency) {
+  const key = formatAdbHostKey(ip, port);
+  const existing = adbScanState.hosts.get(key);
+  if (existing) {
+    existing.latency = latency;
+    existing.lastSeen = Date.now();
+    updateAdbHostCard(key, latency);
+  } else {
+    const hostInfo = { ip, port, latency, lastSeen: Date.now() };
+    adbScanState.hosts.set(key, hostInfo);
+    renderAdbHostCard(hostInfo);
+  }
+  updateAdbScanStatus();
+}
+
+function cleanupMissingAdbHosts(seenKeys) {
+  const list = document.getElementById('adbScanList');
+  if (!list) return;
+  Array.from(adbScanState.hosts.keys()).forEach(key => {
+    if (!seenKeys.has(key)) {
+      adbScanState.hosts.delete(key);
+      list.querySelector(getAdbHostSelector(key))?.remove();
+    }
+  });
+  updateAdbScanStatus();
+}
+
+function renderAdbHostCard({ ip, port, latency }) {
+  const list = document.getElementById('adbScanList');
+  if (!list) return;
+  const key = formatAdbHostKey(ip, port);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.adbHost = key;
+  card.style.width = 'auto';
+  card.innerHTML = `
+    <div style="font-size:16px;font-weight:600;">${ip}</div>
+    <div style="font-size:13px;opacity:.85;">Порт ${port}</div>
+    <div class="adb-latency" style="font-size:12px;color:#00cfff;">${latency} мс</div>
+    <button class="sys-btn" style="margin-top:10px;width:100%;" onclick="connectToRemoteAdb('${ip}', ${port})">
+      Подключить
+    </button>
+  `;
+  list.appendChild(card);
+}
+
+function updateAdbHostCard(key, latency) {
+  const card = document.querySelector(getAdbHostSelector(key));
+  if (!card) return;
+  const latencyNode = card.querySelector('.adb-latency');
+  if (latencyNode) latencyNode.textContent = `${latency} мс`;
+}
+
+function getAdbHostSelector(key) {
+  const safe = window.CSS?.escape ? window.CSS.escape(key) : key.replace(/"/g, '\\"');
+  return `[data-adb-host="${safe}"]`;
+}
+
+function updateAdbScanStatus(message = null) {
+  const status = document.getElementById('adbScanStatus');
+  if (!status) return;
+  const base = message || (adbScanState.running ? 'Сканирование сети...' : 'Готово');
+  status.textContent = `${base} • Найдено: ${adbScanState.hosts.size}`;
+}
+
+function connectToRemoteAdb(ip, port) {
+  ignoreNextEnter = true;
+  try {
+    if (window.AndroidInterface?.connectAdbToHost) {
+      window.AndroidInterface.connectAdbToHost(ip, port);
+    } else if (window.AndroidInterface?.connectAdbTo) {
+      window.AndroidInterface.connectAdbTo(`${ip}:${port}`);
+    } else if (window.AndroidInterface?.connectAdb) {
+      window.AndroidInterface.connectAdb(`${ip}:${port}`);
+    } else {
+      showToast({ message: 'Метод подключения ADB недоступен', type: 'error' });
+    }
+  } catch (e) {
+    showToast({ message: 'Ошибка подключения ADB', type: 'error' });
+  }
+}
+
+document.addEventListener('keydown', function (e) {
+  const modal = document.getElementById('adbScannerModal');
+  if (!modal || modal.style.display !== 'flex') return;
+  if (e.key === 'Back' || e.key === 'Escape') {
+    e.preventDefault();
+    e.stopPropagation();
+    closeAdbScanner();
+  }
+}, true);
 
     function selectCard(card) {
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
@@ -1006,6 +1254,7 @@ showStatus(`Началась загрузка приложений, ожидай
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
+      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
