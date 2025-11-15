@@ -160,6 +160,110 @@
     /* Подсветка выбранной кнопки в модалке "Дополнительные функции" */
     #miscMoreModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
+    /* === СКАНЕР ADB === */
+    #adbScanListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
+    #adbScanList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      justify-items: center;
+    }
+    
+    /* Карточки устройств ADB */
+    .adb-device-card {
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 16px;
+      width: 100%;
+      max-width: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      border: 2px solid transparent;
+      transition: all .2s ease;
+      cursor: pointer;
+      min-height: 120px;
+    }
+    
+    .adb-device-card:hover, .adb-device-card:focus {
+      background-color: #004d61;
+      border-color: #00cfff;
+      box-shadow: 0 0 10px rgba(0,0,0,.5);
+      outline: none;
+    }
+    
+    .adb-device-card.selected {
+      background-color: #00cfff;
+      color: #000;
+      border: 2px solid #fff;
+    }
+    
+    .adb-device-ip {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .adb-device-port {
+      font-size: 13px;
+      opacity: .8;
+      margin-bottom: 4px;
+    }
+    
+    .adb-device-latency {
+      font-size: 12px;
+      color: #00cfff;
+      margin-bottom: 12px;
+    }
+    
+    .adb-device-card.selected .adb-device-latency {
+      color: #004d61;
+    }
+    
+    .adb-connect-btn {
+      background-color: #004d61;
+      color: #fff;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      width: 100%;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    
+    .adb-connect-btn:hover {
+      background-color: #00cfff;
+      color: #000;
+    }
+    
+    .adb-device-card.selected .adb-connect-btn {
+      background-color: #004d61;
+      color: #fff;
+      border-color: #004d61;
+    }
+    
+    .adb-device-card.selected .adb-connect-btn:hover {
+      background-color: #fff;
+      color: #004d61;
+    }
+    
+    /* Отключаем hover в сканере ADB, чтобы мышь не мешала навигации */
+    #adbScannerModal .adb-device-card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
+    #adbScannerModal .adb-device-card.selected:hover { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+    
+    /* Кнопки управления сканером */
+    #adbScannerModal .sys-btn { background-color: #004d61; color: #fff; }
+    #adbScannerModal .sys-btn:hover { background-color: #004d61; }
+    #adbScannerModal .sys-btn:focus {
+      background-color: #00cfff;
+      color: #000;
+      border: 2px solid #fff;
+    }
+    #adbScannerModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+    
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
      #logo { position: fixed; inset: 0; z-index: 9999; background-repeat: no-repeat; background-position: center; background-size: cover; }
@@ -558,16 +662,22 @@
 
   <!-- Модалка сканера ADB -->
   <div id="adbScannerModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content" style="max-width:640px;">
-      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:24px;">
+    <div class="modal-content">
+      <h3 id="adbScannerHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:25px;">
         Сканирование устройств ADB
       </h3>
-      <div id="adbScanStatus" style="font-size:13px;opacity:.85;margin-bottom:12px;">Ожидание...</div>
-      <div id="adbScanList" style="margin-top:4px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;"></div>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;justify-content:center;">
-        <button class="sys-btn" onclick="restartAdbScan()">↻ Пересканировать</button>
-        <button class="sys-btn" onclick="closeAdbScanner()">Закрыть</button>
+      <div id="adbScanStatus" style="font-size:13px;opacity:.85;margin-bottom:12px;text-align:center;">Ожидание...</div>
+      
+      <!-- Контейнер со скроллом для списка устройств -->
+      <div id="adbScanListContainer" style="max-height:60vh;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:auto;scrollbar-gutter:stable both-edges;margin-bottom:20px;">
+        <div id="adbScanList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;"></div>
+      </div>
+      
+      <!-- Кнопки управления -->
+      <div class="system-buttons" style="justify-content:center;">
+        <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">↻ Пересканировать</button>
+        <button class="sys-btn" onclick="closeAdbScanner()" tabindex="0">Закрыть</button>
       </div>
     </div>
   </div>
@@ -656,9 +766,17 @@ function openAdbScanner() {
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
   document.activeElement?.blur();
+  
+  // Устанавливаем фокус на первую кнопку управления
   setTimeout(() => {
-    modal.querySelector('button.sys-btn')?.focus({ preventScroll: true });
-  }, 80);
+    const firstBtn = modal.querySelector('.system-buttons .sys-btn');
+    if (firstBtn) {
+      firstBtn.focus({ preventScroll: true });
+    } else {
+      modal.focus();
+    }
+  }, 100);
+  
   startAdbScan();
 }
 
@@ -824,17 +942,31 @@ function renderAdbHostCard({ ip, port, latency }) {
   if (!list) return;
   const key = formatAdbHostKey(ip, port);
   const card = document.createElement('div');
-  card.className = 'card';
+  card.className = 'adb-device-card';
   card.dataset.adbHost = key;
-  card.style.width = 'auto';
+  card.setAttribute('tabindex', '0');
+  
   card.innerHTML = `
-    <div style="font-size:16px;font-weight:600;">${ip}</div>
-    <div style="font-size:13px;opacity:.85;">Порт ${port}</div>
-    <div class="adb-latency" style="font-size:12px;color:#00cfff;">${latency} мс</div>
-    <button class="sys-btn" style="margin-top:10px;width:100%;" onclick="connectToRemoteAdb('${ip}', ${port})">
+    <div class="adb-device-ip">${ip}</div>
+    <div class="adb-device-port">Порт ${port}</div>
+    <div class="adb-device-latency">${latency} мс</div>
+    <button class="adb-connect-btn" onclick="connectToRemoteAdb('${ip}', ${port}); event.stopPropagation();">
       Подключить
     </button>
   `;
+  
+  // Обработчики для навигации
+  card.onclick = () => {
+    document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  };
+  
+  card.onfocus = () => {
+    document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    focusAndRevealAdbCard(card);
+  };
+  
   list.appendChild(card);
 }
 
@@ -874,15 +1006,156 @@ function connectToRemoteAdb(ip, port) {
   }
 }
 
-document.addEventListener('keydown', function (e) {
-  const modal = document.getElementById('adbScannerModal');
-  if (!modal || modal.style.display !== 'flex') return;
-  if (e.key === 'Back' || e.key === 'Escape') {
-    e.preventDefault();
+// Вспомогательная функция для скролла в сканере ADB
+function focusAndRevealAdbCard(el, margin = 12) {
+  if (!el) return;
+  const container = document.getElementById('adbScanListContainer');
+  if (!container) return;
+  const cr = container.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
+  else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
+  requestAnimationFrame(() => el.focus({ preventScroll: true }));
+}
+
+// Навигация в модалке сканера ADB
+(function attachAdbScannerNavOnce(){
+  if (window.__adbScannerNavBound) return;
+  window.__adbScannerNavBound = true;
+
+  let lastIndexBeforeFooter = null;
+
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('adbScannerModal');
+    if (!modal || modal.style.display !== 'flex') return;
+    
+    // Если открыта модалка установки, не обрабатываем события
+    const installModal = document.getElementById('installMethodModal');
+    if (installModal && installModal.style.display === 'flex') return;
+
     e.stopPropagation();
-    closeAdbScanner();
+    e.stopImmediatePropagation();
+
+    const cards = Array.from(modal.querySelectorAll('.adb-device-card'));
+    const buttons = Array.from(modal.querySelectorAll('.system-buttons .sys-btn'));
+    const active = document.activeElement;
+
+    if (e.key === 'Back' || e.key === 'Escape') {
+      e.preventDefault();
+      closeAdbScanner();
+      return;
+    }
+
+    // Навигация по кнопкам управления (внизу)
+    if (buttons.includes(active)) {
+      const i = buttons.indexOf(active);
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          buttons[(i - 1 + buttons.length) % buttons.length].focus();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          buttons[(i + 1) % buttons.length].focus();
+          break;
+        case 'ArrowUp': {
+          e.preventDefault();
+          if (cards.length > 0) {
+            const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % getAdbColumnsCount()) : 0;
+            const lastRowStart = Math.floor((cards.length - 1) / getAdbColumnsCount()) * getAdbColumnsCount();
+            const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
+            focusAndRevealAdbCard(cards[targetIndex]);
+          }
+          break;
+        }
+        case 'ArrowDown':
+          e.preventDefault();
+          break;
+        case 'Enter':
+          e.preventDefault();
+          active.click();
+          break;
+      }
+      return;
+    }
+
+    // Навигация по карточкам устройств
+    if (cards.includes(active)) {
+      const index = cards.indexOf(active);
+      const cols = getAdbColumnsCount();
+      const total = cards.length;
+      const row = Math.floor(index / cols);
+      const col = index % cols;
+      const lastRow = Math.floor((total - 1) / cols);
+
+      switch (e.key) {
+        case 'ArrowDown': {
+          e.preventDefault();
+          if (row < lastRow) {
+            const nextIndex = (row + 1) * cols + col;
+            const targetIndex = (nextIndex < total) ? nextIndex : Math.min((lastRow * cols) + col, total - 1);
+            focusAndRevealAdbCard(cards[targetIndex]);
+          } else {
+            // Переход к кнопкам управления
+            lastIndexBeforeFooter = index;
+            if (buttons.length > 0) buttons[0].focus();
+          }
+          break;
+        }
+        case 'ArrowUp': {
+          e.preventDefault();
+          if (row === 0) return; // упор вверху
+          const prevIndex = (row - 1) * cols + col;
+          focusAndRevealAdbCard(cards[prevIndex]);
+          break;
+        }
+        case 'ArrowLeft': {
+          e.preventDefault();
+          if (col === 0) return;
+          focusAndRevealAdbCard(cards[index - 1]);
+          break;
+        }
+        case 'ArrowRight': {
+          e.preventDefault();
+          if ((col === cols - 1) || (index + 1 >= total)) return;
+          focusAndRevealAdbCard(cards[index + 1]);
+          break;
+        }
+        case 'Enter': {
+          e.preventDefault();
+          // Нажатие Enter на карточке = подключение
+          const connectBtn = active.querySelector('.adb-connect-btn');
+          if (connectBtn) connectBtn.click();
+          break;
+        }
+      }
+      return;
+    }
+
+    // Если фокус не на элементах модалки - переводим на первую карточку или кнопку
+    if (cards.length > 0) {
+      e.preventDefault();
+      focusAndRevealAdbCard(cards[0]);
+    } else if (buttons.length > 0) {
+      e.preventDefault();
+      buttons[0].focus();
+    }
+  }, true);
+
+  // Автоопределение количества колонок
+  function getAdbColumnsCount() {
+    const cards = Array.from(document.querySelectorAll('#adbScanList .adb-device-card'));
+    if (cards.length < 2) return 1;
+    const firstTop = cards[0].getBoundingClientRect().top;
+    let cols = 1;
+    for (let i = 1; i < cards.length; i++) {
+      if (Math.abs(cards[i].getBoundingClientRect().top - firstTop) < 5) {
+        cols++;
+      } else break;
+    }
+    return cols;
   }
-}, true);
+})();
 
     function selectCard(card) {
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
