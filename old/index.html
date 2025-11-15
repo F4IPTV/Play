@@ -631,6 +631,18 @@ const adbScanState = {
   subnet: null,
   timer: null
 };
+const adbProbeResolvers = {};
+let adbProbeCounter = 0;
+
+window.__handleAdbProbeResult = function(requestId, latency) {
+  if (!requestId) return;
+  const resolver = adbProbeResolvers[requestId];
+  if (!resolver) return;
+  delete adbProbeResolvers[requestId];
+  const value = typeof latency === 'string' ? Number(latency) : latency;
+  if (Number.isFinite(value) && value >= 0) resolver(value);
+  else resolver(null);
+};
 
 function openAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
@@ -739,15 +751,24 @@ async function startAdbScan() {
 }
 
 async function probeAdbPort(ip, port, timeout = ADB_PROBE_TIMEOUT) {
-  if (window.AndroidInterface?.probeAdbHost) {
-    try {
-      const latency = window.AndroidInterface.probeAdbHost(ip, port, timeout);
-      if (typeof latency === 'number') return latency >= 0 ? latency : null;
-      const parsed = Number(latency);
-      return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
-    } catch (e) {
-      // fallback to fetch
-    }
+  if (window.AndroidInterface?.probeAdbHostAsync) {
+    return new Promise(resolve => {
+      const requestId = `probe_${++adbProbeCounter}_${Date.now()}`;
+      adbProbeResolvers[requestId] = resolve;
+      try {
+        window.AndroidInterface.probeAdbHostAsync(ip, port, requestId, timeout);
+      } catch (e) {
+        delete adbProbeResolvers[requestId];
+        resolve(null);
+        return;
+      }
+      setTimeout(() => {
+        if (adbProbeResolvers[requestId]) {
+          delete adbProbeResolvers[requestId];
+          resolve(null);
+        }
+      }, timeout + 300);
+    });
   }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
