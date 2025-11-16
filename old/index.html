@@ -798,6 +798,7 @@ const adbScanState = {
 const adbProbeResolvers = {};
 let adbProbeCounter = 0;
 const adbKnownDevices = new Map();
+const adbInfoRequestsInFlight = new Set();
 
 window.__handleAdbProbeResult = function(requestId, latency) {
   if (!requestId) return;
@@ -828,6 +829,7 @@ function loadSavedAdbDevices() {
       const key = formatAdbHostKey(item.ip, item.port || 5555);
       adbKnownDevices.set(key, item);
     });
+    refreshAdbCardsWithSavedInfo();
   } catch (err) {
     console.warn("[ADB] Не удалось загрузить сохранённые устройства", err);
     adbKnownDevices.clear();
@@ -1114,6 +1116,18 @@ function renderAdbHostCard({ ip, port, latency }) {
   };
   
   list.appendChild(card);
+
+  const savedTitle = (saved?.title || "").trim();
+  const needsInfo = !savedTitle || savedTitle === ip;
+  if (window.AndroidInterface?.requestAdbDeviceInfo && !adbInfoRequestsInFlight.has(key) && needsInfo) {
+    adbInfoRequestsInFlight.add(key);
+    try {
+      window.AndroidInterface.requestAdbDeviceInfo(ip, port);
+    } catch (err) {
+      adbInfoRequestsInFlight.delete(key);
+      console.warn('[ADB] Ошибка запроса информации об устройстве', err);
+    }
+  }
 }
 
 function updateAdbHostCard(key, latency) {
@@ -1170,6 +1184,7 @@ window.__handleAdbDeviceUpdate = function(payload) {
     if (!info || !info.ip) return;
     const key = formatAdbHostKey(info.ip, info.port || 5555);
     adbKnownDevices.set(key, info);
+    adbInfoRequestsInFlight.delete(key);
     const card = document.querySelector(getAdbHostSelector(key));
     if (card) applyAdbDeviceInfoToCard(card, info);
   } catch (err) {
