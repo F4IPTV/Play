@@ -744,36 +744,16 @@ let lastFocusedElementMiscMore = null;
 
     const disablePackageStates = new Map();
 
-const ADB_PORTS = [5555];
-const ADB_MAX_WORKERS = 50;
-const ADB_PROBE_TIMEOUT = 800;
 const adbScanState = {
-  hosts: new Map(),
-  hostNames: new Map(),
-  stopRequested: false,
+  hosts: [],
   running: false,
-  subnet: null,
-  timer: null
+  status: 'Ожидание...'
 };
-const adbProbeResolvers = {};
-let adbProbeCounter = 0;
 const FRIENDLY_NAME_FALLBACK = 'Неизвестное устройство';
-
-function resolveFriendlyNameFromAndroid(ip) {
-  if (!ip) return "";
-  try {
-    const raw = window.AndroidInterface?.resolveDeviceFriendlyName?.(ip);
-    if (typeof raw === 'string') return raw.trim();
-    if (raw == null) return "";
-    return String(raw).trim();
-  } catch (e) {
-    return "";
-  }
-}
 
 function applyFriendlyNameNode(node, friendlyName) {
   if (!node) return;
-  const label = (friendlyName || "").trim();
+  const label = (friendlyName || '').trim();
   if (label) {
     node.textContent = label;
     node.classList.remove('adb-device-name--placeholder');
@@ -783,55 +763,16 @@ function applyFriendlyNameNode(node, friendlyName) {
   }
 }
 
-function updateAdbHostFriendlyName(key, friendlyName) {
-  const card = document.querySelector(getAdbHostSelector(key));
-  if (!card) return;
-  const nameNode = card.querySelector('.adb-device-name');
-  if (nameNode) applyFriendlyNameNode(nameNode, friendlyName);
-}
-
-function assignFriendlyName(ip, friendlyName, source = '') {
-  if (!ip) return;
-  const label = (friendlyName || "").trim();
-  if (!label) return;
-  adbScanState.hostNames.set(ip, label);
-  adbScanState.hosts.forEach((hostInfo, key) => {
-    if (hostInfo?.ip === ip && hostInfo.friendlyName !== label) {
-      hostInfo.friendlyName = label;
-      updateAdbHostFriendlyName(key, label);
-    }
-  });
-}
-
-window.__handleDeviceIdentity = function(ip, friendlyName) {
-  if (!ip || !friendlyName) return;
-  assignFriendlyName(String(ip), String(friendlyName));
-};
-
-window.__handleAdbProbeResult = function(requestId, latency) {
-  if (!requestId) return;
-  const resolver = adbProbeResolvers[requestId];
-  if (!resolver) return;
-  delete adbProbeResolvers[requestId];
-  const value = typeof latency === 'string' ? Number(latency) : latency;
-  if (Number.isFinite(value) && value >= 0) resolver(value);
-  else resolver(null);
-};
-
 function openAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   lastFocusedElement = document.activeElement;
-  adbScanState.hosts.clear();
-  const list = document.getElementById('adbScanList');
-  if (list) list.innerHTML = '';
-  updateAdbScanStatus('Сканирование сети...');
-  adbScanState.stopRequested = false;
+  adbScanState.hosts = [];
+  renderAdbScanHosts();
+  updateAdbScanStatus('Сканирование сети...', 0);
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
   document.activeElement?.blur();
-  
-  // Устанавливаем фокус на первую кнопку управления
   setTimeout(() => {
     const firstBtn = modal.querySelector('.system-buttons .sys-btn');
     if (firstBtn) {
@@ -840,10 +781,8 @@ function openAdbScanner() {
       modal.focus();
     }
   }, 100);
-  
-  startAdbScan();
   try {
-    window.AndroidInterface?.startDeviceNameDiscovery?.();
+    window.AndroidInterface?.startNativeAdbScan?.();
   } catch (e) {}
 }
 
@@ -852,9 +791,8 @@ function closeAdbScanner() {
   if (!modal) return;
   modal.style.display = 'none';
   document.body.classList.remove('modal-open');
-  stopAdbScan();
   try {
-    window.AndroidInterface?.stopDeviceNameDiscovery?.();
+    window.AndroidInterface?.stopNativeAdbScan?.();
   } catch (e) {}
   if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
     lastFocusedElement.focus({ preventScroll: true });
@@ -863,231 +801,93 @@ function closeAdbScanner() {
 }
 
 function restartAdbScan() {
-  const list = document.getElementById('adbScanList');
-  if (list) list.innerHTML = '';
-  adbScanState.hosts.clear();
-  updateAdbScanStatus('Сканирование сети...');
-  adbScanState.subnet = null;
-  stopAdbScan();
-  startAdbScan();
-}
-
-function stopAdbScan() {
-  adbScanState.stopRequested = true;
-  clearTimeout(adbScanState.timer);
-  adbScanState.timer = null;
-}
-
-function resolveLocalSubnet() {
-  if (adbScanState.subnet) return adbScanState.subnet;
-  const localIp = window.AndroidInterface?.getLocalIpv4?.();
-  if (!localIp) return null;
-  const octets = localIp.split('.').map(p => p.trim()).filter(Boolean);
-  if (octets.length !== 4) return null;
-  adbScanState.subnet = `${octets[0]}.${octets[1]}.${octets[2]}`;
-  return adbScanState.subnet;
-}
-
-async function startAdbScan() {
-  if (adbScanState.running || adbScanState.stopRequested) return;
-  const subnet = resolveLocalSubnet();
-  if (!subnet) {
-    updateAdbScanStatus('Не удалось определить IP этой сети');
-    return;
-  }
-  adbScanState.running = true;
-  adbScanState.stopRequested = false;
-  updateAdbScanStatus('Сканирование сети...');
-
-  const tasks = [];
-  for (let host = 1; host <= 254; host++) {
-    const ip = `${subnet}.${host}`;
-    ADB_PORTS.forEach(port => tasks.push({ ip, port }));
-  }
-
-  const seenThisPass = new Set();
-  let cursor = 0;
-  const workerCount = Math.min(ADB_MAX_WORKERS, navigator.hardwareConcurrency || ADB_MAX_WORKERS);
-
-  async function worker() {
-    while (!adbScanState.stopRequested) {
-      const currentIndex = cursor++;
-      if (currentIndex >= tasks.length) break;
-      const task = tasks[currentIndex];
-      const latency = await probeAdbPort(task.ip, task.port);
-      if (adbScanState.stopRequested) break;
-      if (latency !== null) {
-        const key = formatAdbHostKey(task.ip, task.port);
-        seenThisPass.add(key);
-        registerAdbHost(task.ip, task.port, latency);
-      }
-    }
-  }
-
-  await Promise.all(Array.from({ length: workerCount }, () => worker()));
-  adbScanState.running = false;
-  if (adbScanState.stopRequested) {
-    updateAdbScanStatus('Сканирование остановлено');
-    return;
-  }
-
-  cleanupMissingAdbHosts(seenThisPass);
-  updateAdbScanStatus('Сканирование завершено');
-  adbScanState.timer = setTimeout(() => {
-    if (!adbScanState.stopRequested) startAdbScan();
-  }, 6000);
-}
-
-async function probeAdbPort(ip, port, timeout = ADB_PROBE_TIMEOUT) {
-  if (window.AndroidInterface?.probeAdbHostAsync) {
-    return new Promise(resolve => {
-      const requestId = `probe_${++adbProbeCounter}_${Date.now()}`;
-      adbProbeResolvers[requestId] = resolve;
-      try {
-        window.AndroidInterface.probeAdbHostAsync(ip, port, requestId, timeout);
-      } catch (e) {
-        delete adbProbeResolvers[requestId];
-        resolve(null);
-        return;
-      }
-      setTimeout(() => {
-        if (adbProbeResolvers[requestId]) {
-          delete adbProbeResolvers[requestId];
-          resolve(null);
-        }
-      }, timeout + 300);
-    });
-  }
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeout);
-  const started = performance.now();
   try {
-    await fetch(`http://${ip}:${port}/`, {
-      mode: 'no-cors',
-      cache: 'no-store',
-      signal: controller.signal
+    window.AndroidInterface?.stopNativeAdbScan?.();
+  } catch (e) {}
+  setTimeout(() => {
+    try { window.AndroidInterface?.startNativeAdbScan?.(); } catch (err) {}
+  }, 250);
+}
+
+function renderAdbScanHosts() {
+  const list = document.getElementById('adbScanList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adbScanState.hosts.length) {
+    const placeholder = document.createElement('div');
+    placeholder.style.gridColumn = '1 / -1';
+    placeholder.style.opacity = '.7';
+    placeholder.style.textAlign = 'center';
+    placeholder.textContent = adbScanState.running ? 'Ищем устройства...' : 'Устройства не найдены';
+    list.appendChild(placeholder);
+    return;
+  }
+  adbScanState.hosts.forEach(host => {
+    const card = document.createElement('div');
+    card.className = 'adb-device-card';
+    card.setAttribute('tabindex', '0');
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'adb-device-name';
+    applyFriendlyNameNode(nameEl, host?.friendlyName);
+
+    const ipEl = document.createElement('div');
+    ipEl.className = 'adb-device-ip';
+    ipEl.textContent = host?.ip || '—';
+
+    const btn = document.createElement('button');
+    btn.className = 'adb-connect-btn';
+    btn.textContent = 'Подключить';
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      connectToRemoteAdb(host?.ip, host?.port || 5555);
     });
-    return Math.round(performance.now() - started);
-  } catch (err) {
-    if (err?.name === 'AbortError') return null;
-    return Math.round(performance.now() - started);
-  } finally {
-    clearTimeout(timer);
-  }
-}
 
-function formatAdbHostKey(ip, port) {
-  return `${ip}:${port}`;
-}
-
-function registerAdbHost(ip, port, latency) {
-  const key = formatAdbHostKey(ip, port);
-  const existing = adbScanState.hosts.get(key);
-  if (existing) {
-    existing.latency = latency;
-    existing.lastSeen = Date.now();
-    if (!existing.friendlyName) {
-      const hint = adbScanState.hostNames.get(ip) || resolveFriendlyNameFromAndroid(ip);
-      if (hint) {
-        existing.friendlyName = hint;
-        adbScanState.hostNames.set(ip, hint);
-      }
-    }
-    updateAdbHostCard(key, latency);
-  } else {
-    const hostInfo = { ip, port, latency, lastSeen: Date.now(), friendlyName: "" };
-    const hint = adbScanState.hostNames.get(ip) || resolveFriendlyNameFromAndroid(ip);
-    if (hint) {
-      hostInfo.friendlyName = hint;
-      adbScanState.hostNames.set(ip, hint);
-    }
-    adbScanState.hosts.set(key, hostInfo);
-    renderAdbHostCard(hostInfo);
-  }
-  updateAdbScanStatus();
-}
-
-function cleanupMissingAdbHosts(seenKeys) {
-  const list = document.getElementById('adbScanList');
-  if (!list) return;
-  Array.from(adbScanState.hosts.keys()).forEach(key => {
-    if (!seenKeys.has(key)) {
-      adbScanState.hosts.delete(key);
-      list.querySelector(getAdbHostSelector(key))?.remove();
-    }
+    card.append(nameEl, ipEl, btn);
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+    card.addEventListener('focus', () => {
+      document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      focusAndRevealAdbCard(card);
+    });
+    list.appendChild(card);
   });
-  updateAdbScanStatus();
 }
 
-function renderAdbHostCard({ ip, port, latency, friendlyName }) {
-  const list = document.getElementById('adbScanList');
-  if (!list) return;
-  const key = formatAdbHostKey(ip, port);
-  const card = document.createElement('div');
-  card.className = 'adb-device-card';
-  card.dataset.adbHost = key;
-  card.setAttribute('tabindex', '0');
-
-  const nameEl = document.createElement('div');
-  nameEl.className = 'adb-device-name';
-  applyFriendlyNameNode(nameEl, friendlyName);
-
-  const ipEl = document.createElement('div');
-  ipEl.className = 'adb-device-ip';
-  ipEl.textContent = ip;
-
-  const portEl = document.createElement('div');
-  portEl.className = 'adb-device-port';
-  portEl.textContent = `Порт ${port}`;
-
-  const latencyEl = document.createElement('div');
-  latencyEl.className = 'adb-device-latency';
-  latencyEl.textContent = `${latency} мс`;
-
-  const btn = document.createElement('button');
-  btn.className = 'adb-connect-btn';
-  btn.textContent = 'Подключить';
-  btn.addEventListener('click', (event) => {
-    event.stopPropagation();
-    connectToRemoteAdb(ip, port);
-  });
-
-  card.append(nameEl, ipEl, portEl, latencyEl, btn);
-
-  card.onclick = () => {
-    document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-  };
-
-  card.onfocus = () => {
-    document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    focusAndRevealAdbCard(card);
-  };
-
-  list.appendChild(card);
-}
-
-function updateAdbHostCard(key, latency) {
-  const card = document.querySelector(getAdbHostSelector(key));
-  if (!card) return;
-  const latencyNode = card.querySelector('.adb-device-latency');
-  if (latencyNode) latencyNode.textContent = `${latency} мс`;
-  const hostInfo = adbScanState.hosts.get(key);
-  if (hostInfo) updateAdbHostFriendlyName(key, hostInfo.friendlyName);
-}
-
-function getAdbHostSelector(key) {
-  const safe = window.CSS?.escape ? window.CSS.escape(key) : key.replace(/"/g, '\\"');
-  return `[data-adb-host="${safe}"]`;
-}
-
-function updateAdbScanStatus(message = null) {
+function updateAdbScanStatus(message = null, totalOverride = null) {
   const status = document.getElementById('adbScanStatus');
   if (!status) return;
-  const base = message || (adbScanState.running ? 'Сканирование сети...' : 'Готово');
-  status.textContent = `${base} • Найдено: ${adbScanState.hosts.size}`;
+  if (typeof message === 'string' && message.length) {
+    adbScanState.status = message;
+  }
+  const base = adbScanState.status || (adbScanState.running ? 'Сканирование...' : 'Готово');
+  const total = typeof totalOverride === 'number' ? totalOverride : adbScanState.hosts.length;
+  status.textContent = `${base} • Найдено: ${total}`;
 }
+
+window.__applyAdbScanResults = function(payload) {
+  let data = [];
+  try {
+    data = Array.isArray(payload) ? payload : JSON.parse(payload);
+  } catch (e) {
+    console.error('applyAdbScanResults parse error', e);
+    return;
+  }
+  if (!Array.isArray(data)) data = [];
+  adbScanState.hosts = data;
+  renderAdbScanHosts();
+  updateAdbScanStatus();
+};
+
+window.__handleAdbScanStatus = function(message, running, total) {
+  if (typeof running === 'boolean') {
+    adbScanState.running = running;
+  }
+  updateAdbScanStatus(typeof message === 'string' ? message : null, typeof total === 'number' ? total : null);
+};
 
 function connectToRemoteAdb(ip, port) {
   ignoreNextEnter = true;
