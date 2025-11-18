@@ -165,8 +165,8 @@
     #adbScanListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
     #adbScanList {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
       justify-items: center;
     }
     
@@ -174,18 +174,18 @@
     .adb-device-card {
       background-color: #2a2a2a;
       border-radius: 12px;
-      padding: 16px;
+      padding: 12px 14px;
       width: 100%;
-      max-width: 250px;
+      max-width: 240px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4px;
       color: #fff;
       border: 2px solid transparent;
       transition: all .2s ease;
       cursor: pointer;
-      min-height: 120px;
+      min-height: unset;
     }
     
     .adb-device-card:hover, .adb-device-card:focus {
@@ -201,22 +201,10 @@
       border: 2px solid #fff;
     }
     
-    .adb-device-ip {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    
-    .adb-device-port {
-      font-size: 13px;
-      opacity: .8;
-      margin-bottom: 4px;
-    }
-
     .adb-device-name {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       color: #fff;
     }
 
@@ -225,42 +213,11 @@
       font-style: italic;
     }
     
-    .adb-device-latency {
-      font-size: 12px;
-      color: #00cfff;
-      margin-bottom: 12px;
-    }
-    
-    .adb-device-card.selected .adb-device-latency {
-      color: #004d61;
-    }
-    
-    .adb-connect-btn {
-      background-color: #004d61;
-      color: #fff;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 13px;
-      width: 100%;
-      cursor: pointer;
-      transition: all .2s ease;
-    }
-    
-    .adb-connect-btn:hover {
-      background-color: #00cfff;
-      color: #000;
-    }
-    
-    .adb-device-card.selected .adb-connect-btn {
-      background-color: #004d61;
-      color: #fff;
-      border-color: #004d61;
-    }
-    
-    .adb-device-card.selected .adb-connect-btn:hover {
-      background-color: #fff;
-      color: #004d61;
+    .adb-device-ip {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+      opacity: .9;
     }
     
     /* Отключаем hover в сканере ADB, чтобы мышь не мешала навигации */
@@ -826,6 +783,7 @@ function renderAdbScanHosts() {
     const card = document.createElement('div');
     card.className = 'adb-device-card';
     card.setAttribute('tabindex', '0');
+    let connectTriggered = false;
 
     const nameEl = document.createElement('div');
     nameEl.className = 'adb-device-name';
@@ -837,9 +795,18 @@ function renderAdbScanHosts() {
 
     card.append(nameEl, ipEl);
     const handleConnect = () => {
-      connectToRemoteAdb(host?.ip, host?.port || 5555);
+      if (connectTriggered) return;
+      const ip = host?.ip;
+      if (!ip) return;
+      connectTriggered = true;
+      closeAdbScanner();
+      setTimeout(() => {
+        connectToRemoteAdb(ip, host?.port || 5555);
+        connectTriggered = false;
+      }, 150);
     };
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (event) => {
+      event.preventDefault();
       document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       handleConnect();
@@ -849,7 +816,7 @@ function renderAdbScanHosts() {
       card.classList.add('selected');
       focusAndRevealAdbCard(card);
     });
-    card.addEventListener('keypress', (event) => {
+    card.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
         handleConnect();
