@@ -835,23 +835,25 @@ function renderAdbScanHosts() {
     ipEl.className = 'adb-device-ip';
     ipEl.textContent = host?.ip || '—';
 
-    const btn = document.createElement('button');
-    btn.className = 'adb-connect-btn';
-    btn.textContent = 'Подключить';
-    btn.addEventListener('click', (event) => {
-      event.stopPropagation();
+    card.append(nameEl, ipEl);
+    const handleConnect = () => {
       connectToRemoteAdb(host?.ip, host?.port || 5555);
-    });
-
-    card.append(nameEl, ipEl, btn);
+    };
     card.addEventListener('click', () => {
       document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
+      handleConnect();
     });
     card.addEventListener('focus', () => {
       document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       focusAndRevealAdbCard(card);
+    });
+    card.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleConnect();
+      }
     });
     list.appendChild(card);
   });
