@@ -212,6 +212,18 @@
       opacity: .8;
       margin-bottom: 4px;
     }
+
+    .adb-device-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .adb-device-name--placeholder {
+      opacity: .65;
+      font-style: italic;
+    }
     
     .adb-device-latency {
       font-size: 12px;
@@ -737,6 +749,7 @@ const ADB_MAX_WORKERS = 50;
 const ADB_PROBE_TIMEOUT = 800;
 const adbScanState = {
   hosts: new Map(),
+  hostNames: new Map(),
   stopRequested: false,
   running: false,
   subnet: null,
@@ -744,6 +757,56 @@ const adbScanState = {
 };
 const adbProbeResolvers = {};
 let adbProbeCounter = 0;
+const FRIENDLY_NAME_FALLBACK = 'Неизвестное устройство';
+
+function resolveFriendlyNameFromAndroid(ip) {
+  if (!ip) return "";
+  try {
+    const raw = window.AndroidInterface?.resolveDeviceFriendlyName?.(ip);
+    if (typeof raw === 'string') return raw.trim();
+    if (raw == null) return "";
+    return String(raw).trim();
+  } catch (e) {
+    return "";
+  }
+}
+
+function applyFriendlyNameNode(node, friendlyName) {
+  if (!node) return;
+  const label = (friendlyName || "").trim();
+  if (label) {
+    node.textContent = label;
+    node.classList.remove('adb-device-name--placeholder');
+  } else {
+    node.textContent = FRIENDLY_NAME_FALLBACK;
+    node.classList.add('adb-device-name--placeholder');
+  }
+}
+
+function updateAdbHostFriendlyName(key, friendlyName) {
+  const card = document.querySelector(getAdbHostSelector(key));
+  if (!card) return;
+  const nameNode = card.querySelector('.adb-device-name');
+  if (nameNode) applyFriendlyNameNode(nameNode, friendlyName);
+}
+
+function assignFriendlyName(ip, friendlyName, source = '') {
+  if (!ip) return;
+  const label = (friendlyName || "").trim();
+  if (!label) return;
+  adbScanState.hostNames.set(ip, label);
+  adbScanState.hosts.forEach((hostInfo, key) => {
+    if (hostInfo?.ip === ip && hostInfo.friendlyName !== label) {
+      hostInfo.friendlyName = label;
+      updateAdbHostFriendlyName(key, label);
+    }
+  });
+}
+
+window.__handleDeviceIdentity = function(ip, friendlyName) {
+  if (!ip || !friendlyName) return;
+  assignFriendlyName(String(ip), String(friendlyName));
+};
 
 window.__handleAdbProbeResult = function(requestId, latency) {
   if (!requestId) return;
@@ -779,6 +842,9 @@ function openAdbScanner() {
   }, 100);
   
   startAdbScan();
+  try {
+    window.AndroidInterface?.startDeviceNameDiscovery?.();
+  } catch (e) {}
 }
 
 function closeAdbScanner() {
@@ -787,6 +853,9 @@ function closeAdbScanner() {
   modal.style.display = 'none';
   document.body.classList.remove('modal-open');
   stopAdbScan();
+  try {
+    window.AndroidInterface?.stopDeviceNameDiscovery?.();
+  } catch (e) {}
   if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
     lastFocusedElement.focus({ preventScroll: true });
   }
@@ -917,9 +986,21 @@ function registerAdbHost(ip, port, latency) {
   if (existing) {
     existing.latency = latency;
     existing.lastSeen = Date.now();
+    if (!existing.friendlyName) {
+      const hint = adbScanState.hostNames.get(ip) || resolveFriendlyNameFromAndroid(ip);
+      if (hint) {
+        existing.friendlyName = hint;
+        adbScanState.hostNames.set(ip, hint);
+      }
+    }
     updateAdbHostCard(key, latency);
   } else {
-    const hostInfo = { ip, port, latency, lastSeen: Date.now() };
+    const hostInfo = { ip, port, latency, lastSeen: Date.now(), friendlyName: "" };
+    const hint = adbScanState.hostNames.get(ip) || resolveFriendlyNameFromAndroid(ip);
+    if (hint) {
+      hostInfo.friendlyName = hint;
+      adbScanState.hostNames.set(ip, hint);
+    }
     adbScanState.hosts.set(key, hostInfo);
     renderAdbHostCard(hostInfo);
   }
@@ -938,7 +1019,7 @@ function cleanupMissingAdbHosts(seenKeys) {
   updateAdbScanStatus();
 }
 
-function renderAdbHostCard({ ip, port, latency }) {
+function renderAdbHostCard({ ip, port, latency, friendlyName }) {
   const list = document.getElementById('adbScanList');
   if (!list) return;
   const key = formatAdbHostKey(ip, port);
@@ -946,36 +1027,54 @@ function renderAdbHostCard({ ip, port, latency }) {
   card.className = 'adb-device-card';
   card.dataset.adbHost = key;
   card.setAttribute('tabindex', '0');
-  
-  card.innerHTML = `
-    <div class="adb-device-ip">${ip}</div>
-    <div class="adb-device-port">Порт ${port}</div>
-    <div class="adb-device-latency">${latency} мс</div>
-    <button class="adb-connect-btn" onclick="connectToRemoteAdb('${ip}', ${port}); event.stopPropagation();">
-      Подключить
-    </button>
-  `;
-  
-  // Обработчики для навигации
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'adb-device-name';
+  applyFriendlyNameNode(nameEl, friendlyName);
+
+  const ipEl = document.createElement('div');
+  ipEl.className = 'adb-device-ip';
+  ipEl.textContent = ip;
+
+  const portEl = document.createElement('div');
+  portEl.className = 'adb-device-port';
+  portEl.textContent = `Порт ${port}`;
+
+  const latencyEl = document.createElement('div');
+  latencyEl.className = 'adb-device-latency';
+  latencyEl.textContent = `${latency} мс`;
+
+  const btn = document.createElement('button');
+  btn.className = 'adb-connect-btn';
+  btn.textContent = 'Подключить';
+  btn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    connectToRemoteAdb(ip, port);
+  });
+
+  card.append(nameEl, ipEl, portEl, latencyEl, btn);
+
   card.onclick = () => {
     document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
   };
-  
+
   card.onfocus = () => {
     document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     focusAndRevealAdbCard(card);
   };
-  
+
   list.appendChild(card);
 }
 
 function updateAdbHostCard(key, latency) {
   const card = document.querySelector(getAdbHostSelector(key));
   if (!card) return;
-  const latencyNode = card.querySelector('.adb-latency');
+  const latencyNode = card.querySelector('.adb-device-latency');
   if (latencyNode) latencyNode.textContent = `${latency} мс`;
+  const hostInfo = adbScanState.hosts.get(key);
+  if (hostInfo) updateAdbHostFriendlyName(key, hostInfo.friendlyName);
 }
 
 function getAdbHostSelector(key) {
