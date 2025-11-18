@@ -805,6 +805,8 @@ function renderAdbScanHosts() {
         connectTriggered = false;
       }, 150);
     };
+    const activationKeys = ['Enter', 'OK', 'Select', ' '];
+
     card.addEventListener('click', (event) => {
       event.preventDefault();
       document.querySelectorAll('#adbScanList .adb-device-card').forEach(c => c.classList.remove('selected'));
@@ -816,12 +818,14 @@ function renderAdbScanHosts() {
       card.classList.add('selected');
       focusAndRevealAdbCard(card);
     });
-    card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        handleConnect();
-      }
-    });
+    const handleKeyActivation = (event) => {
+      if (!activationKeys.includes(event.key)) return;
+      event.preventDefault();
+      handleConnect();
+    };
+    card.addEventListener('keydown', handleKeyActivation);
+    card.addEventListener('keyup', handleKeyActivation);
+    card.addEventListener('keypress', handleKeyActivation);
     list.appendChild(card);
   });
 }
