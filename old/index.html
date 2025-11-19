@@ -727,8 +727,8 @@ function setAdbIndicator(text, connected) {
 function refreshAdbStatusIndicator() {
   try {
     const raw = window.AndroidInterface?.getAdbConnectionInfo?.();
-    if (!raw) {
-      setAdbIndicator('ADB: интерфейс недоступен', false);
+    if (!raw || raw === 'undefined') {
+      setAdbIndicator('ADB: нет соединения', false);
       scheduleAdbStatusRetry();
       return;
     }
