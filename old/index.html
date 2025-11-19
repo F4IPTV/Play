@@ -676,7 +676,7 @@
       
       <!-- Контейнер со скроллом для списка устройств -->
       <div id="adbScanListContainer" style="max-height:60vh;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:auto;scrollbar-gutter:stable both-edges;margin-bottom:20px;">
-        <div id="adbScanList" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="adbScanList" style="display:flex;flex-direction:column;gap:12px;align-items:center;"></div>
       </div>
       
       <!-- Кнопки управления -->
@@ -850,16 +850,19 @@ function renderAdbScanHosts() {
   list.innerHTML = '';
   if (!adbScanState.hosts.length) {
     const placeholder = document.createElement('div');
-    placeholder.style.gridColumn = '1 / -1';
     placeholder.style.opacity = '.7';
     placeholder.style.textAlign = 'center';
     placeholder.textContent = adbScanState.running ? 'Ищем устройства...' : 'Устройства не найдены';
+    placeholder.style.width = '100%';
+    placeholder.style.maxWidth = '580px';
     list.appendChild(placeholder);
     return;
   }
   adbScanState.hosts.forEach(host => {
     const card = document.createElement('div');
     card.className = 'adb-device-card';
+    card.style.width = '100%';
+    card.style.maxWidth = '580px';
     card.setAttribute('tabindex', '0');
     let connectTriggered = false;
 
