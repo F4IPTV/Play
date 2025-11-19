@@ -13,13 +13,23 @@
     #status.visible { opacity: 1; }
     .spin { display: inline-block; animation: spin 1s linear infinite; }
     @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-    #adbScanStatus { transition: color .2s ease; }
+    #adbScanStatus {
+      transition: color .2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
     #adbScanStatus .adb-scan-spinner {
       height: 18px;
       width: 18px;
       vertical-align: middle;
-      margin-right: 6px;
       filter: drop-shadow(0 0 2px rgba(0,0,0,0.35));
+    }
+    #adbScanStatus .adb-scan-spinwrap {
+      display: inline-flex;
+      align-items: center;
     }
     #adbScanStatus.adb-scan-complete {
       color: #4caf50;
@@ -912,9 +922,14 @@ function updateAdbScanStatus(message = null, totalOverride = null) {
   status.classList.toggle('adb-scan-complete', !running);
   status.textContent = '';
 
+  const label = document.createElement('span');
+  label.className = 'adb-scan-label';
+  label.textContent = base;
+  status.appendChild(label);
+
   if (running) {
     const spinnerWrap = document.createElement('span');
-    spinnerWrap.className = 'spin';
+    spinnerWrap.className = 'spin adb-scan-spinwrap';
     const spinnerImg = document.createElement('img');
     spinnerImg.src = 'https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png';
     spinnerImg.alt = '';
@@ -923,12 +938,9 @@ function updateAdbScanStatus(message = null, totalOverride = null) {
     status.appendChild(spinnerWrap);
   }
 
-  const label = document.createElement('span');
-  label.textContent = running ? ` ${base}` : base;
-  status.appendChild(label);
-
   const totalSpan = document.createElement('span');
-  totalSpan.textContent = ` • Найдено: ${total}`;
+  totalSpan.className = 'adb-scan-total';
+  totalSpan.textContent = `• Найдено: ${total}`;
   status.appendChild(totalSpan);
 }
 
