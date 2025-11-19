@@ -667,6 +667,9 @@
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
+          <button onclick="ignoreNextEnter=true;requestEnergyWhitelist()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Экономия
+          </button>
         </div>
       </div>
     </div>
@@ -713,9 +716,32 @@
     let backupQueue = [];
     let backupTarget = "";
     let savedPassword = "";
-    let ignoreNextEnter = false;
+let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
+
+const energyWhitelistPackages = [
+  "dev.vodik7.tvquickactions",
+  "org.acestream.media",
+  "org.acestream.start",
+  "org.acestream.core",
+  "ru.yourok.torrserve",
+  "com.anydesk.anydeskandroid",
+  "io.github.romanvht.byedpi",
+  "org.amnezia.awg",
+  "org.acestream.live",
+  "org.acestream.core.atv"
+];
+
+function requestEnergyWhitelist(customList) {
+  const list = Array.isArray(customList) && customList.length ? customList : energyWhitelistPackages;
+  const payload = JSON.stringify(list);
+  try {
+    window.AndroidInterface?.openEnergy(payload);
+  } catch (e) {
+    window.AndroidInterface?.openEnergy(payload);
+  }
+}
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
