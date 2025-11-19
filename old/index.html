@@ -573,7 +573,7 @@
 	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.connectAdb()" class="sys-btn">
+        <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
 		  </button>
 			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
@@ -728,12 +728,13 @@ function refreshAdbStatusIndicator() {
   try {
     const raw = window.AndroidInterface?.getAdbConnectionInfo?.();
     if (!raw || raw === 'undefined') {
-      setAdbIndicator('ADB: нет соединения', false);
+      setAdbIndicator('Локальное устройство', false);
       scheduleAdbStatusRetry();
       return;
     }
     const info = JSON.parse(raw);
-    setAdbIndicator(info.label || (info.connected ? 'ADB подключен' : 'ADB отключен'), info.connected);
+    const fallback = info.connected ? 'ADB подключен' : 'Локальное устройство';
+    setAdbIndicator(info.label || fallback, info.connected);
   } catch (e) {
     console.warn('ADB status update error', e);
     setAdbIndicator('ADB: статус неизвестен', false);
@@ -766,7 +767,17 @@ function applyFriendlyNameNode(node, friendlyName) {
   }
 }
 
+function resetAdbConnectionState() {
+  window.AndroidInterface?.disconnectAdb?.();
+}
+
+function requestLocalAdbConnection() {
+  resetAdbConnectionState();
+  window.AndroidInterface?.connectAdb?.();
+}
+
 function openAdbScanner() {
+  resetAdbConnectionState();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   lastFocusedElement = document.activeElement;
