@@ -34,7 +34,7 @@
       z-index: 999; 
       outline: none;
       overscroll-behavior: contain;
-      touch-action: none; /* Блокируем touch события на фоне модалки  */
+      touch-action: none; /* Блокируем touch события на фоне модалки */
     }
 
     .adb-status-indicator {
@@ -56,7 +56,7 @@
       overscroll-behavior: contain;
     }
 
-    /* Прокрутка для модалки1 "Разное" */
+    /* Прокрутка для модалки "Разное" */
     #miscModal .modal-content {
       display: flex;
       flex-direction: column;
@@ -715,20 +715,37 @@ let lastFocusedElementMiscMore = null;
 
     const disablePackageStates = new Map();
 
+let adbStatusRetryTimer = null;
+
+function setAdbIndicator(text, connected) {
+  const el = document.getElementById('adbStatusIndicator');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.toggle('connected', !!connected);
+}
+
 function refreshAdbStatusIndicator() {
   try {
     const raw = window.AndroidInterface?.getAdbConnectionInfo?.();
-    if (!raw) return;
+    if (!raw) {
+      setAdbIndicator('ADB: интерфейс недоступен', false);
+      scheduleAdbStatusRetry();
+      return;
+    }
     const info = JSON.parse(raw);
-    const el = document.getElementById('adbStatusIndicator');
-    if (!el) return;
-    const connected = !!info.connected;
-    el.textContent = info.label || (connected ? 'ADB подключен' : 'ADB отключен');
-    el.classList.toggle('connected', connected);
+    setAdbIndicator(info.label || (info.connected ? 'ADB подключен' : 'ADB отключен'), info.connected);
   } catch (e) {
     console.warn('ADB status update error', e);
+    setAdbIndicator('ADB: статус неизвестен', false);
   }
 }
+
+function scheduleAdbStatusRetry() {
+  clearTimeout(adbStatusRetryTimer);
+  adbStatusRetryTimer = setTimeout(refreshAdbStatusIndicator, 2000);
+}
+
+window.refreshAdbStatusIndicator = refreshAdbStatusIndicator;
 
 const adbScanState = {
   hosts: [],
@@ -2481,3 +2498,4 @@ function selectInstallMethod(method, targetElement = null) {
   
 </body>
 </html>
+
