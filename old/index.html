@@ -197,7 +197,16 @@
     #miscMoreModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
     /* === СКАНЕР ADB === */
-    #adbScanListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
+    #adbScanListContainer {
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: auto;
+      scrollbar-gutter: stable both-edges;
+      touch-action: pan-y;
+      -ms-touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
     #adbScanList {
       display: flex;
       flex-direction: column;
@@ -869,17 +878,16 @@ function refreshLastAdbConnection() {
     btn.innerHTML = '';
     return;
   }
-  const host = info.host || '';
+  const host = (info.host || '').trim();
   const friendly = (info.friendly || '').trim();
-  const label = friendly || info.label || host || '';
+  const topLine = friendly || host;
   const ipLine = host;
-  btn.innerHTML = `
-    <span class="adb-last-connection-btn-line1">${label}</span>
-    ${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}
-  `;
-  btn.dataset.host = info.host || '';
+  btn.innerHTML = topLine
+    ? `<span class="adb-last-connection-btn-line1">${topLine}</span>${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}`
+    : '';
+  btn.dataset.host = host;
   btn.dataset.port = info.port != null ? String(info.port) : '';
-  wrapper.style.display = label ? 'block' : 'none';
+  wrapper.style.display = topLine ? 'block' : 'none';
 }
 
 function connectToLastAdb() {
@@ -920,11 +928,10 @@ function openAdbScanner() {
   document.activeElement?.blur();
   refreshLastAdbConnection();
   setTimeout(() => {
-    const lastWrapper = document.getElementById('lastAdbConnectionWrapper');
-    const lastBtn = document.getElementById('lastAdbConnectionBtn');
-    const lastVisible = lastWrapper && lastWrapper.style.display !== 'none' && lastBtn;
-    if (lastVisible) {
-      lastBtn.focus({ preventScroll: true });
+    if (focusLastAdbConnectionButton(true)) return;
+    const firstCard = document.querySelector('#adbScanList .adb-device-card');
+    if (firstCard) {
+      focusAndRevealAdbCard(firstCard);
       return;
     }
     const firstBtn = modal.querySelector('.system-buttons .sys-btn');
@@ -1127,6 +1134,18 @@ function focusAndRevealAdbCard(el, margin = 12) {
   requestAnimationFrame(() => el.focus({ preventScroll: true }));
 }
 
+function focusLastAdbConnectionButton(scrollToTop = false) {
+  const btn = document.getElementById('adbLastConnectionBtn');
+  const wrap = document.getElementById('adbLastConnectionWrapper');
+  if (!btn || !wrap || wrap.style.display === 'none') return false;
+  if (scrollToTop) {
+    const container = document.getElementById('adbScanListContainer');
+    if (container) container.scrollTop = 0;
+  }
+  requestAnimationFrame(() => btn.focus({ preventScroll: true }));
+  return true;
+}
+
 // Навигация в модалке сканера ADB
 (function attachAdbScannerNavOnce(){
   if (window.__adbScannerNavBound) return;
@@ -1248,10 +1267,11 @@ function focusAndRevealAdbCard(el, margin = 12) {
         case 'ArrowUp': {
           e.preventDefault();
           if (row === 0) {
-            if (lastVisible && lastBtn) {
-              cards[index]?.classList.remove('selected');
-              lastBtn.focus({ preventScroll: true });
+            if (lastVisible && focusLastAdbConnectionButton(true)) {
+              return;
             }
+            const container = document.getElementById('adbScanListContainer');
+            if (container) container.scrollTop = 0;
             return;
           }
           const prevIndex = (row - 1) * cols + col;
