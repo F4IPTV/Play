@@ -205,6 +205,7 @@
       max-width: 360px;
       width: 100%;
       margin: 0 auto;
+      align-items: center;
     }
     
     /* Карточки устройств ADB */
@@ -275,6 +276,21 @@
       border: 2px solid #fff;
     }
     #adbScannerModal .sys-btn.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
+
+    .adb-last-connection {
+      display: none;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .adb-last-connection-title {
+      font-size: 13px;
+      opacity: .8;
+      margin-bottom: 6px;
+    }
+    .adb-last-connection-btn {
+      width: min(92vw, 320px);
+      max-width: 320px;
+    }
     
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
@@ -676,6 +692,10 @@
   <!-- Модалка сканера ADB -->
   <div id="adbScannerModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
+      <div id="lastAdbConnectionWrapper" class="adb-last-connection">
+        <div class="adb-last-connection-title">Последнее подключение</div>
+        <button id="lastAdbConnectionBtn" class="sys-btn adb-last-connection-btn" onclick="connectToLastAdb()" tabindex="0"></button>
+      </div>
       <h3 id="adbScannerHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:25px;">
         Сканирование устройств ADB
@@ -805,10 +825,73 @@ function requestLocalAdbConnection() {
   window.AndroidInterface?.connectAdb?.();
 }
 
+function refreshLastAdbConnection() {
+  const wrapper = document.getElementById('lastAdbConnectionWrapper');
+  const btn = document.getElementById('lastAdbConnectionBtn');
+  if (!wrapper || !btn) return;
+  let raw;
+  try {
+    raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
+  } catch (e) {
+    raw = null;
+  }
+  if (!raw || raw === 'undefined') {
+    wrapper.style.display = 'none';
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    return;
+  }
+  let info;
+  try {
+    info = JSON.parse(raw);
+  } catch (e) {
+    wrapper.style.display = 'none';
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    return;
+  }
+  if (!info || !info.available) {
+    wrapper.style.display = 'none';
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    return;
+  }
+  const label = info.label || info.host || '';
+  btn.textContent = label;
+  btn.dataset.host = info.host || '';
+  btn.dataset.port = (info.port != null ? String(info.port) : '');
+  wrapper.style.display = label ? 'block' : 'none';
+}
+
+function connectToLastAdb() {
+  const btn = document.getElementById('lastAdbConnectionBtn');
+  if (!btn) return;
+  const host = btn.dataset.host;
+  const port = parseInt(btn.dataset.port || '', 10) || 5555;
+  if (!host) return;
+  connectToRemoteAdb(host, port);
+}
+
+window.refreshLastAdbConnection = refreshLastAdbConnection;
+
 function openAdbScanner() {
   resetAdbConnectionState();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
+  const miscModal = document.getElementById('miscModal');
+  const miscMoreModal = document.getElementById('miscMoreModal');
+  modal.dataset.restoreMisc = '0';
+  modal.dataset.restoreMiscMore = '0';
+  if (miscModal && miscModal.style.display === 'flex') {
+    miscModal.setAttribute('inert', '');
+    miscModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMisc = '1';
+  }
+  if (miscMoreModal && miscMoreModal.style.display === 'flex') {
+    miscMoreModal.setAttribute('inert', '');
+    miscMoreModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMiscMore = '1';
+  }
   lastFocusedElement = document.activeElement;
   adbScanState.hosts = [];
   renderAdbScanHosts();
@@ -816,6 +899,7 @@ function openAdbScanner() {
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
   document.activeElement?.blur();
+  refreshLastAdbConnection();
   setTimeout(() => {
     const firstBtn = modal.querySelector('.system-buttons .sys-btn');
     if (firstBtn) {
@@ -834,6 +918,22 @@ function closeAdbScanner() {
   if (!modal) return;
   modal.style.display = 'none';
   document.body.classList.remove('modal-open');
+  if (modal.dataset.restoreMisc === '1') {
+    const misc = document.getElementById('miscModal');
+    if (misc) {
+      misc.removeAttribute('inert');
+      misc.style.pointerEvents = '';
+    }
+    modal.dataset.restoreMisc = '0';
+  }
+  if (modal.dataset.restoreMiscMore === '1') {
+    const miscMore = document.getElementById('miscMoreModal');
+    if (miscMore) {
+      miscMore.removeAttribute('inert');
+      miscMore.style.pointerEvents = '';
+    }
+    modal.dataset.restoreMiscMore = '0';
+  }
   try {
     window.AndroidInterface?.stopNativeAdbScan?.();
   } catch (e) {}
@@ -1252,6 +1352,7 @@ function focusAndRevealAdbCard(el, margin = 12) {
         .catch(() => { /* покажем ошибку при попытке открыть */ });
       refreshAdbStatusIndicator();
       setInterval(refreshAdbStatusIndicator, 5000);
+      refreshLastAdbConnection();
     });
 
     let lastStartAttempt = 0;
