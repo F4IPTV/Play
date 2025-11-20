@@ -1135,8 +1135,8 @@ function focusAndRevealAdbCard(el, margin = 12) {
 }
 
 function focusLastAdbConnectionButton(scrollToTop = false) {
-  const btn = document.getElementById('adbLastConnectionBtn');
-  const wrap = document.getElementById('adbLastConnectionWrapper');
+  const btn = document.getElementById('lastAdbConnectionBtn');
+  const wrap = document.getElementById('lastAdbConnectionWrapper');
   if (!btn || !wrap || wrap.style.display === 'none') return false;
   if (scrollToTop) {
     const container = document.getElementById('adbScanListContainer');
