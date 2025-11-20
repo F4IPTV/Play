@@ -291,6 +291,16 @@
       width: min(92vw, 320px);
       max-width: 320px;
     }
+    .adb-last-connection-btn-line1 {
+      display: block;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .adb-last-connection-btn-line2 {
+      display: block;
+      font-size: 13px;
+      opacity: .85;
+    }
     
 
     #splash { position: fixed; inset: 0; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
@@ -839,6 +849,7 @@ function refreshLastAdbConnection() {
     wrapper.style.display = 'none';
     btn.dataset.host = '';
     btn.dataset.port = '';
+    btn.innerHTML = '';
     return;
   }
   let info;
@@ -848,18 +859,26 @@ function refreshLastAdbConnection() {
     wrapper.style.display = 'none';
     btn.dataset.host = '';
     btn.dataset.port = '';
+    btn.innerHTML = '';
     return;
   }
   if (!info || !info.available) {
     wrapper.style.display = 'none';
     btn.dataset.host = '';
     btn.dataset.port = '';
+    btn.innerHTML = '';
     return;
   }
   const label = info.label || info.host || '';
-  btn.textContent = label;
+  const host = info.host || '';
+  const port = (info.port != null ? String(info.port) : '');
+  const ipLine = host ? (port && port !== '0' ? `${host}:${port}` : host) : '';
+  btn.innerHTML = `
+    <span class="adb-last-connection-btn-line1">${label}</span>
+    ${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}
+  `;
   btn.dataset.host = info.host || '';
-  btn.dataset.port = (info.port != null ? String(info.port) : '');
+  btn.dataset.port = info.port != null ? String(info.port) : '';
   wrapper.style.display = label ? 'block' : 'none';
 }
 
@@ -901,13 +920,20 @@ function openAdbScanner() {
   document.activeElement?.blur();
   refreshLastAdbConnection();
   setTimeout(() => {
+    const lastWrapper = document.getElementById('lastAdbConnectionWrapper');
+    const lastBtn = document.getElementById('lastAdbConnectionBtn');
+    const lastVisible = lastWrapper && lastWrapper.style.display !== 'none' && lastBtn;
+    if (lastVisible) {
+      lastBtn.focus({ preventScroll: true });
+      return;
+    }
     const firstBtn = modal.querySelector('.system-buttons .sys-btn');
     if (firstBtn) {
       firstBtn.focus({ preventScroll: true });
     } else {
       modal.focus();
     }
-  }, 100);
+  }, 120);
   try {
     window.AndroidInterface?.startNativeAdbScan?.();
   } catch (e) {}
@@ -1119,13 +1145,47 @@ function focusAndRevealAdbCard(el, margin = 12) {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    const cards = Array.from(modal.querySelectorAll('.adb-device-card'));
+    const cards = Array.from(modal.querySelectorAll('#adbScanList .adb-device-card'));
     const buttons = Array.from(modal.querySelectorAll('.system-buttons .sys-btn'));
     const active = document.activeElement;
+    const lastBtn = document.getElementById('lastAdbConnectionBtn');
+    const lastWrapper = document.getElementById('lastAdbConnectionWrapper');
+    const lastVisible = lastBtn && lastWrapper && lastWrapper.style.display !== 'none';
 
     if (e.key === 'Back' || e.key === 'Escape') {
       e.preventDefault();
       closeAdbScanner();
+      return;
+    }
+
+    if (lastVisible && active === lastBtn) {
+      switch (e.key) {
+        case 'ArrowDown': {
+          e.preventDefault();
+          if (cards.length > 0) {
+            focusAndRevealAdbCard(cards[0]);
+          } else if (buttons.length > 0) {
+            buttons[0].focus({ preventScroll: true });
+          }
+          break;
+        }
+        case 'ArrowUp':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          e.preventDefault();
+          break;
+        case 'Enter':
+          e.preventDefault();
+          lastBtn.click();
+          break;
+        case 'Back':
+        case 'Escape':
+          e.preventDefault();
+          closeAdbScanner();
+          break;
+        default:
+          break;
+      }
       return;
     }
 
@@ -1187,7 +1247,13 @@ function focusAndRevealAdbCard(el, margin = 12) {
         }
         case 'ArrowUp': {
           e.preventDefault();
-          if (row === 0) return; // упор вверху
+          if (row === 0) {
+            if (lastVisible && lastBtn) {
+              cards[index]?.classList.remove('selected');
+              lastBtn.focus({ preventScroll: true });
+            }
+            return;
+          }
           const prevIndex = (row - 1) * cols + col;
           focusAndRevealAdbCard(cards[prevIndex]);
           break;
