@@ -72,10 +72,23 @@
       font-weight: 600;
     }
     .modal-content {
-      background: #111; color: #fff; padding: 20px; border-radius: 10px;
-      max-height: 80vh; overflow: hidden; width: 80%; border: 1px solid #333;
-      touch-action: auto; /* Разрешаем touch события внутри контента */
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-height: 80vh;
+      overflow: hidden;
+      width: 80%;
+      border: 1px solid #333;
+      touch-action: auto;
       overscroll-behavior: contain;
+    }
+
+    #adbScannerModal .modal-content {
+      max-height: 85vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Прокрутка для модалки "Разное" */
@@ -1141,7 +1154,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
   if (scrollToTop) {
     const container = document.getElementById('adbScanListContainer');
     if (container) container.scrollTop = 0;
+    const content = document.querySelector('#adbScannerModal .modal-content');
+    if (content) content.scrollTop = 0;
   }
+  document.querySelectorAll('#adbScanList .adb-device-card.selected').forEach(c => c.classList.remove('selected'));
   requestAnimationFrame(() => btn.focus({ preventScroll: true }));
   return true;
 }
@@ -1260,7 +1276,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           } else {
             // Переход к кнопкам управления
             lastIndexBeforeFooter = index;
-            if (buttons.length > 0) buttons[0].focus();
+            if (buttons.length > 0) {
+              cards[index]?.classList.remove('selected');
+              buttons[0].focus();
+            }
           }
           break;
         }
