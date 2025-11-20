@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -860,16 +861,12 @@ function renderAdbScanHosts() {
     placeholder.style.opacity = '.7';
     placeholder.style.textAlign = 'center';
     placeholder.textContent = adbScanState.running ? 'Ищем устройства...' : 'Устройства не найдены';
-    placeholder.style.width = '100%';
-    placeholder.style.maxWidth = '580px';
     list.appendChild(placeholder);
     return;
   }
   adbScanState.hosts.forEach(host => {
     const card = document.createElement('div');
     card.className = 'adb-device-card';
-    card.style.width = '100%';
-    card.style.maxWidth = '580px';
     card.setAttribute('tabindex', '0');
     let connectTriggered = false;
 
