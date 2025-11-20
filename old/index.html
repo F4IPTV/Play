@@ -869,10 +869,10 @@ function refreshLastAdbConnection() {
     btn.innerHTML = '';
     return;
   }
-  const label = info.label || info.host || '';
   const host = info.host || '';
-  const port = (info.port != null ? String(info.port) : '');
-  const ipLine = host ? (port && port !== '0' ? `${host}:${port}` : host) : '';
+  const friendly = (info.friendly || '').trim();
+  const label = friendly || info.label || host || '';
+  const ipLine = host;
   btn.innerHTML = `
     <span class="adb-last-connection-btn-line1">${label}</span>
     ${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}
@@ -1709,8 +1709,8 @@ showStatus(`Началась загрузка приложений, ожидай
     function handleBackButton() {
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
+  else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
-      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
