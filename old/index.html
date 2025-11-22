@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -646,10 +647,6 @@
   
           <button onclick="openAutostartModal()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
-    </button>
-
-    <button onclick="ignoreNextEnter=true;openAutostartScreen()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка натив
     </button>
 	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
@@ -1786,14 +1783,6 @@ showStatus(`Началась загрузка приложений, ожидай
       if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
     }
 
-    function openAutostartScreen() {
-      try {
-        window.AndroidInterface?.openAutostartScreen?.();
-      } catch (e) {
-        console.warn('openAutostartScreen failed', e);
-      }
-    }
-
     function openAutostartModal() {
       // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
       const misc = document.getElementById('miscModal');
@@ -1827,17 +1816,9 @@ showStatus(`Началась загрузка приложений, ожидай
 
     function setCurrentAutostartApp(appLabel, appIcon) {
       const current = document.getElementById("autostartCurrent");
-      if (!current) return;
-      if (!appLabel) {
-        current.innerHTML = '<span style="color:#00cfff;">Автозапуск отключён</span>';
-        return;
-      }
-      const iconHtml = appIcon
-        ? `<img src="${appIcon}" alt="" style="height:24px; vertical-align:middle; margin:0 6px;">`
-        : "";
       current.innerHTML = `
         <span style="font-weight:bold; color:#00cfff;">Активное:</span>
-        ${iconHtml}
+        <img src="${appIcon}" alt="" style="height:24px; vertical-align:middle; margin:0 6px;">
         <span style="font-weight:bold;">${appLabel}</span>`;
     }
 
@@ -1926,7 +1907,7 @@ showStatus(`Началась загрузка приложений, ожидай
     function disableAutostart() {
       window.AndroidInterface?.DeleteAutostartPackage("");
       const current = document.getElementById('autostartCurrent');
-      if (current) setCurrentAutostartApp('', '');
+      if (current) current.innerHTML = '<span style="color:#00cfff;">Автозапуск отключён</span>';
       showToast({ message: "Автозапуск отключён" });
     }
 
