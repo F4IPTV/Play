@@ -947,12 +947,13 @@ function refreshLastAdbConnection() {
   const host = (info.host || '').trim();
   const friendly = (info.friendly || '').trim();
   const topLine = friendly || host;
-  const ipLine = host;
+  const port = Number(info.port || 0);
+  const ipLine = port > 0 ? `${host}:${port}` : host;
   btn.innerHTML = topLine
     ? `<span class="adb-last-connection-btn-line1">${topLine}</span>${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}`
     : '';
   btn.dataset.host = host;
-  btn.dataset.port = info.port != null ? String(info.port) : '';
+  btn.dataset.port = port > 0 ? String(port) : '';
   wrapper.style.display = topLine ? 'block' : 'none';
 }
 
@@ -968,7 +969,6 @@ function connectToLastAdb() {
 window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
-  resetAdbConnectionState();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
@@ -1307,9 +1307,9 @@ function submitAdbPairing() {
   }
   if (codeInput) codeInput.value = code;
   let connectPort = parseInt(connectPortInput?.value, 10);
-  if (!Number.isFinite(connectPort)) connectPort = 0;
-  connectPort = Math.min(65535, Math.max(0, connectPort || 0));
-  if (connectPortInput && connectPort > 0) connectPortInput.value = String(connectPort);
+  if (!Number.isFinite(connectPort) || connectPort <= 0) connectPort = 5555;
+  connectPort = Math.min(65535, Math.max(1, connectPort));
+  if (connectPortInput) connectPortInput.value = String(connectPort);
   lastPairingHost = host;
   lastPairingConnectPort = connectPort;
   const ai = window.AndroidInterface;
@@ -1362,7 +1362,10 @@ window.__handleAdbPairingCompleted = function(success, message) {
   setAdbPairingStatus(message || (success ? 'Pairing успешно завершён' : 'Pairing не выполнен'), success ? 'success' : 'error');
   if (success) {
     const connectPortInput = document.getElementById('adbPairConnectPortInput');
-    const connectPort = connectPortInput ? parseInt(connectPortInput.value, 10) : lastPairingConnectPort;
+    let connectPort = connectPortInput ? parseInt(connectPortInput.value, 10) : lastPairingConnectPort;
+    if (!Number.isFinite(connectPort) || connectPort <= 0) {
+      connectPort = lastPairingConnectPort || 5555;
+    }
     if (lastPairingHost && Number.isFinite(connectPort) && connectPort > 0) {
       try {
         window.AndroidInterface?.rememberAdbPreferredTarget?.(lastPairingHost, connectPort);
