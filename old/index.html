@@ -657,6 +657,9 @@
 			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
           </button>
+          <button onclick="ignoreNextEnter=true;openAdbPairingModal()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Pairing (PIN)
+          </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
@@ -751,6 +754,43 @@
     </div>
   </div>
 
+  <!-- Модалка pairing по PIN -->
+  <div id="adbPairingModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content" style="max-width:520px;">
+      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
+        ADB Pairing (PIN)
+      </h3>
+      <div class="adb-pairing-body" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+        <div class="adb-pairing-field" style="display:flex;flex-direction:column;gap:4px;">
+          <label for="adbPairHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
+          <input id="adbPairHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
+                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
+        </div>
+        <div class="adb-pairing-split" style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
+            <label for="adbPairPortInput" style="font-size:13px;opacity:.85;">Порт pairing (обычно 37099)</label>
+            <input id="adbPairPortInput" type="number" min="1" max="65535" placeholder="37099"
+                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
+          </div>
+          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
+            <label for="adbPairCodeInput" style="font-size:13px;opacity:.85;">Шестизначный PIN</label>
+            <input id="adbPairCodeInput" type="text" inputmode="numeric" pattern="\\d*" maxlength="6" placeholder="000000"
+                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:20px;letter-spacing:3px;text-align:center;">
+          </div>
+        </div>
+        <div class="adb-pairing-hint" style="font-size:13px;line-height:1.4;opacity:.85;">
+          Откройте на Android TV пункт <strong>Wireless debugging → Pair with pairing code</strong>, введите IP, порт и PIN, затем нажмите «Начать pairing».
+        </div>
+      </div>
+      <div id="adbPairingStatus" class="adb-pairing-status" style="min-height:20px;text-align:center;font-size:13px;margin-bottom:14px;opacity:.9;"></div>
+      <div class="system-buttons" style="justify-content:center;">
+        <button class="sys-btn" onclick="submitAdbPairing()" type="button">🔗 Начать pairing</button>
+        <button class="sys-btn" onclick="closeAdbPairingModal()" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -770,9 +810,10 @@
     let backupQueue = [];
     let backupTarget = "";
     let savedPassword = "";
-    let ignoreNextEnter = false;
+let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
+let lastFocusedElementPairing = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -787,7 +828,7 @@ let lastFocusedElementMiscMore = null;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbPairingModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -1138,6 +1179,174 @@ function connectToRemoteAdb(ip, port) {
     showToast({ message: 'Ошибка подключения ADB', type: 'error' });
   }
 }
+
+function openAdbPairingModal() {
+  const modal = document.getElementById('adbPairingModal');
+  if (!modal) return;
+  ignoreNextEnter = true;
+  const miscModal = document.getElementById('miscModal');
+  const miscMoreModal = document.getElementById('miscMoreModal');
+  modal.dataset.restoreMisc = '0';
+  modal.dataset.restoreMiscMore = '0';
+  if (miscModal && miscModal.style.display === 'flex') {
+    miscModal.setAttribute('inert', '');
+    miscModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMisc = '1';
+  }
+  if (miscMoreModal && miscMoreModal.style.display === 'flex') {
+    miscMoreModal.setAttribute('inert', '');
+    miscMoreModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMiscMore = '1';
+  }
+  lastFocusedElementPairing = document.activeElement;
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+  attachAdbPairingInputHandlers();
+  prefillAdbPairingFields();
+  setAdbPairingStatus('', 'info');
+  const hostInput = document.getElementById('adbPairHostInput');
+  const codeInput = document.getElementById('adbPairCodeInput');
+  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (codeInput || hostInput);
+  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
+}
+
+function closeAdbPairingModal() {
+  const modal = document.getElementById('adbPairingModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.classList.remove('modal-open');
+  if (modal.dataset.restoreMisc === '1') {
+    const misc = document.getElementById('miscModal');
+    if (misc) {
+      misc.removeAttribute('inert');
+      misc.style.pointerEvents = '';
+    }
+    modal.dataset.restoreMisc = '0';
+  }
+  if (modal.dataset.restoreMiscMore === '1') {
+    const miscMore = document.getElementById('miscMoreModal');
+    if (miscMore) {
+      miscMore.removeAttribute('inert');
+      miscMore.style.pointerEvents = '';
+    }
+    modal.dataset.restoreMiscMore = '0';
+  }
+  if (lastFocusedElementPairing && document.body.contains(lastFocusedElementPairing)) {
+    lastFocusedElementPairing.focus({ preventScroll: true });
+  }
+  lastFocusedElementPairing = null;
+  setAdbPairingStatus('', 'info');
+}
+
+function prefillAdbPairingFields() {
+  const hostInput = document.getElementById('adbPairHostInput');
+  const portInput = document.getElementById('adbPairPortInput');
+  if (portInput && !portInput.value.trim()) {
+    portInput.value = '37099';
+  }
+  if (!hostInput || hostInput.value.trim()) return;
+  try {
+    const raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
+    if (!raw || raw === 'undefined') return;
+    const info = JSON.parse(raw);
+    const host = (info?.host || '').trim();
+    if (host) hostInput.value = host;
+  } catch (e) {
+    console.warn('prefillAdbPairingFields error', e);
+  }
+}
+
+function setAdbPairingStatus(message, type = 'info') {
+  const statusEl = document.getElementById('adbPairingStatus');
+  if (!statusEl) return;
+  const colors = {
+    success: '#4caf50',
+    error: '#ff6b6b',
+    warn: '#ffc107',
+    info: '#d0d7de'
+  };
+  statusEl.style.color = colors[type] || colors.info;
+  statusEl.textContent = message || '';
+}
+
+function submitAdbPairing() {
+  const hostInput = document.getElementById('adbPairHostInput');
+  const portInput = document.getElementById('adbPairPortInput');
+  const codeInput = document.getElementById('adbPairCodeInput');
+  const host = hostInput?.value?.trim();
+  if (!host) {
+    setAdbPairingStatus('Введите IP адрес устройства', 'error');
+    hostInput?.focus();
+    return;
+  }
+  let port = parseInt(portInput?.value, 10);
+  if (!Number.isFinite(port)) port = 37099;
+  port = Math.min(65535, Math.max(1, port));
+  if (portInput) portInput.value = String(port);
+  const rawCode = (codeInput?.value || '').replace(/\s+/g, '');
+  const code = rawCode.replace(/\D/g, '');
+  if (code.length !== 6) {
+    setAdbPairingStatus('PIN должен состоять из 6 цифр', 'error');
+    codeInput?.focus();
+    return;
+  }
+  if (codeInput) codeInput.value = code;
+  const ai = window.AndroidInterface;
+  if (!ai || typeof ai.startAdbPairing !== 'function') {
+    setAdbPairingStatus('Функция pairing недоступна в этой версии приложения', 'error');
+    return;
+  }
+  setAdbPairingStatus('⏳ Отправляю pairing-команду…', 'info');
+  ignoreNextEnter = true;
+  try {
+    ai.startAdbPairing(host, port, code);
+  } catch (err) {
+    console.error('startAdbPairing error', err);
+    setAdbPairingStatus('Не удалось отправить команду pairing', 'error');
+  }
+}
+
+function attachAdbPairingInputHandlers() {
+  const handler = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      submitAdbPairing();
+    }
+  };
+  ['adbPairHostInput', 'adbPairPortInput', 'adbPairCodeInput'].forEach((id) => {
+    const input = document.getElementById(id);
+    if (input && !input.dataset.pairingBound) {
+      input.addEventListener('keydown', handler);
+      input.dataset.pairingBound = '1';
+    }
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('adbPairingModal');
+  if (!modal || modal.style.display !== 'flex') return;
+  if (event.key === 'Escape' || event.key === 'Back') {
+    event.preventDefault();
+    closeAdbPairingModal();
+  }
+});
+
+attachAdbPairingInputHandlers();
+
+window.__handleAdbPairingStatus = function(message, type) {
+  setAdbPairingStatus(message, type || 'info');
+};
+
+window.__handleAdbPairingCompleted = function(success, message) {
+  setAdbPairingStatus(message || (success ? 'Pairing успешно завершён' : 'Pairing не выполнен'), success ? 'success' : 'error');
+  if (success) {
+    setTimeout(() => {
+      try {
+        closeAdbPairingModal();
+      } catch (_) {}
+    }, 1200);
+  }
+};
 
 // Вспомогательная функция для скролла в сканере ADB
 function focusAndRevealAdbCard(el, margin = 12) {
