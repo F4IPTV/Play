@@ -778,9 +778,15 @@
             <input id="adbPairCodeInput" type="text" inputmode="numeric" pattern="\\d*" maxlength="6" placeholder="000000"
                    style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:20px;letter-spacing:3px;text-align:center;">
           </div>
+          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
+            <label for="adbPairConnectPortInput" style="font-size:13px;opacity:.85;">Порт подключения (из &laquo;IP address &amp; port&raquo;)</label>
+            <input id="adbPairConnectPortInput" type="number" min="1" max="65535" placeholder="5555"
+                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
+          </div>
         </div>
         <div class="adb-pairing-hint" style="font-size:13px;line-height:1.4;opacity:.85;">
-          Откройте на Android TV пункт <strong>Wireless debugging → Pair with pairing code</strong>, введите IP, порт и PIN, затем нажмите «Начать pairing».
+          В <strong>Wireless debugging</strong> отображаются два порта: один для pairing, второй (рядом с надписью <em>IP address &amp; port</em>) для ADB-подключения.<br>
+          После успешного pairing подключайтесь по этому ADB-порту через кнопку «ADB (TCP/IP)».
         </div>
       </div>
       <div id="adbPairingStatus" class="adb-pairing-status" style="min-height:20px;text-align:center;font-size:13px;margin-bottom:14px;opacity:.9;"></div>
@@ -814,6 +820,8 @@ let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
 let lastFocusedElementPairing = null;
+let lastPairingHost = "";
+let lastPairingConnectPort = 0;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1236,21 +1244,27 @@ function closeAdbPairingModal() {
   }
   lastFocusedElementPairing = null;
   setAdbPairingStatus('', 'info');
+  lastPairingHost = '';
+  lastPairingConnectPort = 0;
 }
 
 function prefillAdbPairingFields() {
   const hostInput = document.getElementById('adbPairHostInput');
   const portInput = document.getElementById('adbPairPortInput');
+  const connectPortInput = document.getElementById('adbPairConnectPortInput');
   if (portInput && !portInput.value.trim()) {
     portInput.value = '37099';
   }
-  if (!hostInput || hostInput.value.trim()) return;
   try {
     const raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
     if (!raw || raw === 'undefined') return;
     const info = JSON.parse(raw);
     const host = (info?.host || '').trim();
-    if (host) hostInput.value = host;
+    if (hostInput && host && !hostInput.value.trim()) hostInput.value = host;
+    const lastPort = Number(info?.port || 0);
+    if (connectPortInput && Number.isFinite(lastPort) && lastPort > 0 && !connectPortInput.value.trim()) {
+      connectPortInput.value = String(lastPort);
+    }
   } catch (e) {
     console.warn('prefillAdbPairingFields error', e);
   }
@@ -1273,6 +1287,7 @@ function submitAdbPairing() {
   const hostInput = document.getElementById('adbPairHostInput');
   const portInput = document.getElementById('adbPairPortInput');
   const codeInput = document.getElementById('adbPairCodeInput');
+  const connectPortInput = document.getElementById('adbPairConnectPortInput');
   const host = hostInput?.value?.trim();
   if (!host) {
     setAdbPairingStatus('Введите IP адрес устройства', 'error');
@@ -1291,6 +1306,12 @@ function submitAdbPairing() {
     return;
   }
   if (codeInput) codeInput.value = code;
+  let connectPort = parseInt(connectPortInput?.value, 10);
+  if (!Number.isFinite(connectPort)) connectPort = 0;
+  connectPort = Math.min(65535, Math.max(0, connectPort || 0));
+  if (connectPortInput && connectPort > 0) connectPortInput.value = String(connectPort);
+  lastPairingHost = host;
+  lastPairingConnectPort = connectPort;
   const ai = window.AndroidInterface;
   if (!ai || typeof ai.startAdbPairing !== 'function') {
     setAdbPairingStatus('Функция pairing недоступна в этой версии приложения', 'error');
@@ -1313,7 +1334,7 @@ function attachAdbPairingInputHandlers() {
       submitAdbPairing();
     }
   };
-  ['adbPairHostInput', 'adbPairPortInput', 'adbPairCodeInput'].forEach((id) => {
+  ['adbPairHostInput', 'adbPairPortInput', 'adbPairCodeInput', 'adbPairConnectPortInput'].forEach((id) => {
     const input = document.getElementById(id);
     if (input && !input.dataset.pairingBound) {
       input.addEventListener('keydown', handler);
@@ -1340,6 +1361,16 @@ window.__handleAdbPairingStatus = function(message, type) {
 window.__handleAdbPairingCompleted = function(success, message) {
   setAdbPairingStatus(message || (success ? 'Pairing успешно завершён' : 'Pairing не выполнен'), success ? 'success' : 'error');
   if (success) {
+    const connectPortInput = document.getElementById('adbPairConnectPortInput');
+    const connectPort = connectPortInput ? parseInt(connectPortInput.value, 10) : lastPairingConnectPort;
+    if (lastPairingHost && Number.isFinite(connectPort) && connectPort > 0) {
+      try {
+        window.AndroidInterface?.rememberAdbPreferredTarget?.(lastPairingHost, connectPort);
+        setAdbPairingStatus(`Pairing завершён. Теперь подключитесь к ${lastPairingHost}:${connectPort}.`, 'success');
+      } catch (err) {
+        console.warn('rememberAdbPreferredTarget error', err);
+      }
+    }
     setTimeout(() => {
       try {
         closeAdbPairingModal();
