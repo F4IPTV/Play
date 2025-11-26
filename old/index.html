@@ -472,6 +472,104 @@
   color: #4caf50;
 }
 
+/* Модалка ADB-команд */
+#adbCommandsModal .modal-content {
+  max-width: 640px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#adbCommandsListContainer {
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable both-edges;
+}
+
+#adbCommandsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  justify-items: center;
+}
+
+.adb-command-btn {
+  width: 100%;
+  max-width: 280px;
+  min-height: 64px;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.adb-command-btn:hover,
+.adb-command-btn:focus,
+.adb-command-btn.selected {
+  background-color: #00cfff;
+  color: #000;
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,.4);
+  outline: none;
+}
+
+.adb-command-btn__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.adb-command-btn__icon img {
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+}
+
+.adb-command-btn__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.adb-command-btn__label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.adb-command-btn__command {
+  font-size: 13px;
+  opacity: .8;
+  word-break: break-all;
+}
+
+#adbCommandsEmpty {
+  text-align: center;
+  opacity: .75;
+  padding: 20px 0;
+}
+
+#adbCommandsCloseBtn {
+  margin: 16px auto 0;
+  width: min(280px, 90%);
+}
+
     
     /* Отключение системного масштабирования шрифтов */
     html {
@@ -724,6 +822,9 @@
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
+    <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>команды
+          </button>
         </div>
       </div>
     </div>
@@ -784,6 +885,20 @@
     </div>
   </div>
 
+  <!-- Модалка отправки ADB команд -->
+  <div id="adbCommandsModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="adbCommandsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
+        ADB команды
+      </h3>
+      <div id="adbCommandsListContainer">
+        <div id="adbCommandsList"></div>
+        <button id="adbCommandsCloseBtn" class="component-btn" onclick="closeAdbCommandsModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -796,6 +911,17 @@
   </div>
 
   <script>
+    // Список ADB-команд. Изменяйте этот массив, чтобы обновить команды у всех пользователей.
+    const ADB_COMMANDS = [
+      { id: 1001, command: "reboot", label: "Система", icon: "gmd_adb", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
+      { id: 1002, command: "reboot bootloader", label: "Bootloader", icon: "gmd_adb", isEnabled: true, uid: "1000e8c1-025c-4621-92ff-a867210e8b96" },
+      { id: 1003, command: "reboot fastboot", label: "FastbootD", icon: "gmd_adb", isEnabled: true, uid: "29dcff70-46b2-4626-83d4-0b4bebc83957" },
+      { id: 1004, command: "reboot recovery", label: "Recovery", icon: "gmd_adb", isEnabled: true, uid: "1f1426c1-1676-4e8b-845c-5349e7a1a9ae" },
+      { id: 1005, command: "reboot sideload", label: "Sideload", icon: "gmd_adb", isEnabled: true, uid: "91788dc4-4247-488f-831a-7b0e823d50a3" },
+      { id: 1006, command: "reboot update", label: "TWRP", icon: "gmd_adb", isEnabled: true, uid: "f537d6b2-4c49-46ab-affe-7f29e400f7fe" },
+      { id: 1007, command: "reboot -p", label: "Выключение (полное)", icon: "gmd_adb", isEnabled: true, uid: "bdf56bfe-03ba-40b0-bb52-5723e9ee70af" }
+    ];
+
     let currentGroup = "";
     let cachedConfig = null;
     let lastFocusedElement = null;
@@ -807,6 +933,7 @@ let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
 let lastFocusedElementManualConnect = null;
+let lastFocusedElementAdbCommands = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -821,7 +948,7 @@ let lastFocusedElementManualConnect = null;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -1601,6 +1728,204 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       }
     }
 
+    function createAdbCommandIconNode(iconValue, label) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'adb-command-btn__icon';
+
+      if (iconValue && /^(https?:)?\/\//i.test(iconValue)) {
+        const img = document.createElement('img');
+        img.src = iconValue;
+        img.alt = '';
+        wrapper.appendChild(img);
+        return wrapper;
+      }
+
+      const text = (iconValue || label || '?').replace(/^gmd_/, '').trim();
+      wrapper.textContent = text.length ? text[0].toUpperCase() : 'A';
+      return wrapper;
+    }
+
+    function renderAdbCommandsList() {
+      const list = document.getElementById('adbCommandsList');
+      if (!list) return;
+      list.innerHTML = '';
+
+      const commands = ADB_COMMANDS.filter(item => item && item.isEnabled !== false);
+      if (!commands.length) {
+        const placeholder = document.createElement('div');
+        placeholder.id = 'adbCommandsEmpty';
+        placeholder.textContent = 'Команды недоступны. Обновите конфиг в index.html';
+        list.appendChild(placeholder);
+        return;
+      }
+
+      commands.forEach((item, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'adb-command-btn';
+        btn.setAttribute('tabindex', '0');
+        btn.dataset.index = String(index);
+
+        const iconNode = createAdbCommandIconNode(item.icon, item.label);
+        const textWrap = document.createElement('div');
+        textWrap.className = 'adb-command-btn__text';
+
+        const title = document.createElement('div');
+        title.className = 'adb-command-btn__label';
+        title.textContent = item.label || `Команда #${index + 1}`;
+
+        const body = document.createElement('div');
+        body.className = 'adb-command-btn__command';
+        body.textContent = item.command || '';
+
+        textWrap.append(title, body);
+        btn.append(iconNode, textWrap);
+
+        const exec = () => sendAdbCommand(item.command, item.label);
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          exec();
+        });
+        btn.addEventListener('keydown', (event) => {
+          if (['Enter', 'OK', 'NumpadEnter', ' '].includes(event.key)) {
+            event.preventDefault();
+            exec();
+          }
+        });
+        btn.addEventListener('focus', () => {
+          document.querySelectorAll('#adbCommandsList .adb-command-btn').forEach(el => el.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+
+        list.appendChild(btn);
+      });
+    }
+
+    function focusAndRevealAdbCommand(el, margin = 12) {
+      if (!el) return;
+      const container = document.getElementById('adbCommandsListContainer');
+      if (!container) return;
+      const cr = container.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      if (er.top < cr.top + margin) {
+        container.scrollTop -= (cr.top + margin - er.top);
+      } else if (er.bottom > cr.bottom - margin) {
+        container.scrollTop += (er.bottom - (cr.bottom - margin));
+      }
+      requestAnimationFrame(() => el.focus({ preventScroll: true }));
+    }
+
+    function openAdbCommandsModal(triggerBtn = null) {
+      const modal = document.getElementById('adbCommandsModal');
+      if (!modal) return;
+
+      const miscModal = document.getElementById('miscModal');
+      const miscMoreModal = document.getElementById('miscMoreModal');
+      modal.dataset.restoreMisc = '0';
+      modal.dataset.restoreMiscMore = '0';
+
+      if (miscModal && miscModal.style.display === 'flex') {
+        miscModal.setAttribute('inert', '');
+        miscModal.style.pointerEvents = 'none';
+        modal.dataset.restoreMisc = '1';
+      }
+      if (miscMoreModal && miscMoreModal.style.display === 'flex') {
+        miscMoreModal.setAttribute('inert', '');
+        miscMoreModal.style.pointerEvents = 'none';
+        modal.dataset.restoreMiscMore = '1';
+      }
+
+      lastFocusedElementAdbCommands = triggerBtn || document.activeElement;
+      document.activeElement?.blur();
+
+      renderAdbCommandsList();
+      modal.style.display = 'flex';
+      document.body.classList.add('modal-open');
+
+      const list = document.getElementById('adbCommandsList');
+      setTimeout(() => {
+        const first = list?.querySelector('.adb-command-btn');
+        if (first) {
+          focusAndRevealAdbCommand(first);
+        } else {
+          document.getElementById('adbCommandsCloseBtn')?.focus({ preventScroll: true });
+        }
+      }, 100);
+    }
+
+    function closeAdbCommandsModal() {
+      const modal = document.getElementById('adbCommandsModal');
+      if (!modal) return;
+
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      document.querySelectorAll('#adbCommandsList .adb-command-btn.selected').forEach(btn => btn.classList.remove('selected'));
+
+      let needRestoreModalClass = false;
+      if (modal.dataset.restoreMisc === '1') {
+        const misc = document.getElementById('miscModal');
+        if (misc) {
+          misc.removeAttribute('inert');
+          misc.style.pointerEvents = '';
+          if (misc.style.display === 'flex') needRestoreModalClass = true;
+        }
+        modal.dataset.restoreMisc = '0';
+      }
+      if (modal.dataset.restoreMiscMore === '1') {
+        const miscMore = document.getElementById('miscMoreModal');
+        if (miscMore) {
+          miscMore.removeAttribute('inert');
+          miscMore.style.pointerEvents = '';
+          if (miscMore.style.display === 'flex') needRestoreModalClass = true;
+        }
+        modal.dataset.restoreMiscMore = '0';
+      }
+      if (!needRestoreModalClass && anyModalOpen()) {
+        needRestoreModalClass = true;
+      }
+      if (needRestoreModalClass) {
+        document.body.classList.add('modal-open');
+      }
+
+      const target = lastFocusedElementAdbCommands;
+      lastFocusedElementAdbCommands = null;
+      if (target && document.body.contains(target)) {
+        setTimeout(() => target.focus({ preventScroll: true }), 60);
+      }
+    }
+
+    function sendAdbCommand(command, label) {
+      const trimmed = (command || '').trim();
+      if (!trimmed) {
+        showToast({ message: 'Команда не задана', type: 'warning' });
+        return;
+      }
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.runAdbShellCommand !== 'function') {
+        showToast({ message: 'ADB недоступен в этом режиме', type: 'error' });
+        return;
+      }
+      try {
+        ai.runAdbShellCommand(trimmed, label || '');
+      } catch (err) {
+        console.error('ADB command error', err);
+        showToast({ message: 'Не удалось отправить команду', type: 'error' });
+      }
+    }
+
+    function openAdbCommandsFromButton(triggerBtn) {
+      ignoreNextEnter = true;
+      try {
+        if (window.AndroidInterface?.openRunAdbCommandsModal) {
+          window.AndroidInterface.openRunAdbCommandsModal();
+          return;
+        }
+      } catch (err) {
+        console.warn('openRunAdbCommandsModal failed, fallback to JS modal', err);
+      }
+      openAdbCommandsModal(triggerBtn);
+    }
+
     // === Конфиг (только новый формат) и рендер групп ===
     function getConfigUrl() {
       // URL конфига всегда приходит из приложения
@@ -1971,11 +2296,129 @@ showStatus(`Началась загрузка приложений, ожидай
       });
     })();
 
+    (function attachAdbCommandsNavOnce(){
+      if (window.__adbCommandsNavBound) return;
+      window.__adbCommandsNavBound = true;
+
+      let lastIndexBeforeClose = null;
+
+      function getAdbCommandColumns() {
+        const buttons = Array.from(document.querySelectorAll('#adbCommandsList .adb-command-btn'));
+        if (buttons.length < 2) return 1;
+        const firstTop = buttons[0].getBoundingClientRect().top;
+        let cols = 1;
+        for (let i = 1; i < buttons.length; i++) {
+          if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
+            cols++;
+          } else {
+            break;
+          }
+        }
+        return cols;
+      }
+
+      document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('adbCommandsModal');
+        if (!modal || modal.style.display !== 'flex') return;
+
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+
+        const allowed = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
+        if (!allowed.includes(e.key)) return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        const buttons = Array.from(document.querySelectorAll('#adbCommandsList .adb-command-btn'));
+        const closeBtn = document.getElementById('adbCommandsCloseBtn');
+
+        if (e.key === 'Back' || e.key === 'Escape') {
+          e.preventDefault();
+          closeAdbCommandsModal();
+          return;
+        }
+
+        if (!buttons.length) {
+          if (e.key === 'Enter' && closeBtn) {
+            e.preventDefault();
+            closeBtn.click();
+          }
+          return;
+        }
+
+        const cols = getAdbCommandColumns();
+        const active = document.activeElement;
+
+        if (active === closeBtn) {
+          e.preventDefault();
+          if (e.key === 'ArrowUp') {
+            const total = buttons.length;
+            const lastRowStart = Math.floor((total - 1) / cols) * cols;
+            const col = (lastIndexBeforeClose != null) ? (lastIndexBeforeClose % cols) : 0;
+            const targetIndex = Math.min(lastRowStart + col, total - 1);
+            focusAndRevealAdbCommand(buttons[targetIndex]);
+          } else if (e.key === 'Enter') {
+            closeBtn.click();
+          }
+          return;
+        }
+
+        let index = buttons.indexOf(active);
+        if (index === -1) {
+          e.preventDefault();
+          focusAndRevealAdbCommand(buttons[0]);
+          return;
+        }
+
+        e.preventDefault();
+
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const lastRow = Math.floor((buttons.length - 1) / cols);
+
+        switch (e.key) {
+          case 'ArrowDown': {
+            if (row < lastRow) {
+              const nextIndex = (row + 1) * cols + col;
+              const targetIndex = (nextIndex < buttons.length) ? nextIndex : Math.min(((row + 1) * cols), buttons.length - 1);
+              focusAndRevealAdbCommand(buttons[targetIndex]);
+            } else {
+              lastIndexBeforeClose = index;
+              focusAndRevealAdbCommand(closeBtn);
+            }
+            break;
+          }
+          case 'ArrowUp': {
+            if (row === 0) return;
+            const prevIndex = (row - 1) * cols + col;
+            focusAndRevealAdbCommand(buttons[prevIndex]);
+            break;
+          }
+          case 'ArrowLeft': {
+            if (col === 0) return;
+            focusAndRevealAdbCommand(buttons[index - 1]);
+            break;
+          }
+          case 'ArrowRight': {
+            if (col === cols - 1 || index + 1 >= buttons.length) return;
+            focusAndRevealAdbCommand(buttons[index + 1]);
+            break;
+          }
+          case 'Enter': {
+            active?.click();
+            break;
+          }
+        }
+      }, true);
+    })();
+
     function handleBackButton() {
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
-  else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
+      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
+      else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
