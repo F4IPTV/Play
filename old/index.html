@@ -778,8 +778,8 @@
         </div>
       </div>
       <div class="system-buttons" style="justify-content:center;">
-        <button class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
-        <button class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
+        <button id="adbManualSubmitBtn" class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
+        <button id="adbManualCloseBtn" class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
       </div>
     </div>
   </div>
@@ -1299,14 +1299,67 @@ function submitAdbManualConnect() {
   }
 }
 
-document.addEventListener('keydown', (event) => {
-  const modal = document.getElementById('adbManualConnectModal');
-  if (!modal || modal.style.display !== 'flex') return;
-  if (event.key === 'Escape' || event.key === 'Back') {
-    event.preventDefault();
-    closeAdbManualConnectModal();
+(function attachAdbManualNavOnce(){
+  if (window.__adbManualNavBound) return;
+  window.__adbManualNavBound = true;
+
+  function focusManualEl(el) {
+    if (!el) return;
+    requestAnimationFrame(() => el.focus({ preventScroll: true }));
   }
-});
+
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('adbManualConnectModal');
+    if (!modal || modal.style.display !== 'flex') return;
+
+    const installModal = document.getElementById('installMethodModal');
+    if (installModal && installModal.style.display === 'flex') return;
+
+    const focusables = [
+      document.getElementById('adbManualHostInput'),
+      document.getElementById('adbManualPortInput'),
+      document.getElementById('adbManualSubmitBtn'),
+      document.getElementById('adbManualCloseBtn')
+    ].filter(Boolean);
+
+    const key = e.key;
+    if (key === 'Back' || key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      closeAdbManualConnectModal();
+      return;
+    }
+
+    const navKeys = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Enter'];
+    if (!navKeys.includes(key)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    if (!focusables.length) return;
+
+    const submitBtn = document.getElementById('adbManualSubmitBtn');
+    const closeBtn = document.getElementById('adbManualCloseBtn');
+    let index = focusables.indexOf(document.activeElement);
+
+    if (index === -1) {
+      focusManualEl(focusables[0]);
+      return;
+    }
+
+    if (key === 'Enter') {
+      if (document.activeElement === submitBtn) submitAdbManualConnect();
+      else if (document.activeElement === closeBtn) closeAdbManualConnectModal();
+      return;
+    }
+
+    const step = (key === 'ArrowDown' || key === 'ArrowRight') ? 1 : -1;
+    const nextIndex = Math.min(Math.max(index + step, 0), focusables.length - 1);
+    focusManualEl(focusables[nextIndex]);
+  }, true);
+})();
 
 // Вспомогательная функция для скролла в сканере ADB
 function focusAndRevealAdbCard(el, margin = 12) {
