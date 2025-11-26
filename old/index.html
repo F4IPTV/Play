@@ -658,6 +658,9 @@
 			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
           </button>
+          <button onclick="ignoreNextEnter=true;openAdbManualConnectModal()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Ввести IP:порт
+          </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
@@ -752,6 +755,35 @@
     </div>
   </div>
 
+  <!-- Модалка ручного подключения -->
+  <div id="adbManualConnectModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content" style="max-width:420px;">
+      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
+        Ручное подключение ADB
+      </h3>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label for="adbManualHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
+          <input id="adbManualHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
+                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label for="adbManualPortInput" style="font-size:13px;opacity:.85;">Порт ADB (из &laquo;IP address &amp; port&raquo;)</label>
+          <input id="adbManualPortInput" type="number" min="1" max="65535" placeholder="5555"
+                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
+        </div>
+        <div style="font-size:13px;line-height:1.4;opacity:.85;">
+          Введите IP и порт из раздела <strong>Wireless debugging → IP address &amp; port</strong>. Устройство должно быть уже paired или иметь доверенный ключ ADB.
+        </div>
+      </div>
+      <div class="system-buttons" style="justify-content:center;">
+        <button class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
+        <button class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -771,9 +803,10 @@
     let backupQueue = [];
     let backupTarget = "";
     let savedPassword = "";
-    let ignoreNextEnter = false;
+let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
+let lastFocusedElementManualConnect = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -788,7 +821,7 @@ let lastFocusedElementMiscMore = null;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -1139,6 +1172,141 @@ function connectToRemoteAdb(ip, port) {
     showToast({ message: 'Ошибка подключения ADB', type: 'error' });
   }
 }
+
+function attachAdbManualInputHandlers() {
+  ['adbManualHostInput', 'adbManualPortInput'].forEach((id) => {
+    const input = document.getElementById(id);
+    if (input && !input.dataset.manualBound) {
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          submitAdbManualConnect();
+        }
+      });
+      input.dataset.manualBound = '1';
+    }
+  });
+}
+
+function openAdbManualConnectModal() {
+  const modal = document.getElementById('adbManualConnectModal');
+  if (!modal) return;
+  ignoreNextEnter = true;
+  const miscModal = document.getElementById('miscModal');
+  const miscMoreModal = document.getElementById('miscMoreModal');
+  modal.dataset.restoreMisc = '0';
+  modal.dataset.restoreMiscMore = '0';
+  if (miscModal && miscModal.style.display === 'flex') {
+    miscModal.setAttribute('inert', '');
+    miscModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMisc = '1';
+  }
+  if (miscMoreModal && miscMoreModal.style.display === 'flex') {
+    miscMoreModal.setAttribute('inert', '');
+    miscMoreModal.style.pointerEvents = 'none';
+    modal.dataset.restoreMiscMore = '1';
+  }
+  lastFocusedElementManualConnect = document.activeElement;
+  document.activeElement?.blur();
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+
+  const hostInput = document.getElementById('adbManualHostInput');
+  const portInput = document.getElementById('adbManualPortInput');
+  try {
+    const raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
+    if (raw && raw !== 'undefined') {
+      const info = JSON.parse(raw);
+      if (hostInput && !hostInput.value.trim()) hostInput.value = info.host || '';
+      if (portInput && !portInput.value.trim()) {
+        const lastPort = parseInt(info.port, 10);
+        if (Number.isFinite(lastPort) && lastPort > 0) portInput.value = String(lastPort);
+      }
+    }
+  } catch (err) {
+    console.warn('prefill manual connect error', err);
+  }
+
+  attachAdbManualInputHandlers();
+
+  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (portInput || hostInput);
+  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
+}
+
+function closeAdbManualConnectModal() {
+  const modal = document.getElementById('adbManualConnectModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.classList.remove('modal-open');
+
+  let needRestoreModalClass = false;
+
+  if (modal.dataset.restoreMisc === '1') {
+    const misc = document.getElementById('miscModal');
+    if (misc) {
+      misc.removeAttribute('inert');
+      misc.style.pointerEvents = '';
+      if (misc.style.display === 'flex') needRestoreModalClass = true;
+    }
+    modal.dataset.restoreMisc = '0';
+  }
+  if (modal.dataset.restoreMiscMore === '1') {
+    const miscMore = document.getElementById('miscMoreModal');
+    if (miscMore) {
+      miscMore.removeAttribute('inert');
+      miscMore.style.pointerEvents = '';
+      if (miscMore.style.display === 'flex') needRestoreModalClass = true;
+    }
+    modal.dataset.restoreMiscMore = '0';
+  }
+
+  if (needRestoreModalClass) {
+    document.body.classList.add('modal-open');
+  }
+
+  if (lastFocusedElementManualConnect && document.body.contains(lastFocusedElementManualConnect)) {
+    setTimeout(() => lastFocusedElementManualConnect?.focus({ preventScroll: true }), 50);
+  }
+  lastFocusedElementManualConnect = null;
+}
+
+function submitAdbManualConnect() {
+  const hostInput = document.getElementById('adbManualHostInput');
+  const portInput = document.getElementById('adbManualPortInput');
+  const host = hostInput?.value?.trim();
+  if (!host) {
+    showToast({ message: 'Введите IP адрес устройства', type: 'warning' });
+    hostInput?.focus({ preventScroll: true });
+    return;
+  }
+  let port = parseInt(portInput?.value, 10);
+  if (!Number.isFinite(port) || port <= 0) port = 5555;
+  port = Math.min(65535, Math.max(1, port));
+  if (portInput) portInput.value = String(port);
+
+  ignoreNextEnter = true;
+  closeAdbManualConnectModal();
+
+  const ai = window.AndroidInterface;
+  if (ai && typeof ai.connectAdbToHost === 'function') {
+    ai.connectAdbToHost(host, port);
+  } else if (ai && typeof ai.connectAdbTo === 'function') {
+    ai.connectAdbTo(`${host}:${port}`);
+  } else if (ai && typeof ai.connectAdb === 'function') {
+    ai.connectAdb(`${host}:${port}`);
+  } else {
+    showToast({ message: 'Функция подключения ADB недоступна', type: 'error' });
+  }
+}
+
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('adbManualConnectModal');
+  if (!modal || modal.style.display !== 'flex') return;
+  if (event.key === 'Escape' || event.key === 'Back') {
+    event.preventDefault();
+    closeAdbManualConnectModal();
+  }
+});
 
 // Вспомогательная функция для скролла в сканере ADB
 function focusAndRevealAdbCard(el, margin = 12) {
@@ -1754,6 +1922,7 @@ showStatus(`Началась загрузка приложений, ожидай
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
   else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
+      else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
