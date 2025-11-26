@@ -919,7 +919,15 @@
       { id: 1004, command: "reboot recovery", label: "Recovery", icon: "gmd_adb", isEnabled: true, uid: "1f1426c1-1676-4e8b-845c-5349e7a1a9ae" },
       { id: 1005, command: "reboot sideload", label: "Sideload", icon: "gmd_adb", isEnabled: true, uid: "91788dc4-4247-488f-831a-7b0e823d50a3" },
       { id: 1006, command: "reboot update", label: "TWRP", icon: "gmd_adb", isEnabled: true, uid: "f537d6b2-4c49-46ab-affe-7f29e400f7fe" },
-      { id: 1007, command: "reboot -p", label: "Выключение (полное)", icon: "gmd_adb", isEnabled: true, uid: "bdf56bfe-03ba-40b0-bb52-5723e9ee70af" }
+      { id: 1007, command: "reboot -p", label: "Выключение (полное)", icon: "gmd_adb", isEnabled: true, uid: "bdf56bfe-03ba-40b0-bb52-5723e9ee70af" },
+      {
+        id: 1008,
+        command: "am start -a android.intent.action.OPEN_DOCUMENT -c android.intent.category.OPENABLE -t \"application/vnd.android.package-archive\"",
+        label: "Открыть APK файловый диалог",
+        icon: "gmd_adb",
+        isEnabled: true,
+        uid: "d1c3a7ab-8f7a-4c9a-9f5e-commands-open-document"
+      }
     ];
 
     let currentGroup = "";
