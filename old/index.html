@@ -934,6 +934,7 @@ let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
 let lastFocusedElementManualConnect = null;
 let lastFocusedElementAdbCommands = null;
+let lastAdbCommandsTriggerButton = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1815,6 +1816,34 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       requestAnimationFrame(() => el.focus({ preventScroll: true }));
     }
 
+    function buildAdbCommandsHeader(triggerBtn) {
+      const header = document.getElementById('adbCommandsHeader');
+      if (!header) return;
+      header.innerHTML = '';
+      const source = triggerBtn?.closest?.('button, .sys-btn, .card') || triggerBtn || null;
+
+      const icon = source?.querySelector?.('img');
+      if (icon) {
+        const iconClone = icon.cloneNode(true);
+        iconClone.style.height = '26px';
+        iconClone.style.width = '26px';
+        iconClone.style.objectFit = 'contain';
+        header.appendChild(iconClone);
+      } else {
+        const fallbackIcon = document.createElement('img');
+        fallbackIcon.src = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png';
+        fallbackIcon.alt = '';
+        fallbackIcon.style.height = '26px';
+        fallbackIcon.style.width = '26px';
+        fallbackIcon.style.objectFit = 'contain';
+        header.appendChild(fallbackIcon);
+      }
+
+      const title = document.createElement('span');
+      title.textContent = source?.innerText?.trim() || 'ADB команды';
+      header.appendChild(title);
+    }
+
     function openAdbCommandsModal(triggerBtn = null) {
       const modal = document.getElementById('adbCommandsModal');
       if (!modal) return;
@@ -1835,8 +1864,11 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         modal.dataset.restoreMiscMore = '1';
       }
 
-      lastFocusedElementAdbCommands = triggerBtn || document.activeElement;
+      const originBtn = triggerBtn || lastAdbCommandsTriggerButton || document.activeElement;
+      lastFocusedElementAdbCommands = originBtn || document.activeElement;
       document.activeElement?.blur();
+
+      buildAdbCommandsHeader(originBtn);
 
       renderAdbCommandsList();
       modal.style.display = 'flex';
@@ -1892,6 +1924,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (target && document.body.contains(target)) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
+      lastAdbCommandsTriggerButton = null;
     }
 
     function sendAdbCommand(command, label) {
@@ -1915,6 +1948,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
     function openAdbCommandsFromButton(triggerBtn) {
       ignoreNextEnter = true;
+      lastAdbCommandsTriggerButton = triggerBtn || null;
       try {
         if (window.AndroidInterface?.openRunAdbCommandsModal) {
           window.AndroidInterface.openRunAdbCommandsModal();
@@ -2415,10 +2449,10 @@ showStatus(`Началась загрузка приложений, ожидай
 
     function handleBackButton() {
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
-      else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
