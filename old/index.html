@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -657,12 +658,6 @@
 			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
           </button>
-          <button onclick="ignoreNextEnter=true;openAdbPairingModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Pairing (PIN)
-          </button>
-          <button onclick="ignoreNextEnter=true;openAdbManualConnectModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Ввести IP:порт
-          </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
@@ -757,78 +752,6 @@
     </div>
   </div>
 
-  <!-- Модалка ручного подключения -->
-  <div id="adbManualConnectModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content" style="max-width:420px;">
-      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
-        Ручное подключение ADB
-      </h3>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <label for="adbManualHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
-          <input id="adbManualHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
-                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
-        </div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <label for="adbManualPortInput" style="font-size:13px;opacity:.85;">Порт ADB (из "IP address & port")</label>
-          <input id="adbManualPortInput" type="number" min="1" max="65535" placeholder="5555"
-                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
-        </div>
-        <div style="font-size:13px;line-height:1.4;opacity:.85;">
-          Введите IP и порт из раздела <strong>Wireless debugging → IP address & port</strong>. Устройство должно быть уже paired или иметь доверенный ключ ADB.
-        </div>
-      </div>
-      <div class="system-buttons" style="justify-content:center;">
-        <button class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
-        <button class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка pairing по PIN -->
-  <div id="adbPairingModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content" style="max-width:520px;">
-      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
-        ADB Pairing (PIN)
-      </h3>
-      <div class="adb-pairing-body" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
-        <div class="adb-pairing-field" style="display:flex;flex-direction:column;gap:4px;">
-          <label for="adbPairHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
-          <input id="adbPairHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
-                 style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
-        </div>
-        <div class="adb-pairing-split" style="display:flex;gap:12px;flex-wrap:wrap;">
-          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
-            <label for="adbPairPortInput" style="font-size:13px;opacity:.85;">Порт pairing (обычно 37099)</label>
-            <input id="adbPairPortInput" type="number" min="1" max="65535" placeholder="37099"
-                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
-          </div>
-          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
-            <label for="adbPairCodeInput" style="font-size:13px;opacity:.85;">Шестизначный PIN</label>
-            <input id="adbPairCodeInput" type="text" inputmode="numeric" pattern="\\d*" maxlength="6" placeholder="000000"
-                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:20px;letter-spacing:3px;text-align:center;">
-          </div>
-          <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:4px;">
-            <label for="adbPairConnectPortInput" style="font-size:13px;opacity:.85;">Порт подключения (из &laquo;IP address &amp; port&raquo;)</label>
-            <input id="adbPairConnectPortInput" type="number" min="1" max="65535" placeholder="5555"
-                   style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
-          </div>
-        </div>
-        <div class="adb-pairing-hint" style="font-size:13px;line-height:1.4;opacity:.85;">
-          В <strong>Wireless debugging</strong> отображаются два порта: один для pairing, второй (рядом с надписью <em>IP address &amp; port</em>) для ADB-подключения.<br>
-          После успешного pairing подключайтесь по этому ADB-порту через кнопку «ADB (TCP/IP)».
-        </div>
-      </div>
-      <div id="adbPairingStatus" class="adb-pairing-status" style="min-height:20px;text-align:center;font-size:13px;margin-bottom:14px;opacity:.9;"></div>
-      <div class="system-buttons" style="justify-content:center;">
-        <button class="sys-btn" onclick="submitAdbPairing()" type="button">🔗 Начать pairing</button>
-        <button class="sys-btn" onclick="closeAdbPairingModal()" type="button">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Модалка списка компонентов -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -848,12 +771,9 @@
     let backupQueue = [];
     let backupTarget = "";
     let savedPassword = "";
-let ignoreNextEnter = false;
+    let ignoreNextEnter = false;
 let __installMethodApplying = false;
 let lastFocusedElementMiscMore = null;
-let lastFocusedElementPairing = null;
-let lastPairingHost = "";
-let lastPairingConnectPort = 0;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -868,7 +788,7 @@ let lastPairingConnectPort = 0;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbPairingModal','adbManualConnectModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -979,13 +899,12 @@ function refreshLastAdbConnection() {
   const host = (info.host || '').trim();
   const friendly = (info.friendly || '').trim();
   const topLine = friendly || host;
-  const port = Number(info.port || 0);
-  const ipLine = port > 0 ? `${host}:${port}` : host;
+  const ipLine = host;
   btn.innerHTML = topLine
     ? `<span class="adb-last-connection-btn-line1">${topLine}</span>${ipLine ? `<span class="adb-last-connection-btn-line2">${ipLine}</span>` : ''}`
     : '';
   btn.dataset.host = host;
-  btn.dataset.port = port > 0 ? String(port) : '';
+  btn.dataset.port = info.port != null ? String(info.port) : '';
   wrapper.style.display = topLine ? 'block' : 'none';
 }
 
@@ -1001,6 +920,7 @@ function connectToLastAdb() {
 window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
+  resetAdbConnectionState();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
@@ -1219,281 +1139,6 @@ function connectToRemoteAdb(ip, port) {
     showToast({ message: 'Ошибка подключения ADB', type: 'error' });
   }
 }
-
-function openAdbPairingModal() {
-  const modal = document.getElementById('adbPairingModal');
-  if (!modal) return;
-  ignoreNextEnter = true;
-  const miscModal = document.getElementById('miscModal');
-  const miscMoreModal = document.getElementById('miscMoreModal');
-  modal.dataset.restoreMisc = '0';
-  modal.dataset.restoreMiscMore = '0';
-  if (miscModal && miscModal.style.display === 'flex') {
-    miscModal.setAttribute('inert', '');
-    miscModal.style.pointerEvents = 'none';
-    modal.dataset.restoreMisc = '1';
-  }
-  if (miscMoreModal && miscMoreModal.style.display === 'flex') {
-    miscMoreModal.setAttribute('inert', '');
-    miscMoreModal.style.pointerEvents = 'none';
-    modal.dataset.restoreMiscMore = '1';
-  }
-  lastFocusedElementPairing = document.activeElement;
-  modal.style.display = 'flex';
-  document.body.classList.add('modal-open');
-  attachAdbPairingInputHandlers();
-  prefillAdbPairingFields();
-  setAdbPairingStatus('', 'info');
-  const hostInput = document.getElementById('adbPairHostInput');
-  const codeInput = document.getElementById('adbPairCodeInput');
-  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (codeInput || hostInput);
-  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
-}
-
-function closeAdbPairingModal() {
-  const modal = document.getElementById('adbPairingModal');
-  if (!modal) return;
-  modal.style.display = 'none';
-  document.body.classList.remove('modal-open');
-  if (modal.dataset.restoreMisc === '1') {
-    const misc = document.getElementById('miscModal');
-    if (misc) {
-      misc.removeAttribute('inert');
-      misc.style.pointerEvents = '';
-    }
-    modal.dataset.restoreMisc = '0';
-  }
-  if (modal.dataset.restoreMiscMore === '1') {
-    const miscMore = document.getElementById('miscMoreModal');
-    if (miscMore) {
-      miscMore.removeAttribute('inert');
-      miscMore.style.pointerEvents = '';
-    }
-    modal.dataset.restoreMiscMore = '0';
-  }
-  if (lastFocusedElementPairing && document.body.contains(lastFocusedElementPairing)) {
-    lastFocusedElementPairing.focus({ preventScroll: true });
-  }
-  lastFocusedElementPairing = null;
-  setAdbPairingStatus('', 'info');
-  lastPairingHost = '';
-  lastPairingConnectPort = 0;
-}
-
-function prefillAdbPairingFields() {
-  const hostInput = document.getElementById('adbPairHostInput');
-  const portInput = document.getElementById('adbPairPortInput');
-  const connectPortInput = document.getElementById('adbPairConnectPortInput');
-  if (portInput && !portInput.value.trim()) {
-    portInput.value = '37099';
-  }
-  try {
-    const raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
-    if (!raw || raw === 'undefined') return;
-    const info = JSON.parse(raw);
-    const host = (info?.host || '').trim();
-    if (hostInput && host && !hostInput.value.trim()) hostInput.value = host;
-    const lastPort = Number(info?.port || 0);
-    if (connectPortInput && Number.isFinite(lastPort) && lastPort > 0 && !connectPortInput.value.trim()) {
-      connectPortInput.value = String(lastPort);
-    }
-  } catch (e) {
-    console.warn('prefillAdbPairingFields error', e);
-  }
-}
-
-function setAdbPairingStatus(message, type = 'info') {
-  const statusEl = document.getElementById('adbPairingStatus');
-  if (!statusEl) return;
-  const colors = {
-    success: '#4caf50',
-    error: '#ff6b6b',
-    warn: '#ffc107',
-    info: '#d0d7de'
-  };
-  statusEl.style.color = colors[type] || colors.info;
-  statusEl.textContent = message || '';
-}
-
-function submitAdbPairing() {
-  const hostInput = document.getElementById('adbPairHostInput');
-  const portInput = document.getElementById('adbPairPortInput');
-  const codeInput = document.getElementById('adbPairCodeInput');
-  const connectPortInput = document.getElementById('adbPairConnectPortInput');
-  const host = hostInput?.value?.trim();
-  if (!host) {
-    setAdbPairingStatus('Введите IP адрес устройства', 'error');
-    hostInput?.focus();
-    return;
-  }
-  let port = parseInt(portInput?.value, 10);
-  if (!Number.isFinite(port)) port = 37099;
-  port = Math.min(65535, Math.max(1, port));
-  if (portInput) portInput.value = String(port);
-  const rawCode = (codeInput?.value || '').replace(/\s+/g, '');
-  const code = rawCode.replace(/\D/g, '');
-  if (code.length !== 6) {
-    setAdbPairingStatus('PIN должен состоять из 6 цифр', 'error');
-    codeInput?.focus();
-    return;
-  }
-  if (codeInput) codeInput.value = code;
-  let connectPort = parseInt(connectPortInput?.value, 10);
-  if (!Number.isFinite(connectPort) || connectPort <= 0) connectPort = 5555;
-  connectPort = Math.min(65535, Math.max(1, connectPort));
-  if (connectPortInput) connectPortInput.value = String(connectPort);
-  lastPairingHost = host;
-  lastPairingConnectPort = connectPort;
-  const ai = window.AndroidInterface;
-  if (!ai || typeof ai.startAdbPairing !== 'function') {
-    setAdbPairingStatus('Функция pairing недоступна в этой версии приложения', 'error');
-    return;
-  }
-  setAdbPairingStatus('⏳ Отправляю pairing-команду…', 'info');
-  ignoreNextEnter = true;
-  try {
-    ai.startAdbPairing(host, port, code);
-  } catch (err) {
-    console.error('startAdbPairing error', err);
-    setAdbPairingStatus('Не удалось отправить команду pairing', 'error');
-  }
-}
-
-function attachAdbPairingInputHandlers() {
-  const handler = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      submitAdbPairing();
-    }
-  };
-  ['adbPairHostInput', 'adbPairPortInput', 'adbPairCodeInput', 'adbPairConnectPortInput'].forEach((id) => {
-    const input = document.getElementById(id);
-    if (input && !input.dataset.pairingBound) {
-      input.addEventListener('keydown', handler);
-      input.dataset.pairingBound = '1';
-    }
-  });
-}
-
-document.addEventListener('keydown', (event) => {
-  const modal = document.getElementById('adbPairingModal');
-  if (!modal || modal.style.display !== 'flex') return;
-  if (event.key === 'Escape' || event.key === 'Back') {
-    event.preventDefault();
-    closeAdbPairingModal();
-  }
-});
-
-function openAdbManualConnectModal() {
-  const modal = document.getElementById('adbManualConnectModal');
-  if (!modal) return;
-  ignoreNextEnter = true;
-  modal.style.display = 'flex';
-  document.body.classList.add('modal-open');
-  
-  // Подставить последние данные
-  const hostInput = document.getElementById('adbManualHostInput');
-  const portInput = document.getElementById('adbManualPortInput');
-  try {
-    const raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
-    if (raw && raw !== 'undefined') {
-      const info = JSON.parse(raw);
-      if (hostInput && !hostInput.value.trim()) hostInput.value = info.host || '';
-      if (portInput && !portInput.value.trim()) portInput.value = String(info.port || 5555);
-    }
-  } catch (e) {
-    console.warn('prefill manual connect error', e);
-  }
-  
-  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (portInput || hostInput);
-  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
-}
-
-function closeAdbManualConnectModal() {
-  const modal = document.getElementById('adbManualConnectModal');
-  if (!modal) return;
-  modal.style.display = 'none';
-  document.body.classList.remove('modal-open');
-}
-
-function submitAdbManualConnect() {
-  const hostInput = document.getElementById('adbManualHostInput');
-  const portInput = document.getElementById('adbManualPortInput');
-  const host = hostInput?.value?.trim();
-  if (!host) {
-    alert('Введите IP адрес устройства');
-    hostInput?.focus();
-    return;
-  }
-  let port = parseInt(portInput?.value, 10);
-  if (!Number.isFinite(port) || port <= 0) port = 5555;
-  
-  ignoreNextEnter = true;
-  closeAdbManualConnectModal();
-  
-  const ai = window.AndroidInterface;
-  if (ai && typeof ai.connectAdbToHost === 'function') {
-    ai.connectAdbToHost(host, port);
-  } else if (ai && typeof ai.connectAdbTo === 'function') {
-    ai.connectAdbTo(`${host}:${port}`);
-  } else {
-    alert('Функция подключения ADB недоступна');
-  }
-}
-
-// Enter на полях ручного подключения
-['adbManualHostInput', 'adbManualPortInput'].forEach((id) => {
-  const input = document.getElementById(id);
-  if (input && !input.dataset.manualBound) {
-    input.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        submitAdbManualConnect();
-      }
-    });
-    input.dataset.manualBound = '1';
-  }
-});
-
-// Escape для модалки ручного подключения
-document.addEventListener('keydown', (event) => {
-  const modal = document.getElementById('adbManualConnectModal');
-  if (!modal || modal.style.display !== 'flex') return;
-  if (event.key === 'Escape' || event.key === 'Back') {
-    event.preventDefault();
-    closeAdbManualConnectModal();
-  }
-});
-
-attachAdbPairingInputHandlers();
-
-window.__handleAdbPairingStatus = function(message, type) {
-  setAdbPairingStatus(message, type || 'info');
-};
-
-window.__handleAdbPairingCompleted = function(success, message) {
-  setAdbPairingStatus(message || (success ? 'Pairing успешно завершён' : 'Pairing не выполнен'), success ? 'success' : 'error');
-  if (success) {
-    const connectPortInput = document.getElementById('adbPairConnectPortInput');
-    let connectPort = connectPortInput ? parseInt(connectPortInput.value, 10) : lastPairingConnectPort;
-    if (!Number.isFinite(connectPort) || connectPort <= 0) {
-      connectPort = lastPairingConnectPort || 5555;
-    }
-    if (lastPairingHost && Number.isFinite(connectPort) && connectPort > 0) {
-      try {
-        window.AndroidInterface?.rememberAdbPreferredTarget?.(lastPairingHost, connectPort);
-        setAdbPairingStatus(`Pairing завершён. Теперь подключитесь к ${lastPairingHost}:${connectPort}.`, 'success');
-      } catch (err) {
-        console.warn('rememberAdbPreferredTarget error', err);
-      }
-    }
-    setTimeout(() => {
-      try {
-        closeAdbPairingModal();
-      } catch (_) {}
-    }, 1200);
-  }
-};
 
 // Вспомогательная функция для скролла в сканере ADB
 function focusAndRevealAdbCard(el, margin = 12) {
