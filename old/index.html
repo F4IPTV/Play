@@ -1337,7 +1337,14 @@ function connectToLastAdb() {
   const host = btn.dataset.host;
   const port = parseInt(btn.dataset.port || '', 10) || 5555;
   if (!host) return;
-  connectToRemoteAdb(host, port);
+  const scannerModal = document.getElementById('adbScannerModal');
+  const scannerVisible = scannerModal && scannerModal.style.display === 'flex';
+  if (scannerVisible) {
+    closeAdbScanner();
+    setTimeout(() => connectToRemoteAdb(host, port), 150);
+  } else {
+    connectToRemoteAdb(host, port);
+  }
 }
 
 window.refreshLastAdbConnection = refreshLastAdbConnection;
