@@ -974,9 +974,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
           </button>
-			<button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash7.png" alt="" style="height:28px;"><br>Отк/вкл ненужные приложения
-    </button>
+			
 			
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Доступ к памяти
@@ -1024,8 +1022,11 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
+          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash7.png" alt="" style="height:28px;"><br>Откл/вкл системные приложения
+          </button>
            <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех пользователских приложений
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
           </button>
         
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
@@ -1035,7 +1036,7 @@
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Заставка
           </button>
     <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>команды
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>ADB команды
           </button>
         </div>
       </div>
@@ -1199,8 +1200,8 @@
       {
         id: 1008,
         command: "am start -a android.intent.action.OPEN_DOCUMENT -c android.intent.category.OPENABLE -t \"application/vnd.android.package-archive\"",
-        description: "Выбор файлового менеджера",
-        label: "Открыть APK файловый диалог",
+        description: "Диалог выбора файлового менеджера по умолчанию (актуально для GTV)",
+        label: "Выбор проводника по умолчанию",
         icon: "gmd_adb",
         isEnabled: true,
         uid: "d1c3a7ab-8f7a-4c9a-9f5e-commands-open-document"
@@ -1208,8 +1209,8 @@
       {
         id: 1009,
         command: "settings put system screen_off_timeout 3600000",
-        description: "Отключение при бездействии",
-        label: "Экран: 1 час",
+        description: "Включение при бездействии",
+        label: "Заставка: 1 час",
         icon: "gmd_adb",
         isEnabled: true,
         uid: "3fcd28d1-0f6e-4f3a-adb1-screen-timeout"
@@ -1217,7 +1218,7 @@
       {
         id: 1010,
         command: "settings put secure sleep_timeout 28800000",
-        description: "Отключение при просмотре",
+        description: "Переход в сон при бездействии",
         label: "Сон: 8 часов",
         icon: "gmd_adb",
         isEnabled: true,
