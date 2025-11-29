@@ -565,7 +565,14 @@
   transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.adb-command-btn:hover,
+.adb-command-btn:hover {
+  background-color: #3a3a3a;
+  color: #fff;
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: none;
+  outline: none;
+}
+
 .adb-command-btn:focus,
 .adb-command-btn.selected {
   background-color: #00cfff;
@@ -1162,7 +1169,7 @@
       <div class="screen-saver-timeout-body">
         <div class="screen-saver-timeout-field">
           <label id="screenSaverTimeoutLabel">Минуты</label>
-          <input id="screenSaverTimeoutInput" type="number" min="1" max="1440" inputmode="numeric" pattern="[0-9]*" />
+          <input id="screenSaverTimeoutInput" type="text" inputmode="numeric" pattern="[0-9]*" />
           <div class="screen-saver-timeout-hint" id="screenSaverTimeoutHint">Допустимые значения: 1–1440 минут</div>
         </div>
       </div>
@@ -2190,6 +2197,14 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       buildAdbCommandsHeader(originBtn);
 
       renderAdbCommandsList();
+      const closeBtn = document.getElementById('adbCommandsCloseBtn');
+      if (closeBtn && !closeBtn.dataset.focusBound) {
+        closeBtn.dataset.focusBound = '1';
+        closeBtn.addEventListener('focus', () => {
+          document.querySelectorAll('#adbCommandsList .adb-command-btn.selected')
+            .forEach(btn => btn.classList.remove('selected'));
+        });
+      }
       modal.style.display = 'flex';
       document.body.classList.add('modal-open');
 
@@ -3627,7 +3642,7 @@ if (cards.includes(active)) {
           e.preventDefault();
           if (index === 0) {
             container?.scrollTo({ top: 0, behavior: 'auto' });
-            // остаёмся на первом элементе
+            moveFocus(0);
           } else {
             moveFocus(index - 1);
           }
