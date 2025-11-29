@@ -635,6 +635,77 @@
   flex-wrap: wrap;
 }
 
+#screenSaverTimeoutModal .modal-content {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.screen-saver-timeout-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.screen-saver-timeout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.screen-saver-timeout-field label {
+  font-size: 13px;
+  opacity: .85;
+}
+
+#screenSaverTimeoutInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+}
+
+.screen-saver-step-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.screen-saver-step {
+  flex: 1 1 calc(33% - 8px);
+  min-width: 90px;
+  width: auto;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,77,97,0.5);
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.screen-saver-step:focus,
+.screen-saver-step:hover {
+  background-color: #00cfff;
+  color: #000;
+  border-color: #fff;
+  outline: none;
+}
+
+.screen-saver-timeout-hint {
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: left;
+}
+
     
     /* Отключение системного масштабирования шрифтов */
     html {
@@ -990,13 +1061,13 @@
           <h4>Таймеры</h4>
           <div class="screen-saver-row">
             <label>Отключение при бездействии</label>
-            <button id="screenSaverIdleBtn" class="sys-btn" onclick="promptScreenSaverTimeout('screen', this)">
+            <button id="screenSaverIdleBtn" class="sys-btn" onclick="openScreenSaverTimeoutModal('screen')">
               —
             </button>
           </div>
           <div class="screen-saver-row">
             <label>Отключение при просмотре</label>
-            <button id="screenSaverSleepBtn" class="sys-btn" onclick="promptScreenSaverTimeout('sleep', this)">
+            <button id="screenSaverSleepBtn" class="sys-btn" onclick="openScreenSaverTimeoutModal('sleep')">
               —
             </button>
           </div>
@@ -1021,6 +1092,32 @@
         </div>
       </div>
       <button id="screenSaverCloseBtn" class="component-btn" onclick="closeScreenSaverModal()">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Модалка таймаута заставки -->
+  <div id="screenSaverTimeoutModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="screenSaverTimeoutTitle" style="text-align:center;">Изменение таймера</h3>
+      <div class="screen-saver-timeout-body">
+        <div class="screen-saver-timeout-field">
+          <label id="screenSaverTimeoutLabel">Минуты</label>
+          <input id="screenSaverTimeoutInput" type="number" min="1" max="1440" inputmode="numeric" pattern="[0-9]*" />
+          <div class="screen-saver-timeout-hint" id="screenSaverTimeoutHint">Допустимые значения: 1–1440 минут</div>
+        </div>
+        <div class="screen-saver-step-row">
+          <button type="button" id="screenSaverStepMinus10" class="screen-saver-step" data-step="-10" onclick="adjustScreenSaverTimeout(-10)">-10</button>
+          <button type="button" id="screenSaverStepMinus5" class="screen-saver-step" data-step="-5" onclick="adjustScreenSaverTimeout(-5)">-5</button>
+          <button type="button" id="screenSaverStepMinus1" class="screen-saver-step" data-step="-1" onclick="adjustScreenSaverTimeout(-1)">-1</button>
+          <button type="button" id="screenSaverStepPlus1" class="screen-saver-step" data-step="1" onclick="adjustScreenSaverTimeout(1)">+1</button>
+          <button type="button" id="screenSaverStepPlus5" class="screen-saver-step" data-step="5" onclick="adjustScreenSaverTimeout(5)">+5</button>
+          <button type="button" id="screenSaverStepPlus10" class="screen-saver-step" data-step="10" onclick="adjustScreenSaverTimeout(10)">+10</button>
+        </div>
+      </div>
+      <div class="system-buttons" style="justify-content:center;">
+        <button id="screenSaverTimeoutApply" class="sys-btn" onclick="applyScreenSaverTimeout()">Применить</button>
+        <button id="screenSaverTimeoutCancel" class="sys-btn" onclick="closeScreenSaverTimeoutModal()">Отмена</button>
+      </div>
     </div>
   </div>
 
@@ -1074,6 +1171,13 @@
       }
     ];
 
+    const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
+    const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
+    const SCREEN_SAVER_TIMEOUT_LABELS = {
+      screen: 'Отключение при бездействии',
+      sleep: 'Отключение при просмотре'
+    };
+
     let currentGroup = "";
     let cachedConfig = null;
     let lastFocusedElement = null;
@@ -1088,6 +1192,9 @@ let lastFocusedElementManualConnect = null;
 let lastFocusedElementAdbCommands = null;
 let lastAdbCommandsTriggerButton = null;
 let lastScreenSaverTrigger = null;
+let screenSaverTimeoutState = { screen: null, sleep: null };
+let screenSaverTimeoutModalType = null;
+let screenSaverTimeoutReturnEl = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1102,7 +1209,7 @@ let lastScreenSaverTrigger = null;
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -2130,6 +2237,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function closeScreenSaverModal() {
       const modal = document.getElementById('screenSaverModal');
       if (!modal) return;
+      const timeoutModal = document.getElementById('screenSaverTimeoutModal');
+      if (timeoutModal && timeoutModal.style.display === 'flex') {
+        closeScreenSaverTimeoutModal();
+      }
       modal.style.display = 'none';
       document.body.classList.remove('modal-open');
       const target = lastScreenSaverTrigger;
@@ -2164,37 +2275,132 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       currentEl.textContent = data?.current || '—';
 
+      const screenMinutes = msToMinutes(data?.screenTimeoutMs);
+      const sleepMinutes = msToMinutes(data?.sleepTimeoutMs);
+      screenSaverTimeoutState.screen = screenMinutes;
+      screenSaverTimeoutState.sleep = sleepMinutes;
       if (idleBtn) {
-        idleBtn.textContent = formatMinutesLabel(data?.screenTimeoutMs);
+        idleBtn.textContent = formatMinutesLabel(screenMinutes);
       }
       if (sleepBtn) {
-        sleepBtn.textContent = formatMinutesLabel(data?.sleepTimeoutMs);
+        sleepBtn.textContent = formatMinutesLabel(sleepMinutes);
       }
       if (toggleBtn) {
         toggleBtn.textContent = enabled ? 'Отключить заставку' : 'Включить заставку';
       }
     }
 
-    function formatMinutesLabel(ms) {
-      if (!Number.isFinite(ms) || ms <= 0) return '—';
+    function msToMinutes(ms) {
+      if (!Number.isFinite(ms) || ms <= 0) return null;
       const minutes = Math.round(ms / 60000);
-      if (minutes <= 0) return '<1 мин';
+      if (!Number.isFinite(minutes) || minutes <= 0) return null;
+      return minutes;
+    }
+
+    function formatMinutesLabel(minutes) {
+      if (!Number.isFinite(minutes) || minutes <= 0) return '—';
       return `${minutes} мин`;
     }
 
-    function promptScreenSaverTimeout(type, btn) {
-      const label = type === 'screen' ? 'Время бездействия (минуты)' : 'Время просмотра (минуты)';
-      const currentText = btn?.textContent || '';
-      const current = parseInt(currentText, 10) || '';
-      const value = prompt(label, current);
-      if (value === null) return;
-      const minutes = parseInt(value, 10);
+    function openScreenSaverTimeoutModal(type) {
+      const modal = document.getElementById('screenSaverTimeoutModal');
+      if (!modal) return;
+      screenSaverTimeoutModalType = type;
+      const label = SCREEN_SAVER_TIMEOUT_LABELS[type] || 'Таймер';
+      const parent = document.getElementById('screenSaverModal');
+      modal.dataset.restoreScreen = '0';
+      if (parent && parent.style.display === 'flex') {
+        parent.setAttribute('inert', '');
+        parent.style.pointerEvents = 'none';
+        modal.dataset.restoreScreen = '1';
+      }
+      screenSaverTimeoutReturnEl = document.activeElement;
+      document.activeElement?.blur();
+      modal.style.display = 'flex';
+      document.body.classList.add('modal-open');
+      const value = sanitizeScreenSaverMinutes(screenSaverTimeoutState[type], type);
+      setScreenSaverTimeoutInput(value);
+      document.getElementById('screenSaverTimeoutTitle').textContent = label;
+      document.getElementById('screenSaverTimeoutLabel').textContent = `Минуты для: ${label}`;
+      setTimeout(() => {
+        document.getElementById('screenSaverTimeoutInput')?.focus({ preventScroll: true });
+      }, 80);
+    }
+
+    function closeScreenSaverTimeoutModal() {
+      const modal = document.getElementById('screenSaverTimeoutModal');
+      if (!modal || modal.style.display !== 'flex') return;
+      modal.style.display = 'none';
+      if (modal.dataset.restoreScreen === '1') {
+        const parent = document.getElementById('screenSaverModal');
+        if (parent) {
+          parent.removeAttribute('inert');
+          parent.style.pointerEvents = '';
+        }
+        modal.dataset.restoreScreen = '0';
+      }
+      if (!anyModalOpen()) {
+        document.body.classList.remove('modal-open');
+      } else {
+        document.body.classList.add('modal-open');
+      }
+      if (screenSaverTimeoutReturnEl && document.body.contains(screenSaverTimeoutReturnEl)) {
+        screenSaverTimeoutReturnEl.focus({ preventScroll: true });
+      }
+      screenSaverTimeoutReturnEl = null;
+      screenSaverTimeoutModalType = null;
+    }
+
+    function sanitizeScreenSaverMinutes(value, type) {
+      const fallback = SCREEN_SAVER_TIMEOUT_DEFAULTS[type] ?? SCREEN_SAVER_TIMEOUT_DEFAULTS.screen;
+      let minutes = parseInt(value, 10);
       if (!Number.isFinite(minutes) || minutes <= 0) {
-        showToast({ message: 'Введите положительное число минут', type: 'warning' });
+        minutes = fallback;
+      }
+      return clampScreenSaverMinutes(minutes);
+    }
+
+    function clampScreenSaverMinutes(value) {
+      return Math.min(SCREEN_SAVER_TIMEOUT_LIMITS.max, Math.max(SCREEN_SAVER_TIMEOUT_LIMITS.min, value));
+    }
+
+    function setScreenSaverTimeoutInput(value) {
+      const input = document.getElementById('screenSaverTimeoutInput');
+      if (!input) return;
+      input.value = clampScreenSaverMinutes(value);
+    }
+
+    function adjustScreenSaverTimeout(delta) {
+      const input = document.getElementById('screenSaverTimeoutInput');
+      if (!input) return;
+      const type = screenSaverTimeoutModalType || 'screen';
+      const current = parseInt(input.value, 10);
+      const base = Number.isFinite(current) ? current : sanitizeScreenSaverMinutes(screenSaverTimeoutState[type], type);
+      input.value = clampScreenSaverMinutes(base + delta);
+    }
+
+    function applyScreenSaverTimeout() {
+      if (!screenSaverTimeoutModalType) {
+        closeScreenSaverTimeoutModal();
         return;
       }
-      const ms = minutes * 60000;
-      window.AndroidInterface?.setScreenSaverTimeout(type, ms);
+      const input = document.getElementById('screenSaverTimeoutInput');
+      if (!input) return;
+      let minutes = parseInt(input.value, 10);
+      if (!Number.isFinite(minutes)) {
+        showToast({ message: 'Введите значение в минутах', type: 'warning' });
+        input.focus({ preventScroll: true });
+        return;
+      }
+      minutes = clampScreenSaverMinutes(minutes);
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.setScreenSaverTimeout !== 'function') {
+        showToast({ message: 'Функция недоступна', type: 'error' });
+        closeScreenSaverTimeoutModal();
+        return;
+      }
+      ai.setScreenSaverTimeout(screenSaverTimeoutModalType, minutes * 60000);
+      closeScreenSaverTimeoutModal();
     }
 
     function setScreenSaverPackage(pkg) {
@@ -3382,6 +3588,65 @@ if (cards.includes(active)) {
             break;
           }
         }
+      }, true);
+    })();
+
+    (function attachScreenSaverTimeoutNavOnce(){
+      if (window.__screenSaverTimeoutNavBound) return;
+      window.__screenSaverTimeoutNavBound = true;
+
+      document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('screenSaverTimeoutModal');
+        if (!modal || modal.style.display !== 'flex') return;
+
+        const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
+        if (!keys.includes(e.key)) return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        if (e.key === 'Back' || e.key === 'Escape') {
+          e.preventDefault();
+          closeScreenSaverTimeoutModal();
+          return;
+        }
+
+        const focusables = [
+          document.getElementById('screenSaverTimeoutInput'),
+          document.getElementById('screenSaverStepMinus10'),
+          document.getElementById('screenSaverStepMinus5'),
+          document.getElementById('screenSaverStepMinus1'),
+          document.getElementById('screenSaverStepPlus1'),
+          document.getElementById('screenSaverStepPlus5'),
+          document.getElementById('screenSaverStepPlus10'),
+          document.getElementById('screenSaverTimeoutApply'),
+          document.getElementById('screenSaverTimeoutCancel')
+        ].filter(Boolean);
+        if (!focusables.length) return;
+
+        let index = focusables.indexOf(document.activeElement);
+        if (index === -1) {
+          focusables[0].focus({ preventScroll: true });
+          return;
+        }
+
+        if (e.key === 'Enter') {
+          const active = document.activeElement;
+          if (!active) return;
+          e.preventDefault();
+          if (active.dataset?.step) {
+            adjustScreenSaverTimeout(parseInt(active.dataset.step, 10));
+          } else if (active.id === 'screenSaverTimeoutApply') {
+            applyScreenSaverTimeout();
+          } else if (active.id === 'screenSaverTimeoutCancel') {
+            closeScreenSaverTimeoutModal();
+          }
+          return;
+        }
+
+        const delta = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
+        const nextIndex = Math.min(Math.max(index + delta, 0), focusables.length - 1);
+        focusables[nextIndex]?.focus({ preventScroll: true });
       }, true);
     })();
 
