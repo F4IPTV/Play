@@ -584,6 +584,16 @@
   scrollbar-gutter: stable both-edges;
 }
 
+#screenSaverModal .screen-saver-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable both-edges;
+}
+
 .screen-saver-section {
   background: rgba(255,255,255,0.04);
   border-radius: 14px;
@@ -1104,14 +1114,6 @@
           <label id="screenSaverTimeoutLabel">Минуты</label>
           <input id="screenSaverTimeoutInput" type="number" min="1" max="1440" inputmode="numeric" pattern="[0-9]*" />
           <div class="screen-saver-timeout-hint" id="screenSaverTimeoutHint">Допустимые значения: 1–1440 минут</div>
-        </div>
-        <div class="screen-saver-step-row">
-          <button type="button" id="screenSaverStepMinus10" class="screen-saver-step" data-step="-10" onclick="adjustScreenSaverTimeout(-10)">-10</button>
-          <button type="button" id="screenSaverStepMinus5" class="screen-saver-step" data-step="-5" onclick="adjustScreenSaverTimeout(-5)">-5</button>
-          <button type="button" id="screenSaverStepMinus1" class="screen-saver-step" data-step="-1" onclick="adjustScreenSaverTimeout(-1)">-1</button>
-          <button type="button" id="screenSaverStepPlus1" class="screen-saver-step" data-step="1" onclick="adjustScreenSaverTimeout(1)">+1</button>
-          <button type="button" id="screenSaverStepPlus5" class="screen-saver-step" data-step="5" onclick="adjustScreenSaverTimeout(5)">+5</button>
-          <button type="button" id="screenSaverStepPlus10" class="screen-saver-step" data-step="10" onclick="adjustScreenSaverTimeout(10)">+10</button>
         </div>
       </div>
       <div class="system-buttons" style="justify-content:center;">
@@ -2370,15 +2372,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       input.value = clampScreenSaverMinutes(value);
     }
 
-    function adjustScreenSaverTimeout(delta) {
-      const input = document.getElementById('screenSaverTimeoutInput');
-      if (!input) return;
-      const type = screenSaverTimeoutModalType || 'screen';
-      const current = parseInt(input.value, 10);
-      const base = Number.isFinite(current) ? current : sanitizeScreenSaverMinutes(screenSaverTimeoutState[type], type);
-      input.value = clampScreenSaverMinutes(base + delta);
-    }
-
     function applyScreenSaverTimeout() {
       if (!screenSaverTimeoutModalType) {
         closeScreenSaverTimeoutModal();
@@ -3613,12 +3606,6 @@ if (cards.includes(active)) {
 
         const focusables = [
           document.getElementById('screenSaverTimeoutInput'),
-          document.getElementById('screenSaverStepMinus10'),
-          document.getElementById('screenSaverStepMinus5'),
-          document.getElementById('screenSaverStepMinus1'),
-          document.getElementById('screenSaverStepPlus1'),
-          document.getElementById('screenSaverStepPlus5'),
-          document.getElementById('screenSaverStepPlus10'),
           document.getElementById('screenSaverTimeoutApply'),
           document.getElementById('screenSaverTimeoutCancel')
         ].filter(Boolean);
