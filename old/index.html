@@ -441,31 +441,42 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1100px) {
   #installMethodModal .modal-content {
     width: 92%;
-    padding: 20px 16px 18px;
+    padding: 22px 18px 20px;
+    border-radius: 22px;
   }
 
   #installMethodModal h3 {
     text-align: center;
-    font-size: 1.15rem;
-    margin-bottom: 12px;
+    font-size: 1.18rem;
+    margin-bottom: 16px;
   }
 
   #installMethodModal .method-option {
-    margin: 10px 0;
-    padding: 14px;
-    column-gap: 12px;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+    text-align: center;
+    justify-items: center;
+    padding: 16px 14px;
+  }
+
+  #installMethodModal .method-option input[type="radio"] {
+    transform: scale(1.4);
+  }
+
+  #installMethodModal .method-option label {
+    text-align: center;
   }
 
   #installMethodModal .method-option strong {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
   }
 
   #installMethodModal .method-option small {
-    font-size: .9rem;
-    line-height: 1.35;
+    font-size: .92rem;
+    line-height: 1.4;
   }
 
   #installMethodModal .sys-btn {
