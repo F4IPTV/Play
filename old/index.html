@@ -1122,10 +1122,6 @@
             <label>Текущая заставка</label>
             <div id="screenSaverCurrent" class="screen-saver-value">—</div>
           </div>
-        </div>
-
-        <div class="screen-saver-section">
-          <h4>Таймеры</h4>
           <div class="screen-saver-row">
             <label>Запуск заставки</label>
             <button id="screenSaverIdleBtn" class="sys-btn" onclick="openScreenSaverTimeoutModal('screen')">
@@ -1158,7 +1154,6 @@
           </div>
         </div>
       </div>
-      <button id="screenSaverCloseBtn" class="component-btn" onclick="closeScreenSaverModal()">Закрыть</button>
     </div>
   </div>
 
@@ -2295,7 +2290,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       document.body.classList.add('modal-open');
       requestScreenSaverState();
       setTimeout(() => {
-        const focusTarget = modal.querySelector('.screen-saver-body .sys-btn') || document.getElementById('screenSaverCloseBtn');
+    const focusTarget = modal.querySelector('.screen-saver-body .sys-btn');
         focusTarget?.focus({ preventScroll: true });
       }, 80);
     }
@@ -3583,67 +3578,62 @@ if (cards.includes(active)) {
           return;
         }
 
-        const focusables = Array.from(modal.querySelectorAll('button.sys-btn, .component-btn'));
+        const focusables = Array.from(modal.querySelectorAll('.screen-saver-body .sys-btn'));
         if (!focusables.length) return;
+        const container = modal.querySelector('.screen-saver-body');
 
         let index = focusables.indexOf(document.activeElement);
         if (index === -1) {
-          focusables[0].focus({ preventScroll: true });
+          const first = focusables[0];
+          if (first) {
+            container?.scrollTo({ top: 0, behavior: 'auto' });
+            first.focus({ preventScroll: true });
+          }
           return;
         }
 
-        const cols = 2;
-        const total = focusables.length;
-        const row = Math.floor(index / cols);
-        const col = index % cols;
-        const lastRow = Math.floor((total - 1) / cols);
+        const scrollIntoView = (el) => {
+          if (!el || !container) return;
+          const cr = container.getBoundingClientRect();
+          const er = el.getBoundingClientRect();
+          if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
+          else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
+        };
 
         const moveFocus = (targetIndex) => {
+          if (targetIndex < 0 || targetIndex >= focusables.length) return;
           const el = focusables[targetIndex];
           if (!el) return;
-          const container = modal.querySelector('.screen-saver-body');
-          if (container) {
-            const cr = container.getBoundingClientRect();
-            const er = el.getBoundingClientRect();
-            if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
-            else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
+          if (targetIndex === 0) {
+            container?.scrollTo({ top: 0, behavior: 'auto' });
+          } else {
+            scrollIntoView(el);
           }
           el.focus({ preventScroll: true });
         };
 
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            if (row < lastRow) {
-              const nextIndex = Math.min((row + 1) * cols + col, total - 1);
-              moveFocus(nextIndex);
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) return;
-            const prevIndex = Math.max((row - 1) * cols + col, 0);
-            moveFocus(prevIndex);
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
+        const forwardKeys = ['ArrowDown', 'ArrowRight'];
+        const backwardKeys = ['ArrowUp', 'ArrowLeft'];
+
+        if (forwardKeys.includes(e.key)) {
+          e.preventDefault();
+          if (index < focusables.length - 1) moveFocus(index + 1);
+          return;
+        }
+
+        if (backwardKeys.includes(e.key)) {
+          e.preventDefault();
+          if (index === 0) {
+            container?.scrollTo({ top: 0, behavior: 'auto' });
+          } else {
             moveFocus(index - 1);
-            break;
           }
-          case 'ArrowRight': {
-            e.preventDefault();
-            if (col === cols - 1 || index + 1 >= total) return;
-            moveFocus(index + 1);
-            break;
-          }
-          case 'Enter': {
-            e.preventDefault();
-            document.activeElement?.click();
-            break;
-          }
+          return;
+        }
+
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.activeElement?.click();
         }
       }, true);
     })();
@@ -3679,6 +3669,10 @@ if (cards.includes(active)) {
         if (index === -1) {
           focusables[0].focus({ preventScroll: true });
           return;
+        }
+
+        if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
+          e.preventDefault();
         }
 
         if (e.key === 'Enter') {
