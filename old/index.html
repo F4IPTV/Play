@@ -1,220 +1,3 @@
-    (function attachScreenSaverNavOnce(){
-      if (window.__screenSaverNavBound) return;
-      window.__screenSaverNavBound = true;
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('screenSaverModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-
-        const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
-        if (!keys.includes(e.key)) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        if (e.key === 'Back' || e.key === 'Escape') {
-          e.preventDefault();
-          closeScreenSaverModal();
-          return;
-        }
-
-        const focusables = Array.from(modal.querySelectorAll('button.sys-btn, .component-btn'));
-        if (!focusables.length) return;
-
-        let index = focusables.indexOf(document.activeElement);
-        if (index === -1) {
-          focusables[0].focus({ preventScroll: true });
-          return;
-        }
-
-        const cols = 2;
-        const total = focusables.length;
-        const row = Math.floor(index / cols);
-        const col = index % cols;
-        const lastRow = Math.floor((total - 1) / cols);
-
-        const moveFocus = (targetIndex) => {
-          const el = focusables[targetIndex];
-          if (!el) return;
-          const container = modal.querySelector('.screen-saver-body');
-          if (container) {
-            const cr = container.getBoundingClientRect();
-            const er = el.getBoundingClientRect();
-            if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
-            else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
-          }
-          el.focus({ preventScroll: true });
-        };
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            if (row < lastRow) {
-              const nextIndex = Math.min((row + 1) * cols + col, total - 1);
-              moveFocus(nextIndex);
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) return;
-            const prevIndex = Math.max((row - 1) * cols + col, 0);
-            moveFocus(prevIndex);
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
-            moveFocus(index - 1);
-            break;
-          }
-          case 'ArrowRight': {
-            e.preventDefault();
-            if (col === cols - 1 || index + 1 >= total) return;
-            moveFocus(index + 1);
-            break;
-          }
-          case 'Enter': {
-            e.preventDefault();
-            document.activeElement?.click();
-            break;
-          }
-        }
-      }, true);
-    })();
-  <!-- Модалка настроек заставки -->
-  <div id="screenSaverModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content">
-      <h3 id="screenSaverHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:26px;">
-        Заставка
-      </h3>
-      <div class="screen-saver-body">
-        <div class="screen-saver-section">
-          <div class="screen-saver-row">
-            <label>Состояние</label>
-            <div id="screenSaverState" class="screen-saver-value">—</div>
-          </div>
-          <div class="screen-saver-row">
-            <label>Текущая заставка</label>
-            <div id="screenSaverCurrent" class="screen-saver-value">—</div>
-          </div>
-        </div>
-
-        <div class="screen-saver-section">
-          <h4>Таймеры</h4>
-          <div class="screen-saver-row">
-            <label>Отключение при бездействии</label>
-            <button id="screenSaverIdleBtn" class="sys-btn" onclick="promptScreenSaverTimeout('screen', this)">
-              —
-            </button>
-          </div>
-          <div class="screen-saver-row">
-            <label>Отключение при просмотре</label>
-            <button id="screenSaverSleepBtn" class="sys-btn" onclick="promptScreenSaverTimeout('sleep', this)">
-              —
-            </button>
-          </div>
-        </div>
-
-        <div class="screen-saver-section">
-          <h4>Выбор заставки</h4>
-          <div class="screen-saver-actions">
-            <button class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
-            <button class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
-          </div>
-        </div>
-
-        <div class="screen-saver-section">
-          <h4>Управление</h4>
-          <div class="screen-saver-cta">
-            <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
-              Отключить заставку
-            </button>
-            <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс</button>
-          </div>
-        </div>
-      </div>
-      <button id="screenSaverCloseBtn" class="component-btn" onclick="closeScreenSaverModal()">Закрыть</button>
-    </div>
-  </div>
-#screenSaverModal .modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: min(640px, 92vw);
-  max-height: 85vh;
-  overflow: hidden;
-}
-
-#screenSaverModal .screen-saver-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-height: 70vh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable both-edges;
-}
-
-.screen-saver-section {
-  background: rgba(255,255,255,0.04);
-  border-radius: 14px;
-  padding: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.screen-saver-section h4 {
-  margin: 0 0 8px;
-  font-size: 15px;
-  color: #00cfff;
-}
-
-.screen-saver-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.screen-saver-row label {
-  font-size: 14px;
-  opacity: .85;
-}
-
-.screen-saver-value {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.screen-saver-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.screen-saver-actions .sys-btn {
-  flex: 1 1 calc(50% - 10px);
-  min-width: 140px;
-  max-width: 280px;
-}
-
-.screen-saver-cta {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -782,6 +565,76 @@
   width: min(280px, 90%);
 }
 
+#screenSaverModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(640px, 92vw);
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+#screenSaverModal .screen-saver-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable both-edges;
+}
+
+.screen-saver-section {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.screen-saver-section h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #00cfff;
+}
+
+.screen-saver-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.screen-saver-row label {
+  font-size: 14px;
+  opacity: .85;
+}
+
+.screen-saver-value {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.screen-saver-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.screen-saver-actions .sys-btn {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 140px;
+  max-width: 280px;
+}
+
+.screen-saver-cta {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
     
     /* Отключение системного масштабирования шрифтов */
     html {
@@ -1111,6 +964,63 @@
         <div id="adbCommandsList"></div>
         <button id="adbCommandsCloseBtn" class="component-btn" onclick="closeAdbCommandsModal()">Закрыть</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Модалка настроек заставки -->
+  <div id="screenSaverModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="screenSaverHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:26px;">
+        Заставка
+      </h3>
+      <div class="screen-saver-body">
+        <div class="screen-saver-section">
+          <div class="screen-saver-row">
+            <label>Состояние</label>
+            <div id="screenSaverState" class="screen-saver-value">—</div>
+          </div>
+          <div class="screen-saver-row">
+            <label>Текущая заставка</label>
+            <div id="screenSaverCurrent" class="screen-saver-value">—</div>
+          </div>
+        </div>
+
+        <div class="screen-saver-section">
+          <h4>Таймеры</h4>
+          <div class="screen-saver-row">
+            <label>Отключение при бездействии</label>
+            <button id="screenSaverIdleBtn" class="sys-btn" onclick="promptScreenSaverTimeout('screen', this)">
+              —
+            </button>
+          </div>
+          <div class="screen-saver-row">
+            <label>Отключение при просмотре</label>
+            <button id="screenSaverSleepBtn" class="sys-btn" onclick="promptScreenSaverTimeout('sleep', this)">
+              —
+            </button>
+          </div>
+        </div>
+
+        <div class="screen-saver-section">
+          <h4>Выбор заставки</h4>
+          <div class="screen-saver-actions">
+            <button class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
+            <button class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
+          </div>
+        </div>
+
+        <div class="screen-saver-section">
+          <h4>Управление</h4>
+          <div class="screen-saver-cta">
+            <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
+              Отключить заставку
+            </button>
+            <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс</button>
+          </div>
+        </div>
+      </div>
+      <button id="screenSaverCloseBtn" class="component-btn" onclick="closeScreenSaverModal()">Закрыть</button>
     </div>
   </div>
 
@@ -3385,6 +3295,94 @@ if (cards.includes(active)) {
             break;
         }
       });
+    })();
+
+    (function attachScreenSaverNavOnce(){
+      if (window.__screenSaverNavBound) return;
+      window.__screenSaverNavBound = true;
+
+      document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('screenSaverModal');
+        if (!modal || modal.style.display !== 'flex') return;
+
+        const installModal = document.getElementById('installMethodModal');
+        if (installModal && installModal.style.display === 'flex') return;
+
+        const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
+        if (!keys.includes(e.key)) return;
+
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        if (e.key === 'Back' || e.key === 'Escape') {
+          e.preventDefault();
+          closeScreenSaverModal();
+          return;
+        }
+
+        const focusables = Array.from(modal.querySelectorAll('button.sys-btn, .component-btn'));
+        if (!focusables.length) return;
+
+        let index = focusables.indexOf(document.activeElement);
+        if (index === -1) {
+          focusables[0].focus({ preventScroll: true });
+          return;
+        }
+
+        const cols = 2;
+        const total = focusables.length;
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const lastRow = Math.floor((total - 1) / cols);
+
+        const moveFocus = (targetIndex) => {
+          const el = focusables[targetIndex];
+          if (!el) return;
+          const container = modal.querySelector('.screen-saver-body');
+          if (container) {
+            const cr = container.getBoundingClientRect();
+            const er = el.getBoundingClientRect();
+            if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
+            else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
+          }
+          el.focus({ preventScroll: true });
+        };
+
+        switch (e.key) {
+          case 'ArrowDown': {
+            e.preventDefault();
+            if (row < lastRow) {
+              const nextIndex = Math.min((row + 1) * cols + col, total - 1);
+              moveFocus(nextIndex);
+            }
+            break;
+          }
+          case 'ArrowUp': {
+            e.preventDefault();
+            if (row === 0) return;
+            const prevIndex = Math.max((row - 1) * cols + col, 0);
+            moveFocus(prevIndex);
+            break;
+          }
+          case 'ArrowLeft': {
+            e.preventDefault();
+            if (col === 0) return;
+            moveFocus(index - 1);
+            break;
+          }
+          case 'ArrowRight': {
+            e.preventDefault();
+            if (col === cols - 1 || index + 1 >= total) return;
+            moveFocus(index + 1);
+            break;
+          }
+          case 'Enter': {
+            e.preventDefault();
+            document.activeElement?.click();
+            break;
+          }
+        }
+      }, true);
     })();
 
     // Навигация в модалке "Разное" 
