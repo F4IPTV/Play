@@ -2682,9 +2682,16 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (!list) return;
       list.innerHTML = '';
       if (!Array.isArray(entries) || !entries.length) {
-        list.innerHTML = '<div style="opacity:.7;">Лаунчеры не найдены. Подключитесь по ADB и повторите.</div>';
+        const message = launcherState.source === 'adb_error'
+          ? 'Не удалось получить список лаунчеров по ADB. Проверьте подключение и права.'
+          : 'Лаунчеры не найдены. Подключитесь по ADB и повторите.';
+        list.innerHTML = `<div style="opacity:.7;">${message}</div>`;
         if (status) status.textContent = '—';
-        if (hint) hint.textContent = 'Убедитесь, что удалённое устройство подключено по ADB и поддерживает смену лаунчера.';
+        if (hint) {
+          hint.textContent = launcherState.source === 'adb_error'
+            ? 'ADB подключён, но устройство не вернуло список лаунчеров. Попробуйте ещё раз или перезапустите приставку.'
+            : 'Убедитесь, что удалённое устройство подключено по ADB и поддерживает смену лаунчера.';
+        }
         return;
       }
       const current = launcherState.currentComponent;
