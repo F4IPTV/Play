@@ -692,12 +692,13 @@
 .screen-saver-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
+  align-items: center;
 }
 
 .screen-saver-actions .sys-btn {
-  width: 100%;
+  width: min(340px, 100%);
 }
 
 .screen-saver-cta {
@@ -1144,14 +1145,8 @@
         <div class="screen-saver-section">
           <h4>Выбор заставки</h4>
           <div class="screen-saver-actions">
-            <button class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
-            <button class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
-          </div>
-        </div>
-
-        <div class="screen-saver-section">
-          <h4>Управление</h4>
-          <div class="screen-saver-cta">
+            <button id="screenSaverAerialViewsBtn" class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
+            <button id="screenSaverAerialDreamBtn" class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить заставку
             </button>
