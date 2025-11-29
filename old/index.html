@@ -1378,7 +1378,7 @@ let lastScreenSaverTrigger = null;
 let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
-let launcherState = { entries: [], currentComponent: null, systemComponent: null, source: null };
+let launcherState = { entries: [], currentComponent: null, systemComponent: null, source: null, category: null };
 let lastLauncherTrigger = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
@@ -2776,7 +2776,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         entries: data.entries,
         currentComponent: data.currentComponent || null,
         systemComponent: data.systemComponent || null,
-        source: data.source || null
+        source: data.source || null,
+        category: data.category || null
       };
       renderLauncherList(data.entries);
     };
