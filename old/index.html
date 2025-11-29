@@ -389,12 +389,6 @@
   padding-right: 6px;
 }
 
-#installMethodModal .sys-btn {
-  width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-}
-
 #miscMoreModal .modal-content {
   display: flex;
   flex-direction: column;
@@ -3923,8 +3917,6 @@ document.addEventListener('DOMContentLoaded', function() {
 (function attachInstallMethodNavOnce(){
   if (window.__installMethodNavBound) return;
   window.__installMethodNavBound = true;
-
-  let lastIndexBeforeFooter = null;
   
   // Глобальный обработчик для кнопки Back с максимальным приоритетом
   window.addEventListener('keydown', function (e) {
@@ -3957,36 +3949,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const options = Array.from(document.querySelectorAll('#installMethodModal .method-option'));
-    const closeBtn = document.querySelector('#installMethodModal .sys-btn');
     if (!options.length) return;
 
     const cols = 1; // 1 колонка для модалки установки
     const active = document.activeElement;
-
-    // Кнопка "Закрыть"
-    if (active === closeBtn) {
-      switch (e.key) {
-        case 'ArrowUp': {
-          const total = options.length;
-          const lastRow = Math.floor((total - 1) / cols);
-          const lastRowStart = lastRow * cols;
-          const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
-          const targetIndex = Math.min(lastRowStart + col, total - 1);
-          options[targetIndex]?.focus({ preventScroll: true });
-          break;
-        }
-        case 'ArrowDown':
-        case 'ArrowLeft':
-        case 'ArrowRight':
-          break;
-        case 'Enter':
-          closeBtn.click(); break;
-        case 'Back':
-        case 'Escape':
-          closeInstallMethodSettings(); break;
-      }
-      return;
-    }
 
     // Обычная сетка опций
     const index = options.indexOf(active);
@@ -4007,9 +3973,6 @@ document.addEventListener('DOMContentLoaded', function() {
           const nextIndex = (row + 1) * cols + col;
           const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
           options[targetIndex]?.focus({ preventScroll: true });
-        } else {
-          lastIndexBeforeFooter = index;
-          closeBtn?.focus({ preventScroll: true });
         }
         break;
       }
@@ -4126,7 +4089,6 @@ function selectInstallMethod(method, targetElement = null) {
         </label>
       </div>
     </div>
-    <button onclick="closeInstallMethodSettings()" class="sys-btn">Закрыть</button>
   </div>
 </div>
   
