@@ -1269,6 +1269,7 @@ let lastScreenSaverTrigger = null;
 let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
+let currentScreenSaverComponent = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -2359,6 +2360,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       const toggleBtn = document.getElementById('screenSaverToggleBtn');
 
       const enabled = data?.enabled ?? false;
+      currentScreenSaverComponent = typeof data?.component === 'string' && data.component.trim().length ? data.component : null;
       stateEl.textContent = enabled ? 'Включена' : 'Отключена';
       stateEl.style.color = enabled ? '#00e676' : '#ff5252';
 
@@ -2489,7 +2491,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function RunScreenSaverSettings() {
-      window.AndroidInterface?.runScreenSaverPreview?.();
+      const component = currentScreenSaverComponent || '';
+      window.AndroidInterface?.runScreenSaverPreview?.(component);
     }
 
     function toggleScreenSaver() {
