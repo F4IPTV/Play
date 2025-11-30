@@ -1223,6 +1223,24 @@
         icon: "gmd_adb",
         isEnabled: true,
         uid: "12dc0a6d-7fb2-4149-adb1-sleep-timeout"
+      },
+      {
+        id: 1011,
+        command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx",
+        description: "Возврат системного лаунчера Google TV Home из отключённых/удалённых",
+        label: "Включить Google TV Home",
+        icon: "gmd_tv",
+        isEnabled: true,
+        uid: "launcher-restore-google-tv"
+      },
+      {
+        id: 1012,
+        command: "cmd package install-existing com.google.android.tvlauncher || pm install-existing com.google.android.tvlauncher; cmd package enable --user 0 com.google.android.tvlauncher; pm enable --user 0 com.google.android.tvlauncher; cmd package enable com.google.android.tvlauncher",
+        description: "Возврат классического Android TV Home из отключённых/удалённых",
+        label: "Включить Android TV Home",
+        icon: "gmd_tv",
+        isEnabled: true,
+        uid: "launcher-restore-android-tv"
       }
     ];
 
