@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru" class="splash-open" style="overflow:hidden;">
 <head>
@@ -360,133 +359,6 @@
 
     /* Сделаем «Закрыть» видимой как "низ списка" */
     #autostartCloseBtn { margin: 12px auto 0; width: 100%; max-width: 320px; }
-
-    /* Модалка выбора лаунчера */
-    #launcherModal .modal-content {
-      width: min(640px, 92vw);
-      max-height: 85vh;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    #launcherStatus {
-      font-size: 13px;
-      text-align: center;
-      opacity: .8;
-      min-height: 18px;
-    }
-
-    #launcherModal .launcher-body {
-      flex: 1;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-gutter: stable both-edges;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .launcher-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .launcher-card {
-      width: 100%;
-      border-radius: 14px;
-      border: 2px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      padding: 14px 16px;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
-    }
-
-    .launcher-card:focus {
-      border-color: #00cfff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-      outline: none;
-    }
-
-    .launcher-card:hover {
-      background-color: rgba(0,207,255,0.12);
-    }
-
-    .launcher-card--current {
-      border-color: #00cfff;
-      background-color: rgba(0,207,255,0.08);
-    }
-
-    .launcher-card__label {
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    .launcher-card__package {
-      font-size: 13px;
-      opacity: .8;
-      word-break: break-all;
-    }
-
-    .launcher-card__meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .launcher-card__badges {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .launcher-badge {
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
-    .launcher-card__status {
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .launcher-card__status--enabled {
-      color: #00e676;
-    }
-
-    .launcher-card__status--disabled {
-      color: #ff7043;
-    }
-
-    .launcher-card__status--missing {
-      color: #ffca28;
-    }
-
-    .launcher-empty {
-      text-align: center;
-      opacity: .75;
-      padding: 30px 0;
-      font-size: 14px;
-    }
-
-    .launcher-loader {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      opacity: .8;
-    }
 
 
      /* Красим имя приложения*/
@@ -1166,9 +1038,6 @@
     <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>ADB команды
           </button>
-    <button onclick="openLauncherModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Выбор лаунчера
-          </button>
         </div>
       </div>
     </div>
@@ -1289,24 +1158,6 @@
     </div>
   </div>
 
-  <!-- Модалка выбора лаунчера -->
-  <div id="launcherModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content">
-      <h3 id="launcherModalHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:26px;">
-        Выбор лаунчера
-      </h3>
-      <div id="launcherStatus">Ожидание данных…</div>
-      <div class="launcher-body">
-        <div id="launcherList" class="launcher-list"></div>
-      </div>
-      <div class="system-buttons" style="justify-content:center;">
-        <button id="launcherRefreshBtn" class="sys-btn" onclick="requestLauncherInventory(true)">↻ Обновить список</button>
-        <button id="launcherCloseBtn" class="sys-btn" onclick="closeLauncherModal()">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Модалка таймаута заставки -->
   <div id="screenSaverTimeoutModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
@@ -1381,78 +1232,6 @@
       screen: 'Отключение при бездействии',
       sleep: 'Отключение при просмотре'
     };
-    const KNOWN_LAUNCHERS = [
-      {
-        id: 'google_tv_home',
-        label: 'Google TV Home',
-        packageName: 'com.google.android.apps.tv.launcherx',
-        componentName: 'com.google.android.apps.tv.launcherx/.home.HomeActivity',
-        type: 'system_google',
-        badges: ['Google TV', 'System']
-      },
-      {
-        id: 'android_tv_home',
-        label: 'Android TV Home',
-        packageName: 'com.google.android.tvlauncher',
-        componentName: 'com.google.android.tvlauncher/.MainActivity',
-        type: 'system_android',
-        badges: ['Android TV', 'System']
-      },
-      {
-        id: 'projectivy',
-        label: 'Projectivy Launcher',
-        packageName: 'com.spocky.projengmenu',
-        componentName: null,
-        type: 'third_party',
-        badges: ['Projectivy']
-      },
-      {
-        id: 'flauncher',
-        label: 'FLauncher',
-        packageName: 'me.efesser.flauncher',
-        componentName: null,
-        type: 'third_party',
-        badges: ['Open Source']
-      },
-      {
-        id: 'wolf_launcher',
-        label: 'Wolf Launcher',
-        packageName: 'com.wolf.firelauncher',
-        componentName: null,
-        type: 'third_party',
-        badges: ['Popular']
-      },
-      {
-        id: 'ugoos_launcher',
-        label: 'Ugoos TV Launcher',
-        packageName: 'com.app.ugooslauncher',
-        componentName: null,
-        type: 'third_party',
-        badges: ['Ugoos']
-      },
-      {
-        id: 'atv_launcher_free',
-        label: 'ATV Launcher (free)',
-        packageName: 'ca.dstudio.atvlauncher.free',
-        componentName: null,
-        type: 'third_party',
-        badges: ['ATV']
-      },
-      {
-        id: 'top_tv_launcher2',
-        label: 'Top TV Launcher 2',
-        packageName: 'dxidev.toptvlauncher2',
-        componentName: null,
-        type: 'third_party',
-        badges: ['Top TV']
-      }
-    ];
-
-    const LAUNCHER_TYPE_BADGES = {
-      system_google: ['Google TV'],
-      system_android: ['Android TV'],
-      third_party: ['Сторонний']
-    };
 
     let currentGroup = "";
     let cachedConfig = null;
@@ -1471,14 +1250,6 @@ let lastScreenSaverTrigger = null;
 let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
-let lastLauncherModalTrigger = null;
-let launcherModalState = {
-  loading: false,
-  items: [],
-  error: null,
-  inFlight: false,
-  currentComponent: null
-};
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1493,7 +1264,7 @@ let launcherModalState = {
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal','launcherModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -2706,313 +2477,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       window.AndroidInterface?.resetScreenSaverSettings();
     }
 
-    function getLauncherMeta(packageName) {
-      return KNOWN_LAUNCHERS.find(item => item.packageName === packageName);
-    }
-
-    function buildLauncherBadges(meta) {
-      const badges = new Set();
-      (LAUNCHER_TYPE_BADGES[meta?.type] || []).forEach(b => badges.add(b));
-      (meta?.badges || []).forEach(b => badges.add(b));
-      return Array.from(badges);
-    }
-
-    function openLauncherModal(triggerBtn = null) {
-      const modal = document.getElementById('launcherModal');
-      if (!modal) return;
-      lastLauncherModalTrigger = triggerBtn || document.activeElement;
-      launcherModalState.loading = true;
-      launcherModalState.error = null;
-      launcherModalState.items = [];
-      renderLauncherList();
-      modal.style.display = 'flex';
-      document.body.classList.add('modal-open');
-      document.activeElement?.blur();
-      requestLauncherInventory(true);
-    }
-
-    function closeLauncherModal() {
-      const modal = document.getElementById('launcherModal');
-      if (!modal) return;
-      modal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-      if (lastLauncherModalTrigger && document.body.contains(lastLauncherModalTrigger)) {
-        setTimeout(() => lastLauncherModalTrigger.focus({ preventScroll: true }), 60);
-      }
-      lastLauncherModalTrigger = null;
-    }
-
-    function requestLauncherInventory(showSpinner = false) {
-      if (showSpinner) {
-        launcherModalState.loading = true;
-        renderLauncherList();
-      }
-      const ai = window.AndroidInterface;
-      if (!ai || typeof ai.requestLauncherInventory !== 'function') {
-        launcherModalState.loading = false;
-        launcherModalState.error = 'Функция недоступна в этой сборке';
-        renderLauncherList();
-        return;
-      }
-      try {
-        const payload = KNOWN_LAUNCHERS.map(item => ({
-          packageName: item.packageName,
-          componentName: item.componentName || null,
-          type: item.type || 'third_party'
-        }));
-        ai.requestLauncherInventory(JSON.stringify(payload));
-      } catch (err) {
-        launcherModalState.loading = false;
-        launcherModalState.error = 'Не удалось запросить данные';
-        renderLauncherList();
-      }
-    }
-
-    function renderLauncherList() {
-      const list = document.getElementById('launcherList');
-      const status = document.getElementById('launcherStatus');
-      if (!list || !status) return;
-      list.innerHTML = '';
-      if (launcherModalState.loading) {
-        status.innerHTML = `<span class="launcher-loader"><span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" alt="" style="height:18px;"></span>Получаем список лаунчеров…</span>`;
-        const placeholder = document.createElement('div');
-        placeholder.className = 'launcher-empty';
-        placeholder.textContent = 'Идет проверка пакетов...';
-        list.appendChild(placeholder);
-        return;
-      }
-
-      if (launcherModalState.error) {
-        status.textContent = launcherModalState.error;
-      } else if (launcherModalState.items.length) {
-        status.textContent = 'Нажмите на лаунчер, чтобы включить или отключить его';
-      } else {
-        status.textContent = 'Подходящих лаунчеров не обнаружено';
-      }
-
-      const stateMap = new Map((launcherModalState.items || []).map(item => [item.packageName, item]));
-      const merged = KNOWN_LAUNCHERS.map(meta => {
-        const state = stateMap.get(meta.packageName) || {
-          packageName: meta.packageName,
-          componentName: meta.componentName || null,
-          type: meta.type || null,
-          installed: false,
-          enabled: false,
-          isCurrent: false
-        };
-        return { meta, state };
-      });
-
-      if (!merged.length) {
-        const empty = document.createElement('div');
-        empty.className = 'launcher-empty';
-        empty.textContent = launcherModalState.error || 'На устройстве нет лаунчеров из списка';
-        list.appendChild(empty);
-        return;
-      }
-
-      merged.forEach(({ meta, state }) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'launcher-card';
-        if (state.isCurrent) btn.classList.add('launcher-card--current');
-        btn.setAttribute('tabindex', '0');
-        btn.dataset.packageName = meta.packageName;
-
-        const label = document.createElement('div');
-        label.className = 'launcher-card__label';
-        label.textContent = meta.label || meta.packageName;
-
-        const pkgRow = document.createElement('div');
-        pkgRow.className = 'launcher-card__package';
-        pkgRow.textContent = meta.packageName;
-
-        const metaRow = document.createElement('div');
-        metaRow.className = 'launcher-card__meta';
-
-        const badgesWrap = document.createElement('div');
-        badgesWrap.className = 'launcher-card__badges';
-        const badges = buildLauncherBadges(meta);
-        badges.forEach(text => {
-          const badge = document.createElement('span');
-          badge.className = 'launcher-badge';
-          badge.textContent = text;
-          badgesWrap.appendChild(badge);
-        });
-
-        const statusNode = document.createElement('div');
-        let statusClass = 'launcher-card__status ';
-        let statusLabel;
-        const isInstalled = !!state.installed;
-        if (!isInstalled) {
-          statusClass += 'launcher-card__status--missing';
-          statusLabel = 'Не установлен';
-        } else if (state.enabled) {
-          statusClass += 'launcher-card__status--enabled';
-          statusLabel = 'Включен';
-        } else {
-          statusClass += 'launcher-card__status--disabled';
-          statusLabel = 'Отключен';
-        }
-        statusNode.className = statusClass.trim();
-        statusNode.textContent = statusLabel;
-
-        metaRow.append(badgesWrap, statusNode);
-        btn.append(label, pkgRow, metaRow);
-
-        btn.addEventListener('click', () => applyLauncherSelection(meta));
-        btn.addEventListener('focus', () => {
-          document.querySelectorAll('#launcherList .launcher-card').forEach(card => card.classList.remove('selected'));
-          btn.classList.add('selected');
-          adjustLauncherCardVisibility(btn);
-        });
-
-        list.appendChild(btn);
-      });
-    }
-
-    function applyLauncherSelection(meta) {
-      if (!meta || launcherModalState.inFlight) return;
-      const ai = window.AndroidInterface;
-      if (!ai || typeof ai.applyKnownLauncherSelection !== 'function') {
-        showToast({ message: 'Функция недоступна', type: 'error' });
-        return;
-      }
-      launcherModalState.inFlight = true;
-      setTimeout(() => { launcherModalState.inFlight = false; }, 1500);
-      const payload = {
-        packageName: meta.packageName,
-        componentName: meta.componentName || null,
-        type: meta.type || 'third_party',
-        label: meta.label || meta.packageName
-      };
-      try {
-        ai.applyKnownLauncherSelection(JSON.stringify(payload));
-      } catch (err) {
-        showToast({ message: 'Не удалось отправить команду', type: 'error' });
-        launcherModalState.inFlight = false;
-      }
-    }
-
-    window.applyLauncherInventory = function(payload) {
-      let data = payload;
-      try {
-        if (typeof payload === 'string') data = JSON.parse(payload);
-      } catch (err) {
-        data = null;
-      }
-      if (!data || typeof data !== 'object') return;
-      launcherModalState.loading = false;
-      launcherModalState.error = data.error || null;
-      launcherModalState.currentComponent = data.currentComponent || null;
-      launcherModalState.items = Array.isArray(data.items) ? data.items : [];
-      renderLauncherList();
-      setTimeout(() => {
-        const firstCard = document.querySelector('#launcherList .launcher-card');
-        if (firstCard) {
-          adjustLauncherCardVisibility(firstCard, 12, true);
-        } else {
-          document.getElementById('launcherRefreshBtn')?.focus({ preventScroll: true });
-        }
-      }, 80);
-    };
-
-    function adjustLauncherCardVisibility(el, margin = 12, focusAfter = false) {
-      if (!el) return;
-      const container = document.querySelector('#launcherModal .launcher-body');
-      if (!container) {
-        if (focusAfter) requestAnimationFrame(() => el.focus({ preventScroll: true }));
-        return;
-      }
-      const cr = container.getBoundingClientRect();
-      const er = el.getBoundingClientRect();
-      if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
-      else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
-      if (focusAfter) {
-        requestAnimationFrame(() => el.focus({ preventScroll: true }));
-      }
-    }
-
-    (function attachLauncherNavOnce(){
-      if (window.__launcherNavBound) return;
-      window.__launcherNavBound = true;
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('launcherModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const allowed = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
-        if (!allowed.includes(e.key)) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const cards = Array.from(modal.querySelectorAll('.launcher-card'));
-        const footerBtns = Array.from(modal.querySelectorAll('.system-buttons .sys-btn'));
-        const active = document.activeElement;
-
-        if (e.key === 'Back' || e.key === 'Escape') {
-          e.preventDefault();
-          closeLauncherModal();
-          return;
-        }
-
-        if (footerBtns.includes(active)) {
-          const idx = footerBtns.indexOf(active);
-          switch (e.key) {
-            case 'ArrowLeft':
-              e.preventDefault();
-              footerBtns[(idx - 1 + footerBtns.length) % footerBtns.length].focus({ preventScroll: true });
-              return;
-            case 'ArrowRight':
-              e.preventDefault();
-              footerBtns[(idx + 1) % footerBtns.length].focus({ preventScroll: true });
-              return;
-            case 'ArrowUp':
-              e.preventDefault();
-              if (cards.length) adjustLauncherCardVisibility(cards[cards.length - 1], 12, true);
-              return;
-            case 'Enter':
-              return; // default click
-          }
-        }
-
-        if (!cards.length) return;
-        const index = cards.indexOf(active);
-        if (index === -1 && e.key.startsWith('Arrow')) {
-          e.preventDefault();
-          adjustLauncherCardVisibility(cards[0], 12, true);
-          return;
-        }
-
-        if (e.key === 'Enter') return;
-
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (index < cards.length - 1) {
-            adjustLauncherCardVisibility(cards[index + 1], 12, true);
-          } else if (footerBtns.length) {
-            footerBtns[0].focus({ preventScroll: true });
-          }
-          return;
-        }
-
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (index <= 0) {
-            adjustLauncherCardVisibility(cards[0], 12, true);
-          } else {
-            adjustLauncherCardVisibility(cards[index - 1], 12, true);
-          }
-          return;
-        }
-
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-          e.preventDefault();
-        }
-      }, true);
-    })();
-
     // === Конфиг (только новый формат) и рендер групп ===
     function getConfigUrl() {
       // URL конфига всегда приходит из приложения
@@ -3504,7 +2968,6 @@ showStatus(`Началась загрузка приложений, ожидай
       if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
-      else if (document.getElementById('launcherModal')?.style.display === 'flex') closeLauncherModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
@@ -4640,5 +4103,3 @@ function selectInstallMethod(method, targetElement = null) {
   
 </body>
 </html>
-
-
