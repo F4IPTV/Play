@@ -469,6 +469,10 @@
       color: #ff7043;
     }
 
+    .launcher-card__status--missing {
+      color: #ffca28;
+    }
+
     .launcher-empty {
       text-align: center;
       opacity: .75;
@@ -2781,18 +2785,23 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (launcherModalState.error) {
         status.textContent = launcherModalState.error;
       } else if (launcherModalState.items.length) {
-        status.textContent = 'Выберите лаунчер и подтвердите выбор';
+        status.textContent = 'Нажмите на лаунчер, чтобы включить или отключить его';
       } else {
         status.textContent = 'Подходящих лаунчеров не обнаружено';
       }
 
-      const merged = KNOWN_LAUNCHERS
-        .map(meta => {
-          const state = launcherModalState.items.find(item => item.packageName === meta.packageName);
-          if (!state) return null;
-          return { meta, state };
-        })
-        .filter(Boolean);
+      const stateMap = new Map((launcherModalState.items || []).map(item => [item.packageName, item]));
+      const merged = KNOWN_LAUNCHERS.map(meta => {
+        const state = stateMap.get(meta.packageName) || {
+          packageName: meta.packageName,
+          componentName: meta.componentName || null,
+          type: meta.type || null,
+          installed: false,
+          enabled: false,
+          isCurrent: false
+        };
+        return { meta, state };
+      });
 
       if (!merged.length) {
         const empty = document.createElement('div');
@@ -2832,8 +2841,21 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         });
 
         const statusNode = document.createElement('div');
-        statusNode.className = 'launcher-card__status ' + (state.enabled ? 'launcher-card__status--enabled' : 'launcher-card__status--disabled');
-        statusNode.textContent = state.enabled ? 'Включен' : 'Выключен';
+        let statusClass = 'launcher-card__status ';
+        let statusLabel;
+        const isInstalled = !!state.installed;
+        if (!isInstalled) {
+          statusClass += 'launcher-card__status--missing';
+          statusLabel = 'Не установлен';
+        } else if (state.enabled) {
+          statusClass += 'launcher-card__status--enabled';
+          statusLabel = 'Включен';
+        } else {
+          statusClass += 'launcher-card__status--disabled';
+          statusLabel = 'Отключен';
+        }
+        statusNode.className = statusClass.trim();
+        statusNode.textContent = statusLabel;
 
         metaRow.append(badgesWrap, statusNode);
         btn.append(label, pkgRow, metaRow);
@@ -4618,3 +4640,5 @@ function selectInstallMethod(method, targetElement = null) {
   
 </body>
 </html>
+
+
