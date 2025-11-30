@@ -1151,6 +1151,7 @@
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить заставку
             </button>
+          <button class="sys-btn" onclick="RunScreenSaverSettings()">Проверка заставки</button>
             <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс настроек заставки</button>
           </div>
         </div>
@@ -2485,6 +2486,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function setScreenSaverPackage(pkg) {
       if (!pkg) return;
       window.AndroidInterface?.setScreenSaverPackage(pkg);
+    }
+
+    function RunScreenSaverSettings() {
+      window.AndroidInterface?.runScreenSaverPreview?.();
     }
 
     function toggleScreenSaver() {
