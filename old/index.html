@@ -2487,7 +2487,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyManageStorageAccess() {
       runAdbBatch({
         items: MANAGE_STORAGE_PACKAGES,
-        startMessage: `Выдаём доступ ко всем файлам (${MANAGE_STORAGE_PACKAGES.length})`,
         doneMessage: 'Доступ ко всем файлам выдан',
         emptyMessage: 'Нет пакетов для выдачи доступа к файлам',
         buildCommands: (pkg) => ({
@@ -2503,7 +2502,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyOverlayAccess() {
       runAdbBatch({
         items: OVERLAY_PACKAGES,
-        startMessage: `Разрешаем отображение поверх окон (${OVERLAY_PACKAGES.length})`,
         doneMessage: 'Разрешение на overlay обновлено',
         emptyMessage: 'Нет пакетов для overlay',
         buildCommands: (pkg) => ({
@@ -2519,7 +2517,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyWriteSettingsAccess() {
       runAdbBatch({
         items: WRITE_SETTINGS_PACKAGES,
-        startMessage: `Выдаём право изменить системные настройки (${WRITE_SETTINGS_PACKAGES.length})`,
         doneMessage: 'WRITE_SETTINGS обновлены',
         emptyMessage: 'Нет пакетов для WRITE_SETTINGS',
         buildCommands: (pkg) => ({
@@ -2535,7 +2532,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyExactAlarmAccess() {
       runAdbBatch({
         items: EXACT_ALARM_PACKAGES,
-        startMessage: `Разрешаем точные будильники (${EXACT_ALARM_PACKAGES.length})`,
         doneMessage: 'SCHEDULE_EXACT_ALARM обновлены',
         emptyMessage: 'Нет пакетов для точных будильников',
         buildCommands: (pkg) => ({
@@ -2551,7 +2547,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyNotificationListeners() {
       runAdbBatch({
         items: NOTIFICATION_LISTENER_SERVICES,
-        startMessage: `Выдаём доступ к уведомлениям (${NOTIFICATION_LISTENER_SERVICES.length})`,
         doneMessage: 'Доступ к уведомлениям выдан',
         emptyMessage: 'Нет сервисов для выдачи доступа к уведомлениям',
         buildCommands: (entry) => {
