@@ -1033,6 +1033,27 @@
           <button onclick="ignoreNextEnter=true;applyBatteryOptimizationWhitelist()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Экономия энергии
           </button>
+          <button onclick="ignoreNextEnter=true;applyUsageStatsAccess()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>История использования
+          </button>
+          <button onclick="ignoreNextEnter=true;openNotificationAccessSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Экран уведомлений
+          </button>
+          <button onclick="ignoreNextEnter=true;applyNotificationListeners()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Уведомления (ADB)
+          </button>
+          <button onclick="ignoreNextEnter=true;applyManageStorageAccess()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доступ к файлам
+          </button>
+          <button onclick="ignoreNextEnter=true;applyOverlayAccess()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Поверх всех окон
+          </button>
+          <button onclick="ignoreNextEnter=true;applyWriteSettingsAccess()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Сист. настройки
+          </button>
+          <button onclick="ignoreNextEnter=true;applyExactAlarmAccess()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>Точные будильники
+          </button>
         
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
@@ -1260,6 +1281,38 @@
       "org.amnezia.awg",
       "org.acestream.live",
       "org.acestream.core.atv"
+    ];
+    const USAGE_STATS_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "org.acestream.media",
+      "org.acestream.start",
+      "org.acestream.core",
+      "ru.yourok.torrserve",
+      "com.anydesk.anydeskandroid",
+      "io.github.romanvht.byedpi",
+      "org.amnezia.awg",
+      "org.acestream.live",
+      "org.acestream.core.atv"
+    ];
+    const MANAGE_STORAGE_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "ru.yourok.torrserve",
+      "com.anydesk.anydeskandroid"
+    ];
+    const OVERLAY_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "com.anydesk.anydeskandroid"
+    ];
+    const WRITE_SETTINGS_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "org.acestream.media"
+    ];
+    const EXACT_ALARM_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "org.amnezia.awg"
+    ];
+    const NOTIFICATION_LISTENER_SERVICES = [
+      // { pkg: "com.example.app", service: "com.example.app/.MyNotificationService" }
     ];
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
@@ -2314,48 +2367,237 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyBatteryOptimizationWhitelist() {
-      ignoreNextEnter = true;
-      const targets = (BATTERY_WHITELIST_PACKAGES || [])
-        .map(pkg => (pkg || '').trim())
-        .filter(Boolean);
-      if (!targets.length) {
-        showToast({ message: 'Список приложений пуст', type: 'warning' });
-        return;
-      }
-      const ai = window.AndroidInterface;
-      if (!ai || typeof ai.runAdbShellCommand !== 'function') {
-        showToast({ message: 'ADB недоступен в этом режиме', type: 'error' });
-        return;
-      }
-
-      let index = 0;
-      showToast({ message: `Добавляем ${targets.length} приложений в исключения энергосбережения`, type: 'info', duration: 4000 });
-
-      const runNext = () => {
-        if (index >= targets.length) {
-          showToast({ message: 'Готово: исключения энергосбережения обновлены', type: 'success' });
-          showStatus('✅ Приложения добавлены в исключения энергосбережения', '#00cfff', 4000);
-          return;
-        }
-
-        const pkg = targets[index++];
-        const cmd = `dumpsys deviceidle whitelist +${pkg}`;
-        try {
-          ai.runAdbShellCommand(cmd, `Whitelist ${pkg}`);
+      runAdbBatch({
+        items: BATTERY_WHITELIST_PACKAGES,
+        startMessage: `Добавляем ${BATTERY_WHITELIST_PACKAGES.length} приложений в исключения энергосбережения`,
+        doneMessage: 'Исключения энергосбережения обновлены',
+        emptyMessage: 'Список приложений пуст',
+        perItemStatus: (pkg) => {
           showStatus(
             `⚡ ${pkg}: добавление в исключения <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`,
             "#00cfff",
             2500
           );
-        } catch (err) {
-          console.warn('Battery whitelist error', err);
-          showToast({ message: `Не удалось обработать ${pkg}`, type: 'error' });
-        }
+        },
+        buildCommands: (pkg) => ({
+          command: `dumpsys deviceidle whitelist +${pkg}`,
+          label: `Whitelist ${pkg}`
+        }),
+        doneStatusMessage: 'Приложения добавлены в исключения энергосбережения'
+      });
+    }
 
-        setTimeout(runNext, 450);
+    function getAdbInterfaceOrWarn(actionLabel) {
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.runAdbShellCommand !== 'function') {
+        const message = actionLabel
+          ? `ADB недоступен: ${actionLabel}`
+          : 'ADB недоступен в этом режиме';
+        showToast({ message, type: 'error' });
+        return null;
+      }
+      return ai;
+    }
+
+    function runAdbBatch(options = {}) {
+      ignoreNextEnter = true;
+      const {
+        items = [],
+        buildCommands = () => [],
+        startMessage = '',
+        doneMessage = '',
+        doneStatusMessage = '',
+        emptyMessage = 'Список пуст',
+        adbActionLabel = '',
+        perItemStatus = null,
+        delay = 450
+      } = options;
+
+      const queue = (items || [])
+        .map(item => typeof item === 'string' ? item.trim() : item)
+        .filter(item => {
+          if (typeof item === 'string') return item.length > 0;
+          return !!item;
+        });
+
+      if (!queue.length) {
+        if (emptyMessage) showToast({ message: emptyMessage, type: 'warning' });
+        return;
+      }
+
+      const ai = getAdbInterfaceOrWarn(adbActionLabel || startMessage || 'операция');
+      if (!ai) return;
+
+      if (startMessage) {
+        showToast({ message: startMessage, type: 'info', duration: 4000 });
+      }
+
+      let index = 0;
+      const tick = () => {
+        if (index >= queue.length) {
+          const statusText = doneStatusMessage || doneMessage;
+          if (statusText) {
+            showToast({ message: statusText, type: 'success' });
+            showStatus(`✅ ${statusText}`, '#00cfff', 4000);
+          } else if (doneMessage) {
+            showToast({ message: doneMessage, type: 'success' });
+          }
+          return;
+        }
+        const item = queue[index++];
+        const cmdsRaw = buildCommands(item) || [];
+        const commands = Array.isArray(cmdsRaw) ? cmdsRaw : [cmdsRaw];
+        commands.forEach(entry => {
+          const command = typeof entry === 'string' ? entry : entry?.command;
+          if (!command) return;
+          const label = typeof entry === 'object' ? (entry.label || '') : '';
+          try {
+            ai.runAdbShellCommand(command, label);
+          } catch (err) {
+            console.warn('ADB batch error', err);
+            showToast({ message: `Ошибка: ${command}`, type: 'error' });
+          }
+        });
+        if (typeof perItemStatus === 'function') {
+          perItemStatus(item, index, queue.length);
+        }
+        setTimeout(tick, delay);
       };
 
-      runNext();
+      tick();
+    }
+
+    function normalizeListenerComponent(entry) {
+      if (!entry) return null;
+      const pkg = (entry.pkg || '').trim();
+      let component = (entry.service || '').trim();
+      if (!pkg || !component) return null;
+      if (component.startsWith('/')) {
+        component = `${pkg}${component}`;
+      }
+      if (component.startsWith('.')) {
+        component = `${pkg}${component}`;
+      }
+      if (!component.includes('/')) {
+        component = `${pkg}/${component}`;
+      }
+      return component;
+    }
+
+    function applyUsageStatsAccess() {
+      runAdbBatch({
+        items: USAGE_STATS_PACKAGES,
+        startMessage: `Выдаём доступ к истории использования (${USAGE_STATS_PACKAGES.length})`,
+        doneMessage: 'Доступ к истории использования выдан',
+        emptyMessage: 'Нет пакетов для истории использования',
+        buildCommands: (pkg) => [
+          { command: `pm grant ${pkg} android.permission.PACKAGE_USAGE_STATS`, label: `Grant usage stats ${pkg}` },
+          { command: `appops set ${pkg} GET_USAGE_STATS allow`, label: `AppOps usage ${pkg}` }
+        ],
+        perItemStatus: (pkg) => {
+          showStatus(`📊 ${pkg}: обновляем доступ к истории использования`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function applyManageStorageAccess() {
+      runAdbBatch({
+        items: MANAGE_STORAGE_PACKAGES,
+        startMessage: `Выдаём доступ ко всем файлам (${MANAGE_STORAGE_PACKAGES.length})`,
+        doneMessage: 'Доступ ко всем файлам выдан',
+        emptyMessage: 'Нет пакетов для выдачи доступа к файлам',
+        buildCommands: (pkg) => ({
+          command: `appops set --uid ${pkg} MANAGE_EXTERNAL_STORAGE allow`,
+          label: `Storage access ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`💾 ${pkg}: MANAGE_EXTERNAL_STORAGE`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function applyOverlayAccess() {
+      runAdbBatch({
+        items: OVERLAY_PACKAGES,
+        startMessage: `Разрешаем отображение поверх окон (${OVERLAY_PACKAGES.length})`,
+        doneMessage: 'Разрешение на overlay обновлено',
+        emptyMessage: 'Нет пакетов для overlay',
+        buildCommands: (pkg) => ({
+          command: `appops set ${pkg} SYSTEM_ALERT_WINDOW allow`,
+          label: `Overlay ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`🪟 ${pkg}: SYSTEM_ALERT_WINDOW`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function applyWriteSettingsAccess() {
+      runAdbBatch({
+        items: WRITE_SETTINGS_PACKAGES,
+        startMessage: `Выдаём право изменить системные настройки (${WRITE_SETTINGS_PACKAGES.length})`,
+        doneMessage: 'WRITE_SETTINGS обновлены',
+        emptyMessage: 'Нет пакетов для WRITE_SETTINGS',
+        buildCommands: (pkg) => ({
+          command: `appops set ${pkg} WRITE_SETTINGS allow`,
+          label: `Write settings ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`⚙️ ${pkg}: WRITE_SETTINGS`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function applyExactAlarmAccess() {
+      runAdbBatch({
+        items: EXACT_ALARM_PACKAGES,
+        startMessage: `Разрешаем точные будильники (${EXACT_ALARM_PACKAGES.length})`,
+        doneMessage: 'SCHEDULE_EXACT_ALARM обновлены',
+        emptyMessage: 'Нет пакетов для точных будильников',
+        buildCommands: (pkg) => ({
+          command: `appops set ${pkg} SCHEDULE_EXACT_ALARM allow`,
+          label: `Exact alarm ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`⏰ ${pkg}: точные будильники`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function applyNotificationListeners() {
+      runAdbBatch({
+        items: NOTIFICATION_LISTENER_SERVICES,
+        startMessage: `Выдаём доступ к уведомлениям (${NOTIFICATION_LISTENER_SERVICES.length})`,
+        doneMessage: 'Доступ к уведомлениям выдан',
+        emptyMessage: 'Нет сервисов для выдачи доступа к уведомлениям',
+        buildCommands: (entry) => {
+          const component = normalizeListenerComponent(entry);
+          if (!component) return [];
+          return [{
+            command: `cmd notification allow_listener ${component}`,
+            label: `Allow listener ${component}`
+          }];
+        },
+        perItemStatus: (entry) => {
+          const pkg = entry?.pkg || entry;
+          showStatus(`🔔 ${pkg}: разрешаем слушатель уведомлений`, '#00cfff', 2500);
+        }
+      });
+    }
+
+    function openNotificationAccessSettings() {
+      const ai = getAdbInterfaceOrWarn('Открытие экрана доступа к уведомлениям');
+      if (!ai) return;
+      try {
+        ai.runAdbShellCommand(
+          'am start -a android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS',
+          'Notification listener settings'
+        );
+        showToast({ message: 'Открыл экран доступа к уведомлениям', type: 'info' });
+      } catch (err) {
+        console.warn('Notification settings error', err);
+        showToast({ message: 'Не удалось открыть экран доступа к уведомлениям', type: 'error' });
+      }
     }
 
     function openAdbCommandsFromButton(triggerBtn) {
