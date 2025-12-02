@@ -1030,29 +1030,8 @@
            <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
           </button>
-          <button onclick="ignoreNextEnter=true;applyBatteryOptimizationWhitelist()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Экономия энергии
-          </button>
-          <button onclick="ignoreNextEnter=true;applyUsageStatsAccess()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>История использования
-          </button>
-          <button onclick="ignoreNextEnter=true;openNotificationAccessSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Экран уведомлений
-          </button>
-          <button onclick="ignoreNextEnter=true;applyNotificationListeners()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Уведомления (ADB)
-          </button>
-          <button onclick="ignoreNextEnter=true;applyManageStorageAccess()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доступ к файлам
-          </button>
-          <button onclick="ignoreNextEnter=true;applyOverlayAccess()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Поверх всех окон
-          </button>
-          <button onclick="ignoreNextEnter=true;applyWriteSettingsAccess()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Сист. настройки
-          </button>
-          <button onclick="ignoreNextEnter=true;applyExactAlarmAccess()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>Точные будильники
+          <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
           </button>
         
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
@@ -2414,7 +2393,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         emptyMessage = 'Список пуст',
         adbActionLabel = '',
         perItemStatus = null,
-        delay = 450
+        delay = 450,
+        silent = true
       } = options;
 
       const queue = (items || [])
@@ -2456,7 +2436,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           if (!command) return;
           const label = typeof entry === 'object' ? (entry.label || '') : '';
           try {
-            ai.runAdbShellCommand(command, label);
+            ai.runAdbShellCommand(command, label || '', !!silent);
           } catch (err) {
             console.warn('ADB batch error', err);
             showToast({ message: `Ошибка: ${command}`, type: 'error' });
@@ -2589,20 +2569,21 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       });
     }
 
-    function openNotificationAccessSettings() {
-      const ai = getAdbInterfaceOrWarn('Открытие экрана доступа к уведомлениям');
-      if (!ai) return;
-      try {
-        ai.runAdbShellCommand(
-          'am start -a android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS',
-          'Notification listener settings'
-        );
-        showToast({ message: 'Открыл экран доступа к уведомлениям', type: 'info' });
-      } catch (err) {
-        console.warn('Notification settings error', err);
-        showToast({ message: 'Не удалось открыть экран доступа к уведомлениям', type: 'error' });
+    function runAllAutoPermissions() {
+      if (!window.AndroidInterface?.runAdbShellCommand) {
+        showToast({ message: 'ADB недоступен: проверьте подключение', type: 'error' });
+        return;
       }
+      showToast({ message: 'Запуск авторазрешений…', type: 'info' });
+      applyBatteryOptimizationWhitelist();
+      applyUsageStatsAccess();
+      applyManageStorageAccess();
+      applyOverlayAccess();
+      applyWriteSettingsAccess();
+      applyExactAlarmAccess();
+      applyNotificationListeners();
     }
+
 
     function openAdbCommandsFromButton(triggerBtn) {
       ignoreNextEnter = true;
