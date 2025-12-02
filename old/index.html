@@ -1030,6 +1030,9 @@
            <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
           </button>
+          <button onclick="ignoreNextEnter=true;applyBatteryOptimizationWhitelist()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Экономия энергии
+          </button>
         
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
@@ -1245,6 +1248,18 @@
         isEnabled: true,
         uid: "launcher-restore-android-tv"
       }
+    ];
+    const BATTERY_WHITELIST_PACKAGES = [
+      "dev.vodik7.tvquickactions",
+      "org.acestream.media",
+      "org.acestream.start",
+      "org.acestream.core",
+      "ru.yourok.torrserve",
+      "com.anydesk.anydeskandroid",
+      "io.github.romanvht.byedpi",
+      "org.amnezia.awg",
+      "org.acestream.live",
+      "org.acestream.core.atv"
     ];
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
@@ -2296,6 +2311,51 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         console.error('ADB command error', err);
         showToast({ message: 'Не удалось отправить команду', type: 'error' });
       }
+    }
+
+    function applyBatteryOptimizationWhitelist() {
+      ignoreNextEnter = true;
+      const targets = (BATTERY_WHITELIST_PACKAGES || [])
+        .map(pkg => (pkg || '').trim())
+        .filter(Boolean);
+      if (!targets.length) {
+        showToast({ message: 'Список приложений пуст', type: 'warning' });
+        return;
+      }
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.runAdbShellCommand !== 'function') {
+        showToast({ message: 'ADB недоступен в этом режиме', type: 'error' });
+        return;
+      }
+
+      let index = 0;
+      showToast({ message: `Добавляем ${targets.length} приложений в исключения энергосбережения`, type: 'info', duration: 4000 });
+
+      const runNext = () => {
+        if (index >= targets.length) {
+          showToast({ message: 'Готово: исключения энергосбережения обновлены', type: 'success' });
+          showStatus('✅ Приложения добавлены в исключения энергосбережения', '#00cfff', 4000);
+          return;
+        }
+
+        const pkg = targets[index++];
+        const cmd = `dumpsys deviceidle whitelist +${pkg}`;
+        try {
+          ai.runAdbShellCommand(cmd, `Whitelist ${pkg}`);
+          showStatus(
+            `⚡ ${pkg}: добавление в исключения <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`,
+            "#00cfff",
+            2500
+          );
+        } catch (err) {
+          console.warn('Battery whitelist error', err);
+          showToast({ message: `Не удалось обработать ${pkg}`, type: 'error' });
+        }
+
+        setTimeout(runNext, 450);
+      };
+
+      runNext();
     }
 
     function openAdbCommandsFromButton(triggerBtn) {
