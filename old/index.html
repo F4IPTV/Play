@@ -1297,6 +1297,10 @@
     service: "dev.vodik7.tvquickactions/.services.NotificationListenerService"
   }
 ];
+const ACCESSIBILITY_SERVICES = [
+  "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
+  "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
+];
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2547,22 +2551,56 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyNotificationListeners() {
       runAdbBatch({
         items: NOTIFICATION_LISTENER_SERVICES,
-        doneMessage: 'Доступ к уведомлениям выдан',
-        emptyMessage: 'Нет сервисов для выдачи доступа к уведомлениям',
-        buildCommands: (entry) => {
-          const component = normalizeListenerComponent(entry);
-          if (!component) return [];
-          return [{
-            command: `cmd notification allow_listener ${component}`,
-            label: `Allow listener ${component}`
-          }];
-        },
-        perItemStatus: (entry) => {
-          const pkg = entry?.pkg || entry;
-          showStatus(`🔔 ${pkg}: разрешаем слушатель уведомлений`, '#00cfff', 2500);
-        }
-      });
+    doneMessage: 'Доступ к уведомлениям выдан',
+    emptyMessage: 'Нет сервисов для выдачи доступа к уведомлениям',
+    buildCommands: (entry) => {
+      const component = normalizeListenerComponent(entry);
+      if (!component) return [];
+      return [{
+        command: `cmd notification allow_listener ${component}`,
+        label: `Allow listener ${component}`
+      }];
+    },
+    perItemStatus: (entry) => {
+      const pkg = entry?.pkg || entry;
+      showStatus(`🔔 ${pkg}: разрешаем слушатель уведомлений`, '#00cfff', 2500);
     }
+  });
+}
+
+function applyAccessibilityServices() {
+  const ai = getAdbInterfaceOrWarn('Включение служб доступности');
+  if (!ai) return;
+  if (!Array.isArray(ACCESSIBILITY_SERVICES) || !ACCESSIBILITY_SERVICES.length) {
+    showToast({ message: 'Нет служб для включения доступа', type: 'warning' });
+    return;
+  }
+  const joined = ACCESSIBILITY_SERVICES.join(':');
+  const commands = [
+    {
+      command: `settings put secure enabled_accessibility_services "${joined}"`,
+      label: 'Enable accessibility services'
+    },
+    {
+      command: 'settings put secure accessibility_enabled 1',
+      label: 'Accessibility toggle'
+    }
+  ];
+  let hasError = false;
+  commands.forEach(({ command, label }) => {
+    try {
+      ai.runAdbShellCommand(command, label, true);
+    } catch (err) {
+      hasError = true;
+      console.warn('applyAccessibilityServices error', err);
+      showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
+    }
+  });
+  if (!hasError) {
+    showStatus('♿ Службы доступности включены', '#00cfff', 4000);
+    showToast({ message: 'Доступ к службам доступности выдан', type: 'success' });
+  }
+}
 
     function runAllAutoPermissions() {
       if (!window.AndroidInterface?.runAdbShellCommand) {
@@ -2576,6 +2614,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       applyOverlayAccess();
       applyWriteSettingsAccess();
       applyExactAlarmAccess();
+  applyAccessibilityServices();
       applyNotificationListeners();
     }
 
