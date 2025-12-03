@@ -1303,6 +1303,7 @@
     ];
     const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
     const DEFAULT_SCREENSAVER_COMPONENT = "com.neilturner.aerialviews/.ui.screensaver.DreamActivity";
+    const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2636,12 +2637,8 @@ function applyAccessibilityServices() {
       if (!ai) return;
       const commands = [
         { command: 'settings put system screen_off_timeout 3600000', label: 'Screen off timeout' },
-        { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' },
-        DEFAULT_SCREENSAVER_COMPONENT
-          ? { command: `cmd dream set-active ${DEFAULT_SCREENSAVER_COMPONENT}`, label: 'Set screensaver' }
-          : null
-      ].filter(Boolean);
-      if (!commands.length) return;
+        { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' }
+      ];
       let hasError = false;
       commands.forEach(({ command, label }) => {
         try {
@@ -2652,6 +2649,15 @@ function applyAccessibilityServices() {
           showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
         }
       });
+      const pkg = DEFAULT_SCREENSAVER_PACKAGE || DEFAULT_SCREENSAVER_COMPONENT?.split('/')?.[0];
+      if (!hasError && pkg && window.AndroidInterface?.setScreenSaverPackage) {
+        try {
+          window.AndroidInterface.setScreenSaverPackage(pkg);
+        } catch (err) {
+          hasError = true;
+          console.warn('setScreenSaverPackage from auto error', err);
+        }
+      }
       if (!hasError) {
         showStatus('🌌 Aerial Views активирована, таймеры обновлены', '#00cfff', 4000);
         showToast({ message: 'Заставка настроена', type: 'success' });
