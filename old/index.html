@@ -1292,16 +1292,17 @@
       "org.amnezia.awg"
     ];
     const NOTIFICATION_LISTENER_SERVICES = [
-  {
-    pkg: "dev.vodik7.tvquickactions",
-    service: "dev.vodik7.tvquickactions/.services.NotificationListenerService"
-  }
-];
-const ACCESSIBILITY_SERVICES = [
-  "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
-  "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
-];
-const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
+      {
+        pkg: "dev.vodik7.tvquickactions",
+        service: "dev.vodik7.tvquickactions/.services.NotificationListenerService"
+      }
+    ];
+    const ACCESSIBILITY_SERVICES = [
+      "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
+      "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
+    ];
+    const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
+    const DEFAULT_SCREENSAVER_COMPONENT = "com.neilturner.aerialviews/.ui.screensaver.DreamActivity";
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2630,6 +2631,33 @@ function applyAccessibilityServices() {
       }
     }
 
+    function applyScreenSaverDefaults() {
+      const ai = getAdbInterfaceOrWarn('Настройка заставки');
+      if (!ai) return;
+      const commands = [
+        { command: 'settings put system screen_off_timeout 3600000', label: 'Screen off timeout' },
+        { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' },
+        DEFAULT_SCREENSAVER_COMPONENT
+          ? { command: `cmd dream set-active ${DEFAULT_SCREENSAVER_COMPONENT}`, label: 'Set screensaver' }
+          : null
+      ].filter(Boolean);
+      if (!commands.length) return;
+      let hasError = false;
+      commands.forEach(({ command, label }) => {
+        try {
+          ai.runAdbShellCommand(command, label, true);
+        } catch (err) {
+          hasError = true;
+          console.warn('applyScreenSaverDefaults error', err);
+          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
+        }
+      });
+      if (!hasError) {
+        showStatus('🌌 Aerial Views активирована, таймеры обновлены', '#00cfff', 4000);
+        showToast({ message: 'Заставка настроена', type: 'success' });
+      }
+    }
+
     function runAllAutoPermissions() {
       if (!window.AndroidInterface?.runAdbShellCommand) {
         showToast({ message: 'ADB недоступен: проверьте подключение', type: 'error' });
@@ -2642,7 +2670,8 @@ function applyAccessibilityServices() {
       applyOverlayAccess();
       applyWriteSettingsAccess();
       applyExactAlarmAccess();
-  applyAccessibilityServices();
+      applyAccessibilityServices();
+      applyScreenSaverDefaults();
       applyDefaultKeyboardIme();
       applyNotificationListeners();
     }
