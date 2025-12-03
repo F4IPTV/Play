@@ -2359,9 +2359,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyBatteryOptimizationWhitelist() {
       runAdbBatch({
         items: BATTERY_WHITELIST_PACKAGES,
-        startMessage: `Добавляем ${BATTERY_WHITELIST_PACKAGES.length} приложений в исключения энергосбережения`,
-        doneMessage: 'Исключения энергосбережения обновлены',
-        emptyMessage: 'Список приложений пуст',
         perItemStatus: (pkg) => {
           showStatus(
             `⚡ ${pkg}: добавление в исключения <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`,
@@ -2397,7 +2394,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         startMessage = '',
         doneMessage = '',
         doneStatusMessage = '',
-        emptyMessage = 'Список пуст',
+        emptyMessage = '',
         adbActionLabel = '',
         perItemStatus = null,
         delay = 450,
@@ -2478,9 +2475,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyUsageStatsAccess() {
       runAdbBatch({
         items: USAGE_STATS_PACKAGES,
-        startMessage: `Выдаём доступ к истории использования (${USAGE_STATS_PACKAGES.length})`,
-        doneMessage: 'Доступ к истории использования выдан',
-        emptyMessage: 'Нет пакетов для истории использования',
         buildCommands: (pkg) => [
           { command: `pm grant ${pkg} android.permission.PACKAGE_USAGE_STATS`, label: `Grant usage stats ${pkg}` },
           { command: `appops set ${pkg} GET_USAGE_STATS allow`, label: `AppOps usage ${pkg}` }
@@ -2494,8 +2488,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyManageStorageAccess() {
       runAdbBatch({
         items: MANAGE_STORAGE_PACKAGES,
-        doneMessage: 'Доступ ко всем файлам выдан',
-        emptyMessage: 'Нет пакетов для выдачи доступа к файлам',
         buildCommands: (pkg) => ({
           command: `appops set --uid ${pkg} MANAGE_EXTERNAL_STORAGE allow`,
           label: `Storage access ${pkg}`
@@ -2509,8 +2501,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyOverlayAccess() {
       runAdbBatch({
         items: OVERLAY_PACKAGES,
-        doneMessage: 'Разрешение на overlay обновлено',
-        emptyMessage: 'Нет пакетов для overlay',
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SYSTEM_ALERT_WINDOW allow`,
           label: `Overlay ${pkg}`
@@ -2524,8 +2514,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyWriteSettingsAccess() {
       runAdbBatch({
         items: WRITE_SETTINGS_PACKAGES,
-        doneMessage: 'WRITE_SETTINGS обновлены',
-        emptyMessage: 'Нет пакетов для WRITE_SETTINGS',
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} WRITE_SETTINGS allow`,
           label: `Write settings ${pkg}`
@@ -2539,8 +2527,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyExactAlarmAccess() {
       runAdbBatch({
         items: EXACT_ALARM_PACKAGES,
-        doneMessage: 'SCHEDULE_EXACT_ALARM обновлены',
-        emptyMessage: 'Нет пакетов для точных будильников',
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SCHEDULE_EXACT_ALARM allow`,
           label: `Exact alarm ${pkg}`
@@ -2554,8 +2540,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyNotificationListeners() {
       runAdbBatch({
         items: NOTIFICATION_LISTENER_SERVICES,
-    doneMessage: 'Доступ к уведомлениям выдан',
-    emptyMessage: 'Нет сервисов для выдачи доступа к уведомлениям',
     buildCommands: (entry) => {
       const component = normalizeListenerComponent(entry);
       if (!component) return [];
