@@ -1301,6 +1301,34 @@
       "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
       "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
     ];
+    const MICROPHONE_PERMISSION = "android.permission.RECORD_AUDIO";
+    const MICROPHONE_PERMISSION_PACKAGES = [
+      "com.swiftsoft.viewbox",
+      "ru.twicker.lostfilmtv",
+      "net.filmix.filmix",
+      "top.rootu.prisma",
+      "ru.rutube.app",
+      "ru.tiardev.kinotrend",
+      "ru.radiationx.anilibria.app.tv",
+      "ru.yourok.num",
+      "com.yandex.browser.tv",
+      "to.pda.falcofemoralis.hdrezkaapp",
+      "com.falcofemoralis.hdrezkaapp",
+      "mobi.zona",
+      "org.liskovsoft.androidtv.rukeyboard",
+      "com.vk.tv",
+      "ru.vokino.web",
+      "atv.pingvi.lampishe",
+      "com.lazycatsoftware.lmd",
+      "top.rootu.lampa",
+      "com.android.vending",
+      "com.google.android.youtube.tv",
+      "com.teamsmart.videomanager.tv",
+      "liskovsoft.androidtv.rukeyboard",
+      "ru.rutube.app.tv",
+      "com.movielab.tv",
+      "ru.astroapps.hdrezka"
+    ];
     const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
     const DEFAULT_SCREENSAVER_COMPONENT = "com.neilturner.aerialviews/.ui.screensaver.DreamActivity";
     const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
@@ -2511,6 +2539,27 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       });
     }
 
+    function applyMicrophonePermission() {
+      if (!MICROPHONE_PERMISSION) {
+        showToast({ message: 'Не задано имя разрешения микрофона', type: 'warning' });
+        return;
+      }
+      if (!Array.isArray(MICROPHONE_PERMISSION_PACKAGES) || !MICROPHONE_PERMISSION_PACKAGES.length) {
+        showToast({ message: 'Список приложений для микрофона пуст', type: 'warning' });
+        return;
+      }
+      runAdbBatch({
+        items: MICROPHONE_PERMISSION_PACKAGES,
+        buildCommands: (pkg) => ({
+          command: `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
+          label: `Grant mic ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
+        }
+      });
+    }
+
     function applyWriteSettingsAccess() {
       runAdbBatch({
         items: WRITE_SETTINGS_PACKAGES,
@@ -2658,6 +2707,7 @@ function applyAccessibilityServices() {
       applyUsageStatsAccess();
       applyManageStorageAccess();
       applyOverlayAccess();
+      applyMicrophonePermission();
       applyWriteSettingsAccess();
       applyExactAlarmAccess();
       applyAccessibilityServices();
