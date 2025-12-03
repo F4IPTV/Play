@@ -68,6 +68,52 @@
       color: #0ff;
       font-weight: 600;
     }
+    .modal-header {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    .modal-header-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-adb-chip {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #25282c;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .modal-adb-chip.connected {
+      background: #1b5e20;
+      border-color: #2e7d32;
+    }
+    .modal-adb-chip.disconnected {
+      background: #5c1b1b;
+      border-color: #c62828;
+    }
+    .modal-adb-chip:active {
+      transform: scale(0.92);
+    }
+    .modal-adb-chip:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.45);
+      outline-offset: 2px;
+    }
+    .modal-adb-chip-icon {
+      pointer-events: none;
+      font-size: 16px;
+      line-height: 1;
+    }
     .modal-content {
       background: #111;
       color: #fff;
@@ -1077,7 +1123,7 @@
   <!-- Модалка ручного подключения -->
   <div id="adbManualConnectModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content" style="max-width:420px;">
-      <h3 style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <h3 id="adbManualHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Ручное подключение ADB
       </h3>
@@ -1392,6 +1438,7 @@ function setAdbIndicator(text, connected) {
   if (!el) return;
   el.textContent = text;
   el.classList.toggle('connected', !!connected);
+  syncModalAdbIndicators(!!connected);
 }
 
 function refreshAdbStatusIndicator() {
@@ -2435,6 +2482,94 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return false;
     }
 
+    const MODAL_ADB_HEADER_IDS = [
+      'miscHeader',
+      'miscMoreHeader',
+      'adbScannerHeader',
+      'adbManualHeader',
+      'adbCommandsHeader',
+      'screenSaverHeader',
+      'modalGroupHeader'
+    ];
+
+    function createModalAdbChip() {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'modal-adb-chip disconnected';
+      btn.innerHTML = '<span class="modal-adb-chip-icon">⟳</span>';
+      btn.setAttribute('aria-label', 'ADB не подключен');
+      btn.title = 'ADB не подключен';
+      btn.addEventListener('click', reconnectLastAdbFromChip);
+      return btn;
+    }
+
+    function ensureModalHeaderStructure(header) {
+      if (!header) return null;
+      header.classList.add('modal-header');
+      let titleWrap = header.querySelector('.modal-header-title');
+      if (!titleWrap) {
+        titleWrap = document.createElement('span');
+        titleWrap.className = 'modal-header-title';
+        while (header.firstChild) {
+          titleWrap.appendChild(header.firstChild);
+        }
+        header.appendChild(titleWrap);
+      }
+      if (!header.querySelector('.modal-adb-chip')) {
+        header.appendChild(createModalAdbChip());
+      }
+      return titleWrap;
+    }
+
+    function setModalHeaderTitle(headerId, builder) {
+      const header = document.getElementById(headerId);
+      if (!header) return null;
+      const titleWrap = ensureModalHeaderStructure(header);
+      if (!titleWrap) return null;
+      if (typeof builder === 'function') {
+        titleWrap.innerHTML = '';
+        builder(titleWrap);
+      }
+      return titleWrap;
+    }
+
+    function initModalAdbHeaders() {
+      MODAL_ADB_HEADER_IDS.forEach((id) => {
+        const header = document.getElementById(id);
+        if (header) {
+          ensureModalHeaderStructure(header);
+        }
+      });
+      syncModalAdbIndicators();
+    }
+
+    function syncModalAdbIndicators(forceState) {
+      const connected = typeof forceState === 'boolean' ? forceState : isAdbSessionConnected();
+      const title = connected
+        ? 'ADB подключен. Нажмите для переподключения'
+        : 'ADB не подключён. Нажмите для переподключения';
+      document.querySelectorAll('.modal-adb-chip').forEach((btn) => {
+        btn.classList.toggle('connected', connected);
+        btn.classList.toggle('disconnected', !connected);
+        btn.setAttribute('aria-label', title);
+        btn.title = title;
+      });
+    }
+
+    function reconnectLastAdbFromChip(event) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      refreshLastAdbConnection();
+      const btn = document.getElementById('lastAdbConnectionBtn');
+      const host = btn?.dataset?.host?.trim();
+      if (!host) {
+        showToast({ message: 'Нет сохранённого ADB-подключения', type: 'warning' });
+        return;
+      }
+      showToast({ message: 'Переподключаемся к последнему ADB…', type: 'info', duration: 2500 });
+      connectToLastAdb();
+    }
+
     function runAdbBatch(options = {}) {
       ignoreNextEnter = true;
       const {
@@ -3021,6 +3156,7 @@ function applyAccessibilityServices() {
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      initModalAdbHeaders();
       ensureConfig()
         .then(cfg => { renderGroupsFromConfig(cfg); })
         .catch(() => { /* покажем ошибку при попытке открыть */ });
@@ -3116,19 +3252,11 @@ function applyAccessibilityServices() {
     function showGroupList(config)  {
       const modal = document.getElementById('modal');
       const list  = document.getElementById('modalList');
-      const header = document.getElementById('modalGroupHeader');
       list.innerHTML = "";
 
 
       document.activeElement?.blur();
       document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
-
-      if (header) {
-  header.innerHTML = "";
-  const groupInfo = (config.groups || {})[currentGroup];
-  if (groupInfo?.icon) header.appendChild(createGroupIcon(groupInfo.icon));
-      header.appendChild(document.createTextNode(currentGroup));
-}
 
       modal.style.display = "flex";
       document.body.classList.add("modal-open"); // Блокируем скролл основного интерфейса
@@ -3140,19 +3268,18 @@ function applyAccessibilityServices() {
       if (apps.length === 0 && backups.length === 0 && links.length === 0) list.innerHTML = "Нет доступных компонентов.";
 
       // Заголовок: иконка + имя группы
-      if (header) {
-        header.innerHTML = "";
+      setModalHeaderTitle('modalGroupHeader', (container) => {
         const groupInfo = (config.groups || {})[currentGroup];
         if (groupInfo && groupInfo.icon) {
           const iconEl = createGroupIcon(groupInfo.icon);
           iconEl.style.height = '25px';
           iconEl.style.width = '25px';
-          header.appendChild(iconEl);
+          container.appendChild(iconEl);
         }
         const title = document.createElement('span');
         title.textContent = currentGroup;
-        header.appendChild(title);
-      }
+        container.appendChild(title);
+      });
 
       apps.forEach(app => {
         const btn = document.createElement('button');
@@ -3810,13 +3937,7 @@ if (cards.includes(active)) {
       const modal = document.getElementById("miscModal");
 
       // Заголовок с иконкой и названием из кнопки-триггера (fallback на обычный h3, если #miscHeader нет)
-      const header = document.getElementById('miscHeader');
-      if (header) {
-        header.innerHTML = '';
-        header.style.display = 'flex';
-        header.style.gap = '8px';
-        header.style.alignItems = 'center';
-        header.style.justifyContent = 'center';
+      setModalHeaderTitle('miscHeader', (container) => {
         try {
           const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
           const img = btn?.querySelector('img');
@@ -3828,15 +3949,15 @@ if (cards.includes(active)) {
             icon.style.height = '25px';
             icon.style.width = '25px';
             icon.style.objectFit = 'contain';
-            header.appendChild(icon);
+            container.appendChild(icon);
           }
           const title = document.createElement('span');
           title.textContent = titleText;
-          header.appendChild(title);
-        } catch(e) {
-          header.textContent = 'Разное';
+          container.appendChild(title);
+        } catch (e) {
+          container.textContent = 'Разное';
         }
-      }
+      });
       modal.style.display = "flex";
       document.body.classList.add("modal-open");
       document.activeElement?.blur();
@@ -3865,13 +3986,7 @@ if (cards.includes(active)) {
 
       lastFocusedElementMiscMore = triggerBtn || document.activeElement;
 
-      const header = document.getElementById('miscMoreHeader');
-      if (header) {
-        header.innerHTML = '';
-        header.style.display = 'flex';
-        header.style.alignItems = 'center';
-        header.style.justifyContent = 'center';
-        header.style.gap = '8px';
+      setModalHeaderTitle('miscMoreHeader', (container) => {
         const btn = triggerBtn || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]');
         const img = btn?.querySelector('img');
         const titleText = btn?.innerText?.trim() || 'Дополнительные функции';
@@ -3882,12 +3997,12 @@ if (cards.includes(active)) {
           icon.style.height = '25px';
           icon.style.width = '25px';
           icon.style.objectFit = 'contain';
-          header.appendChild(icon);
+          container.appendChild(icon);
         }
         const title = document.createElement('span');
         title.textContent = titleText;
-        header.appendChild(title);
-      }
+        container.appendChild(title);
+      });
 
       if (mainModal) {
         mainModal.setAttribute("inert", "");
