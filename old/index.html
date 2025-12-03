@@ -1301,6 +1301,7 @@ const ACCESSIBILITY_SERVICES = [
   "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
   "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
 ];
+const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2602,6 +2603,33 @@ function applyAccessibilityServices() {
   }
 }
 
+    function applyDefaultKeyboardIme() {
+      const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
+      if (!ai) return;
+      if (!DEFAULT_KEYBOARD_IME) {
+        showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
+        return;
+      }
+      const commands = [
+        { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
+        { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
+      ];
+      let hasError = false;
+      commands.forEach(({ command, label }) => {
+        try {
+          ai.runAdbShellCommand(command, label, true);
+        } catch (err) {
+          hasError = true;
+          console.warn('applyDefaultKeyboardIme error', err);
+          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
+        }
+      });
+      if (!hasError) {
+        showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+        showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+      }
+    }
+
     function runAllAutoPermissions() {
       if (!window.AndroidInterface?.runAdbShellCommand) {
         showToast({ message: 'ADB недоступен: проверьте подключение', type: 'error' });
@@ -2615,6 +2643,7 @@ function applyAccessibilityServices() {
       applyWriteSettingsAccess();
       applyExactAlarmAccess();
   applyAccessibilityServices();
+      applyDefaultKeyboardIme();
       applyNotificationListeners();
     }
 
