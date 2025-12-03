@@ -80,41 +80,8 @@
       align-items: center;
       gap: 8px;
     }
-    .modal-adb-chip {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: #25282c;
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      transition: background .2s ease, transform .2s ease, border-color .2s ease;
-    }
-    .modal-adb-chip.connected {
-      background: #1b5e20;
-      border-color: #2e7d32;
-    }
-    .modal-adb-chip.disconnected {
-      background: #5c1b1b;
-      border-color: #c62828;
-    }
-    .modal-adb-chip:active {
-      transform: scale(0.92);
-    }
-    .modal-adb-chip:focus-visible {
-      outline: 2px solid rgba(255,255,255,0.45);
-      outline-offset: 2px;
-    }
-    .modal-adb-chip-icon {
-      pointer-events: none;
-      font-size: 16px;
-      line-height: 1;
-    }
     .modal-content {
+      position: relative;
       background: #111;
       color: #fff;
       padding: 20px;
@@ -125,6 +92,66 @@
       border: 1px solid #333;
       touch-action: auto;
       overscroll-behavior: contain;
+    }
+    .modal-adb-indicator {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease, opacity .2s ease;
+      z-index: 5;
+    }
+    .modal-adb-indicator:active {
+      transform: scale(0.9);
+    }
+    .modal-adb-indicator:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.45);
+      border-radius: 50%;
+      outline-offset: 2px;
+    }
+    .modal-adb-indicator img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .floating-adb-indicator {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.65);
+      padding: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .floating-adb-indicator:active {
+      transform: scale(0.92);
+    }
+    .floating-adb-indicator:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.45);
+      outline-offset: 2px;
+    }
+    .floating-adb-indicator img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
     }
 
     #adbScannerModal .modal-content {
@@ -880,6 +907,9 @@
 </head>
 
 <body style="margin:0; padding:0;" class="splash-open">
+  <button id="globalAdbIndicatorBtn" class="floating-adb-indicator disconnected" type="button" aria-label="ADB не подключен" title="ADB не подключен" onclick="reconnectLastAdbFromChip(event)">
+    <img id="globalAdbIndicatorIcon" src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" draggable="false">
+  </button>
   <div id="splash"><div id="logo"></div></div>
   <div id="main-content" style="display:none;"></div>
 
@@ -1378,6 +1408,8 @@
     const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
     const DEFAULT_SCREENSAVER_COMPONENT = "com.neilturner.aerialviews/.ui.screensaver.DreamActivity";
     const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
+    const ADB_ICON_CONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_on.png";
+    const ADB_ICON_DISCONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png";
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2492,15 +2524,27 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       'modalGroupHeader'
     ];
 
-    function createModalAdbChip() {
+    function createModalAdbIndicator() {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'modal-adb-chip disconnected';
-      btn.innerHTML = '<span class="modal-adb-chip-icon">⟳</span>';
+      btn.className = 'modal-adb-indicator disconnected';
+      const img = document.createElement('img');
+      img.src = ADB_ICON_DISCONNECTED;
+      img.alt = 'ADB статус';
+      img.loading = 'lazy';
+      btn.appendChild(img);
       btn.setAttribute('aria-label', 'ADB не подключен');
       btn.title = 'ADB не подключен';
       btn.addEventListener('click', reconnectLastAdbFromChip);
       return btn;
+    }
+
+    function ensureModalAdbIndicators() {
+      document.querySelectorAll('.modal .modal-content').forEach((content) => {
+        if (!content.querySelector('.modal-adb-indicator')) {
+          content.appendChild(createModalAdbIndicator());
+        }
+      });
     }
 
     function ensureModalHeaderStructure(header) {
@@ -2514,9 +2558,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           titleWrap.appendChild(header.firstChild);
         }
         header.appendChild(titleWrap);
-      }
-      if (!header.querySelector('.modal-adb-chip')) {
-        header.appendChild(createModalAdbChip());
       }
       return titleWrap;
     }
@@ -2540,6 +2581,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           ensureModalHeaderStructure(header);
         }
       });
+      ensureModalAdbIndicators();
       syncModalAdbIndicators();
     }
 
@@ -2548,12 +2590,28 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       const title = connected
         ? 'ADB подключен. Нажмите для переподключения'
         : 'ADB не подключён. Нажмите для переподключения';
-      document.querySelectorAll('.modal-adb-chip').forEach((btn) => {
+      const iconSrc = connected ? ADB_ICON_CONNECTED : ADB_ICON_DISCONNECTED;
+      document.querySelectorAll('.modal-adb-indicator').forEach((btn) => {
         btn.classList.toggle('connected', connected);
         btn.classList.toggle('disconnected', !connected);
         btn.setAttribute('aria-label', title);
         btn.title = title;
+        const img = btn.querySelector('img');
+        if (img && img.src !== iconSrc) {
+          img.src = iconSrc;
+        }
       });
+      const globalBtn = document.getElementById('globalAdbIndicatorBtn');
+      if (globalBtn) {
+        globalBtn.classList.toggle('connected', connected);
+        globalBtn.classList.toggle('disconnected', !connected);
+        globalBtn.setAttribute('aria-label', title);
+        globalBtn.title = title;
+        const img = globalBtn.querySelector('img');
+        if (img && img.src !== iconSrc) {
+          img.src = iconSrc;
+        }
+      }
     }
 
     function reconnectLastAdbFromChip(event) {
