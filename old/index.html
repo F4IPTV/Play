@@ -2359,7 +2359,9 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyBatteryOptimizationWhitelist() {
       runAdbBatch({
         items: BATTERY_WHITELIST_PACKAGES,
-        
+        startMessage: `Добавляем ${BATTERY_WHITELIST_PACKAGES.length} приложений в исключения энергосбережения`,
+        doneMessage: 'Исключения энергосбережения обновлены',
+        emptyMessage: 'Список приложений пуст',
         perItemStatus: (pkg) => {
           showStatus(
             `⚡ ${pkg}: добавление в исключения <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`,
@@ -2573,7 +2575,7 @@ function applyAccessibilityServices() {
   const ai = getAdbInterfaceOrWarn('Включение служб доступности');
   if (!ai) return;
   if (!Array.isArray(ACCESSIBILITY_SERVICES) || !ACCESSIBILITY_SERVICES.length) {
-    
+    showToast({ message: 'Нет служб для включения доступа', type: 'warning' });
     return;
   }
   const joined = ACCESSIBILITY_SERVICES.join(':');
@@ -2594,19 +2596,20 @@ function applyAccessibilityServices() {
     } catch (err) {
       hasError = true;
       console.warn('applyAccessibilityServices error', err);
-      
+      showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
     }
   });
   if (!hasError) {
     showStatus('♿ Службы доступности включены', '#00cfff', 4000);
-    
+    showToast({ message: 'Доступ к службам доступности выдан', type: 'success' });
+  }
 }
 
     function applyDefaultKeyboardIme() {
       const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
       if (!ai) return;
       if (!DEFAULT_KEYBOARD_IME) {
-        
+        showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
         return;
       }
       const commands = [
@@ -2620,12 +2623,12 @@ function applyAccessibilityServices() {
         } catch (err) {
           hasError = true;
           console.warn('applyDefaultKeyboardIme error', err);
-          
+          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
         }
       });
       if (!hasError) {
         showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-        
+        showToast({ message: 'Клавиатура назначена основной', type: 'success' });
       }
     }
 
@@ -2643,7 +2646,7 @@ function applyAccessibilityServices() {
         } catch (err) {
           hasError = true;
           console.warn('applyScreenSaverDefaults error', err);
-          
+          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
         }
       });
       const pkg = DEFAULT_SCREENSAVER_PACKAGE || DEFAULT_SCREENSAVER_COMPONENT?.split('/')?.[0];
@@ -2657,7 +2660,7 @@ function applyAccessibilityServices() {
       }
       if (!hasError) {
         showStatus('🌌 Aerial Views активирована, таймеры обновлены', '#00cfff', 4000);
-        
+        showToast({ message: 'Заставка настроена', type: 'success' });
       }
     }
 
