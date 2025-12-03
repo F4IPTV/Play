@@ -2414,6 +2414,27 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return ai;
     }
 
+    function isAdbSessionConnected() {
+      try {
+        const raw = window.AndroidInterface?.getAdbConnectionInfo?.();
+        if (!raw || raw === 'undefined') return false;
+        const info = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return !!info?.connected;
+      } catch (err) {
+        console.warn('isAdbSessionConnected parse error', err);
+        return false;
+      }
+    }
+
+    function ensureAdbSessionConnected(actionLabel) {
+      if (isAdbSessionConnected()) return true;
+      const message = actionLabel
+        ? `ADB не подключен: ${actionLabel}`
+        : 'ADB не подключен';
+      showToast({ message, type: 'error' });
+      return false;
+    }
+
     function runAdbBatch(options = {}) {
       ignoreNextEnter = true;
       const {
@@ -2698,10 +2719,9 @@ function applyAccessibilityServices() {
     }
 
     function runAllAutoPermissions() {
-      if (!window.AndroidInterface?.runAdbShellCommand) {
-        showToast({ message: 'ADB недоступен: проверьте подключение', type: 'error' });
-        return;
-      }
+      const actionLabel = 'Авторазрешения';
+      if (!getAdbInterfaceOrWarn(actionLabel)) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return;
       showToast({ message: 'Запуск авторазрешений…', type: 'info' });
       applyBatteryOptimizationWhitelist();
       applyUsageStatsAccess();
