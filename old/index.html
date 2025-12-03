@@ -107,6 +107,7 @@
       align-items: center;
       justify-content: center;
       z-index: 5;
+      -webkit-tap-highlight-color: transparent;
     }
     .modal-adb-indicator:focus-visible {
       outline: none;
@@ -124,9 +125,10 @@
     .modal-adb-indicator:focus,
     .modal-adb-indicator:focus-visible,
     .modal-adb-indicator:active {
-      outline: none;
-      background: transparent;
-      box-shadow: none;
+      outline: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      filter: none !important;
     }
 
     #adbScannerModal .modal-content {
