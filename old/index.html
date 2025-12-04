@@ -2724,23 +2724,61 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyUnknownSourcesPermission() {
       const actionLabel = 'Разрешение установки из неизвестных источников';
       if (!ensureAdbSessionConnected(actionLabel)) return;
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
+        showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
+        return;
+      }
       const packages = getUserPackages();
       if (!packages.length) {
         showToast({ message: 'Нет пользовательских приложений для обновления', type: 'warning' });
         return;
       }
-      runAdbBatch({
-        items: packages,
-        adbActionLabel: actionLabel,
-        buildCommands: (pkg) => ({
-          command: `appops set --uid ${pkg} REQUEST_INSTALL_PACKAGES allow || appops set ${pkg} REQUEST_INSTALL_PACKAGES allow`,
-          label: `Unknown sources ${pkg}`
-        }),
-        perItemStatus: (pkg) => {
-          showStatus(`📦 ${pkg}: разрешаем установку APK`, '#00cfff', 2500);
-        },
-        doneStatusMessage: 'Обновлено разрешение на установку APK'
-      });
+
+      let index = 0;
+      let failures = 0;
+      const processNext = () => {
+        if (index >= packages.length) {
+          const statusText = failures
+            ? `Разрешение выдано, но ${failures} пакетов сообщило об ошибке`
+            : 'Выдано разрешение на установку APK из неизвестных источников';
+          showToast({ message: statusText, type: failures ? 'warning' : 'success' });
+          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
+          return;
+        }
+        const pkg = packages[index++];
+        showStatus(`📦 ${pkg}: выдаём разрешение на установку`, '#00cfff', 2500);
+        let primaryOk = false;
+        try {
+          primaryOk = !!ai.runAdbShellCommandWithResult(
+            `appops set ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+            `Unknown sources ${pkg}`,
+            true
+          );
+        } catch (err) {
+          console.warn('Unknown sources primary command error', err);
+        }
+        if (!primaryOk) {
+          let fallbackOk = false;
+          try {
+            fallbackOk = !!ai.runAdbShellCommandWithResult(
+              `appops set --uid ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+              `Unknown sources UID ${pkg}`,
+              true
+            );
+          } catch (err) {
+            console.warn('Unknown sources fallback command error', err);
+          }
+          if (!fallbackOk) {
+            failures += 1;
+            showStatus(`⚠️ ${pkg}: не удалось выдать разрешение`, '#ff8a65', 2500);
+          }
+        }
+        setTimeout(processNext, 450);
+      };
+
+      showToast({ message: 'Обновляем разрешения на установку APK…', type: 'info' });
+      processNext();
     }
 
     function applyOverlayAccess() {
