@@ -2931,18 +2931,19 @@ function applyAccessibilityServices() {
         }
       };
 
-      const ensureIme = (attempt = 1) => {
+      const ensureIme = () => {
         if (isTargetImeActive()) {
           showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
           showToast({ message: 'Клавиатура назначена основной', type: 'success' });
           return;
         }
-        if (attempt > 5) {
-          showToast({ message: 'Не удалось назначить клавиатуру автоматически', type: 'warning' });
-          return;
-        }
         runImeCommands();
-        setTimeout(() => ensureIme(attempt + 1), 800);
+        setTimeout(() => {
+          if (isTargetImeActive()) {
+            showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+            showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+          }
+        }, 1000);
       };
 
       ensureIme();
