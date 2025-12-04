@@ -2904,24 +2904,49 @@ function applyAccessibilityServices() {
         showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
         return;
       }
+
       const commands = [
         { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
         { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
       ];
-      let hasError = false;
-      commands.forEach(({ command, label }) => {
+
+      const runImeCommands = () => {
+        commands.forEach(({ command, label }) => {
+          try {
+            ai.runAdbShellCommand(command, label, true);
+          } catch (err) {
+            console.warn('applyDefaultKeyboardIme command error', err);
+          }
+        });
+      };
+
+      const isTargetImeActive = () => {
         try {
-          ai.runAdbShellCommand(command, label, true);
+          const value = window.AndroidInterface?.getCurrentInputMethod?.();
+          if (!value || value === 'undefined') return false;
+          return value.trim() === DEFAULT_KEYBOARD_IME;
         } catch (err) {
-          hasError = true;
-          console.warn('applyDefaultKeyboardIme error', err);
-          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
+          console.warn('isTargetImeActive error', err);
+          return false;
         }
-      });
-      if (!hasError) {
-        showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-        showToast({ message: 'Клавиатура назначена основной', type: 'success' });
-      }
+      };
+
+      const ensureIme = (attempt = 1) => {
+        if (isTargetImeActive()) {
+          showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+          showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+          return;
+        }
+        if (attempt >= 3) {
+          showToast({ message: 'Не удалось назначить клавиатуру автоматически', type: 'warning' });
+          return;
+        }
+        runImeCommands();
+        setTimeout(() => ensureIme(attempt + 1), 600);
+      };
+
+      runImeCommands();
+      setTimeout(() => ensureIme(1), 600);
     }
 
     function applyScreenSaverDefaults() {
