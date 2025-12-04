@@ -2937,16 +2937,15 @@ function applyAccessibilityServices() {
           showToast({ message: 'Клавиатура назначена основной', type: 'success' });
           return;
         }
-        if (attempt >= 3) {
+        if (attempt > 5) {
           showToast({ message: 'Не удалось назначить клавиатуру автоматически', type: 'warning' });
           return;
         }
         runImeCommands();
-        setTimeout(() => ensureIme(attempt + 1), 600);
+        setTimeout(() => ensureIme(attempt + 1), 800);
       };
 
-      runImeCommands();
-      setTimeout(() => ensureIme(1), 600);
+      ensureIme();
     }
 
     function applyScreenSaverDefaults() {
