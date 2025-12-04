@@ -196,7 +196,7 @@
     #modalList .component-btn:focus,
     #installAllBtn:focus,
     #installAllBtn.selected { background-color: #00cfff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0) !important; border-color: #fff !important; outline: none; }
-    /* Перенос длинных названий без пробелов и обрезка до 2 строк  */
+    /* Перенос длинных названий без пробелов и обрезка до 2 строк */
 #modalList .component-btn {
   white-space: normal;
   overflow-wrap: anywhere;   /* для сплошных строк */
@@ -1353,30 +1353,9 @@
     ];
     const MICROPHONE_PERMISSION = "android.permission.RECORD_AUDIO";
     const MICROPHONE_PERMISSION_PACKAGES = [
-      "com.swiftsoft.viewbox",
-      "ru.twicker.lostfilmtv",
-      "net.filmix.filmix",
-      "top.rootu.prisma",
-      "ru.rutube.app",
-      "ru.tiardev.kinotrend",
-      "ru.radiationx.anilibria.app.tv",
-      "ru.yourok.num",
-      "com.yandex.browser.tv",
-      "to.pda.falcofemoralis.hdrezkaapp",
-      "com.falcofemoralis.hdrezkaapp",
-      "mobi.zona",
-      "org.liskovsoft.androidtv.rukeyboard",
-      "com.vk.tv",
-      "ru.vokino.web",
-      "atv.pingvi.lampishe",
-      "com.lazycatsoftware.lmd",
-      "top.rootu.lampa",
-      "com.android.vending",
+      
       "com.google.android.youtube.tv",
-      "com.teamsmart.videomanager.tv",
-      "liskovsoft.androidtv.rukeyboard",
-      "ru.rutube.app.tv",
-      "com.movielab.tv",
+      
       "ru.astroapps.hdrezka"
     ];
     const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
@@ -2799,20 +2778,45 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         showToast({ message: 'Не задано имя разрешения микрофона', type: 'warning' });
         return;
       }
-      if (!Array.isArray(MICROPHONE_PERMISSION_PACKAGES) || !MICROPHONE_PERMISSION_PACKAGES.length) {
-        showToast({ message: 'Список приложений для микрофона пуст', type: 'warning' });
+      const actionLabel = 'Разрешение микрофона';
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
+        showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
         return;
       }
-      runAdbBatch({
-        items: MICROPHONE_PERMISSION_PACKAGES,
-        buildCommands: (pkg) => ({
-          command: `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
-          label: `Grant mic ${pkg}`
-        }),
-        perItemStatus: (pkg) => {
-          showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
+      const dynamicPackages = getUserPackages();
+      const manualPackages = Array.isArray(MICROPHONE_PERMISSION_PACKAGES) ? MICROPHONE_PERMISSION_PACKAGES : [];
+      const packages = Array.from(new Set([...manualPackages, ...dynamicPackages])).filter(Boolean);
+      if (!packages.length) {
+        showToast({ message: 'Нет приложений для выдачи микрофона', type: 'warning' });
+        return;
+      }
+
+      let index = 0;
+      const processNext = () => {
+        if (index >= packages.length) {
+          const statusText = 'Разрешение микрофона обновлено';
+          showToast({ message: statusText, type: 'success' });
+          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
+          return;
         }
-      });
+        const pkg = packages[index++];
+        showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
+        try {
+          ai.runAdbShellCommandWithResult(
+            `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
+            `Grant mic ${pkg}`,
+            true
+          );
+        } catch (err) {
+          console.warn('applyMicrophonePermission error', pkg, err);
+        }
+        setTimeout(processNext, 350);
+      };
+
+      showToast({ message: 'Выдаём разрешения микрофона…', type: 'info' });
+      processNext();
     }
 
     function applyWriteSettingsAccess() {
