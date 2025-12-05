@@ -2996,8 +2996,10 @@ function applyAccessibilityServices() {
       applyExactAlarmAccess();
       applyAccessibilityServices();
       applyScreenSaverDefaults();
-      applyDefaultKeyboardIme();
-      applyNotificationListeners();
+      setTimeout(() => {
+        applyDefaultKeyboardIme();
+        applyNotificationListeners();
+      }, 4000);
     }
 
 
