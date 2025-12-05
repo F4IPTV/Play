@@ -2931,22 +2931,28 @@ function applyAccessibilityServices() {
         }
       };
 
-      const ensureIme = () => {
+      const ensureIme = (silent = false) => {
         if (isTargetImeActive()) {
-          showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-          showToast({ message: 'Клавиатура назначена основной', type: 'success' });
-          return;
+          if (!silent) {
+            showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+            showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+          }
+          return true;
         }
         runImeCommands();
         setTimeout(() => {
-          if (isTargetImeActive()) {
+          if (isTargetImeActive() && !silent) {
             showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
             showToast({ message: 'Клавиатура назначена основной', type: 'success' });
           }
         }, 1000);
+        return false;
       };
 
-      ensureIme();
+      const initialApplied = ensureIme();
+      if (!initialApplied) {
+        setTimeout(() => ensureIme(true), 2000);
+      }
     }
 
     function applyScreenSaverDefaults() {
@@ -2999,7 +3005,7 @@ function applyAccessibilityServices() {
       setTimeout(() => {
         applyDefaultKeyboardIme();
         applyNotificationListeners();
-      }, 4000);
+      }, 5000);
     }
 
 
