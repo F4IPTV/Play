@@ -279,12 +279,12 @@
     
     /* Карточки устройств ADB */
     .adb-chip {
-      width: min(88vw, 300px) !important;
-      max-width: 300px;
-      min-height: 58px;
-      padding: 12px 16px;
+      width: min(86vw, 288px) !important;
+      max-width: 288px;
+      min-height: 52px;
+      padding: 10px 14px;
       margin: 0 auto;
-      border-radius: 14px;
+      border-radius: 12px;
       border: 2px solid transparent;
       background-color: #004d61;
       color: #fff;
@@ -294,18 +294,23 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.35);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.35);
       cursor: pointer;
       transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
-      line-height: 1.25;
+      line-height: 1.2;
       appearance: none;
       box-sizing: border-box;
     }
     .adb-chip:focus,
-    .adb-chip:focus-visible,
-    .adb-chip.selected,
-    .adb-chip.is-selected {
+    .adb-chip:focus-visible {
       outline: none;
+      transform: translateY(-2px);
+      background-color: #00cfff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4);
+    }
+    .adb-chip.has-selected-style {
       transform: translateY(-2px);
       background-color: #00cfff;
       color: #000;
@@ -367,9 +372,6 @@
       font-size: 13px;
       opacity: .8;
       margin-bottom: 6px;
-    }
-    .adb-last-connection-btn {
-      gap: 2px;
     }
     .adb-last-connection-btn-line1 {
       display: block;
@@ -1537,7 +1539,7 @@ function refreshLastAdbConnection() {
   if (topLine) {
     wrapper.style.display = 'flex';
     wrapper.classList.add('active');
-    btn.classList.add('is-selected', 'selected');
+    btn.classList.remove('is-selected', 'selected');
   } else {
     hideWrapper();
   }
