@@ -279,14 +279,14 @@
     
     /* Карточки устройств ADB */
     .adb-chip {
-      width: min(92vw, 320px) !important;
+      width: min(90vw, 320px) !important;
       max-width: 320px;
       min-height: 70px;
       padding: 14px 18px;
       margin: 0 auto;
       border-radius: 18px;
       border: 2px solid #fff;
-      background: linear-gradient(180deg, #06dcff 0%, #00cfff 100%);
+      background-color: #05a7c1;
       color: #000;
       display: inline-flex;
       flex-direction: column;
@@ -294,9 +294,9 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: 0 18px 30px rgba(0,0,0,0.45);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.35);
       cursor: pointer;
-      transition: transform .15s ease, box-shadow .2s ease;
+      transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
       line-height: 1.2;
       appearance: none;
       box-sizing: border-box;
@@ -307,7 +307,8 @@
     .adb-chip.is-selected {
       outline: none;
       transform: translateY(-2px);
-      box-shadow: 0 24px 34px rgba(0,0,0,0.5);
+      background-color: #00cfff;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.45);
     }
     
     .adb-device-card {
@@ -366,14 +367,7 @@
       margin-bottom: 6px;
     }
     .adb-last-connection-btn {
-      width: min(92vw, 320px);
-      max-width: 320px;
-      margin: 0 auto;
-      display: inline-flex;
-      flex-direction: column;
       gap: 2px;
-      align-items: center;
-      justify-content: center;
     }
     .adb-last-connection-btn-line1 {
       display: block;
