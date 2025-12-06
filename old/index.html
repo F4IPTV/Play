@@ -1608,6 +1608,8 @@ window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
   resetAdbConnectionState();
+  refreshAdbStatusIndicator();
+  updateStorageUsage('');
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
