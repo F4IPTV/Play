@@ -1528,6 +1528,8 @@ function applyFriendlyNameNode(node, friendlyName) {
 
 function resetAdbConnectionState() {
   window.AndroidInterface?.disconnectAdb?.();
+  setAdbIndicator('Локальное устройство', false);
+  updateStorageUsage('');
 }
 
 function requestLocalAdbConnection() {
