@@ -3120,6 +3120,29 @@ function applyAccessibilityServices() {
       document.activeElement?.blur();
       const modal = document.getElementById('screenSaverModal');
       if (!modal) return;
+  setModalHeaderTitle('screenSaverHeader', (container) => {
+    try {
+      const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
+      const btnIcon = btn?.querySelector('img');
+      const titleText = btn?.innerText?.trim() || 'Заставка';
+      const fallbackIcon = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png';
+      const iconSrc = btnIcon?.src || fallbackIcon;
+      if (iconSrc) {
+        const icon = document.createElement('img');
+        icon.src = iconSrc;
+        icon.alt = '';
+        icon.style.height = '25px';
+        icon.style.width = '25px';
+        icon.style.objectFit = 'contain';
+        container.appendChild(icon);
+      }
+      const title = document.createElement('span');
+      title.textContent = titleText;
+      container.appendChild(title);
+    } catch (_e) {
+      container.textContent = 'Заставка';
+    }
+  });
       modal.style.display = 'flex';
       document.body.classList.add('modal-open');
       requestScreenSaverState();
