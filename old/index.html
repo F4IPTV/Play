@@ -1848,8 +1848,7 @@ function openAdbManualConnectModal() {
 
   attachAdbManualInputHandlers();
 
-  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (portInput || hostInput);
-  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
+  setTimeout(() => hostInput?.focus({ preventScroll: true }), 120);
 }
 
 function closeAdbManualConnectModal() {
