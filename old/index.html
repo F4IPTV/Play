@@ -1028,9 +1028,6 @@
 			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
           </button>
-          <button onclick="ignoreNextEnter=true;openAdbManualConnectModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:26px;"><br>Ввести IP:порт
-          </button>
 			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
           </button>
@@ -1132,7 +1129,9 @@
       <!-- Кнопки управления -->
       <div class="system-buttons" style="justify-content:center;">
         <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">↻ Пересканировать</button>
-        <button class="sys-btn" onclick="closeAdbScanner()" tabindex="0">Закрыть</button>
+        <button class="sys-btn" onclick="ignoreNextEnter=true;openAdbManualConnectModal()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:22px;"><br>Ввести IP:порт
+        </button>
       </div>
     </div>
   </div>
