@@ -64,6 +64,12 @@
       color: rgba(255,255,255,0.75);
       transition: color .2s ease;
     }
+    .storage-usage-badge {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
     .adb-status-indicator.connected {
       color: #0ff;
       font-weight: 600;
@@ -1410,6 +1416,9 @@ let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
 let currentScreenSaverComponent = null;
+let storageUsageLabel = '';
+let lastAdbIndicatorText = '';
+let lastAdbIndicatorConnected = false;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1442,7 +1451,14 @@ let adbStatusRetryTimer = null;
 function setAdbIndicator(text, connected) {
   const el = document.getElementById('adbStatusIndicator');
   if (!el) return;
-  el.textContent = text;
+  lastAdbIndicatorText = text || '';
+  lastAdbIndicatorConnected = !!connected;
+  const safeBase = escapeHtml(lastAdbIndicatorText);
+  const base = safeBase.length ? safeBase : '&nbsp;';
+  const storagePart = storageUsageLabel
+    ? ` <span class="storage-usage-badge">${escapeHtml(storageUsageLabel)}</span>`
+    : '';
+  el.innerHTML = `${base}${storagePart}`;
   el.classList.toggle('connected', !!connected);
   syncModalAdbIndicators(!!connected);
 }
@@ -1470,6 +1486,26 @@ function scheduleAdbStatusRetry() {
 }
 
 window.refreshAdbStatusIndicator = refreshAdbStatusIndicator;
+
+function updateStorageUsage(label) {
+  if (typeof label === 'string' && label.trim().length) {
+    storageUsageLabel = label.trim();
+  } else {
+    storageUsageLabel = '';
+  }
+  setAdbIndicator(lastAdbIndicatorText, lastAdbIndicatorConnected);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+window.updateStorageUsage = updateStorageUsage;
 
 const adbScanState = {
   hosts: [],
