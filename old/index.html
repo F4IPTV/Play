@@ -770,6 +770,20 @@
   width: min(340px, 100%);
 }
 
+.screen-saver-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.screen-saver-action-btn img {
+  display: block;
+  height: 20px;
+  width: auto;
+}
+
 .screen-saver-cta {
   display: flex;
   gap: 10px;
@@ -1225,11 +1239,13 @@
         <div class="screen-saver-section">
           <h4>Выбор заставки</h4>
           <div class="screen-saver-actions">
-            <button id="screenSaverAerialViewsBtn" class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">
-              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp" alt="" style="height:16px;"><span>Aerial Dream</span>
+            <button id="screenSaverAerialViewsBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp" alt="Aerial Views">
+              <span>Aerial Views</span>
             </button>
-            <button id="screenSaverAerialDreamBtn" class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">
-              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.png" alt="" style="height:22px;"><span></span>Aerial Dream</span>
+            <button id="screenSaverAerialDreamBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="Aerial Dream">
+              <span>Aerial Dream</span>
             </button>
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить заставку
