@@ -279,28 +279,17 @@
     
     /* Карточки устройств ADB */
     .adb-device-card {
-      background-color: #2a2a2a;
-      border-radius: 14px;
-      padding: 12px 18px;
-      width: clamp(200px, 80vw, 320px);
-      display: flex;
+      width: min(92vw, 320px);
+      max-width: 320px;
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 4px;
-      color: #fff;
-      border: 2px solid transparent;
-      transition: all .2s ease;
-      cursor: pointer;
-      min-height: unset;
-      box-sizing: border-box;
+      padding: 14px 18px;
       margin: 0 auto;
-    }
-    
-    .adb-device-card:hover, .adb-device-card:focus {
-      background-color: #004d61;
-      border-color: #00cfff;
-      box-shadow: 0 0 10px rgba(0,0,0,.5);
-      outline: none;
+      white-space: normal;
+      line-height: 1.2;
     }
     
     .adb-device-card.selected {
@@ -313,7 +302,7 @@
       font-size: 17px;
       font-weight: 700;
       margin-bottom: 2px;
-      color: #fff;
+      color: inherit;
       text-align: center;
       width: 100%;
     }
@@ -330,11 +319,8 @@
       opacity: .9;
       text-align: center;
       width: 100%;
+      color: inherit;
     }
-    
-    /* Отключаем hover в сканере ADB, чтобы мышь не мешала навигации */
-    #adbScannerModal .adb-device-card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
-    #adbScannerModal .adb-device-card.selected:hover { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
     /* Кнопки управления сканером */
     #adbScannerModal .sys-btn { background-color: #004d61; color: #fff; }
@@ -351,6 +337,13 @@
       margin-bottom: 16px;
       text-align: center;
     }
+    .adb-last-connection.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+    }
     .adb-last-connection-title {
       font-size: 13px;
       opacity: .8;
@@ -359,6 +352,12 @@
     .adb-last-connection-btn {
       width: min(92vw, 320px);
       max-width: 320px;
+      margin: 0 auto;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+      justify-content: center;
     }
     .adb-last-connection-btn-line1 {
       display: block;
@@ -1485,6 +1484,13 @@ function refreshLastAdbConnection() {
   const wrapper = document.getElementById('lastAdbConnectionWrapper');
   const btn = document.getElementById('lastAdbConnectionBtn');
   if (!wrapper || !btn) return;
+  const hideWrapper = () => {
+    wrapper.style.display = 'none';
+    wrapper.classList.remove('active');
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    btn.innerHTML = '';
+  };
   let raw;
   try {
     raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
@@ -1492,27 +1498,18 @@ function refreshLastAdbConnection() {
     raw = null;
   }
   if (!raw || raw === 'undefined') {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   let info;
   try {
     info = JSON.parse(raw);
   } catch (e) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   if (!info || !info.available) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   const host = (info.host || '').trim();
@@ -1524,7 +1521,12 @@ function refreshLastAdbConnection() {
     : '';
   btn.dataset.host = host;
   btn.dataset.port = info.port != null ? String(info.port) : '';
-  wrapper.style.display = topLine ? 'block' : 'none';
+  if (topLine) {
+    wrapper.style.display = 'flex';
+    wrapper.classList.add('active');
+  } else {
+    hideWrapper();
+  }
 }
 
 function connectToLastAdb() {
@@ -1642,9 +1644,9 @@ function renderAdbScanHosts() {
     return;
   }
   adbScanState.hosts.forEach(host => {
-    const card = document.createElement('div');
-    card.className = 'adb-device-card';
-    card.setAttribute('tabindex', '0');
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'sys-btn adb-device-card';
     let connectTriggered = false;
 
     const nameEl = document.createElement('div');
