@@ -279,41 +279,35 @@
     
     /* Карточки устройств ADB */
     .adb-chip {
-      width: min(92vw, 320px);
+      width: min(92vw, 320px) !important;
       max-width: 320px;
-      min-height: 68px;
+      min-height: 70px;
       padding: 14px 18px;
       margin: 0 auto;
-      border-radius: 16px;
-      border: 2px solid transparent;
-      background-color: #004d61;
-      color: #fff;
+      border-radius: 18px;
+      border: 2px solid #fff;
+      background: linear-gradient(180deg, #06dcff 0%, #00cfff 100%);
+      color: #000;
       display: inline-flex;
       flex-direction: column;
       gap: 4px;
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.35);
+      box-shadow: 0 18px 30px rgba(0,0,0,0.45);
       cursor: pointer;
-      transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+      transition: transform .15s ease, box-shadow .2s ease;
       line-height: 1.2;
       appearance: none;
+      box-sizing: border-box;
     }
     .adb-chip:focus,
-    .adb-chip:focus-visible {
+    .adb-chip:focus-visible,
+    .adb-chip.selected,
+    .adb-chip.is-selected {
       outline: none;
-      background-color: #00cfff;
-      color: #000;
-      border-color: #fff;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
-    }
-    .adb-chip.is-selected,
-    .adb-chip.selected {
-      background-color: #00cfff;
-      color: #000;
-      border-color: #fff;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 24px 34px rgba(0,0,0,0.5);
     }
     
     .adb-device-card {
@@ -321,8 +315,8 @@
     }
     
     .adb-device-name {
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       margin-bottom: 2px;
       color: inherit;
       text-align: center;
@@ -335,10 +329,10 @@
     }
     
     .adb-device-ip {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
       margin: 0;
-      opacity: .9;
+      opacity: .85;
       text-align: center;
       width: 100%;
       color: inherit;
@@ -1547,7 +1541,7 @@ function refreshLastAdbConnection() {
   if (topLine) {
     wrapper.style.display = 'flex';
     wrapper.classList.add('active');
-    btn.classList.add('is-selected');
+    btn.classList.add('is-selected', 'selected');
   } else {
     hideWrapper();
   }
