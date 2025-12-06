@@ -1804,8 +1804,10 @@ function openAdbManualConnectModal() {
   ignoreNextEnter = true;
   const miscModal = document.getElementById('miscModal');
   const miscMoreModal = document.getElementById('miscMoreModal');
+  const scannerModal = document.getElementById('adbScannerModal');
   modal.dataset.restoreMisc = '0';
   modal.dataset.restoreMiscMore = '0';
+  modal.dataset.restoreScanner = '0';
   if (miscModal && miscModal.style.display === 'flex') {
     miscModal.setAttribute('inert', '');
     miscModal.style.pointerEvents = 'none';
@@ -1815,6 +1817,11 @@ function openAdbManualConnectModal() {
     miscMoreModal.setAttribute('inert', '');
     miscMoreModal.style.pointerEvents = 'none';
     modal.dataset.restoreMiscMore = '1';
+  }
+  if (scannerModal && scannerModal.style.display === 'flex') {
+    scannerModal.setAttribute('inert', '');
+    scannerModal.style.pointerEvents = 'none';
+    modal.dataset.restoreScanner = '1';
   }
   lastFocusedElementManualConnect = document.activeElement;
   document.activeElement?.blur();
@@ -1869,6 +1876,15 @@ function closeAdbManualConnectModal() {
     }
     modal.dataset.restoreMiscMore = '0';
   }
+  if (modal.dataset.restoreScanner === '1') {
+    const scanner = document.getElementById('adbScannerModal');
+    if (scanner) {
+      scanner.removeAttribute('inert');
+      scanner.style.pointerEvents = '';
+      if (scanner.style.display === 'flex') needRestoreModalClass = true;
+    }
+    modal.dataset.restoreScanner = '0';
+  }
 
   if (needRestoreModalClass) {
     document.body.classList.add('modal-open');
@@ -1895,6 +1911,8 @@ function submitAdbManualConnect() {
   if (portInput) portInput.value = String(port);
 
   ignoreNextEnter = true;
+  const modal = document.getElementById('adbManualConnectModal');
+  const shouldReturnToFast = modal?.dataset?.restoreScanner === '1';
   closeAdbManualConnectModal();
 
   const ai = window.AndroidInterface;
@@ -1906,6 +1924,14 @@ function submitAdbManualConnect() {
     ai.connectAdb(`${host}:${port}`);
   } else {
     showToast({ message: 'Функция подключения ADB недоступна', type: 'error' });
+  }
+  if (shouldReturnToFast) {
+    closeAdbScanner();
+    setTimeout(() => {
+      if (document.getElementById('miscModal')?.style.display !== 'flex') {
+        openMiscModal();
+      }
+    }, 200);
   }
 }
 
@@ -3720,8 +3746,8 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
-      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
+      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
