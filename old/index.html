@@ -1671,53 +1671,6 @@ function openAdbScanner() {
   } catch (e) {}
 }
 
-function restoreAdbScannerModal() {
-  const modal = document.getElementById('adbScannerModal');
-  if (!modal) return;
-  resetAdbConnectionState();
-  refreshAdbStatusIndicator();
-  updateStorageUsage('');
-  window.AndroidInterface?.requestStorageUsageRefresh?.();
-  const miscModal = document.getElementById('miscModal');
-  const miscMoreModal = document.getElementById('miscMoreModal');
-  modal.dataset.restoreMisc = '0';
-  modal.dataset.restoreMiscMore = '0';
-  if (miscModal && miscModal.style.display === 'flex') {
-    miscModal.setAttribute('inert', '');
-    miscModal.style.pointerEvents = 'none';
-    modal.dataset.restoreMisc = '1';
-  }
-  if (miscMoreModal && miscMoreModal.style.display === 'flex') {
-    miscMoreModal.setAttribute('inert', '');
-    miscMoreModal.style.pointerEvents = 'none';
-    modal.dataset.restoreMiscMore = '1';
-  }
-  modal.style.display = 'flex';
-  modal.removeAttribute('inert');
-  modal.style.pointerEvents = '';
-  document.body.classList.add('modal-open');
-  adbScanState.running = true;
-  updateAdbScanStatus('Сканирование сети...', adbScanState.hosts.length);
-  refreshLastAdbConnection();
-  try {
-    window.AndroidInterface?.startNativeAdbScan?.();
-  } catch (e) {}
-  setTimeout(() => {
-    const selected = modal.querySelector('#adbScanList .adb-device-card.selected');
-    const firstCard = selected || modal.querySelector('#adbScanList .adb-device-card');
-    if (firstCard) {
-      focusAndRevealAdbCard(firstCard);
-      return;
-    }
-    const firstBtn = modal.querySelector('.system-buttons .sys-btn');
-    if (firstBtn) {
-      firstBtn.focus({ preventScroll: true });
-    } else {
-      modal.focus();
-    }
-  }, 120);
-}
-
 function closeAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
