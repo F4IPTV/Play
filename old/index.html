@@ -1688,6 +1688,12 @@ function restoreAdbScannerModal() {
     miscMoreModal.style.pointerEvents = 'none';
     modal.dataset.restoreMiscMore = '1';
   }
+  resetAdbConnectionState();
+  refreshAdbStatusIndicator();
+  updateStorageUsage('');
+  window.AndroidInterface?.requestStorageUsageRefresh?.();
+  adbScanState.hosts = [];
+  renderAdbScanHosts();
   if (modal.style.display !== 'flex') {
     modal.style.display = 'flex';
     document.body.classList.add('modal-open');
