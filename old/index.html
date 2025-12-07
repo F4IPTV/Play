@@ -1671,6 +1671,25 @@ function openAdbScanner() {
   } catch (e) {}
 }
 
+function restoreAdbScannerModal() {
+  const modal = document.getElementById('adbScannerModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  modal.removeAttribute('inert');
+  modal.style.pointerEvents = '';
+  document.body.classList.add('modal-open');
+  requestAnimationFrame(() => {
+    const selected = modal.querySelector('#adbScanList .adb-device-card.selected');
+    const firstCard = selected || modal.querySelector('#adbScanList .adb-device-card');
+    if (firstCard) {
+      focusAndRevealAdbCard(firstCard);
+    } else {
+      const firstBtn = modal.querySelector('.system-buttons .sys-btn');
+      firstBtn?.focus({ preventScroll: true });
+    }
+  });
+}
+
 function closeAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
