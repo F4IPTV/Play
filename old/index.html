@@ -1674,6 +1674,10 @@ function openAdbScanner() {
 function restoreAdbScannerModal() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
+  resetAdbConnectionState();
+  refreshAdbStatusIndicator();
+  updateStorageUsage('');
+  window.AndroidInterface?.requestStorageUsageRefresh?.();
   const miscModal = document.getElementById('miscModal');
   const miscMoreModal = document.getElementById('miscMoreModal');
   modal.dataset.restoreMisc = '0';
