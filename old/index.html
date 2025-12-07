@@ -1674,10 +1674,6 @@ function openAdbScanner() {
 function restoreAdbScannerModal() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
-  resetAdbConnectionState();
-  refreshAdbStatusIndicator();
-  updateStorageUsage('');
-  window.AndroidInterface?.requestStorageUsageRefresh?.();
   const miscModal = document.getElementById('miscModal');
   const miscMoreModal = document.getElementById('miscMoreModal');
   modal.dataset.restoreMisc = '0';
@@ -1692,14 +1688,16 @@ function restoreAdbScannerModal() {
     miscMoreModal.style.pointerEvents = 'none';
     modal.dataset.restoreMiscMore = '1';
   }
-  modal.style.display = 'flex';
+  if (modal.style.display !== 'flex') {
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+  }
   modal.removeAttribute('inert');
   modal.style.pointerEvents = '';
-  document.body.classList.add('modal-open');
-  updateAdbScanStatus(
-    adbScanState.hosts.length ? 'Сканирование сети...' : 'Устройства не найдены',
-    adbScanState.hosts.length
-  );
+  adbScanState.running = true;
+  updateAdbScanStatus('Сканирование сети...', adbScanState.hosts.length);
+  refreshAdbStatusIndicator();
+  refreshLastAdbConnection();
   try {
     window.AndroidInterface?.startNativeAdbScan?.();
   } catch (e) {}
