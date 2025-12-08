@@ -57,12 +57,18 @@
     }
 
     .adb-status-indicator {
-      font-size: 14px;
+      font-size: 13px;
       text-align: center;
       margin-top: -6px;
       margin-bottom: 10px;
       color: rgba(255,255,255,0.75);
       transition: color .2s ease;
+    }
+    .storage-usage-badge {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-left: 6px;
+      white-space: nowrap;
     }
     .adb-status-indicator.connected {
       color: #0ff;
@@ -278,42 +284,55 @@
     }
     
     /* Карточки устройств ADB */
-    .adb-device-card {
-      background-color: #2a2a2a;
-      border-radius: 14px;
-      padding: 12px 18px;
-      width: clamp(200px, 80vw, 320px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: #fff;
-      border: 2px solid transparent;
-      transition: all .2s ease;
-      cursor: pointer;
-      min-height: unset;
-      box-sizing: border-box;
+    .adb-chip {
+      width: min(86vw, 288px) !important;
+      max-width: 288px;
+      min-height: 48px;
+      padding: 8px 12px;
       margin: 0 auto;
-    }
-    
-    .adb-device-card:hover, .adb-device-card:focus {
+      border-radius: 12px;
+      border: 2px solid transparent;
       background-color: #004d61;
-      border-color: #00cfff;
-      box-shadow: 0 0 10px rgba(0,0,0,.5);
-      outline: none;
+      color: #fff;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.35);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+      line-height: 1.2;
+      appearance: none;
+      box-sizing: border-box;
     }
-    
-    .adb-device-card.selected {
+    .adb-chip:focus,
+    .adb-chip:focus-visible {
+      outline: none;
+      transform: translateY(-2px);
       background-color: #00cfff;
       color: #000;
-      border: 2px solid #fff;
+      border-color: #fff;
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4);
+    }
+    .adb-chip.has-selected-style {
+      transform: translateY(-2px);
+      background-color: #00cfff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4);
+    }
+    
+    .adb-device-card {
+      border-radius: 16px;
     }
     
     .adb-device-name {
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       margin-bottom: 2px;
-      color: #fff;
+      color: inherit;
       text-align: center;
       width: 100%;
     }
@@ -324,17 +343,14 @@
     }
     
     .adb-device-ip {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
       margin: 0;
-      opacity: .9;
+      opacity: .85;
       text-align: center;
       width: 100%;
+      color: inherit;
     }
-    
-    /* Отключаем hover в сканере ADB, чтобы мышь не мешала навигации */
-    #adbScannerModal .adb-device-card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
-    #adbScannerModal .adb-device-card.selected:hover { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
     /* Кнопки управления сканером */
     #adbScannerModal .sys-btn { background-color: #004d61; color: #fff; }
@@ -351,14 +367,17 @@
       margin-bottom: 16px;
       text-align: center;
     }
+    .adb-last-connection.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+    }
     .adb-last-connection-title {
       font-size: 13px;
       opacity: .8;
       margin-bottom: 6px;
-    }
-    .adb-last-connection-btn {
-      width: min(92vw, 320px);
-      max-width: 320px;
     }
     .adb-last-connection-btn-line1 {
       display: block;
@@ -751,6 +770,20 @@
   width: min(340px, 100%);
 }
 
+.screen-saver-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: left;
+}
+
+.screen-saver-action-btn img {
+  display: block;
+  height: 20px;
+  width: auto;
+}
+
 .screen-saver-cta {
   display: flex;
   gap: 10px;
@@ -952,7 +985,7 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager
     </button>
     <button onclick="openMiscModal(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic6_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller+
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>FastInstaller+
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" style="height:28px;"><br>Меню приложений
@@ -960,15 +993,9 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>AnyDesk
     </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic9_googleplay.png" alt="" style="height:24px;"><br>Google Play
-    </button>
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
-	  <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic11_about.png" alt="" style="height:28px;"><br>О программе
-</button>
   </div>
 
   <!-- Модалка автозапуска -->
@@ -999,43 +1026,36 @@
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
 	  <!-- Кнопка настроек метода установки -->
-  <button onclick="showInstallMethodSettings()" class="sys-btn">
-    <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
-  </button>
-  
-          <button onclick="openAutostartModal()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
     </button>
-	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
+    </button>
+    <button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
+    </button>
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+    </button>
+          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Откл/вкл системные приложения
           </button>
-        <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
-		  </button>
-			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
+           <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
           </button>
-          <button onclick="ignoreNextEnter=true;openAdbManualConnectModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:26px;"><br>Ввести IP:порт
+          <button onclick="openScreenSaverModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:28px;"><br>Заставка
           </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление бэкапов
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+          <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>ADB команды
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
-          </button>
-			
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Доступ к памяти
-          </button>
-			
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettingsForPackage('com.anydesk.anydeskandroid')" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>Доступ к памяти
-          </button>
-
+          <button onclick="showInstallMethodSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:24px;"><br>Выбор способа установки
+            </button>
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
@@ -1054,44 +1074,51 @@
       <div class="misc-buttons-container">
         <div class="system-buttons">
 
-			  <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>
-  Activity Stub
-</button>
-
+			    <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>Activity Stub
+          </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic10_Files.webp" alt="" style="height:22px;"><br> Файлы
           </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:28px;"><br>Очистить кеш
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Доступ к памяти
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление бэкапов
+			
+			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettingsForPackage('com.anydesk.anydeskandroid')" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>Доступ к памяти
           </button>
-           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic9_googleplay.png" alt="" style="height:24px;"><br>Google Play
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:28px;"><br>Очистить кеш
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
-          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Откл/вкл системные приложения
-          </button>
-           <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
+          <button onclick="openAutostartModal()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
           </button>
           <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
           </button>
+          
         
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
+			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
-    <button onclick="openScreenSaverModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:28px;"><br>Заставка
-          </button>
-    <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>ADB команды
+          
+          <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic11_about.png" alt="" style="height:28px;"><br>О программе
           </button>
         </div>
       </div>
@@ -1103,7 +1130,7 @@
     <div class="modal-content">
       <div id="lastAdbConnectionWrapper" class="adb-last-connection">
         <div class="adb-last-connection-title">Последнее подключение</div>
-        <button id="lastAdbConnectionBtn" class="sys-btn adb-last-connection-btn" onclick="connectToLastAdb()" tabindex="0"></button>
+        <button id="lastAdbConnectionBtn" class="adb-chip adb-last-connection-btn" onclick="connectToLastAdb()" tabindex="0"></button>
       </div>
       <h3 id="adbScannerHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:25px;">
@@ -1118,8 +1145,12 @@
       
       <!-- Кнопки управления -->
       <div class="system-buttons" style="justify-content:center;">
-        <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">↻ Пересканировать</button>
-        <button class="sys-btn" onclick="closeAdbScanner()" tabindex="0">Закрыть</button>
+        <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:22px;"><br>Пересканировать
+        </button>
+        <button class="sys-btn" onclick="ignoreNextEnter=true;openAdbManualConnectModal()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:22px;"><br>Ввести IP:порт
+        </button>
       </div>
     </div>
   </div>
@@ -1131,13 +1162,13 @@
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Ручное подключение ADB
       </h3>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
-        <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;align-items:center;">
+        <div style="display:flex;flex-direction:column;gap:4px;width:100%;max-width:280px;">
           <label for="adbManualHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
           <input id="adbManualHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
                  style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;flex-direction:column;gap:4px;width:100%;max-width:280px;">
           <label for="adbManualPortInput" style="font-size:13px;opacity:.85;">Порт ADB (из &laquo;IP address &amp; port&raquo;)</label>
           <input id="adbManualPortInput" type="number" min="1" max="65535" placeholder="5555"
                  style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
@@ -1147,8 +1178,12 @@
         </div>
       </div>
       <div class="system-buttons" style="justify-content:center;">
-        <button id="adbManualSubmitBtn" class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
-        <button id="adbManualCloseBtn" class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
+        <button id="adbManualSubmitBtn" class="sys-btn" onclick="submitAdbManualConnect()" type="button">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic15_connect.webp" alt="" style="height:22px;"><br>Подключиться
+        </button>
+        <button id="adbManualCloseBtn" class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic16_back.webp" alt="" style="height:22px;"><br>Закрыть
+        </button>
       </div>
     </div>
   </div>
@@ -1201,8 +1236,14 @@
         <div class="screen-saver-section">
           <h4>Выбор заставки</h4>
           <div class="screen-saver-actions">
-            <button id="screenSaverAerialViewsBtn" class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
-            <button id="screenSaverAerialDreamBtn" class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
+            <button id="screenSaverAerialViewsBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp" alt="Aerial Views">
+              <span>Aerial Views</span>
+            </button>
+            <button id="screenSaverAerialDreamBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="Aerial Dream" style="height:22px;">
+              <span>Aerial Dream</span>
+            </button>
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить заставку
             </button>
@@ -1326,7 +1367,8 @@
     const MANAGE_STORAGE_PACKAGES = [
       "dev.vodik7.tvquickactions",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid"
+      "com.anydesk.anydeskandroid",
+	    "com.mexplorer.silver"
     ];
     const OVERLAY_PACKAGES = [
       "dev.vodik7.tvquickactions",
@@ -1349,7 +1391,9 @@
     ];
     const ACCESSIBILITY_SERVICES = [
       "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
-      "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
+      "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService",
+      "flar2.homebutton/a.i",
+      "com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyAccessibilityService"
     ];
     const MICROPHONE_PERMISSION = "android.permission.RECORD_AUDIO";
     const MICROPHONE_PERMISSION_PACKAGES = [
@@ -1389,6 +1433,9 @@ let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
 let currentScreenSaverComponent = null;
+let storageUsageLabel = '';
+let lastAdbIndicatorText = '';
+let lastAdbIndicatorConnected = false;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1421,7 +1468,14 @@ let adbStatusRetryTimer = null;
 function setAdbIndicator(text, connected) {
   const el = document.getElementById('adbStatusIndicator');
   if (!el) return;
-  el.textContent = text;
+  lastAdbIndicatorText = text || '';
+  lastAdbIndicatorConnected = !!connected;
+  const safeBase = escapeHtml(lastAdbIndicatorText);
+  const base = safeBase.length ? safeBase : '&nbsp;';
+  const storagePart = storageUsageLabel
+    ? ` <span class="storage-usage-badge">${escapeHtml(storageUsageLabel)}</span>`
+    : '';
+  el.innerHTML = `${base}${storagePart}`;
   el.classList.toggle('connected', !!connected);
   syncModalAdbIndicators(!!connected);
 }
@@ -1435,8 +1489,15 @@ function refreshAdbStatusIndicator() {
       return;
     }
     const info = JSON.parse(raw);
-    const fallback = info.connected ? 'ADB подключен' : 'Локальное устройство';
-    setAdbIndicator(info.label || fallback, info.connected);
+    const awaitingAuth = info?.awaitingAuth === true;
+    const fallback = awaitingAuth
+      ? 'Ожидаю подтверждение…'
+      : (info.connected ? 'ADB подключен' : 'Локальное устройство');
+    const label = (typeof info.label === 'string' && info.label.trim().length) ? info.label : fallback;
+    setAdbIndicator(label, info.connected === true);
+    if (awaitingAuth) {
+      scheduleAdbStatusRetry();
+    }
   } catch (e) {
     console.warn('ADB status update error', e);
     setAdbIndicator('ADB: статус неизвестен', false);
@@ -1449,6 +1510,26 @@ function scheduleAdbStatusRetry() {
 }
 
 window.refreshAdbStatusIndicator = refreshAdbStatusIndicator;
+
+function updateStorageUsage(label) {
+  if (typeof label === 'string' && label.trim().length) {
+    storageUsageLabel = label.trim();
+  } else {
+    storageUsageLabel = '';
+  }
+  setAdbIndicator(lastAdbIndicatorText, lastAdbIndicatorConnected);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+window.updateStorageUsage = updateStorageUsage;
 
 const adbScanState = {
   hosts: [],
@@ -1471,6 +1552,8 @@ function applyFriendlyNameNode(node, friendlyName) {
 
 function resetAdbConnectionState() {
   window.AndroidInterface?.disconnectAdb?.();
+  setAdbIndicator('Локальное устройство', false);
+  updateStorageUsage('');
 }
 
 function requestLocalAdbConnection() {
@@ -1482,6 +1565,14 @@ function refreshLastAdbConnection() {
   const wrapper = document.getElementById('lastAdbConnectionWrapper');
   const btn = document.getElementById('lastAdbConnectionBtn');
   if (!wrapper || !btn) return;
+  const hideWrapper = () => {
+    wrapper.style.display = 'none';
+    wrapper.classList.remove('active');
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    btn.innerHTML = '';
+    btn.classList.remove('is-selected', 'selected');
+  };
   let raw;
   try {
     raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
@@ -1489,27 +1580,18 @@ function refreshLastAdbConnection() {
     raw = null;
   }
   if (!raw || raw === 'undefined') {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   let info;
   try {
     info = JSON.parse(raw);
   } catch (e) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   if (!info || !info.available) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   const host = (info.host || '').trim();
@@ -1521,7 +1603,13 @@ function refreshLastAdbConnection() {
     : '';
   btn.dataset.host = host;
   btn.dataset.port = info.port != null ? String(info.port) : '';
-  wrapper.style.display = topLine ? 'block' : 'none';
+  if (topLine) {
+    wrapper.style.display = 'flex';
+    wrapper.classList.add('active');
+    btn.classList.remove('is-selected', 'selected');
+  } else {
+    hideWrapper();
+  }
 }
 
 function connectToLastAdb() {
@@ -1544,6 +1632,9 @@ window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
   resetAdbConnectionState();
+  refreshAdbStatusIndicator();
+  updateStorageUsage('');
+  window.AndroidInterface?.requestStorageUsageRefresh?.();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
@@ -1639,9 +1730,9 @@ function renderAdbScanHosts() {
     return;
   }
   adbScanState.hosts.forEach(host => {
-    const card = document.createElement('div');
-    card.className = 'adb-device-card';
-    card.setAttribute('tabindex', '0');
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'adb-chip adb-device-card';
     let connectTriggered = false;
 
     const nameEl = document.createElement('div');
@@ -1784,8 +1875,10 @@ function openAdbManualConnectModal() {
   ignoreNextEnter = true;
   const miscModal = document.getElementById('miscModal');
   const miscMoreModal = document.getElementById('miscMoreModal');
+  const scannerModal = document.getElementById('adbScannerModal');
   modal.dataset.restoreMisc = '0';
   modal.dataset.restoreMiscMore = '0';
+  modal.dataset.restoreScanner = '0';
   if (miscModal && miscModal.style.display === 'flex') {
     miscModal.setAttribute('inert', '');
     miscModal.style.pointerEvents = 'none';
@@ -1795,6 +1888,11 @@ function openAdbManualConnectModal() {
     miscMoreModal.setAttribute('inert', '');
     miscMoreModal.style.pointerEvents = 'none';
     modal.dataset.restoreMiscMore = '1';
+  }
+  if (scannerModal && scannerModal.style.display === 'flex') {
+    scannerModal.setAttribute('inert', '');
+    scannerModal.style.pointerEvents = 'none';
+    modal.dataset.restoreScanner = '1';
   }
   lastFocusedElementManualConnect = document.activeElement;
   document.activeElement?.blur();
@@ -1819,8 +1917,7 @@ function openAdbManualConnectModal() {
 
   attachAdbManualInputHandlers();
 
-  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (portInput || hostInput);
-  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
+  setTimeout(() => hostInput?.focus({ preventScroll: true }), 120);
 }
 
 function closeAdbManualConnectModal() {
@@ -1849,6 +1946,15 @@ function closeAdbManualConnectModal() {
     }
     modal.dataset.restoreMiscMore = '0';
   }
+  if (modal.dataset.restoreScanner === '1') {
+    const scanner = document.getElementById('adbScannerModal');
+    if (scanner) {
+      scanner.removeAttribute('inert');
+      scanner.style.pointerEvents = '';
+      if (scanner.style.display === 'flex') needRestoreModalClass = true;
+    }
+    modal.dataset.restoreScanner = '0';
+  }
 
   if (needRestoreModalClass) {
     document.body.classList.add('modal-open');
@@ -1875,6 +1981,8 @@ function submitAdbManualConnect() {
   if (portInput) portInput.value = String(port);
 
   ignoreNextEnter = true;
+  const modal = document.getElementById('adbManualConnectModal');
+  const shouldReturnToFast = modal?.dataset?.restoreScanner === '1';
   closeAdbManualConnectModal();
 
   const ai = window.AndroidInterface;
@@ -1886,6 +1994,14 @@ function submitAdbManualConnect() {
     ai.connectAdb(`${host}:${port}`);
   } else {
     showToast({ message: 'Функция подключения ADB недоступна', type: 'error' });
+  }
+  if (shouldReturnToFast) {
+    closeAdbScanner();
+    setTimeout(() => {
+      if (document.getElementById('miscModal')?.style.display !== 'flex') {
+        openMiscModal();
+      }
+    }, 200);
   }
 }
 
@@ -3028,6 +3144,29 @@ function applyAccessibilityServices() {
       document.activeElement?.blur();
       const modal = document.getElementById('screenSaverModal');
       if (!modal) return;
+  setModalHeaderTitle('screenSaverHeader', (container) => {
+    try {
+      const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
+      const btnIcon = btn?.querySelector('img');
+      const titleText = btn?.innerText?.trim() || 'Заставка';
+      const fallbackIcon = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png';
+      const iconSrc = btnIcon?.src || fallbackIcon;
+      if (iconSrc) {
+        const icon = document.createElement('img');
+        icon.src = iconSrc;
+        icon.alt = '';
+        icon.style.height = '25px';
+        icon.style.width = '25px';
+        icon.style.objectFit = 'contain';
+        container.appendChild(icon);
+      }
+      const title = document.createElement('span');
+      title.textContent = titleText;
+      container.appendChild(title);
+    } catch (_e) {
+      container.textContent = 'Заставка';
+    }
+  });
       modal.style.display = 'flex';
       document.body.classList.add('modal-open');
       requestScreenSaverState();
@@ -3700,8 +3839,8 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
-      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
+      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
