@@ -3934,12 +3934,20 @@ showStatus(`Началась загрузка приложений, ожидай
       autostartOpener = null;
 
       if (returnModal === 'miscMore') {
-        openMiscModal(opener || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]'));
-        setTimeout(() => openMiscMoreModal(opener || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]')), 0);
+        openMiscModal();
+        setTimeout(() => {
+          openMiscMoreModal();
+          if (opener && document.body.contains(opener)) {
+            setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+          }
+        }, 50);
         return;
       }
       if (returnModal === 'misc') {
-        openMiscModal(opener || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]'));
+        openMiscModal();
+        if (opener && document.body.contains(opener)) {
+          setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+        }
         return;
       }
 
