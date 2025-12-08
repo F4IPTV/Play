@@ -3886,6 +3886,9 @@ showStatus(`Началась загрузка приложений, ожидай
         autostartReturnModal = 'miscMore';
         lastFocusedElementMiscMore = null;
         closeMiscMoreModal();
+        if (misc && misc.style.display === 'flex') {
+          closeMiscModal(false);
+        }
       } else if (misc && misc.style.display === 'flex') {
         autostartReturnModal = 'misc';
         closeMiscModal(false);
