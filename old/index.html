@@ -3868,10 +3868,14 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function openAutostartModal() {
+      if (lastAdbIndicatorConnected) {
+        showToast({ message: 'Автозапуск доступен только в локальном режиме', type: 'warning', duration: 3500 });
+        return;
+      }
       // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
       const misc = document.getElementById('miscModal');
       if (misc && misc.style.display === 'flex') {
-        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
+        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscMoreModal"]');
         lastFocusedElement = fastPlusBtn || document.activeElement;
         closeMiscModal(false); // закрыть без восстановления фокуса сейчас
       } else {
