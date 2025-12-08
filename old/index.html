@@ -1105,7 +1105,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
-          <button onclick="openAutostartModal()" class="sys-btn">
+          <button onclick="openAutostartModal(this)" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
           </button>
           <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
@@ -3867,20 +3867,22 @@ showStatus(`Началась загрузка приложений, ожидай
       if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
     }
 
-    function openAutostartModal() {
+    function openAutostartModal(opener) {
       if (lastAdbIndicatorConnected) {
         showToast({ message: 'Автозапуск доступен только в локальном режиме', type: 'warning', duration: 3500 });
         return;
       }
-      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
-      const misc = document.getElementById('miscModal');
-      if (misc && misc.style.display === 'flex') {
-        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscMoreModal"]');
-        lastFocusedElement = fastPlusBtn || document.activeElement;
-        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
+      if (opener instanceof HTMLElement) {
+        lastFocusedElement = opener;
       } else {
-        lastFocusedElement = document.activeElement;
+        const miscMoreBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscMoreModal"]');
+        if (miscMoreBtn) {
+          lastFocusedElement = miscMoreBtn;
+        } else {
+          lastFocusedElement = document.activeElement;
+        }
       }
+      // Автозапуск открываем поверх «Дополнительных функций», чтобы при закрытии вернуться туда же
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
