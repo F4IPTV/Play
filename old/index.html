@@ -1436,6 +1436,8 @@ let currentScreenSaverComponent = null;
 let storageUsageLabel = '';
 let lastAdbIndicatorText = '';
 let lastAdbIndicatorConnected = false;
+let autostartReturnModal = null;
+let autostartOpener = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -3872,17 +3874,23 @@ showStatus(`Началась загрузка приложений, ожидай
         showToast({ message: 'Автозапуск доступен только в локальном режиме', type: 'warning', duration: 3500 });
         return;
       }
-      if (opener instanceof HTMLElement) {
-        lastFocusedElement = opener;
-      } else {
-        const miscMoreBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscMoreModal"]');
-        if (miscMoreBtn) {
-          lastFocusedElement = miscMoreBtn;
-        } else {
-          lastFocusedElement = document.activeElement;
-        }
+      autostartOpener = opener instanceof HTMLElement
+        ? opener
+        : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      lastFocusedElement = autostartOpener;
+
+      autostartReturnModal = null;
+      const miscMore = document.getElementById('miscMoreModal');
+      const misc = document.getElementById('miscModal');
+      if (miscMore && miscMore.style.display === 'flex') {
+        autostartReturnModal = 'miscMore';
+        lastFocusedElementMiscMore = null;
+        closeMiscMoreModal();
+      } else if (misc && misc.style.display === 'flex') {
+        autostartReturnModal = 'misc';
+        closeMiscModal(false);
       }
-      // Автозапуск открываем поверх «Дополнительных функций», чтобы при закрытии вернуться туда же
+
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
@@ -3892,6 +3900,7 @@ showStatus(`Началась загрузка приложений, ожидай
 
       // Сброс текущего фокуса перед открытием
       document.activeElement?.blur();
+      document.body.classList.add('modal-open');
       modal.style.display = 'flex';
       list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
 
@@ -3913,8 +3922,28 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function closeAutostartModal() {
-      document.getElementById('autostartModal').style.display = 'none';
-      if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus();
+      const modal = document.getElementById('autostartModal');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+
+      const returnModal = autostartReturnModal;
+      const opener = autostartOpener;
+      autostartReturnModal = null;
+      autostartOpener = null;
+
+      if (returnModal === 'miscMore') {
+        openMiscMoreModal(opener || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]'));
+        return;
+      }
+      if (returnModal === 'misc') {
+        openMiscModal(opener || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]'));
+        return;
+      }
+
+      const focusTarget = opener || lastFocusedElement;
+      if (focusTarget && document.body.contains(focusTarget)) {
+        setTimeout(() => focusTarget.focus?.({ preventScroll: true }), 50);
+      }
     }
 
     /* === helpers для автозапуска === */
