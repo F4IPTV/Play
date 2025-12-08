@@ -1624,10 +1624,7 @@ function connectToLastAdb() {
 window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
-  resetAdbConnectionState();
-  refreshAdbStatusIndicator();
-  updateStorageUsage('');
-  window.AndroidInterface?.requestStorageUsageRefresh?.();
+  
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
