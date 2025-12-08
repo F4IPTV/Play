@@ -3869,7 +3869,7 @@ showStatus(`Началась загрузка приложений, ожидай
       if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
     }
 
-    function openAutostartModal(opener) {
+    function openAutostartModal(opener = null) {
       if (lastAdbIndicatorConnected) {
         showToast({ message: 'Автозапуск доступен только в локальном режиме', type: 'warning', duration: 3500 });
         return;
@@ -3890,7 +3890,6 @@ showStatus(`Началась загрузка приложений, ожидай
         autostartReturnModal = 'misc';
         closeMiscModal(false);
       }
-
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
       const current = document.getElementById('autostartCurrent');
@@ -3932,7 +3931,8 @@ showStatus(`Началась загрузка приложений, ожидай
       autostartOpener = null;
 
       if (returnModal === 'miscMore') {
-        openMiscMoreModal(opener || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]'));
+        openMiscModal(opener || document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]'));
+        setTimeout(() => openMiscMoreModal(opener || document.querySelector('#miscModal .sys-btn[onclick*="openMiscMoreModal"]')), 0);
         return;
       }
       if (returnModal === 'misc') {
