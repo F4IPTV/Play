@@ -1035,7 +1035,7 @@
     <button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
     </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
+    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
     </button>
           <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
@@ -2331,6 +2331,26 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       } catch (err) {
         console.warn('confirmWipeThirdPartyApps error', err);
         showToast({ message: 'Не удалось выполнить удаление', type: 'error' });
+      }
+    }
+
+    function handleOpenApkFilePicker() {
+      ignoreNextEnter = true;
+
+      const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
+      if (method === 'adb' && !isAdbSessionConnected()) {
+        showToast({
+          message: 'Выбран способ «ADB», но подключение отсутствует. Подключите ADB или переключите установку на «Быстрая» либо «Стандартная».',
+          type: 'warning'
+        });
+        return;
+      }
+
+      try {
+        window.AndroidInterface?.openApkFilePicker();
+      } catch (err) {
+        console.warn('openApkFilePicker error', err);
+        showToast({ message: 'Не удалось открыть выбор APK', type: 'error' });
       }
     }
 
