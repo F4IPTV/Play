@@ -1041,7 +1041,7 @@
           <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Откл/вкл системные приложения
           </button>
-           <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
+           <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
           </button>
           <button onclick="openScreenSaverModal(this)" class="sys-btn">
@@ -2289,6 +2289,11 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       if (!list.length) return;
 
+      const actionLabel = 'Откл/вкл системные приложения';
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+
       const key = list.join('|').toLowerCase();
       const nextDisable = !(disablePackageStates.get(key) ?? false);
       disablePackageStates.set(key, nextDisable);
@@ -2296,9 +2301,36 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       const payload = { packages: list, disable: nextDisable };
 
       try {
-        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+        if (typeof ai.disablePackage === 'function') {
+          ai.disablePackage(JSON.stringify(payload));
+          return;
+        }
       } catch (e) {
+        console.warn('disablePackages error', e);
+      }
+
+      try {
         window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+      } catch (err) {
+        console.warn('disablePackages fallback error', err);
+        showToast({ message: 'Не удалось отправить команды ADB', type: 'error' });
+      }
+    }
+
+    function handleConfirmWipeThirdPartyApps() {
+      const actionLabel = 'Удаление всех приложений';
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+      if (typeof ai.confirmWipeThirdPartyApps !== 'function') {
+        showToast({ message: 'Функция недоступна в этом режиме', type: 'error' });
+        return;
+      }
+      try {
+        ai.confirmWipeThirdPartyApps();
+      } catch (err) {
+        console.warn('confirmWipeThirdPartyApps error', err);
+        showToast({ message: 'Не удалось выполнить удаление', type: 'error' });
       }
     }
 
