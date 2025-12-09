@@ -2407,7 +2407,19 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         textWrap.append(title, body);
         btn.append(iconNode, textWrap);
 
-        const exec = () => sendAdbCommand(item.command, item.label);
+        const exec = () => {
+          sendAdbCommand(item.command, item.label);
+          if ([1001, 1002, 1003, 1004, 1005, 1006, 1007].includes(item.id)) {
+            setTimeout(() => {
+              resetAdbConnectionState();
+              showToast({
+                message: 'ADB отключён: выполняем перезапуск устройства',
+                type: 'info',
+                duration: 3500
+              });
+            }, 300);
+          }
+        };
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           exec();
