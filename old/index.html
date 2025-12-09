@@ -2412,11 +2412,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           if ([1001, 1002, 1003, 1004, 1005, 1006, 1007].includes(item.id)) {
             setTimeout(() => {
               resetAdbConnectionState();
-              showToast({
-                message: 'ADB отключён: выполняем перезапуск устройства',
-                type: 'info',
-                duration: 3500
-              });
             }, 300);
           }
         };
