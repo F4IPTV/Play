@@ -2754,7 +2754,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         showToast({ message: 'Нет сохранённого ADB-подключения', type: 'warning' });
         return;
       }
-      showToast({ message: 'Переподключаемся к последнему ADB…', type: 'info', duration: 2500 });
+      showToast({ message: 'Переподключаемся к последнему ADB…', type: 'blue', duration: 2500 });
       connectToLastAdb();
     }
 
