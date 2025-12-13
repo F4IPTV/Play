@@ -99,10 +99,38 @@
       touch-action: auto;
       overscroll-behavior: contain;
     }
-    .modal-adb-indicator {
+    .modal-header-tools {
       position: absolute;
       top: -5px;
       right: -5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 6;
+    }
+    .modal-header-tools button {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modal-header-tools button img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .modal-header-tools button:focus-visible {
+      outline: 2px solid #00cfff;
+      border-radius: 4px;
+    }
+    .modal-adb-indicator {
       width: 26px;
       height: 26px;
       border: none;
@@ -114,6 +142,7 @@
       justify-content: center;
       z-index: 5;
       -webkit-tap-highlight-color: transparent;
+      appearance: none;
     }
     .modal-adb-indicator:focus-visible {
       outline: none;
@@ -123,9 +152,6 @@
       height: 100%;
       object-fit: contain;
       pointer-events: none;
-    }
-    .modal-adb-indicator {
-      appearance: none;
     }
     .modal-adb-indicator:hover,
     .modal-adb-indicator:focus,
@@ -1419,6 +1445,46 @@
     const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
     const ADB_ICON_CONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_on.png";
     const ADB_ICON_DISCONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png";
+    const MODAL_HEADER_ACTIONS = [
+      {
+        key: 'modal-action-all-apps',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png',
+        label: 'Меню приложений',
+        run(btn) {
+          ignoreNextEnter = true;
+          try {
+            window.AndroidInterface?.openAllAppsSide?.();
+          } catch (err) {
+            console.warn('openAllAppsSide недоступен', err);
+          }
+        }
+      },
+      {
+        key: 'modal-action-adb-scan',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png',
+        label: 'К другому (RSA)',
+        run() {
+          ignoreNextEnter = true;
+          openAdbScanner();
+        }
+      },
+      {
+        key: 'modal-action-screen-saver',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png',
+        label: 'Заставка',
+        run(btn) {
+          openScreenSaverModal(btn);
+        }
+      },
+      {
+        key: 'modal-action-adb-commands',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png',
+        label: 'ADB команды',
+        run(btn) {
+          openAdbCommandsFromButton(btn);
+        }
+      }
+    ];
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -2692,11 +2758,67 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return btn;
     }
 
+    function createModalQuickActionButton(action) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'modal-quick-action';
+      btn.dataset.action = action.key;
+      btn.title = action.label;
+      btn.setAttribute('aria-label', action.label);
+
+      const img = document.createElement('img');
+      img.src = action.icon;
+      img.alt = action.label;
+      img.loading = 'lazy';
+      btn.appendChild(img);
+
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+          action.run?.(btn, event);
+        } catch (err) {
+          console.warn(`modal quick action ${action.key} failed`, err);
+        }
+      });
+
+      return btn;
+    }
+
+    function ensureModalQuickActions(container, indicator) {
+      MODAL_HEADER_ACTIONS.forEach((action) => {
+        if (!container.querySelector(`.modal-quick-action[data-action="${action.key}"]`)) {
+          const btn = createModalQuickActionButton(action);
+          if (indicator && indicator.parentElement === container) {
+            container.insertBefore(btn, indicator);
+          } else {
+            container.appendChild(btn);
+          }
+        }
+      });
+    }
+
     function ensureModalAdbIndicators() {
       document.querySelectorAll('.modal .modal-content').forEach((content) => {
-        if (!content.querySelector('.modal-adb-indicator')) {
-          content.appendChild(createModalAdbIndicator());
+        let tools = content.querySelector('.modal-header-tools');
+        if (!tools) {
+          tools = document.createElement('div');
+          tools.className = 'modal-header-tools';
+          content.appendChild(tools);
         }
+
+        const strayIndicator = content.querySelector('.modal-adb-indicator');
+        if (strayIndicator && strayIndicator.parentElement !== tools) {
+          tools.appendChild(strayIndicator);
+        }
+
+        let indicator = tools.querySelector('.modal-adb-indicator');
+        if (!indicator) {
+          indicator = createModalAdbIndicator();
+          tools.appendChild(indicator);
+        }
+
+        ensureModalQuickActions(tools, indicator);
       });
     }
 
