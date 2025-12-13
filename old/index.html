@@ -1326,7 +1326,7 @@
         command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.tungsten.setupwraith; pm enable --user 0 com.google.android.tungsten.setupwraith; cmd package enable com.google.android.tungsten.setupwraith; cmd notification allow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification allow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; cmd notification disallow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true",
         description: " ",
         label: "Включить Google TV Home",
-        icon: "gmd_tv",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic19_GTV.webp",
         isEnabled: true,
         uid: "launcher-restore-google-tv"
       },
@@ -1335,7 +1335,7 @@
         command: "cmd package install-existing com.google.android.tvlauncher || pm install-existing com.google.android.tvlauncher; cmd package enable --user 0 com.google.android.tvlauncher; pm enable --user 0 com.google.android.tvlauncher; cmd package enable com.google.android.tvlauncher; cmd notification allow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true",
         description: " ",
         label: "Включить Android TV Home",
-        icon: "gmd_tv",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
         isEnabled: true,
         uid: "launcher-restore-android-tv"
       },
@@ -1344,7 +1344,7 @@
         command: "cmd package install-existing com.spocky.projengmenu || pm install-existing com.spocky.projengmenu; cmd package enable --user 0 com.spocky.projengmenu; pm enable --user 0 com.spocky.projengmenu; cmd package enable com.spocky.projengmenu && { cmd notification allow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification allow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true; cmd notification disallow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true; cmd package disable-user --user 0 com.google.android.tvlauncher; pm disable-user --user 0 com.google.android.tvlauncher; cmd package disable-user --user 0 com.google.android.apps.tv.launcherx; pm disable-user --user 0 com.google.android.apps.tv.launcherx; pm path com.google.android.apps.tv.launcherx >/dev/null 2>&1 && { cmd package disable-user --user 0 com.google.android.tungsten.setupwraith || true; pm disable-user --user 0 com.google.android.tungsten.setupwraith || true; } || true; }",
         description: " ",
         label: "Projectivy Launcher",
-        icon: "gmd_tv",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic21_PJL.png",
         isEnabled: true,
         uid: "launcher-enable-projectivy"
       }
