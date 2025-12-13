@@ -2590,7 +2590,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyBatteryOptimizationWhitelist() {
-      runAdbBatch({
+      return runAdbBatch({
         items: BATTERY_WHITELIST_PACKAGES,
         perItemStatus: (pkg) => {
           showStatus(
@@ -2785,19 +2785,20 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       if (!queue.length) {
         if (emptyMessage) showToast({ message: emptyMessage, type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
 
       const ai = getAdbInterfaceOrWarn(adbActionLabel || startMessage || 'операция');
-      if (!ai) return;
+      if (!ai) return Promise.resolve(false);
 
       if (startMessage) {
         showToast({ message: startMessage, type: 'info', duration: 4000 });
       }
 
       let index = 0;
-      const tick = () => {
-        if (index >= queue.length) {
+
+      return new Promise((resolve) => {
+        const finish = () => {
           const statusText = doneStatusMessage || doneMessage;
           if (statusText) {
             showToast({ message: statusText, type: 'success' });
@@ -2805,29 +2806,36 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           } else if (doneMessage) {
             showToast({ message: doneMessage, type: 'success' });
           }
-          return;
-        }
-        const item = queue[index++];
-        const cmdsRaw = buildCommands(item) || [];
-        const commands = Array.isArray(cmdsRaw) ? cmdsRaw : [cmdsRaw];
-        commands.forEach(entry => {
-          const command = typeof entry === 'string' ? entry : entry?.command;
-          if (!command) return;
-          const label = typeof entry === 'object' ? (entry.label || '') : '';
-          try {
-            ai.runAdbShellCommand(command, label || '', !!silent);
-          } catch (err) {
-            console.warn('ADB batch error', err);
-            showToast({ message: `Ошибка: ${command}`, type: 'error' });
-          }
-        });
-        if (typeof perItemStatus === 'function') {
-          perItemStatus(item, index, queue.length);
-        }
-        setTimeout(tick, delay);
-      };
+          resolve(true);
+        };
 
-      tick();
+        const tick = () => {
+          if (index >= queue.length) {
+            finish();
+            return;
+          }
+          const item = queue[index++];
+          const cmdsRaw = buildCommands(item) || [];
+          const commands = Array.isArray(cmdsRaw) ? cmdsRaw : [cmdsRaw];
+          commands.forEach(entry => {
+            const command = typeof entry === 'string' ? entry : entry?.command;
+            if (!command) return;
+            const label = typeof entry === 'object' ? (entry.label || '') : '';
+            try {
+              ai.runAdbShellCommand(command, label || '', !!silent);
+            } catch (err) {
+              console.warn('ADB batch error', err);
+              showToast({ message: `Ошибка: ${command}`, type: 'error' });
+            }
+          });
+          if (typeof perItemStatus === 'function') {
+            perItemStatus(item, index, queue.length);
+          }
+          setTimeout(tick, delay);
+        };
+
+        tick();
+      });
     }
 
     function normalizeListenerComponent(entry) {
@@ -2848,7 +2856,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyUsageStatsAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: USAGE_STATS_PACKAGES,
         buildCommands: (pkg) => [
           { command: `pm grant ${pkg} android.permission.PACKAGE_USAGE_STATS`, label: `Grant usage stats ${pkg}` },
@@ -2861,7 +2869,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyManageStorageAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: MANAGE_STORAGE_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set --uid ${pkg} MANAGE_EXTERNAL_STORAGE allow`,
@@ -2875,66 +2883,69 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
     function applyUnknownSourcesPermission() {
       const actionLabel = 'Разрешение установки из неизвестных источников';
-      if (!ensureAdbSessionConnected(actionLabel)) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
       const ai = getAdbInterfaceOrWarn(actionLabel);
       if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
         showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
-        return;
+        return Promise.resolve(false);
       }
       const packages = getUserPackages();
       if (!packages.length) {
         showToast({ message: 'Нет пользовательских приложений для обновления', type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
 
-      let index = 0;
-      let failures = 0;
-      const processNext = () => {
-        if (index >= packages.length) {
-          const statusText = failures
-            ? `Разрешение выдано, но ${failures} пакетов сообщило об ошибке`
-            : 'Выдано разрешение на установку APK из неизвестных источников';
-          showToast({ message: statusText, type: failures ? 'warning' : 'success' });
-          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
-          return;
-        }
-        const pkg = packages[index++];
-        showStatus(`📦 ${pkg}: выдаём разрешение на установку`, '#00cfff', 2500);
-        let primaryOk = false;
-        try {
-          primaryOk = !!ai.runAdbShellCommandWithResult(
-            `appops set ${pkg} REQUEST_INSTALL_PACKAGES allow`,
-            `Unknown sources ${pkg}`,
-            true
-          );
-        } catch (err) {
-          console.warn('Unknown sources primary command error', err);
-        }
-        if (!primaryOk) {
-          let fallbackOk = false;
+      return new Promise((resolve) => {
+        let index = 0;
+        let failures = 0;
+        const processNext = () => {
+          if (index >= packages.length) {
+            const statusText = failures
+              ? `Разрешение выдано, но ${failures} пакетов сообщило об ошибке`
+              : 'Выдано разрешение на установку APK из неизвестных источников';
+            showToast({ message: statusText, type: failures ? 'warning' : 'success' });
+            showStatus(`✅ ${statusText}`, '#00cfff', 4000);
+            resolve(true);
+            return;
+          }
+          const pkg = packages[index++];
+          showStatus(`📦 ${pkg}: выдаём разрешение на установку`, '#00cfff', 2500);
+          let primaryOk = false;
           try {
-            fallbackOk = !!ai.runAdbShellCommandWithResult(
-              `appops set --uid ${pkg} REQUEST_INSTALL_PACKAGES allow`,
-              `Unknown sources UID ${pkg}`,
+            primaryOk = !!ai.runAdbShellCommandWithResult(
+              `appops set ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+              `Unknown sources ${pkg}`,
               true
             );
           } catch (err) {
-            console.warn('Unknown sources fallback command error', err);
+            console.warn('Unknown sources primary command error', err);
           }
-          if (!fallbackOk) {
-            failures += 1;
-            showStatus(`⚠️ ${pkg}: не удалось выдать разрешение`, '#ff8a65', 2500);
+          if (!primaryOk) {
+            let fallbackOk = false;
+            try {
+              fallbackOk = !!ai.runAdbShellCommandWithResult(
+                `appops set --uid ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+                `Unknown sources UID ${pkg}`,
+                true
+              );
+            } catch (err) {
+              console.warn('Unknown sources fallback command error', err);
+            }
+            if (!fallbackOk) {
+              failures += 1;
+              showStatus(`⚠️ ${pkg}: не удалось выдать разрешение`, '#ff8a65', 2500);
+            }
           }
-        }
-        setTimeout(processNext, 450);
-      };
+          setTimeout(processNext, 450);
+        };
 
-      showToast({ message: 'Обновляем разрешения на установку APK…', type: 'info' });
-      processNext();
+        showToast({ message: 'Обновляем разрешения на установку APK…', type: 'info' });
+        processNext();
+      });
     }
 
     function applyOverlayAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: OVERLAY_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SYSTEM_ALERT_WINDOW allow`,
@@ -2949,51 +2960,54 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function applyMicrophonePermission() {
       if (!MICROPHONE_PERMISSION) {
         showToast({ message: 'Не задано имя разрешения микрофона', type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
       const actionLabel = 'Разрешение микрофона';
-      if (!ensureAdbSessionConnected(actionLabel)) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
       const ai = getAdbInterfaceOrWarn(actionLabel);
       if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
         showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
-        return;
+        return Promise.resolve(false);
       }
       const dynamicPackages = getUserPackages();
       const manualPackages = Array.isArray(MICROPHONE_PERMISSION_PACKAGES) ? MICROPHONE_PERMISSION_PACKAGES : [];
       const packages = Array.from(new Set([...manualPackages, ...dynamicPackages])).filter(Boolean);
       if (!packages.length) {
         showToast({ message: 'Нет приложений для выдачи микрофона', type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
 
-      let index = 0;
-      const processNext = () => {
-        if (index >= packages.length) {
-          const statusText = 'Разрешение микрофона обновлено';
-          showToast({ message: statusText, type: 'success' });
-          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
-          return;
-        }
-        const pkg = packages[index++];
-        showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
-        try {
-          ai.runAdbShellCommandWithResult(
-            `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
-            `Grant mic ${pkg}`,
-            true
-          );
-        } catch (err) {
-          console.warn('applyMicrophonePermission error', pkg, err);
-        }
-        setTimeout(processNext, 350);
-      };
+      return new Promise((resolve) => {
+        let index = 0;
+        const processNext = () => {
+          if (index >= packages.length) {
+            const statusText = 'Разрешение микрофона обновлено';
+            showToast({ message: statusText, type: 'success' });
+            showStatus(`✅ ${statusText}`, '#00cfff', 4000);
+            resolve(true);
+            return;
+          }
+          const pkg = packages[index++];
+          showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
+          try {
+            ai.runAdbShellCommandWithResult(
+              `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
+              `Grant mic ${pkg}`,
+              true
+            );
+          } catch (err) {
+            console.warn('applyMicrophonePermission error', pkg, err);
+          }
+          setTimeout(processNext, 350);
+        };
 
-      showToast({ message: 'Выдаём разрешения микрофона…', type: 'info' });
-      processNext();
+        showToast({ message: 'Выдаём разрешения микрофона…', type: 'info' });
+        processNext();
+      });
     }
 
     function applyWriteSettingsAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: WRITE_SETTINGS_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} WRITE_SETTINGS allow`,
@@ -3006,7 +3020,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyExactAlarmAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: EXACT_ALARM_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SCHEDULE_EXACT_ALARM allow`,
@@ -3019,7 +3033,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyNotificationListeners() {
-      runAdbBatch({
+      return runAdbBatch({
         items: NOTIFICATION_LISTENER_SERVICES,
     buildCommands: (entry) => {
       const component = normalizeListenerComponent(entry);
@@ -3038,10 +3052,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
 function applyAccessibilityServices() {
   const ai = getAdbInterfaceOrWarn('Включение служб доступности');
-  if (!ai) return;
+  if (!ai) return Promise.resolve(false);
   if (!Array.isArray(ACCESSIBILITY_SERVICES) || !ACCESSIBILITY_SERVICES.length) {
     showToast({ message: 'Нет служб для включения доступа', type: 'warning' });
-    return;
+    return Promise.resolve(false);
   }
   const joined = ACCESSIBILITY_SERVICES.join(':');
   const commands = [
@@ -3068,69 +3082,81 @@ function applyAccessibilityServices() {
     showStatus('♿ Службы доступности включены', '#00cfff', 4000);
     showToast({ message: 'Доступ к службам доступности выдан', type: 'success' });
   }
+  return Promise.resolve(!hasError);
 }
 
     function applyDefaultKeyboardIme() {
-      const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
-      if (!ai) return;
-      if (!DEFAULT_KEYBOARD_IME) {
-        showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
-        return;
-      }
+      return new Promise((resolve) => {
+        const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
+        if (!ai) {
+          resolve(false);
+          return;
+        }
+        if (!DEFAULT_KEYBOARD_IME) {
+          showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
+          resolve(false);
+          return;
+        }
 
-      const commands = [
-        { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
-        { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
-      ];
+        const commands = [
+          { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
+          { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
+        ];
 
-      const runImeCommands = () => {
-        commands.forEach(({ command, label }) => {
+        const runImeCommands = () => {
+          commands.forEach(({ command, label }) => {
+            try {
+              ai.runAdbShellCommand(command, label, true);
+            } catch (err) {
+              console.warn('applyDefaultKeyboardIme command error', err);
+            }
+          });
+        };
+
+        const isTargetImeActive = () => {
           try {
-            ai.runAdbShellCommand(command, label, true);
+            const value = window.AndroidInterface?.getCurrentInputMethod?.();
+            if (!value || value === 'undefined') return false;
+            return value.trim() === DEFAULT_KEYBOARD_IME;
           } catch (err) {
-            console.warn('applyDefaultKeyboardIme command error', err);
+            console.warn('isTargetImeActive error', err);
+            return false;
           }
-        });
-      };
+        };
 
-      const isTargetImeActive = () => {
-        try {
-          const value = window.AndroidInterface?.getCurrentInputMethod?.();
-          if (!value || value === 'undefined') return false;
-          return value.trim() === DEFAULT_KEYBOARD_IME;
-        } catch (err) {
-          console.warn('isTargetImeActive error', err);
+        const ensureIme = (silent = false) => {
+          if (isTargetImeActive()) {
+            if (!silent) {
+              showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+              showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+            }
+            return true;
+          }
+          runImeCommands();
+          setTimeout(() => {
+            if (isTargetImeActive() && !silent) {
+              showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+              showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+            }
+          }, 1000);
           return false;
-        }
-      };
+        };
 
-      const ensureIme = (silent = false) => {
-        if (isTargetImeActive()) {
-          if (!silent) {
-            showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-            showToast({ message: 'Клавиатура назначена основной', type: 'success' });
-          }
-          return true;
-        }
-        runImeCommands();
-        setTimeout(() => {
-          if (isTargetImeActive() && !silent) {
-            showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-            showToast({ message: 'Клавиатура назначена основной', type: 'success' });
-          }
-        }, 1000);
-        return false;
-      };
+        const finalize = () => resolve(true);
 
-      const initialApplied = ensureIme();
-      if (!initialApplied) {
+        const initialApplied = ensureIme();
+        if (initialApplied) {
+          finalize();
+          return;
+        }
         setTimeout(() => ensureIme(true), 2000);
-      }
+        setTimeout(finalize, 2500);
+      });
     }
 
     function applyScreenSaverDefaults() {
       const ai = getAdbInterfaceOrWarn('Настройка заставки');
-      if (!ai) return;
+      if (!ai) return Promise.resolve(false);
       const commands = [
         { command: 'settings put system screen_off_timeout 3600000', label: 'Screen off timeout' },
         { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' }
@@ -3158,34 +3184,52 @@ function applyAccessibilityServices() {
         showStatus('🌌 Aerial Views активирована, таймеры обновлены', '#00cfff', 4000);
         showToast({ message: 'Заставка настроена', type: 'success' });
       }
+      return Promise.resolve(!hasError);
     }
 
-    function runAllAutoPermissions() {
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    async function runAllAutoPermissions() {
       const actionLabel = 'Авторазрешения';
       if (!getAdbInterfaceOrWarn(actionLabel)) return;
       if (!ensureAdbSessionConnected(actionLabel)) return;
       showToast({ message: 'Запуск авторазрешений…', type: 'info' });
-      applyBatteryOptimizationWhitelist();
-      applyUsageStatsAccess();
-      applyManageStorageAccess();
-      applyUnknownSourcesPermission();
-      applyOverlayAccess();
-      applyMicrophonePermission();
-      applyWriteSettingsAccess();
-      applyExactAlarmAccess();
-      applyAccessibilityServices();
-      applyScreenSaverDefaults();
-      setTimeout(() => {
-        applyDefaultKeyboardIme();
-        applyNotificationListeners();
-        setTimeout(() => {
+
+      const steps = [
+        applyBatteryOptimizationWhitelist,
+        applyUsageStatsAccess,
+        applyManageStorageAccess,
+        applyUnknownSourcesPermission,
+        applyOverlayAccess,
+        applyMicrophonePermission,
+        applyWriteSettingsAccess,
+        applyExactAlarmAccess,
+        applyAccessibilityServices,
+        applyScreenSaverDefaults
+      ];
+
+      try {
+        for (const step of steps) {
           try {
-            window.AndroidInterface?.onAutoPermissionsFinished?.();
+            await step();
           } catch (err) {
-            console.warn('onAutoPermissionsFinished error', err);
+            console.warn('runAllAutoPermissions step failed', step?.name || 'anonymous', err);
           }
-        }, 1000);
-      }, 5000);
+        }
+
+        await wait(5000);
+        await applyDefaultKeyboardIme();
+        await applyNotificationListeners();
+        await wait(1000);
+      } catch (err) {
+        console.warn('runAllAutoPermissions error', err);
+      } finally {
+        try {
+          window.AndroidInterface?.onAutoPermissionsFinished?.();
+        } catch (err) {
+          console.warn('onAutoPermissionsFinished error', err);
+        }
+      }
     }
 
 
