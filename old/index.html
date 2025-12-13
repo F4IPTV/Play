@@ -3195,27 +3195,20 @@ function applyAccessibilityServices() {
       if (!ensureAdbSessionConnected(actionLabel)) return;
       showToast({ message: 'Запуск авторазрешений…', type: 'info' });
 
-      const steps = [
-        applyBatteryOptimizationWhitelist,
-        applyUsageStatsAccess,
-        applyManageStorageAccess,
-        applyUnknownSourcesPermission,
-        applyOverlayAccess,
-        applyMicrophonePermission,
-        applyWriteSettingsAccess,
-        applyExactAlarmAccess,
-        applyAccessibilityServices,
-        applyScreenSaverDefaults
-      ];
-
       try {
-        for (const step of steps) {
-          try {
-            await step();
-          } catch (err) {
-            console.warn('runAllAutoPermissions step failed', step?.name || 'anonymous', err);
-          }
-        }
+        await Promise.all([
+          applyBatteryOptimizationWhitelist(),
+          applyUsageStatsAccess(),
+          applyManageStorageAccess(),
+          applyOverlayAccess(),
+          applyWriteSettingsAccess(),
+          applyExactAlarmAccess(),
+          applyAccessibilityServices(),
+          applyScreenSaverDefaults()
+        ]);
+
+        await applyUnknownSourcesPermission();
+        await applyMicrophonePermission();
 
         await wait(5000);
         await applyDefaultKeyboardIme();
