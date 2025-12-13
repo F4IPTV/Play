@@ -1468,15 +1468,6 @@
         }
       },
       {
-        key: 'modal-action-adb-scan',
-        icon: 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png',
-        label: 'К другому (RSA)',
-        run() {
-          ignoreNextEnter = true;
-          openAdbScanner();
-        }
-      },
-      {
         key: 'modal-action-screen-saver',
         icon: 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png',
         label: 'Заставка',
@@ -1493,6 +1484,8 @@
         }
       }
     ];
+    let modalOverlayCounter = 1000;
+    const MODAL_Z_STEP = 5;
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -1737,6 +1730,7 @@ function openAdbScanner() {
   renderAdbScanHosts();
   updateAdbScanStatus('Сканирование сети...', 0);
   modal.style.display = 'flex';
+  bringModalToFront(modal);
   document.body.classList.add('modal-open');
   document.activeElement?.blur();
   refreshLastAdbConnection();
@@ -1763,6 +1757,7 @@ function closeAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   modal.style.display = 'none';
+  modal.style.zIndex = '';
   document.body.classList.remove('modal-open');
   if (modal.dataset.restoreMisc === '1') {
     const misc = document.getElementById('miscModal');
@@ -2599,6 +2594,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         });
       }
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
 
       const list = document.getElementById('adbCommandsList');
@@ -2617,6 +2613,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (!modal) return;
 
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       document.body.classList.remove('modal-open');
       document.querySelectorAll('#adbCommandsList .adb-command-btn.selected').forEach(btn => btn.classList.remove('selected'));
 
@@ -2797,13 +2794,37 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return btn;
     }
 
-    function ensureModalQuickActions(container) {
-      MODAL_HEADER_ACTIONS.forEach((action) => {
+    function ensureModalQuickActions(container, content) {
+      const skipKeys = new Set();
+      if (content?.querySelector?.('#adbCommandsHeader')) {
+        skipKeys.add('modal-action-adb-commands');
+      }
+      if (content?.querySelector?.('#screenSaverHeader')) {
+        skipKeys.add('modal-action-screen-saver');
+      }
+
+      const allowedActions = MODAL_HEADER_ACTIONS.filter((action) => !skipKeys.has(action.key));
+      const allowedKeys = new Set(allowedActions.map((action) => action.key));
+
+      container.querySelectorAll('.modal-quick-action').forEach((btn) => {
+        const key = btn.dataset.action;
+        if (!allowedKeys.has(key)) {
+          btn.remove();
+        }
+      });
+
+      allowedActions.forEach((action) => {
         if (!container.querySelector(`.modal-quick-action[data-action="${action.key}"]`)) {
           const btn = createModalQuickActionButton(action);
           container.appendChild(btn);
         }
       });
+    }
+
+    function bringModalToFront(modal) {
+      if (!modal) return;
+      modalOverlayCounter += MODAL_Z_STEP;
+      modal.style.zIndex = String(modalOverlayCounter);
     }
 
     function lowerGroupModalForOverlay() {
@@ -2842,7 +2863,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           content.appendChild(quickContainer);
         }
 
-        ensureModalQuickActions(quickContainer);
+        ensureModalQuickActions(quickContainer, content);
 
         let indicator = content.querySelector('.modal-adb-indicator');
         if (!indicator) {
@@ -3456,6 +3477,7 @@ function applyAccessibilityServices() {
     }
   });
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
       requestScreenSaverState();
       setTimeout(() => {
@@ -3472,6 +3494,7 @@ function applyAccessibilityServices() {
         closeScreenSaverTimeoutModal();
       }
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       document.body.classList.remove('modal-open');
       const target = lastScreenSaverTrigger;
       lastScreenSaverTrigger = null;
