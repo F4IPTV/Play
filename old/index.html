@@ -126,9 +126,14 @@
       object-fit: contain;
       pointer-events: none;
     }
-    .modal-quick-actions button:focus-visible {
-      outline: 2px solid #00cfff;
-      border-radius: 4px;
+    .modal-quick-actions button:focus,
+    .modal-quick-actions button:focus-visible,
+    .modal-quick-actions button:hover,
+    .modal-quick-actions button:active {
+      outline: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      filter: none !important;
     }
     .modal-adb-indicator {
       position: absolute;
@@ -1782,6 +1787,7 @@ function closeAdbScanner() {
     lastFocusedElement.focus({ preventScroll: true });
   }
   lastFocusedElement = null;
+    restoreGroupModalOverlay();
 }
 
 function restartAdbScan() {
@@ -2646,6 +2652,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
       lastAdbCommandsTriggerButton = null;
+      restoreGroupModalOverlay();
     }
 
     function sendAdbCommand(command, label) {
@@ -2779,6 +2786,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       btn.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        lowerGroupModalForOverlay();
         try {
           action.run?.(btn, event);
         } catch (err) {
@@ -2796,6 +2804,23 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           container.appendChild(btn);
         }
       });
+    }
+
+    function lowerGroupModalForOverlay() {
+      const groupModal = document.getElementById('modal');
+      if (!groupModal) return;
+      if (groupModal.style.display !== 'flex') return;
+      if (groupModal.dataset.overlaySuppressed === '1') return;
+      groupModal.dataset.overlaySuppressed = '1';
+      groupModal.style.zIndex = '900';
+    }
+
+    function restoreGroupModalOverlay() {
+      const groupModal = document.getElementById('modal');
+      if (!groupModal) return;
+      if (groupModal.dataset.overlaySuppressed !== '1') return;
+      delete groupModal.dataset.overlaySuppressed;
+      groupModal.style.zIndex = '';
     }
 
     function ensureModalAdbIndicators() {
@@ -3453,6 +3478,7 @@ function applyAccessibilityServices() {
       if (target && document.body.contains(target)) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
+      restoreGroupModalOverlay();
     }
 
     function requestScreenSaverState() {
@@ -3886,6 +3912,7 @@ showStatus(`Началась загрузка приложений, ожидай
       const modal = document.getElementById('modal');
       modal.style.display = "none";
       document.body.classList.remove("modal-open"); // Разблокируем скролл основного интерфейса
+      restoreGroupModalOverlay();
       if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
         if (lastFocusedElement.classList?.contains('card')) selectCard(lastFocusedElement);
         lastFocusedElement.focus?.({ preventScroll: true });
