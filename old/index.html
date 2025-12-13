@@ -1323,7 +1323,7 @@
       },
       {
         id: 1011,
-        command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx",
+        command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.tungsten.setupwraith; pm enable --user 0 com.google.android.tungsten.setupwraith; cmd package enable com.google.android.tungsten.setupwraith",
         description: " ",
         label: "Включить Google TV Home",
         icon: "gmd_tv",
@@ -1338,6 +1338,15 @@
         icon: "gmd_tv",
         isEnabled: true,
         uid: "launcher-restore-android-tv"
+      },
+      {
+        id: 1013,
+        command: "cmd package install-existing com.spocky.projengmenu || pm install-existing com.spocky.projengmenu; cmd package enable --user 0 com.spocky.projengmenu; pm enable --user 0 com.spocky.projengmenu; cmd package enable com.spocky.projengmenu && { cmd package disable-user --user 0 com.google.android.tvlauncher; pm disable-user --user 0 com.google.android.tvlauncher; cmd package disable-user --user 0 com.google.android.apps.tv.launcherx; pm disable-user --user 0 com.google.android.apps.tv.launcherx; cmd package disable-user --user 0 com.google.android.tungsten.setupwraith; pm disable-user --user 0 com.google.android.tungsten.setupwraith; }",
+        description: " ",
+        label: "Projectivy Launcher",
+        icon: "gmd_tv",
+        isEnabled: true,
+        uid: "launcher-enable-projectivy"
       }
     ];
     const BATTERY_WHITELIST_PACKAGES = [
