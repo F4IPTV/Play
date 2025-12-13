@@ -3230,16 +3230,16 @@ function applyAccessibilityServices() {
           applyWriteSettingsAccess(),
           applyExactAlarmAccess(),
           applyAccessibilityServices(),
-          applyScreenSaverDefaults()
+          applyScreenSaverDefaults(),
+          applyNotificationListeners()
         ]);
 
         await applyUnknownSourcesPermission();
         await applyMicrophonePermission();
 
-        await wait(5000);
+        await wait(2500);
         await applyDefaultKeyboardIme();
-        await applyNotificationListeners();
-        await wait(1000);
+        await wait(300);
       } catch (err) {
         console.warn('runAllAutoPermissions error', err);
       } finally {
