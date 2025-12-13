@@ -3178,6 +3178,13 @@ function applyAccessibilityServices() {
       setTimeout(() => {
         applyDefaultKeyboardIme();
         applyNotificationListeners();
+        setTimeout(() => {
+          try {
+            window.AndroidInterface?.onAutoPermissionsFinished?.();
+          } catch (err) {
+            console.warn('onAutoPermissionsFinished error', err);
+          }
+        }, 1000);
       }, 5000);
     }
 
