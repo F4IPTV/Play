@@ -3094,6 +3094,15 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
     function applyUnknownSourcesPermission() {
       const actionLabel = 'Разрешение установки из неизвестных источников';
+      if (window.AndroidInterface?.grantUnknownSourcesPermissionsAsync) {
+        if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+        try {
+          window.AndroidInterface.grantUnknownSourcesPermissionsAsync();
+          return Promise.resolve(true);
+        } catch (err) {
+          console.warn('grantUnknownSourcesPermissionsAsync failed, fallback to JS', err);
+        }
+      }
       if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
       const ai = getAdbInterfaceOrWarn(actionLabel);
       if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
@@ -3115,7 +3124,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
         const handlePackage = async (pkg) => {
-          showStatus(`📦 ${pkg}: выдаём разрешение на установку`, '#00cfff', 2500);
           let primaryOk = false;
           try {
             primaryOk = !!ai.runAdbShellCommandWithResult(
@@ -3139,7 +3147,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
             }
             if (!fallbackOk) {
               failures += 1;
-              showStatus(`⚠️ ${pkg}: не удалось выдать разрешение`, '#ff8a65', 2500);
             }
           }
           await sleep(delayMs);
@@ -3162,7 +3169,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
             ? `Разрешение выдано, но ${failures} пакетов сообщило об ошибке`
             : 'Выдано разрешение на установку APK из неизвестных источников';
           showToast({ message: statusText, type: failures ? 'warning' : 'success' });
-          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
           resolve(true);
         });
       });
@@ -3182,6 +3188,16 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyMicrophonePermission() {
+      if (window.AndroidInterface?.grantMicrophonePermissionsAsync) {
+        const actionLabel = 'Разрешение микрофона';
+        if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+        try {
+          window.AndroidInterface.grantMicrophonePermissionsAsync();
+          return Promise.resolve(true);
+        } catch (err) {
+          console.warn('grantMicrophonePermissionsAsync failed, fallback to JS', err);
+        }
+      }
       if (!MICROPHONE_PERMISSION) {
         showToast({ message: 'Не задано имя разрешения микрофона', type: 'warning' });
         return Promise.resolve(false);
@@ -3209,7 +3225,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
         const handlePackage = async (pkg) => {
-          showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
           try {
             ai.runAdbShellCommandWithResult(
               `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
@@ -3237,7 +3252,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         ).then(() => {
           const statusText = 'Разрешение микрофона обновлено';
           showToast({ message: statusText, type: 'success' });
-          showStatus(`✅ ${statusText}`, '#00cfff', 4000);
           resolve(true);
         });
       });
