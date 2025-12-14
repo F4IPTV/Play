@@ -2875,9 +2875,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
             tools.remove();
           }
           const strayIndicator = content.querySelector('.modal-adb-indicator');
-          if (strayIndicator && !content.contains(strayIndicator)) {
-            return;
-          }
           if (strayIndicator && strayIndicator.parentElement === content) {
             strayIndicator.remove();
           }
@@ -3604,6 +3601,7 @@ function applyAccessibilityServices() {
       screenSaverTimeoutReturnEl = document.activeElement;
       document.activeElement?.blur();
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
       const value = sanitizeScreenSaverMinutes(screenSaverTimeoutState[type], type);
       setScreenSaverTimeoutInput(value);
@@ -3618,6 +3616,7 @@ function applyAccessibilityServices() {
       const modal = document.getElementById('screenSaverTimeoutModal');
       if (!modal || modal.style.display !== 'flex') return;
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       if (modal.dataset.restoreScreen === '1') {
         const parent = document.getElementById('screenSaverModal');
         if (parent) {
