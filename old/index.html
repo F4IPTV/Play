@@ -99,16 +99,16 @@
       touch-action: auto;
       overscroll-behavior: contain;
     }
-    .modal-quick-actions {
+    .modal-header-tools {
       position: absolute;
       top: -5px;
-      left: -5px;
+      right: -5px;
       display: inline-flex;
       align-items: center;
-      gap: 0px;
+      gap: 6px;
       z-index: 6;
     }
-    .modal-quick-actions button {
+    .modal-header-tools button {
       width: 26px;
       height: 26px;
       border: none;
@@ -120,25 +120,22 @@
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
-    .modal-quick-actions button img {
+    .modal-header-tools button img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       pointer-events: none;
     }
-    .modal-quick-actions button:focus,
-    .modal-quick-actions button:focus-visible,
-    .modal-quick-actions button:hover,
-    .modal-quick-actions button:active {
+    .modal-header-tools button:focus,
+    .modal-header-tools button:focus-visible,
+    .modal-header-tools button:hover,
+    .modal-header-tools button:active {
       outline: none !important;
       background: transparent !important;
       box-shadow: none !important;
       filter: none !important;
     }
     .modal-adb-indicator {
-      position: absolute;
-      top: -5px;
-      right: -5px;
       width: 26px;
       height: 26px;
       border: none;
@@ -2794,7 +2791,13 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return btn;
     }
 
-    function ensureModalQuickActions(container, content) {
+    function ensureModalQuickActions(container, content, indicator) {
+      const modalEl = content?.closest?.('.modal');
+      if (modalEl && modalEl.id === 'adbScannerModal') {
+        container.querySelectorAll('.modal-quick-action').forEach((btn) => btn.remove());
+        return;
+      }
+
       const skipKeys = new Set();
       if (content?.querySelector?.('#adbCommandsHeader')) {
         skipKeys.add('modal-action-adb-commands');
@@ -2813,10 +2816,28 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         }
       });
 
+      const insertBeforeNode = indicator && indicator.parentElement === container ? indicator : null;
       allowedActions.forEach((action) => {
-        if (!container.querySelector(`.modal-quick-action[data-action="${action.key}"]`)) {
-          const btn = createModalQuickActionButton(action);
+        let btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
+        if (!btn) {
+          btn = createModalQuickActionButton(action);
+        }
+        if (insertBeforeNode) {
+          container.insertBefore(btn, insertBeforeNode);
+        } else if (!btn.parentElement) {
           container.appendChild(btn);
+        }
+      });
+
+      // Обеспечиваем порядок согласно allowedActions
+      allowedActions.forEach((action) => {
+        const btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
+        if (!btn || !insertBeforeNode) return;
+        const currentOrder = Array.from(container.children);
+        const targetIndex = currentOrder.indexOf(insertBeforeNode);
+        const btnIndex = currentOrder.indexOf(btn);
+        if (btnIndex > targetIndex || btn.nextSibling !== insertBeforeNode) {
+          container.insertBefore(btn, insertBeforeNode);
         }
       });
     }
@@ -2849,27 +2870,38 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       document.querySelectorAll('.modal .modal-content').forEach((content) => {
         const hasHeader = headerSelector ? content.querySelector(headerSelector) : false;
         if (!hasHeader) {
-          const quick = content.querySelector('.modal-quick-actions');
-          if (quick) {
-            quick.remove();
+          const tools = content.querySelector('.modal-header-tools');
+          if (tools) {
+            tools.remove();
+          }
+          const strayIndicator = content.querySelector('.modal-adb-indicator');
+          if (strayIndicator && !content.contains(strayIndicator)) {
+            return;
+          }
+          if (strayIndicator && strayIndicator.parentElement === content) {
+            strayIndicator.remove();
           }
           return;
         }
 
-        let quickContainer = content.querySelector('.modal-quick-actions');
-        if (!quickContainer) {
-          quickContainer = document.createElement('div');
-          quickContainer.className = 'modal-quick-actions';
-          content.appendChild(quickContainer);
+        let tools = content.querySelector('.modal-header-tools');
+        if (!tools) {
+          tools = document.createElement('div');
+          tools.className = 'modal-header-tools';
+          content.appendChild(tools);
+        } else if (!tools.classList.contains('modal-header-tools')) {
+          tools.className = 'modal-header-tools';
         }
 
-        ensureModalQuickActions(quickContainer, content);
-
-        let indicator = content.querySelector('.modal-adb-indicator');
+        let indicator = tools.querySelector('.modal-adb-indicator');
         if (!indicator) {
-          indicator = createModalAdbIndicator();
-          content.appendChild(indicator);
+          indicator = content.querySelector('.modal-adb-indicator') || createModalAdbIndicator();
+          tools.appendChild(indicator);
+        } else if (indicator.parentElement !== tools) {
+          tools.appendChild(indicator);
         }
+
+        ensureModalQuickActions(tools, content, indicator);
       });
     }
 
