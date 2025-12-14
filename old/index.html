@@ -1386,7 +1386,6 @@
       "org.acestream.start",
       "org.acestream.core",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid",
       "io.github.romanvht.byedpi",
       "org.amnezia.awg",
       "org.acestream.live",
@@ -1406,7 +1405,6 @@
     const MANAGE_STORAGE_PACKAGES = [
       "dev.vodik7.tvquickactions",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid",
 	    "com.mexplorer.silver",
       "ru.tiardev.kinotrend"
     ];
@@ -3407,7 +3405,7 @@ function applyAccessibilityServices() {
       const ai = getAdbInterfaceOrWarn('Настройка заставки');
       if (!ai) return Promise.resolve(false);
       const commands = [
-        { command: 'settings put system screen_off_timeout 3600000', label: 'Screen off timeout' },
+        { command: 'settings put system screen_off_timeout 1800000', label: 'Screen off timeout' },
         { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' }
       ];
       let hasError = false;
