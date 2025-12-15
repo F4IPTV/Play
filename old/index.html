@@ -57,12 +57,18 @@
     }
 
     .adb-status-indicator {
-      font-size: 14px;
+      font-size: 13px;
       text-align: center;
       margin-top: -6px;
       margin-bottom: 10px;
       color: rgba(255,255,255,0.75);
       transition: color .2s ease;
+    }
+    .storage-usage-badge {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-left: 6px;
+      white-space: nowrap;
     }
     .adb-status-indicator.connected {
       color: #0ff;
@@ -93,10 +99,43 @@
       touch-action: auto;
       overscroll-behavior: contain;
     }
-    .modal-adb-indicator {
+    .modal-header-tools {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: -5px;
+      right: -5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 6;
+    }
+    .modal-header-tools button {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modal-header-tools button img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .modal-header-tools button:focus,
+    .modal-header-tools button:focus-visible,
+    .modal-header-tools button:hover,
+    .modal-header-tools button:active {
+      outline: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+    .modal-adb-indicator {
       width: 26px;
       height: 26px;
       border: none;
@@ -108,6 +147,7 @@
       justify-content: center;
       z-index: 5;
       -webkit-tap-highlight-color: transparent;
+      appearance: none;
     }
     .modal-adb-indicator:focus-visible {
       outline: none;
@@ -117,9 +157,6 @@
       height: 100%;
       object-fit: contain;
       pointer-events: none;
-    }
-    .modal-adb-indicator {
-      appearance: none;
     }
     .modal-adb-indicator:hover,
     .modal-adb-indicator:focus,
@@ -278,42 +315,55 @@
     }
     
     /* Карточки устройств ADB */
-    .adb-device-card {
-      background-color: #2a2a2a;
-      border-radius: 14px;
-      padding: 12px 18px;
-      width: clamp(200px, 80vw, 320px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: #fff;
-      border: 2px solid transparent;
-      transition: all .2s ease;
-      cursor: pointer;
-      min-height: unset;
-      box-sizing: border-box;
+    .adb-chip {
+      width: min(86vw, 288px) !important;
+      max-width: 288px;
+      min-height: 48px;
+      padding: 8px 12px;
       margin: 0 auto;
-    }
-    
-    .adb-device-card:hover, .adb-device-card:focus {
+      border-radius: 12px;
+      border: 2px solid transparent;
       background-color: #004d61;
-      border-color: #00cfff;
-      box-shadow: 0 0 10px rgba(0,0,0,.5);
-      outline: none;
+      color: #fff;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.35);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+      line-height: 1.2;
+      appearance: none;
+      box-sizing: border-box;
     }
-    
-    .adb-device-card.selected {
+    .adb-chip:focus,
+    .adb-chip:focus-visible {
+      outline: none;
+      transform: translateY(-2px);
       background-color: #00cfff;
       color: #000;
-      border: 2px solid #fff;
+      border-color: #fff;
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4);
+    }
+    .adb-chip.has-selected-style {
+      transform: translateY(-2px);
+      background-color: #00cfff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 16px 24px rgba(0,0,0,0.4);
+    }
+    
+    .adb-device-card {
+      border-radius: 16px;
     }
     
     .adb-device-name {
-      font-size: 17px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       margin-bottom: 2px;
-      color: #fff;
+      color: inherit;
       text-align: center;
       width: 100%;
     }
@@ -324,17 +374,14 @@
     }
     
     .adb-device-ip {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
       margin: 0;
-      opacity: .9;
+      opacity: .85;
       text-align: center;
       width: 100%;
+      color: inherit;
     }
-    
-    /* Отключаем hover в сканере ADB, чтобы мышь не мешала навигации */
-    #adbScannerModal .adb-device-card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
-    #adbScannerModal .adb-device-card.selected:hover { background-color: #00cfff; color: #000; border: 2px solid #fff; }
     
     /* Кнопки управления сканером */
     #adbScannerModal .sys-btn { background-color: #004d61; color: #fff; }
@@ -351,14 +398,17 @@
       margin-bottom: 16px;
       text-align: center;
     }
+    .adb-last-connection.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+    }
     .adb-last-connection-title {
       font-size: 13px;
       opacity: .8;
       margin-bottom: 6px;
-    }
-    .adb-last-connection-btn {
-      width: min(92vw, 320px);
-      max-width: 320px;
     }
     .adb-last-connection-btn-line1 {
       display: block;
@@ -658,12 +708,12 @@
 }
 
 .adb-command-btn__label {
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 400;
+  font-size: 13px;
 }
 
 .adb-command-btn__command {
-  font-size: 13px;
+  font-size: 11px;
   opacity: .8;
   word-break: break-all;
 }
@@ -749,6 +799,20 @@
 
 .screen-saver-actions .sys-btn {
   width: min(340px, 100%);
+}
+
+.screen-saver-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: left;
+}
+
+.screen-saver-action-btn img {
+  display: block;
+  height: 20px;
+  width: auto;
 }
 
 .screen-saver-cta {
@@ -949,10 +1013,10 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:26px;"><br>File Manager
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:25px;"><br>File Manager
     </button>
     <button onclick="openMiscModal(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic6_fastPlus.png" alt="" style="height:28px;"><br>FastInstaller+
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:30px;"><br>FastInstaller+
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" style="height:28px;"><br>Меню приложений
@@ -960,15 +1024,9 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>AnyDesk
     </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic9_googleplay.png" alt="" style="height:24px;"><br>Google Play
-    </button>
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
-	  <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic11_about.png" alt="" style="height:28px;"><br>О программе
-</button>
   </div>
 
   <!-- Модалка автозапуска -->
@@ -999,43 +1057,36 @@
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
 	  <!-- Кнопка настроек метода установки -->
-  <button onclick="showInstallMethodSettings()" class="sys-btn">
-    <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
-  </button>
-  
-          <button onclick="openAutostartModal()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:28px;"><br>Автозагрузка приложения
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
     </button>
-	<button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
+    </button>
+    <button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
+    </button>
+    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+    </button>
+          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Откл\вкл системные
           </button>
-        <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
-		  </button>
-			<button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
+           <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление всех приложений
           </button>
-          <button onclick="ignoreNextEnter=true;openAdbManualConnectModal()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:26px;"><br>Ввести IP:порт
+          <button onclick="openScreenSaverModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:28px;"><br>Заставка
           </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePicker()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+          <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>ADB команды
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmDeleteCopiedBackups()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление бэкапов
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
-          </button>
-			
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Доступ к памяти
-          </button>
-			
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettingsForPackage('com.anydesk.anydeskandroid')" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>Доступ к памяти
-          </button>
-
+          <button onclick="showInstallMethodSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+            </button>
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
@@ -1054,44 +1105,51 @@
       <div class="misc-buttons-container">
         <div class="system-buttons">
 
-			  <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
-  <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>
-  Activity Stub
-</button>
-
+			    <button onclick="ignoreNextEnter=true; window.AndroidInterface.openActivityStubOneButton()" class="sys-btn">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic9_AndroidWebView.png" alt="" style="height:24px;"><br>Activity Stub
+          </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.android.documentsui')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic10_Files.webp" alt="" style="height:22px;"><br> Файлы
           </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:28px;"><br>Очистить кеш
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:28px;"><br>Доступ к памяти
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.deleteCopiedBackups()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление бэкапов
+			
+			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFilesPermissionSettingsForPackage('com.anydesk.anydeskandroid')" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:26px;"><br>Доступ к памяти
           </button>
-           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openPlayMarket()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic9_googleplay.png" alt="" style="height:24px;"><br>Google Play
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:26px;"><br>Очистить кеш
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
-          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Откл/вкл системные приложения
-          </button>
-           <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmWipeThirdPartyApps()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:28px;"><br>Удаление всех приложений
+          <button onclick="openAutostartModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
           </button>
           <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
           </button>
+          
         
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
+			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
-    <button onclick="openScreenSaverModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:28px;"><br>Заставка
-          </button>
-    <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:28px;"><br>ADB команды
+          
+          <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic11_about.png" alt="" style="height:28px;"><br>О программе
           </button>
         </div>
       </div>
@@ -1103,7 +1161,7 @@
     <div class="modal-content">
       <div id="lastAdbConnectionWrapper" class="adb-last-connection">
         <div class="adb-last-connection-title">Последнее подключение</div>
-        <button id="lastAdbConnectionBtn" class="sys-btn adb-last-connection-btn" onclick="connectToLastAdb()" tabindex="0"></button>
+        <button id="lastAdbConnectionBtn" class="adb-chip adb-last-connection-btn" onclick="connectToLastAdb()" tabindex="0"></button>
       </div>
       <h3 id="adbScannerHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:25px;">
@@ -1118,8 +1176,12 @@
       
       <!-- Кнопки управления -->
       <div class="system-buttons" style="justify-content:center;">
-        <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">↻ Пересканировать</button>
-        <button class="sys-btn" onclick="closeAdbScanner()" tabindex="0">Закрыть</button>
+        <button class="sys-btn" onclick="restartAdbScan()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:22px;"><br>Пересканировать
+        </button>
+        <button class="sys-btn" onclick="ignoreNextEnter=true;openAdbManualConnectModal()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic14_ADB_Input.png" alt="" style="height:22px;"><br>Ввести IP:порт
+        </button>
       </div>
     </div>
   </div>
@@ -1131,13 +1193,13 @@
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Ручное подключение ADB
       </h3>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
-        <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;align-items:center;">
+        <div style="display:flex;flex-direction:column;gap:4px;width:100%;max-width:280px;">
           <label for="adbManualHostInput" style="font-size:13px;opacity:.85;">IP адрес устройства</label>
           <input id="adbManualHostInput" type="text" placeholder="192.168.0.15" autocomplete="off" spellcheck="false"
                  style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;flex-direction:column;gap:4px;width:100%;max-width:280px;">
           <label for="adbManualPortInput" style="font-size:13px;opacity:.85;">Порт ADB (из &laquo;IP address &amp; port&raquo;)</label>
           <input id="adbManualPortInput" type="number" min="1" max="65535" placeholder="5555"
                  style="padding:10px 12px;border-radius:10px;border:none;background:#1c1c1f;color:#fff;font-size:15px;">
@@ -1147,8 +1209,12 @@
         </div>
       </div>
       <div class="system-buttons" style="justify-content:center;">
-        <button id="adbManualSubmitBtn" class="sys-btn" onclick="submitAdbManualConnect()" type="button">🔗 Подключиться</button>
-        <button id="adbManualCloseBtn" class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">Закрыть</button>
+        <button id="adbManualSubmitBtn" class="sys-btn" onclick="submitAdbManualConnect()" type="button">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic15_connect.webp" alt="" style="height:22px;"><br>Подключиться
+        </button>
+        <button id="adbManualCloseBtn" class="sys-btn" onclick="closeAdbManualConnectModal()" type="button">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic16_back.webp" alt="" style="height:22px;"><br>Закрыть
+        </button>
       </div>
     </div>
   </div>
@@ -1201,8 +1267,14 @@
         <div class="screen-saver-section">
           <h4>Выбор заставки</h4>
           <div class="screen-saver-actions">
-            <button id="screenSaverAerialViewsBtn" class="sys-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">Aerial Views</button>
-            <button id="screenSaverAerialDreamBtn" class="sys-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">Aerial Dream</button>
+            <button id="screenSaverAerialViewsBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.neilturner.aerialviews')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp" alt="Aerial Views">
+              <span>Aerial Views</span>
+            </button>
+            <button id="screenSaverAerialDreamBtn" class="sys-btn screen-saver-action-btn" onclick="setScreenSaverPackage('com.codingbuffalo.aerialdream')">
+              <img src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="Aerial Dream" style="height:22px;">
+              <span>Aerial Dream</span>
+            </button>
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить заставку
             </button>
@@ -1246,58 +1318,67 @@
   <script>
     // Список ADB-команд. Изменяйте этот массив, чтобы обновить команды у всех пользователей.
     const ADB_COMMANDS = [
-      { id: 1001, command: "reboot", description: "reboot", label: "Система", icon: "gmd_adb", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
-      { id: 1002, command: "reboot bootloader", description: "reboot bootloader", label: "Bootloader", icon: "gmd_adb", isEnabled: true, uid: "1000e8c1-025c-4621-92ff-a867210e8b96" },
-      { id: 1003, command: "reboot fastboot", description: "reboot fastboot", label: "FastbootD", icon: "gmd_adb", isEnabled: true, uid: "29dcff70-46b2-4626-83d4-0b4bebc83957" },
-      { id: 1004, command: "reboot recovery", description: "reboot recovery", label: "Recovery", icon: "gmd_adb", isEnabled: true, uid: "1f1426c1-1676-4e8b-845c-5349e7a1a9ae" },
-      { id: 1005, command: "reboot sideload", description: "reboot sideload", label: "Sideload", icon: "gmd_adb", isEnabled: true, uid: "91788dc4-4247-488f-831a-7b0e823d50a3" },
-      { id: 1006, command: "reboot update", description: "reboot update", label: "TWRP", icon: "gmd_adb", isEnabled: true, uid: "f537d6b2-4c49-46ab-affe-7f29e400f7fe" },
-      { id: 1007, command: "reboot -p", description: "reboot -p", label: "Выключение (полное)", icon: "gmd_adb", isEnabled: true, uid: "bdf56bfe-03ba-40b0-bb52-5723e9ee70af" },
       {
         id: 1008,
         command: "am start -a android.intent.action.OPEN_DOCUMENT -c android.intent.category.OPENABLE -t \"application/vnd.android.package-archive\"",
-        description: "Диалог выбора файлового менеджера по умолчанию (актуально для GTV)",
-        label: "Выбор проводника по умолчанию",
-        icon: "gmd_adb",
+        description: "Для Google TV 12+",
+        label: "Выбор проводника",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/group/ic_default_icon_groups2.png",
         isEnabled: true,
         uid: "d1c3a7ab-8f7a-4c9a-9f5e-commands-open-document"
       },
       {
         id: 1009,
-        command: "settings put system screen_off_timeout 3600000",
-        description: "Включение при бездействии",
-        label: "Заставка: 1 час",
-        icon: "gmd_adb",
+        command: "settings put system screen_off_timeout 1800000",
+        description: "Таймер заставки",
+        label: "Заставка: 30 минут",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png",
         isEnabled: true,
         uid: "3fcd28d1-0f6e-4f3a-adb1-screen-timeout"
       },
       {
         id: 1010,
         command: "settings put secure sleep_timeout 28800000",
-        description: "Переход в сон при бездействии",
+        description: "Таймер сна",
         label: "Сон: 8 часов",
-        icon: "gmd_adb",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png",
         isEnabled: true,
         uid: "12dc0a6d-7fb2-4149-adb1-sleep-timeout"
       },
       {
         id: 1011,
-        command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx",
-        description: "Возврат из отключённых/удалённых",
+        command: "cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.apps.tv.launcherx; pm enable --user 0 com.google.android.apps.tv.launcherx; cmd package enable com.google.android.apps.tv.launcherx; cmd package enable --user 0 com.google.android.tungsten.setupwraith; pm enable --user 0 com.google.android.tungsten.setupwraith; cmd package enable com.google.android.tungsten.setupwraith; pm path com.google.android.apps.tv.launcherx >/dev/null 2>&1 && { cmd notification allow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification allow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; cmd notification disallow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true; } || true",
+        description: " ",
         label: "Включить Google TV Home",
-        icon: "gmd_tv",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic19_GTV.webp",
         isEnabled: true,
         uid: "launcher-restore-google-tv"
       },
       {
         id: 1012,
-        command: "cmd package install-existing com.google.android.tvlauncher || pm install-existing com.google.android.tvlauncher; cmd package enable --user 0 com.google.android.tvlauncher; pm enable --user 0 com.google.android.tvlauncher; cmd package enable com.google.android.tvlauncher",
-        description: "Возврат из отключённых/удалённых",
+        command: "cmd package install-existing com.google.android.tvlauncher || pm install-existing com.google.android.tvlauncher; cmd package enable --user 0 com.google.android.tvlauncher; pm enable --user 0 com.google.android.tvlauncher; cmd package enable com.google.android.tvlauncher; pm path com.google.android.tvlauncher >/dev/null 2>&1 && { cmd notification allow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification disallow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; pm path com.google.android.apps.tv.launcherx >/dev/null 2>&1 && { cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true; } || true; } || true",
+        description: " ",
         label: "Включить Android TV Home",
-        icon: "gmd_tv",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
         isEnabled: true,
         uid: "launcher-restore-android-tv"
-      }
+      },
+      {
+        id: 1013,
+        command: "cmd package install-existing com.spocky.projengmenu || pm install-existing com.spocky.projengmenu; cmd package enable --user 0 com.spocky.projengmenu; pm enable --user 0 com.spocky.projengmenu; cmd package enable com.spocky.projengmenu && { cmd notification allow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyNotificationListener || true; cmd notification allow_listener com.spocky.projengmenu/com.spocky.projengmenu.services.notification.NotificationListener || true; pm path com.google.android.apps.tv.launcherx >/dev/null 2>&1 && { cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.notifications.NotificationListenerService || true; cmd notification disallow_listener com.google.android.apps.tv.launcherx/com.google.android.apps.tv.launcherx.coreservices.notificationlistener.TvNotificationListenerService || true; } || true; pm path com.google.android.tvlauncher >/dev/null 2>&1 && { cmd notification disallow_listener com.google.android.tvlauncher/com.google.android.tvlauncher.notifications.NotificationListenerService || true; } || true; pm path com.google.android.tvlauncher >/dev/null 2>&1 && { cmd package install-existing com.google.android.tvlauncher || pm install-existing com.google.android.tvlauncher || true; cmd package disable-user --user 0 com.google.android.tvlauncher || true; pm disable-user --user 0 com.google.android.tvlauncher || true; } || true; pm path com.google.android.apps.tv.launcherx >/dev/null 2>&1 && { cmd package install-existing com.google.android.apps.tv.launcherx || pm install-existing com.google.android.apps.tv.launcherx || true; cmd package disable-user --user 0 com.google.android.apps.tv.launcherx || true; pm disable-user --user 0 com.google.android.apps.tv.launcherx || true; cmd package disable-user --user 0 com.google.android.tungsten.setupwraith || true; pm disable-user --user 0 com.google.android.tungsten.setupwraith || true; } || true; }",
+        description: " ",
+        label: "Projectivy Launcher",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic21_PJL.png",
+        isEnabled: true,
+        uid: "launcher-enable-projectivy"
+      },
+      { id: 1001, command: "reboot", description: "reboot", label: "Система", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
+      { id: 1002, command: "reboot bootloader", description: "reboot bootloader", label: "Bootloader", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "1000e8c1-025c-4621-92ff-a867210e8b96" },
+      { id: 1003, command: "reboot fastboot", description: "reboot fastboot", label: "FastbootD", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "29dcff70-46b2-4626-83d4-0b4bebc83957" },
+      { id: 1004, command: "reboot recovery", description: "reboot recovery", label: "Recovery", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "1f1426c1-1676-4e8b-845c-5349e7a1a9ae" },
+      { id: 1005, command: "reboot sideload", description: "reboot sideload", label: "Sideload", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "91788dc4-4247-488f-831a-7b0e823d50a3" },
+      { id: 1006, command: "reboot update", description: "reboot update", label: "TWRP", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "f537d6b2-4c49-46ab-affe-7f29e400f7fe" },
+      { id: 1007, command: "reboot -p", description: "reboot -p", label: "Выключение (полное)", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "bdf56bfe-03ba-40b0-bb52-5723e9ee70af" }
     ];
     const BATTERY_WHITELIST_PACKAGES = [
       "dev.vodik7.tvquickactions",
@@ -1305,7 +1386,6 @@
       "org.acestream.start",
       "org.acestream.core",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid",
       "io.github.romanvht.byedpi",
       "org.amnezia.awg",
       "org.acestream.live",
@@ -1317,7 +1397,6 @@
       "org.acestream.start",
       "org.acestream.core",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid",
       "io.github.romanvht.byedpi",
       "org.amnezia.awg",
       "org.acestream.live",
@@ -1326,11 +1405,13 @@
     const MANAGE_STORAGE_PACKAGES = [
       "dev.vodik7.tvquickactions",
       "ru.yourok.torrserve",
-      "com.anydesk.anydeskandroid"
+	    "com.mexplorer.silver",
+      "ru.tiardev.kinotrend"
     ];
     const OVERLAY_PACKAGES = [
       "dev.vodik7.tvquickactions",
-      "com.anydesk.anydeskandroid"
+      "ar.tvplayer.tv",
+      "com.softmedia.receiver"
     ];
     const WRITE_SETTINGS_PACKAGES = [
       "dev.vodik7.tvquickactions",
@@ -1349,41 +1430,55 @@
     ];
     const ACCESSIBILITY_SERVICES = [
       "ru.yourok.torrserve/ru.yourok.torrserve.server.local.services.GlobalTorrService",
-      "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService"
+      "dev.vodik7.tvquickactions/dev.vodik7.tvquickactions.KeyAccessibilityService",
+      "flar2.homebutton/a.i",
+      "com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyAccessibilityService"
     ];
     const MICROPHONE_PERMISSION = "android.permission.RECORD_AUDIO";
     const MICROPHONE_PERMISSION_PACKAGES = [
-      "com.swiftsoft.viewbox",
-      "ru.twicker.lostfilmtv",
-      "net.filmix.filmix",
-      "top.rootu.prisma",
-      "ru.rutube.app",
-      "ru.tiardev.kinotrend",
-      "ru.radiationx.anilibria.app.tv",
-      "ru.yourok.num",
-      "com.yandex.browser.tv",
-      "to.pda.falcofemoralis.hdrezkaapp",
-      "com.falcofemoralis.hdrezkaapp",
-      "mobi.zona",
-      "org.liskovsoft.androidtv.rukeyboard",
-      "com.vk.tv",
-      "ru.vokino.web",
-      "atv.pingvi.lampishe",
-      "com.lazycatsoftware.lmd",
-      "top.rootu.lampa",
-      "com.android.vending",
+      
       "com.google.android.youtube.tv",
-      "com.teamsmart.videomanager.tv",
-      "liskovsoft.androidtv.rukeyboard",
-      "ru.rutube.app.tv",
-      "com.movielab.tv",
-      "ru.astroapps.hdrezka"
+      
+      "org.liskovsoft.androidtv.rukeyboard"
     ];
     const DEFAULT_KEYBOARD_IME = "org.liskovsoft.androidtv.rukeyboard/com.liskovsoft.leankeyboard.ime.LeanbackImeService";
     const DEFAULT_SCREENSAVER_COMPONENT = "com.neilturner.aerialviews/.ui.screensaver.DreamActivity";
     const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
     const ADB_ICON_CONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_on.png";
     const ADB_ICON_DISCONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png";
+    const MODAL_HEADER_ACTIONS = [
+      {
+        key: 'modal-action-all-apps',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/main/ic12_about.png',
+        label: 'Меню приложений',
+        run(btn) {
+          ignoreNextEnter = true;
+          try {
+            window.AndroidInterface?.openAllAppsSide?.();
+          } catch (err) {
+            console.warn('openAllAppsSide недоступен', err);
+          }
+        }
+      },
+      {
+        key: 'modal-action-screen-saver',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/main/ic13_about.png',
+        label: 'Заставка',
+        run(btn) {
+          openScreenSaverModal(btn);
+        }
+      },
+      {
+        key: 'modal-action-adb-commands',
+        icon: 'https://appassets.androidplatform.net/assets/webview/icons/main/ic14_about.png',
+        label: 'ADB команды',
+        run(btn) {
+          openAdbCommandsFromButton(btn);
+        }
+      }
+    ];
+    let modalOverlayCounter = 1000;
+    const MODAL_Z_STEP = 5;
 
     const SCREEN_SAVER_TIMEOUT_LIMITS = { min: 1, max: 1440 };
     const SCREEN_SAVER_TIMEOUT_DEFAULTS = { screen: 60, sleep: 480 };
@@ -1410,6 +1505,11 @@ let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
 let currentScreenSaverComponent = null;
+let storageUsageLabel = '';
+let lastAdbIndicatorText = '';
+let lastAdbIndicatorConnected = false;
+let autostartReturnModal = null;
+let autostartOpener = null;
 
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
@@ -1442,7 +1542,14 @@ let adbStatusRetryTimer = null;
 function setAdbIndicator(text, connected) {
   const el = document.getElementById('adbStatusIndicator');
   if (!el) return;
-  el.textContent = text;
+  lastAdbIndicatorText = text || '';
+  lastAdbIndicatorConnected = !!connected;
+  const safeBase = escapeHtml(lastAdbIndicatorText);
+  const base = safeBase.length ? safeBase : '&nbsp;';
+  const storagePart = storageUsageLabel
+    ? ` <span class="storage-usage-badge">${escapeHtml(storageUsageLabel)}</span>`
+    : '';
+  el.innerHTML = `${base}${storagePart}`;
   el.classList.toggle('connected', !!connected);
   syncModalAdbIndicators(!!connected);
 }
@@ -1471,6 +1578,26 @@ function scheduleAdbStatusRetry() {
 
 window.refreshAdbStatusIndicator = refreshAdbStatusIndicator;
 
+function updateStorageUsage(label) {
+  if (typeof label === 'string' && label.trim().length) {
+    storageUsageLabel = label.trim();
+  } else {
+    storageUsageLabel = '';
+  }
+  setAdbIndicator(lastAdbIndicatorText, lastAdbIndicatorConnected);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+window.updateStorageUsage = updateStorageUsage;
+
 const adbScanState = {
   hosts: [],
   running: false,
@@ -1492,6 +1619,8 @@ function applyFriendlyNameNode(node, friendlyName) {
 
 function resetAdbConnectionState() {
   window.AndroidInterface?.disconnectAdb?.();
+  setAdbIndicator('Локальное устройство', false);
+  updateStorageUsage('');
 }
 
 function requestLocalAdbConnection() {
@@ -1503,6 +1632,14 @@ function refreshLastAdbConnection() {
   const wrapper = document.getElementById('lastAdbConnectionWrapper');
   const btn = document.getElementById('lastAdbConnectionBtn');
   if (!wrapper || !btn) return;
+  const hideWrapper = () => {
+    wrapper.style.display = 'none';
+    wrapper.classList.remove('active');
+    btn.dataset.host = '';
+    btn.dataset.port = '';
+    btn.innerHTML = '';
+    btn.classList.remove('is-selected', 'selected');
+  };
   let raw;
   try {
     raw = window.AndroidInterface?.getLastAdbConnectionInfo?.();
@@ -1510,27 +1647,18 @@ function refreshLastAdbConnection() {
     raw = null;
   }
   if (!raw || raw === 'undefined') {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   let info;
   try {
     info = JSON.parse(raw);
   } catch (e) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   if (!info || !info.available) {
-    wrapper.style.display = 'none';
-    btn.dataset.host = '';
-    btn.dataset.port = '';
-    btn.innerHTML = '';
+    hideWrapper();
     return;
   }
   const host = (info.host || '').trim();
@@ -1542,7 +1670,13 @@ function refreshLastAdbConnection() {
     : '';
   btn.dataset.host = host;
   btn.dataset.port = info.port != null ? String(info.port) : '';
-  wrapper.style.display = topLine ? 'block' : 'none';
+  if (topLine) {
+    wrapper.style.display = 'flex';
+    wrapper.classList.add('active');
+    btn.classList.remove('is-selected', 'selected');
+  } else {
+    hideWrapper();
+  }
 }
 
 function connectToLastAdb() {
@@ -1565,6 +1699,9 @@ window.refreshLastAdbConnection = refreshLastAdbConnection;
 
 function openAdbScanner() {
   resetAdbConnectionState();
+  refreshAdbStatusIndicator();
+  updateStorageUsage('');
+  window.AndroidInterface?.requestStorageUsageRefresh?.();
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   const miscModal = document.getElementById('miscModal');
@@ -1586,6 +1723,7 @@ function openAdbScanner() {
   renderAdbScanHosts();
   updateAdbScanStatus('Сканирование сети...', 0);
   modal.style.display = 'flex';
+  bringModalToFront(modal);
   document.body.classList.add('modal-open');
   document.activeElement?.blur();
   refreshLastAdbConnection();
@@ -1612,6 +1750,7 @@ function closeAdbScanner() {
   const modal = document.getElementById('adbScannerModal');
   if (!modal) return;
   modal.style.display = 'none';
+  modal.style.zIndex = '';
   document.body.classList.remove('modal-open');
   if (modal.dataset.restoreMisc === '1') {
     const misc = document.getElementById('miscModal');
@@ -1636,6 +1775,7 @@ function closeAdbScanner() {
     lastFocusedElement.focus({ preventScroll: true });
   }
   lastFocusedElement = null;
+    restoreGroupModalOverlay();
 }
 
 function restartAdbScan() {
@@ -1660,9 +1800,9 @@ function renderAdbScanHosts() {
     return;
   }
   adbScanState.hosts.forEach(host => {
-    const card = document.createElement('div');
-    card.className = 'adb-device-card';
-    card.setAttribute('tabindex', '0');
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'adb-chip adb-device-card';
     let connectTriggered = false;
 
     const nameEl = document.createElement('div');
@@ -1805,8 +1945,10 @@ function openAdbManualConnectModal() {
   ignoreNextEnter = true;
   const miscModal = document.getElementById('miscModal');
   const miscMoreModal = document.getElementById('miscMoreModal');
+  const scannerModal = document.getElementById('adbScannerModal');
   modal.dataset.restoreMisc = '0';
   modal.dataset.restoreMiscMore = '0';
+  modal.dataset.restoreScanner = '0';
   if (miscModal && miscModal.style.display === 'flex') {
     miscModal.setAttribute('inert', '');
     miscModal.style.pointerEvents = 'none';
@@ -1816,6 +1958,11 @@ function openAdbManualConnectModal() {
     miscMoreModal.setAttribute('inert', '');
     miscMoreModal.style.pointerEvents = 'none';
     modal.dataset.restoreMiscMore = '1';
+  }
+  if (scannerModal && scannerModal.style.display === 'flex') {
+    scannerModal.setAttribute('inert', '');
+    scannerModal.style.pointerEvents = 'none';
+    modal.dataset.restoreScanner = '1';
   }
   lastFocusedElementManualConnect = document.activeElement;
   document.activeElement?.blur();
@@ -1840,8 +1987,7 @@ function openAdbManualConnectModal() {
 
   attachAdbManualInputHandlers();
 
-  const focusTarget = hostInput && !hostInput.value.trim() ? hostInput : (portInput || hostInput);
-  setTimeout(() => focusTarget?.focus({ preventScroll: true }), 120);
+  setTimeout(() => hostInput?.focus({ preventScroll: true }), 120);
 }
 
 function closeAdbManualConnectModal() {
@@ -1870,6 +2016,15 @@ function closeAdbManualConnectModal() {
     }
     modal.dataset.restoreMiscMore = '0';
   }
+  if (modal.dataset.restoreScanner === '1') {
+    const scanner = document.getElementById('adbScannerModal');
+    if (scanner) {
+      scanner.removeAttribute('inert');
+      scanner.style.pointerEvents = '';
+      if (scanner.style.display === 'flex') needRestoreModalClass = true;
+    }
+    modal.dataset.restoreScanner = '0';
+  }
 
   if (needRestoreModalClass) {
     document.body.classList.add('modal-open');
@@ -1896,6 +2051,8 @@ function submitAdbManualConnect() {
   if (portInput) portInput.value = String(port);
 
   ignoreNextEnter = true;
+  const modal = document.getElementById('adbManualConnectModal');
+  const shouldReturnToFast = modal?.dataset?.restoreScanner === '1';
   closeAdbManualConnectModal();
 
   const ai = window.AndroidInterface;
@@ -1907,6 +2064,14 @@ function submitAdbManualConnect() {
     ai.connectAdb(`${host}:${port}`);
   } else {
     showToast({ message: 'Функция подключения ADB недоступна', type: 'error' });
+  }
+  if (shouldReturnToFast) {
+    closeAdbScanner();
+    setTimeout(() => {
+      if (document.getElementById('miscModal')?.style.display !== 'flex') {
+        openMiscModal();
+      }
+    }, 200);
   }
 }
 
@@ -2199,6 +2364,11 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       if (!list.length) return;
 
+      const actionLabel = 'Откл/вкл системные приложения';
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+
       const key = list.join('|').toLowerCase();
       const nextDisable = !(disablePackageStates.get(key) ?? false);
       disablePackageStates.set(key, nextDisable);
@@ -2206,9 +2376,56 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       const payload = { packages: list, disable: nextDisable };
 
       try {
-        window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+        if (typeof ai.disablePackage === 'function') {
+          ai.disablePackage(JSON.stringify(payload));
+          return;
+        }
       } catch (e) {
+        console.warn('disablePackages error', e);
+      }
+
+      try {
         window.AndroidInterface?.disablePackage(JSON.stringify(payload));
+      } catch (err) {
+        console.warn('disablePackages fallback error', err);
+        showToast({ message: 'Не удалось отправить команды ADB', type: 'error' });
+      }
+    }
+
+    function handleConfirmWipeThirdPartyApps() {
+      const actionLabel = 'Удаление всех приложений';
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai) return;
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+      if (typeof ai.confirmWipeThirdPartyApps !== 'function') {
+        showToast({ message: 'Функция недоступна в этом режиме', type: 'error' });
+        return;
+      }
+      try {
+        ai.confirmWipeThirdPartyApps();
+      } catch (err) {
+        console.warn('confirmWipeThirdPartyApps error', err);
+        showToast({ message: 'Не удалось выполнить удаление', type: 'error' });
+      }
+    }
+
+    function handleOpenApkFilePicker() {
+      ignoreNextEnter = true;
+
+      const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
+      if (method === 'adb' && !isAdbSessionConnected()) {
+        showToast({
+          message: 'Выбран способ «ADB», но подключение отсутствует. Подключите ADB или переключите установку на «Быстрая» либо «Стандартная».',
+          type: 'warning'
+        });
+        return;
+      }
+
+      try {
+        window.AndroidInterface?.openApkFilePicker();
+      } catch (err) {
+        console.warn('openApkFilePicker error', err);
+        showToast({ message: 'Не удалось открыть выбор APK', type: 'error' });
       }
     }
 
@@ -2265,7 +2482,14 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         textWrap.append(title, body);
         btn.append(iconNode, textWrap);
 
-        const exec = () => sendAdbCommand(item.command, item.label);
+        const exec = () => {
+          sendAdbCommand(item.command, item.label);
+          if ([1001, 1002, 1003, 1004, 1005, 1006, 1007].includes(item.id)) {
+            setTimeout(() => {
+              resetAdbConnectionState();
+            }, 300);
+          }
+        };
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           exec();
@@ -2363,6 +2587,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         });
       }
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
 
       const list = document.getElementById('adbCommandsList');
@@ -2381,6 +2606,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (!modal) return;
 
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       document.body.classList.remove('modal-open');
       document.querySelectorAll('#adbCommandsList .adb-command-btn.selected').forEach(btn => btn.classList.remove('selected'));
 
@@ -2416,6 +2642,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
       lastAdbCommandsTriggerButton = null;
+      restoreGroupModalOverlay();
     }
 
     function sendAdbCommand(command, label) {
@@ -2438,7 +2665,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyBatteryOptimizationWhitelist() {
-      runAdbBatch({
+      return runAdbBatch({
         items: BATTERY_WHITELIST_PACKAGES,
         perItemStatus: (pkg) => {
           showStatus(
@@ -2488,6 +2715,24 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return false;
     }
 
+    function getUserPackages() {
+      try {
+        const api = window.AndroidInterface;
+        if (!api || typeof api.getUserInstalledPackages !== 'function') return [];
+        const raw = api.getUserInstalledPackages();
+        if (!raw || raw === 'undefined') return [];
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (!Array.isArray(data)) return [];
+        return data
+          .map((pkg) => (typeof pkg === 'string' ? pkg.trim() : ''))
+          .filter((pkg) => pkg.length > 0);
+      } catch (err) {
+        console.warn('getUserPackages error', err);
+        showToast({ message: 'Не удалось получить список приложений', type: 'error' });
+        return [];
+      }
+    }
+
     const MODAL_ADB_HEADER_IDS = [
       'miscHeader',
       'miscMoreHeader',
@@ -2497,6 +2742,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       'screenSaverHeader',
       'modalGroupHeader'
     ];
+    const MODAL_ADB_HEADER_SELECTOR = MODAL_ADB_HEADER_IDS.map((id) => `#${id}`).join(', ');
 
     function createModalAdbIndicator() {
       const btn = document.createElement('button');
@@ -2513,11 +2759,142 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return btn;
     }
 
-    function ensureModalAdbIndicators() {
-      document.querySelectorAll('.modal .modal-content').forEach((content) => {
-        if (!content.querySelector('.modal-adb-indicator')) {
-          content.appendChild(createModalAdbIndicator());
+    function createModalQuickActionButton(action) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'modal-quick-action';
+      btn.dataset.action = action.key;
+      btn.title = action.label;
+      btn.setAttribute('aria-label', action.label);
+
+      const img = document.createElement('img');
+      img.src = action.icon;
+      img.alt = action.label;
+      img.loading = 'lazy';
+      btn.appendChild(img);
+
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        lowerGroupModalForOverlay();
+        try {
+          action.run?.(btn, event);
+        } catch (err) {
+          console.warn(`modal quick action ${action.key} failed`, err);
         }
+      });
+
+      return btn;
+    }
+
+    function ensureModalQuickActions(container, content, indicator) {
+      const modalEl = content?.closest?.('.modal');
+      if (modalEl && modalEl.id === 'adbScannerModal') {
+        container.querySelectorAll('.modal-quick-action').forEach((btn) => btn.remove());
+        return;
+      }
+
+      const skipKeys = new Set();
+      if (content?.querySelector?.('#adbCommandsHeader')) {
+        skipKeys.add('modal-action-adb-commands');
+      }
+      if (content?.querySelector?.('#screenSaverHeader')) {
+        skipKeys.add('modal-action-screen-saver');
+      }
+
+      const allowedActions = MODAL_HEADER_ACTIONS.filter((action) => !skipKeys.has(action.key));
+      const allowedKeys = new Set(allowedActions.map((action) => action.key));
+
+      container.querySelectorAll('.modal-quick-action').forEach((btn) => {
+        const key = btn.dataset.action;
+        if (!allowedKeys.has(key)) {
+          btn.remove();
+        }
+      });
+
+      const insertBeforeNode = indicator && indicator.parentElement === container ? indicator : null;
+      allowedActions.forEach((action) => {
+        let btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
+        if (!btn) {
+          btn = createModalQuickActionButton(action);
+        }
+        if (insertBeforeNode) {
+          container.insertBefore(btn, insertBeforeNode);
+        } else if (!btn.parentElement) {
+          container.appendChild(btn);
+        }
+      });
+
+      // Обеспечиваем порядок согласно allowedActions
+      allowedActions.forEach((action) => {
+        const btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
+        if (!btn || !insertBeforeNode) return;
+        const currentOrder = Array.from(container.children);
+        const targetIndex = currentOrder.indexOf(insertBeforeNode);
+        const btnIndex = currentOrder.indexOf(btn);
+        if (btnIndex > targetIndex || btn.nextSibling !== insertBeforeNode) {
+          container.insertBefore(btn, insertBeforeNode);
+        }
+      });
+    }
+
+    function bringModalToFront(modal) {
+      if (!modal) return;
+      modalOverlayCounter += MODAL_Z_STEP;
+      modal.style.zIndex = String(modalOverlayCounter);
+    }
+
+    function lowerGroupModalForOverlay() {
+      const groupModal = document.getElementById('modal');
+      if (!groupModal) return;
+      if (groupModal.style.display !== 'flex') return;
+      if (groupModal.dataset.overlaySuppressed === '1') return;
+      groupModal.dataset.overlaySuppressed = '1';
+      groupModal.style.zIndex = '900';
+    }
+
+    function restoreGroupModalOverlay() {
+      const groupModal = document.getElementById('modal');
+      if (!groupModal) return;
+      if (groupModal.dataset.overlaySuppressed !== '1') return;
+      delete groupModal.dataset.overlaySuppressed;
+      groupModal.style.zIndex = '';
+    }
+
+    function ensureModalAdbIndicators() {
+      const headerSelector = MODAL_ADB_HEADER_SELECTOR;
+      document.querySelectorAll('.modal .modal-content').forEach((content) => {
+        const hasHeader = headerSelector ? content.querySelector(headerSelector) : false;
+        if (!hasHeader) {
+          const tools = content.querySelector('.modal-header-tools');
+          if (tools) {
+            tools.remove();
+          }
+          const strayIndicator = content.querySelector('.modal-adb-indicator');
+          if (strayIndicator && strayIndicator.parentElement === content) {
+            strayIndicator.remove();
+          }
+          return;
+        }
+
+        let tools = content.querySelector('.modal-header-tools');
+        if (!tools) {
+          tools = document.createElement('div');
+          tools.className = 'modal-header-tools';
+          content.appendChild(tools);
+        } else if (!tools.classList.contains('modal-header-tools')) {
+          tools.className = 'modal-header-tools';
+        }
+
+        let indicator = tools.querySelector('.modal-adb-indicator');
+        if (!indicator) {
+          indicator = content.querySelector('.modal-adb-indicator') || createModalAdbIndicator();
+          tools.appendChild(indicator);
+        } else if (indicator.parentElement !== tools) {
+          tools.appendChild(indicator);
+        }
+
+        ensureModalQuickActions(tools, content, indicator);
       });
     }
 
@@ -2587,7 +2964,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         showToast({ message: 'Нет сохранённого ADB-подключения', type: 'warning' });
         return;
       }
-      showToast({ message: 'Переподключаемся к последнему ADB…', type: 'info', duration: 2500 });
+      showToast({ message: 'Переподключаемся к последнему ADB…', type: 'blue', duration: 2500 });
       connectToLastAdb();
     }
 
@@ -2615,19 +2992,20 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       if (!queue.length) {
         if (emptyMessage) showToast({ message: emptyMessage, type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
 
       const ai = getAdbInterfaceOrWarn(adbActionLabel || startMessage || 'операция');
-      if (!ai) return;
+      if (!ai) return Promise.resolve(false);
 
       if (startMessage) {
         showToast({ message: startMessage, type: 'info', duration: 4000 });
       }
 
       let index = 0;
-      const tick = () => {
-        if (index >= queue.length) {
+
+      return new Promise((resolve) => {
+        const finish = () => {
           const statusText = doneStatusMessage || doneMessage;
           if (statusText) {
             showToast({ message: statusText, type: 'success' });
@@ -2635,29 +3013,36 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           } else if (doneMessage) {
             showToast({ message: doneMessage, type: 'success' });
           }
-          return;
-        }
-        const item = queue[index++];
-        const cmdsRaw = buildCommands(item) || [];
-        const commands = Array.isArray(cmdsRaw) ? cmdsRaw : [cmdsRaw];
-        commands.forEach(entry => {
-          const command = typeof entry === 'string' ? entry : entry?.command;
-          if (!command) return;
-          const label = typeof entry === 'object' ? (entry.label || '') : '';
-          try {
-            ai.runAdbShellCommand(command, label || '', !!silent);
-          } catch (err) {
-            console.warn('ADB batch error', err);
-            showToast({ message: `Ошибка: ${command}`, type: 'error' });
-          }
-        });
-        if (typeof perItemStatus === 'function') {
-          perItemStatus(item, index, queue.length);
-        }
-        setTimeout(tick, delay);
-      };
+          resolve(true);
+        };
 
-      tick();
+        const tick = () => {
+          if (index >= queue.length) {
+            finish();
+            return;
+          }
+          const item = queue[index++];
+          const cmdsRaw = buildCommands(item) || [];
+          const commands = Array.isArray(cmdsRaw) ? cmdsRaw : [cmdsRaw];
+          commands.forEach(entry => {
+            const command = typeof entry === 'string' ? entry : entry?.command;
+            if (!command) return;
+            const label = typeof entry === 'object' ? (entry.label || '') : '';
+            try {
+              ai.runAdbShellCommand(command, label || '', !!silent);
+            } catch (err) {
+              console.warn('ADB batch error', err);
+              showToast({ message: `Ошибка: ${command}`, type: 'error' });
+            }
+          });
+          if (typeof perItemStatus === 'function') {
+            perItemStatus(item, index, queue.length);
+          }
+          setTimeout(tick, delay);
+        };
+
+        tick();
+      });
     }
 
     function normalizeListenerComponent(entry) {
@@ -2678,7 +3063,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyUsageStatsAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: USAGE_STATS_PACKAGES,
         buildCommands: (pkg) => [
           { command: `pm grant ${pkg} android.permission.PACKAGE_USAGE_STATS`, label: `Grant usage stats ${pkg}` },
@@ -2691,7 +3076,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyManageStorageAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: MANAGE_STORAGE_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set --uid ${pkg} MANAGE_EXTERNAL_STORAGE allow`,
@@ -2703,8 +3088,90 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       });
     }
 
+    function applyUnknownSourcesPermission() {
+      const actionLabel = 'Разрешение установки из неизвестных источников';
+      if (window.AndroidInterface?.grantUnknownSourcesPermissionsAsync) {
+        if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+        try {
+          window.AndroidInterface.grantUnknownSourcesPermissionsAsync();
+          return Promise.resolve(true);
+        } catch (err) {
+          console.warn('grantUnknownSourcesPermissionsAsync failed, fallback to JS', err);
+        }
+      }
+      if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
+        showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
+        return Promise.resolve(false);
+      }
+      const packages = getUserPackages();
+      if (!packages.length) {
+        showToast({ message: 'Нет пользовательских приложений для обновления', type: 'warning' });
+        return Promise.resolve(false);
+      }
+
+      return new Promise((resolve) => {
+        const queue = [...packages];
+        let failures = 0;
+        const delayMs = 180;
+        const concurrency = Math.min(3, queue.length);
+
+        const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+        const handlePackage = async (pkg) => {
+          let primaryOk = false;
+          try {
+            primaryOk = !!ai.runAdbShellCommandWithResult(
+              `appops set ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+              `Unknown sources ${pkg}`,
+              true
+            );
+          } catch (err) {
+            console.warn('Unknown sources primary command error', err);
+          }
+          if (!primaryOk) {
+            let fallbackOk = false;
+            try {
+              fallbackOk = !!ai.runAdbShellCommandWithResult(
+                `appops set --uid ${pkg} REQUEST_INSTALL_PACKAGES allow`,
+                `Unknown sources UID ${pkg}`,
+                true
+              );
+            } catch (err) {
+              console.warn('Unknown sources fallback command error', err);
+            }
+            if (!fallbackOk) {
+              failures += 1;
+            }
+          }
+          await sleep(delayMs);
+        };
+
+        const worker = async () => {
+          while (queue.length) {
+            const pkg = queue.shift();
+            if (!pkg) break;
+            await handlePackage(pkg);
+          }
+        };
+
+        showToast({ message: 'Обновляем разрешения на установку APK…', type: 'info' });
+
+        Promise.all(
+          Array.from({ length: concurrency || 1 }, () => worker())
+        ).then(() => {
+          const statusText = failures
+            ? `Разрешение выдано, но ${failures} пакетов сообщило об ошибке`
+            : 'Выдано разрешение на установку APK из неизвестных источников';
+          showToast({ message: statusText, type: failures ? 'warning' : 'success' });
+          resolve(true);
+        });
+      });
+    }
+
     function applyOverlayAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: OVERLAY_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SYSTEM_ALERT_WINDOW allow`,
@@ -2717,28 +3184,77 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyMicrophonePermission() {
+      if (window.AndroidInterface?.grantMicrophonePermissionsAsync) {
+        const actionLabel = 'Разрешение микрофона';
+        if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+        try {
+          window.AndroidInterface.grantMicrophonePermissionsAsync();
+          return Promise.resolve(true);
+        } catch (err) {
+          console.warn('grantMicrophonePermissionsAsync failed, fallback to JS', err);
+        }
+      }
       if (!MICROPHONE_PERMISSION) {
         showToast({ message: 'Не задано имя разрешения микрофона', type: 'warning' });
-        return;
+        return Promise.resolve(false);
       }
-      if (!Array.isArray(MICROPHONE_PERMISSION_PACKAGES) || !MICROPHONE_PERMISSION_PACKAGES.length) {
-        showToast({ message: 'Список приложений для микрофона пуст', type: 'warning' });
-        return;
+      const actionLabel = 'Разрешение микрофона';
+      if (!ensureAdbSessionConnected(actionLabel)) return Promise.resolve(false);
+      const ai = getAdbInterfaceOrWarn(actionLabel);
+      if (!ai || typeof ai.runAdbShellCommandWithResult !== 'function') {
+        showToast({ message: 'Нет поддержки runAdbShellCommandWithResult', type: 'error' });
+        return Promise.resolve(false);
       }
-      runAdbBatch({
-        items: MICROPHONE_PERMISSION_PACKAGES,
-        buildCommands: (pkg) => ({
-          command: `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
-          label: `Grant mic ${pkg}`
-        }),
-        perItemStatus: (pkg) => {
-          showStatus(`🎙 ${pkg}: выдаём доступ к микрофону`, '#00cfff', 2500);
-        }
+      const dynamicPackages = getUserPackages();
+      const manualPackages = Array.isArray(MICROPHONE_PERMISSION_PACKAGES) ? MICROPHONE_PERMISSION_PACKAGES : [];
+      const packages = Array.from(new Set([...manualPackages, ...dynamicPackages])).filter(Boolean);
+      if (!packages.length) {
+        showToast({ message: 'Нет приложений для выдачи микрофона', type: 'warning' });
+        return Promise.resolve(false);
+      }
+
+      return new Promise((resolve) => {
+        const queue = [...packages];
+        const delayMs = 150;
+        const concurrency = Math.min(3, queue.length);
+
+        const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+        const handlePackage = async (pkg) => {
+          try {
+            ai.runAdbShellCommandWithResult(
+              `pm grant ${pkg} ${MICROPHONE_PERMISSION}`,
+              `Grant mic ${pkg}`,
+              true
+            );
+          } catch (err) {
+            console.warn('applyMicrophonePermission error', pkg, err);
+          }
+          await sleep(delayMs);
+        };
+
+        const worker = async () => {
+          while (queue.length) {
+            const pkg = queue.shift();
+            if (!pkg) break;
+            await handlePackage(pkg);
+          }
+        };
+
+        showToast({ message: 'Выдаём разрешения микрофона…', type: 'info' });
+
+        Promise.all(
+          Array.from({ length: concurrency || 1 }, () => worker())
+        ).then(() => {
+          const statusText = 'Разрешение микрофона обновлено';
+          showToast({ message: statusText, type: 'success' });
+          resolve(true);
+        });
       });
     }
 
     function applyWriteSettingsAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: WRITE_SETTINGS_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} WRITE_SETTINGS allow`,
@@ -2751,7 +3267,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyExactAlarmAccess() {
-      runAdbBatch({
+      return runAdbBatch({
         items: EXACT_ALARM_PACKAGES,
         buildCommands: (pkg) => ({
           command: `appops set ${pkg} SCHEDULE_EXACT_ALARM allow`,
@@ -2764,7 +3280,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function applyNotificationListeners() {
-      runAdbBatch({
+      return runAdbBatch({
         items: NOTIFICATION_LISTENER_SERVICES,
     buildCommands: (entry) => {
       const component = normalizeListenerComponent(entry);
@@ -2783,10 +3299,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
 function applyAccessibilityServices() {
   const ai = getAdbInterfaceOrWarn('Включение служб доступности');
-  if (!ai) return;
+  if (!ai) return Promise.resolve(false);
   if (!Array.isArray(ACCESSIBILITY_SERVICES) || !ACCESSIBILITY_SERVICES.length) {
     showToast({ message: 'Нет служб для включения доступа', type: 'warning' });
-    return;
+    return Promise.resolve(false);
   }
   const joined = ACCESSIBILITY_SERVICES.join(':');
   const commands = [
@@ -2813,40 +3329,83 @@ function applyAccessibilityServices() {
     showStatus('♿ Службы доступности включены', '#00cfff', 4000);
     showToast({ message: 'Доступ к службам доступности выдан', type: 'success' });
   }
+  return Promise.resolve(!hasError);
 }
 
     function applyDefaultKeyboardIme() {
-      const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
-      if (!ai) return;
-      if (!DEFAULT_KEYBOARD_IME) {
-        showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
-        return;
-      }
-      const commands = [
-        { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
-        { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
-      ];
-      let hasError = false;
-      commands.forEach(({ command, label }) => {
-        try {
-          ai.runAdbShellCommand(command, label, true);
-        } catch (err) {
-          hasError = true;
-          console.warn('applyDefaultKeyboardIme error', err);
-          showToast({ message: `Ошибка: ${label || command}`, type: 'error' });
+      return new Promise((resolve) => {
+        const ai = getAdbInterfaceOrWarn('Назначение клавиатуры');
+        if (!ai) {
+          resolve(false);
+          return;
         }
+        if (!DEFAULT_KEYBOARD_IME) {
+          showToast({ message: 'Компонент клавиатуры не задан', type: 'warning' });
+          resolve(false);
+          return;
+        }
+
+        const commands = [
+          { command: `ime enable ${DEFAULT_KEYBOARD_IME}`, label: 'Enable keyboard IME' },
+          { command: `ime set ${DEFAULT_KEYBOARD_IME}`, label: 'Set keyboard IME' }
+        ];
+
+        const runImeCommands = () => {
+          commands.forEach(({ command, label }) => {
+            try {
+              ai.runAdbShellCommand(command, label, true);
+            } catch (err) {
+              console.warn('applyDefaultKeyboardIme command error', err);
+            }
+          });
+        };
+
+        const isTargetImeActive = () => {
+          try {
+            const value = window.AndroidInterface?.getCurrentInputMethod?.();
+            if (!value || value === 'undefined') return false;
+            return value.trim() === DEFAULT_KEYBOARD_IME;
+          } catch (err) {
+            console.warn('isTargetImeActive error', err);
+            return false;
+          }
+        };
+
+        const ensureIme = (silent = false) => {
+          if (isTargetImeActive()) {
+            if (!silent) {
+              showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+              showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+            }
+            return true;
+          }
+          runImeCommands();
+          setTimeout(() => {
+            if (isTargetImeActive() && !silent) {
+              showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
+              showToast({ message: 'Клавиатура назначена основной', type: 'success' });
+            }
+          }, 1000);
+          return false;
+        };
+
+        const finalize = () => resolve(true);
+
+        const initialApplied = ensureIme();
+        if (initialApplied) {
+          finalize();
+          return;
+        }
+        setTimeout(() => ensureIme(true), 2000);
+        setTimeout(finalize, 2500);
       });
-      if (!hasError) {
-        showStatus('⌨️ Клавиатура LeanKey включена и назначена по умолчанию', '#00cfff', 4000);
-        showToast({ message: 'Клавиатура назначена основной', type: 'success' });
-      }
     }
 
     function applyScreenSaverDefaults() {
       const ai = getAdbInterfaceOrWarn('Настройка заставки');
-      if (!ai) return;
+      if (!ai) return Promise.resolve(false);
       const commands = [
-        { command: 'settings put system screen_off_timeout 3600000', label: 'Screen off timeout' },
+        { command: 'settings put system screen_off_timeout 1800000', label: 'Screen off timeout' },
         { command: 'settings put secure sleep_timeout 28800000', label: 'Sleep timeout' }
       ];
       let hasError = false;
@@ -2872,24 +3431,45 @@ function applyAccessibilityServices() {
         showStatus('🌌 Aerial Views активирована, таймеры обновлены', '#00cfff', 4000);
         showToast({ message: 'Заставка настроена', type: 'success' });
       }
+      return Promise.resolve(!hasError);
     }
 
-    function runAllAutoPermissions() {
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    async function runAllAutoPermissions() {
       const actionLabel = 'Авторазрешения';
       if (!getAdbInterfaceOrWarn(actionLabel)) return;
       if (!ensureAdbSessionConnected(actionLabel)) return;
       showToast({ message: 'Запуск авторазрешений…', type: 'info' });
-      applyBatteryOptimizationWhitelist();
-      applyUsageStatsAccess();
-      applyManageStorageAccess();
-      applyOverlayAccess();
-      applyMicrophonePermission();
-      applyWriteSettingsAccess();
-      applyExactAlarmAccess();
-      applyAccessibilityServices();
-      applyScreenSaverDefaults();
-      applyDefaultKeyboardIme();
-      applyNotificationListeners();
+
+      try {
+        await Promise.all([
+          applyBatteryOptimizationWhitelist(),
+          applyUsageStatsAccess(),
+          applyManageStorageAccess(),
+          applyOverlayAccess(),
+          applyWriteSettingsAccess(),
+          applyExactAlarmAccess(),
+          applyAccessibilityServices(),
+          applyScreenSaverDefaults(),
+          applyNotificationListeners()
+        ]);
+
+        await applyUnknownSourcesPermission();
+        await applyMicrophonePermission();
+
+        await wait(2500);
+        await applyDefaultKeyboardIme();
+        await wait(300);
+      } catch (err) {
+        console.warn('runAllAutoPermissions error', err);
+      } finally {
+        try {
+          window.AndroidInterface?.onAutoPermissionsFinished?.();
+        } catch (err) {
+          console.warn('onAutoPermissionsFinished error', err);
+        }
+      }
     }
 
 
@@ -2912,7 +3492,31 @@ function applyAccessibilityServices() {
       document.activeElement?.blur();
       const modal = document.getElementById('screenSaverModal');
       if (!modal) return;
+  setModalHeaderTitle('screenSaverHeader', (container) => {
+    try {
+      const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
+      const btnIcon = btn?.querySelector('img');
+      const titleText = btn?.innerText?.trim() || 'Заставка';
+      const fallbackIcon = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png';
+      const iconSrc = btnIcon?.src || fallbackIcon;
+      if (iconSrc) {
+        const icon = document.createElement('img');
+        icon.src = iconSrc;
+        icon.alt = '';
+        icon.style.height = '25px';
+        icon.style.width = '25px';
+        icon.style.objectFit = 'contain';
+        container.appendChild(icon);
+      }
+      const title = document.createElement('span');
+      title.textContent = titleText;
+      container.appendChild(title);
+    } catch (_e) {
+      container.textContent = 'Заставка';
+    }
+  });
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
       requestScreenSaverState();
       setTimeout(() => {
@@ -2929,12 +3533,14 @@ function applyAccessibilityServices() {
         closeScreenSaverTimeoutModal();
       }
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       document.body.classList.remove('modal-open');
       const target = lastScreenSaverTrigger;
       lastScreenSaverTrigger = null;
       if (target && document.body.contains(target)) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
+      restoreGroupModalOverlay();
     }
 
     function requestScreenSaverState() {
@@ -3005,6 +3611,7 @@ function applyAccessibilityServices() {
       screenSaverTimeoutReturnEl = document.activeElement;
       document.activeElement?.blur();
       modal.style.display = 'flex';
+      bringModalToFront(modal);
       document.body.classList.add('modal-open');
       const value = sanitizeScreenSaverMinutes(screenSaverTimeoutState[type], type);
       setScreenSaverTimeoutInput(value);
@@ -3019,6 +3626,7 @@ function applyAccessibilityServices() {
       const modal = document.getElementById('screenSaverTimeoutModal');
       if (!modal || modal.style.display !== 'flex') return;
       modal.style.display = 'none';
+      modal.style.zIndex = '';
       if (modal.dataset.restoreScreen === '1') {
         const parent = document.getElementById('screenSaverModal');
         if (parent) {
@@ -3368,6 +3976,7 @@ showStatus(`Началась загрузка приложений, ожидай
       const modal = document.getElementById('modal');
       modal.style.display = "none";
       document.body.classList.remove("modal-open"); // Разблокируем скролл основного интерфейса
+      restoreGroupModalOverlay();
       if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
         if (lastFocusedElement.classList?.contains('card')) selectCard(lastFocusedElement);
         lastFocusedElement.focus?.({ preventScroll: true });
@@ -3584,8 +4193,8 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
-      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
+      else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
@@ -3619,15 +4228,29 @@ showStatus(`Началась загрузка приложений, ожидай
       if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
     }
 
-    function openAutostartModal() {
-      // Если открыта модалка «Разное», закрываем её и возвращаем фокус потом на кнопку FastInstaller+
+    function openAutostartModal(opener = null) {
+      if (lastAdbIndicatorConnected) {
+        showToast({ message: 'Автозапуск доступен только в локальном режиме', type: 'warning', duration: 3500 });
+        return;
+      }
+      autostartOpener = opener instanceof HTMLElement
+        ? opener
+        : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      lastFocusedElement = autostartOpener;
+
+      autostartReturnModal = null;
+      const miscMore = document.getElementById('miscMoreModal');
       const misc = document.getElementById('miscModal');
-      if (misc && misc.style.display === 'flex') {
-        const fastPlusBtn = document.querySelector('.system-buttons .sys-btn[onclick*="openMiscModal"]');
-        lastFocusedElement = fastPlusBtn || document.activeElement;
-        closeMiscModal(false); // закрыть без восстановления фокуса сейчас
-      } else {
-        lastFocusedElement = document.activeElement;
+      if (miscMore && miscMore.style.display === 'flex') {
+        autostartReturnModal = 'miscMore';
+        lastFocusedElementMiscMore = null;
+        closeMiscMoreModal();
+        if (misc && misc.style.display === 'flex') {
+          closeMiscModal(false);
+        }
+      } else if (misc && misc.style.display === 'flex') {
+        autostartReturnModal = 'misc';
+        closeMiscModal(false);
       }
       const modal = document.getElementById('autostartModal');
       const list = document.getElementById('autostartList');
@@ -3638,6 +4261,7 @@ showStatus(`Началась загрузка приложений, ожидай
 
       // Сброс текущего фокуса перед открытием
       document.activeElement?.blur();
+      document.body.classList.add('modal-open');
       modal.style.display = 'flex';
       list.innerHTML = '<div style="grid-column:1/-1; text-align:center;">⏳ Загрузка...</div>';
 
@@ -3659,8 +4283,37 @@ showStatus(`Началась загрузка приложений, ожидай
     }
 
     function closeAutostartModal() {
-      document.getElementById('autostartModal').style.display = 'none';
-      if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus();
+      const modal = document.getElementById('autostartModal');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+
+      const returnModal = autostartReturnModal;
+      const opener = autostartOpener;
+      autostartReturnModal = null;
+      autostartOpener = null;
+
+      if (returnModal === 'miscMore') {
+        openMiscModal();
+        setTimeout(() => {
+          openMiscMoreModal();
+          if (opener && document.body.contains(opener)) {
+            setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+          }
+        }, 50);
+        return;
+      }
+      if (returnModal === 'misc') {
+        openMiscModal();
+        if (opener && document.body.contains(opener)) {
+          setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+        }
+        return;
+      }
+
+      const focusTarget = opener || lastFocusedElement;
+      if (focusTarget && document.body.contains(focusTarget)) {
+        setTimeout(() => focusTarget.focus?.({ preventScroll: true }), 50);
+      }
     }
 
     /* === helpers для автозапуска === */
