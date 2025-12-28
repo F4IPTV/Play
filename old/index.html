@@ -1147,6 +1147,9 @@
 			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
           </button>
+          <button onclick="showSettingsCash()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор кеша
+            </button>
           
           <button onclick="ignoreNextEnter=true; openInternal('https://tvboxsetup.ru/sv/');" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic11_about.png" alt="" style="height:28px;"><br>О программе
@@ -1968,6 +1971,7 @@ function openAdbManualConnectModal() {
   lastFocusedElementManualConnect = document.activeElement;
   document.activeElement?.blur();
   modal.style.display = 'flex';
+  bringModalToFront(modal);
   document.body.classList.add('modal-open');
 
   const hostInput = document.getElementById('adbManualHostInput');
