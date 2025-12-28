@@ -1438,6 +1438,12 @@
       "flar2.homebutton/a.i",
       "com.spocky.projengmenu/com.spocky.projengmenu.services.ProjectivyAccessibilityService"
     ];
+const ACCESSIBILITY_PACKAGES = [
+  "ru.yourok.torrserve",
+  "dev.vodik7.tvquickactions",
+  "flar2.homebutton",
+  "com.spocky.projengmenu"
+];
     const MICROPHONE_PERMISSION = "android.permission.RECORD_AUDIO";
     const MICROPHONE_PERMISSION_PACKAGES = [
       
@@ -3320,6 +3326,18 @@ function applyAccessibilityServices() {
       label: 'Accessibility toggle'
     }
   ];
+  if (Array.isArray(ACCESSIBILITY_PACKAGES) && ACCESSIBILITY_PACKAGES.length) {
+    ACCESSIBILITY_PACKAGES.forEach((pkg) => {
+      commands.push({
+        command: `appops set ${pkg} ACCESS_RESTRICTED_SETTINGS allow`,
+        label: `Restricted settings ${pkg}`
+      });
+      commands.push({
+        command: `appops set --uid ${pkg} ACCESS_RESTRICTED_SETTINGS allow`,
+        label: `Restricted settings uid ${pkg}`
+      });
+    });
+  }
   let hasError = false;
   commands.forEach(({ command, label }) => {
     try {
