@@ -2687,10 +2687,10 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
             2500
           );
         },
-        buildCommands: (pkg) => ({
-          command: `dumpsys deviceidle whitelist +${pkg}`,
-          label: `Whitelist ${pkg}`
-        }),
+        buildCommands: (pkg) => ([
+          { command: `dumpsys deviceidle whitelist +${pkg}`, label: `Whitelist ${pkg}` },
+          { command: `appops set ${pkg} RUN_ANY_IN_BACKGROUND allow`, label: `Run in background ${pkg}` }
+        ]),
         doneStatusMessage: 'Приложения добавлены в исключения энергосбережения'
       });
     }
