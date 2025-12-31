@@ -287,6 +287,610 @@ http://tele2dvrnat01-02.cdnvideo.ru:80/stream/NAT_Prima/hls/1920x1080@4504/playl
 
 
 
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Первый канал HD
+http://89.104.114.32:8080/ort_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Первый канал
+http://89.104.114.2:8080/ort/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",РЕН ТВ
+http://89.104.114.2:8080/ren-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТНТ
+http://89.104.114.2:8080/tnt/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТНТ HD
+http://89.104.114.2:8080/tnt_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТНТ4
+http://89.104.114.2:8080/tnt-4/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ
+http://89.104.114.2:8080/ntv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ HD
+http://89.104.114.2:8080/ntv_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",РОССИЯ 1
+http://89.104.114.2:8080/rossiya_1/mono.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",РОССИЯ 1 HD
+http://89.104.114.2:8080/rossia_hd/mono.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Россия 24
+http://89.104.114.2:8080/rossia_24/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Россия К
+http://89.104.114.2:8080/rossia_k/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Москва 24
+http://89.104.114.2:8080/moskva_24/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ Хит
+http://89.104.114.2:8080/ntv_hit/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ Право
+http://89.104.114.2:8080/ntv_pravo/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ Сериал
+http://89.104.114.2:8080/ntv_serial/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НТВ Стиль
+http://89.104.114.2:8080/ntv_stil/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",История
+http://89.104.114.2:8080/istoriya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",RTG TV
+http://89.104.114.2:8080/rtg/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",RTG HD
+http://89.104.114.2:8080/rtg_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Home 4k
+http://89.104.114.2:8080/home4k/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Глазами туриста HD
+http://89.104.114.2:8080/glazami_turista_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",HD Life
+http://89.104.114.2:8080/hd-life/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Рыболов
+http://89.104.114.2:8080/ohotnik/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Открытый мир
+http://89.104.114.2:8080/otkr_mir/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Big Planet HD
+http://89.104.114.2:8080/big_planet_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Моя планета
+http://89.104.114.2:8080/moya_planeta/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Живая природа HD
+http://89.104.114.2:8080/jivaya_priroda_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Нано ТВ HD
+http://89.104.114.2:8080/nano_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Нано ТВ
+http://89.104.114.2:8080/nano-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Охотник и рыболов
+http://89.104.114.2:8080/ohot_i_rybolov_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",TERRA
+http://89.104.114.2:8080/natgeo/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",TERRA HD
+http://89.104.114.2:8080/natgeo_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",БОЛЬШАЯ АЗИЯ HD
+http://89.104.114.18:8080/world-fashion/mono.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Техно 24
+http://89.104.114.2:8080/t24/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Планета HD
+http://89.104.114.2:8080/planeta_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Телепутешествия
+http://89.104.114.2:8080/teleputeshestviya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Приключения HD
+http://89.104.114.2:8080/teletravel_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Живая планета
+http://89.104.114.2:8080/zhivaya-planeta/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Тайна
+http://89.104.114.2:8080/taina/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Живи HD
+http://89.104.114.2:8080/jivi/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Оружие
+http://89.104.114.2:8080/oruzhie/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",2x2
+http://89.104.114.2:8080/2x2/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",8 канал
+http://89.104.114.2:8080/8kanal/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Arirang
+http://89.104.114.2:8080/arirang/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Че
+http://89.104.114.2:8080/che/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинеко
+http://89.104.114.2:8080/fox/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Сапфир
+http://89.104.114.2:8080/fox-life/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киносат
+http://89.104.114.2:8080/kinosat/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Конный мир
+http://89.104.114.2:8080/konniy_mir/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ЛЕН ТВ 24
+http://89.104.114.2:8080/lot/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Родное кино
+http://89.104.114.2:8080/nashe-kino/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киномикс HD
+http://89.104.114.2:8080/kinomix/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинохит HD
+http://89.104.114.2:8080/kinohit/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киносемья HD
+http://89.104.114.2:8080/kinosemya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киносвидание HD
+http://89.104.114.2:8080/kinosvidanie/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мужское кино HD
+http://89.104.114.2:8080/muzhskoe-kino_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Наше новое кино HD
+http://89.104.114.2:8080/nashe-novoe-kino/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинопремьера HD
+http://89.104.114.2:8080/premiera/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киноужас
+http://89.104.114.2:8080/kinoujas/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Киносерия
+http://89.104.114.2:8080/mnogo-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ОТР
+http://89.104.114.2:8080/otr/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Победа
+http://89.104.114.2:8080/pobeda/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Просвещение
+http://89.104.114.2:8080/prosveshenie/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",365 дней
+http://89.104.114.2:8080/365_dnej/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Amedia 1
+http://89.104.114.2:8080/amedia/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Amedia 2
+http://89.104.114.2:8080/amedia-2/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Amedia hit HD
+http://89.104.114.2:8080/amedia_hit_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Amedia premium HD
+http://89.104.114.2:8080/amedia_premium_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Арсенал
+http://89.104.114.2:8080/arsenal_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Авто плюс
+http://89.104.114.2:8080/avto_plus/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Блокбастер HD
+http://89.104.114.2:8080/blokbaster_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Cinema HD
+http://89.104.114.2:8080/cinema_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Сапфир HD
+http://89.104.114.2:8080/fox_life_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Про любовь HD
+http://89.104.114.2:8080/pro_lubov_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский бестселлер
+http://89.104.114.2:8080/rus-bestseller/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский экстрим HD
+http://89.104.114.2:8080/rus-extrim-hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский роман
+http://89.104.114.2:8080/russki_roman_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bloomberg
+http://89.104.114.2:8080/bloomberg/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Комедия
+http://89.104.114.2:8080/comedy/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Домашний
+http://89.104.114.2:8080/domashniy/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Домашний HD
+http://89.104.114.2:8080/domashniy_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Еда HD
+http://89.104.114.2:8080/eda_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Fan HD
+http://89.104.114.2:8080/fan/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Fashion one HD
+http://89.104.114.2:8080/fashion_one_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинеко HD
+http://89.104.114.2:8080/fox_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Хит HD
+http://89.104.114.2:8080/hit_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Индия
+http://89.104.114.2:8080/indiya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Калейдоскоп ТВ
+http://89.104.114.2:8080/kaleydoskop/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Камеди HD
+http://89.104.114.2:8080/kamedi_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Комедия HD
+http://89.104.114.2:8080/komediya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кино ТВ HD
+http://89.104.114.2:8080/kino_tv_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Kinojam 1 HD
+http://89.104.114.2:8080/kinojam1/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Kinojam 2 HD
+http://89.104.114.2:8080/kinojam2/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинопоказ
+http://89.104.114.2:8080/kinopokaz/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кинопоказ HD
+http://89.104.114.2:8080/kinopokaz_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кино ТВ
+http://89.104.114.2:8080/kino-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кто есть кто
+http://89.104.114.2:8080/kto-est-kto/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кухня ТВ
+http://89.104.114.2:8080/kuhnya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",КВН ТВ
+http://89.104.114.2:8080/kvn_tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мосфильм. Золотая коллекция
+http://89.104.114.2:8080/mosfilm/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Наш кинопоказ HD
+http://89.104.114.2:8080/nash_kinopokaz_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Наша тема HD
+http://89.104.114.2:8080/nasha_tema_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Ностальгия
+http://89.104.114.2:8080/nostalgia/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",НСТ
+http://89.104.114.2:8080/nstv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Пёс и ко
+http://89.104.114.2:8080/pes_i_ko/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Поехали
+http://89.104.114.2:8080/Poehali/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Пятница
+http://89.104.114.2:8080/Pyatnica/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Пятница HD
+http://89.104.114.2:8080/pyatnica_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский детектив
+http://89.104.114.2:8080/rus-detective/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский Экстрим
+http://89.104.114.2:8080/rus-extrim/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Русский роман
+http://89.104.114.2:8080/rus-roman/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",СТС
+http://89.104.114.2:8080/sts/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",СТС HD
+http://89.104.114.2:8080/sts_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",СТС Love
+http://89.104.114.2:8080/sts-love/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Супер
+http://89.104.114.2:8080/super/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Теледом HD
+http://89.104.114.2:8080/teledom_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Точка
+http://89.104.114.2:8080/tochka/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",TV1000 Русское кино
+http://89.104.114.2:8080/tv1000rus/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТВ3
+http://89.104.114.2:8080/tv3/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТВ3 HD
+http://89.104.114.2:8080/tv3_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Пятый канал
+http://89.104.114.2:8080/5_kanal/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",7tv
+http://89.104.114.2:8080/7tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ART
+http://89.104.114.2:8080/art/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ATV HD
+http://89.104.114.2:8080/atv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Авто 24
+http://89.104.114.2:8080/avto24/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Центральное телевидение
+http://89.104.114.2:8080/ctv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Доктор HD
+http://89.104.114.2:8080/doctor/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Дорама HD
+http://89.104.114.2:8080/dorama_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",E TV
+http://89.104.114.2:8080/etv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Fashion TV
+http://89.104.114.2:8080/fashion_tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Известия HD
+http://89.104.114.2:8080/izvestiya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Жара
+http://89.104.114.2:8080/jara/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Kinoliving HD
+http://89.104.114.2:8080/kinoliving_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Кто куда
+http://89.104.114.2:8080/kto_kuda/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мир 24
+http://89.104.114.2:8080/mir-24/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мир
+http://89.104.114.2:8080/mir/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Москва доверие
+http://89.104.114.2:8080/moskva_doverie/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",О!Кино
+http://89.104.114.2:8080/nashe/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",o2 tv HD
+http://89.104.114.2:8080/o2_tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Plan B HD
+http://89.104.114.2:8080/planb/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Радость моя
+http://89.104.114.2:8080/radost-moya/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Ратник HD
+http://89.104.114.2:8080/ratnik_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",RT Doc
+http://89.104.114.2:8080/rt-doc/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",RT HD
+http://89.104.114.2:8080/rt_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",360
+http://89.104.114.2:8080/rubl/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Shot tv
+http://89.104.114.2:8080/shot_tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Союз
+http://89.104.114.2:8080/soyuz/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Спас
+http://89.104.114.2:8080/spas/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Start Air
+http://89.104.114.2:8080/start_air/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",START WORLD
+http://89.104.114.2:8080/start_world/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Театр
+http://89.104.114.2:8080/strk_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Тонус ТВ
+http://89.104.114.2:8080/tonus/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Top Shop
+http://89.104.114.2:8080/topshop/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",luxury
+http://89.104.114.2:8080/luxury/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТВЦ
+http://89.104.114.2:8080/tv-centr/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Усадьба
+http://89.104.114.2:8080/usadba/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Успех
+http://89.104.114.2:8080/uspeh/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Ю
+http://89.104.114.2:8080/utv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Зоо ТВ
+http://89.104.114.2:8080/zoo_tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Звезда
+http://89.104.114.2:8080/zvezda/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Звезда плюс
+http://89.104.114.2:8080/zvezda_plus_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Gags Network
+http://89.104.114.2:8080/raz-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",РБК
+http://89.104.114.2:8080/rbc/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Индия
+http://89.104.114.2:8080/zee-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Рыжий
+http://89.104.114.2:8080/ryzhiy/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мультиландия
+http://89.104.114.2:8080/multimania/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Супергерои
+http://89.104.114.2:8080/malish/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мама
+http://89.104.114.2:8080/mama/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мульт HD
+http://89.104.114.2:8080/thlum_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мульт
+http://89.104.114.2:8080/mult/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Карусель
+http://89.104.114.2:8080/karusel/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Уникум
+http://89.104.114.2:8080/detskiy/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Ani
+http://89.104.114.2:8080/ani/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Солнце
+http://89.104.114.2:8080/disney/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Сарафан
+http://89.104.114.2:8080/sarafan/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Мультимузыка
+http://89.104.114.2:8080/strana/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",СТС Kids
+http://89.104.114.2:8080/sts_kids/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",RU.TV
+http://89.104.114.2:8080/ru-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",1HD
+http://89.104.114.2:8080/1hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Mezzo Live HD
+http://89.104.114.2:8080/mezzo_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",ТНТ Music
+http://89.104.114.2:8080/tnt_music/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Music Box Russia
+http://89.104.114.2:8080/music-box-ru/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bridge TV Classic
+http://89.104.114.2:8080/topsong/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bridge TV
+http://89.104.114.2:8080/bridge-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bridge TV Hits
+http://89.104.114.2:8080/dange/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bridge TV Русский Хит
+http://89.104.114.2:8080/rusong/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Bridge HD
+http://89.104.114.2:8080/bridge_hd/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Europa Plus TV HD
+http://89.104.114.2:8080/europa-plus-tv/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",Ля-минор
+http://89.104.114.2:8080/la-minor/index.m3u8
+#EXTINF:-1 group-title="MEDIAOPERATOR-AS",AIVA HD
+http://89.104.114.2:8080/aiva_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Арена
+http://89.104.114.2:8080/arena/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Арена HD
+http://89.104.114.2:8080/arena_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Футбол
+http://89.104.114.2:8080/football/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Футбол 1 HD
+http://89.104.114.2:8080/football1_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Футбол 2 HD
+http://89.104.114.2:8080/football2_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Футбол 3 HD
+http://89.104.114.2:8080/football3_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",КХЛ ТВ
+http://89.104.114.2:8080/khl/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",KHL HD
+http://89.104.114.2:8080/khl_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч ТВ
+http://89.104.114.2:8080/match/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч ТВ HD
+http://89.104.114.2:8080/match_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Страна
+http://89.104.114.2:8080/sport_plus/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Игра HD
+http://89.104.114.2:8080/match_igra_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Игра
+http://89.104.114.2:8080/match-igra/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч Премьер HD
+http://89.104.114.2:8080/nash_football_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч Премьер
+http://89.104.114.2:8080/nash-football/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Старт
+http://89.104.114.2:8080/start_hd/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Бокс ТВ HD
+http://89.104.114.2:8080/boks-tv/index.m3u8
+
+
+
+
+
+#EXTINF:-1 group-title="Airmax LLC",ТНТ
+http://live2.tvg.ge:8082/tv/TNT4_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ТНТ4
+http://live2.tvg.ge:8082/tv/TNTCOMEDY_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",НТВ-МИР
+http://live2.tvg.ge:8082/tv/ntvmir_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",РЕН ТВ
+http://live2.tvg.ge:8082/tv/rentv_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",РОССИЯ К
+http://live2.tvg.ge:8082/tv/ROSSIYAK_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",24 Техно
+http://live2.tvg.ge:8082/tv/t24_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДИКИЙ
+http://live2.tvg.ge:8082/tv/Dikiy_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ИСТОРИЯ
+http://live2.tvg.ge:8082/tv/istoria_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",НАУКА
+http://live2.tvg.ge:8082/tv/nauka_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ОХОТА И РЫБАЛКА
+http://live2.tvg.ge:8082/tv/OHOTAIRIBALKA_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TRAVEL CHANNEL
+http://live2.tvg.ge:8082/tv/TRAVELCHANNEL_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TRAVEL CHANNEL HD
+http://live2.tvg.ge:8082/tv/TRAVELCHANNEL_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",VIASAT Explore
+http://live2.tvg.ge:8082/tv/VIASATEXP_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",VIASAT History
+http://live2.tvg.ge:8082/tv/VIASATHISTORY_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",VIASAT Nature
+http://live2.tvg.ge:8082/tv/VIASATNATURE_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ОРУЖИЕ
+http://live2.tvg.ge:8082/tv/ORUJIE_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Hollywood
+http://live2.tvg.ge:8082/tv/HOLLYWOOD_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Hollywood HD
+http://live2.tvg.ge:8082/tv/HOLLYWOOD_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV XXI
+http://live2.tvg.ge:8082/tv/TV21_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",МИР СЕРИАЛА
+http://live2.tvg.ge:8082/tv/mirseriala_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ЛЮБИМОЕ КИНО
+http://live2.tvg.ge:8082/tv/lubimoekino_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Еврокино
+http://live2.tvg.ge:8082/tv/EVROKINO_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДОМ КИНО
+http://live2.tvg.ge:8082/tv/DOMKINO_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДОМ КИНО ПРЕМИУМ
+http://live2.tvg.ge:8082/tv/DOMKINOPREMIUM_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Cinema
+http://live2.tvg.ge:8082/tv/cinema_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Amedia 1
+http://live2.tvg.ge:8082/tv/AMEDIA1_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Amedia 1
+http://live2.tvg.ge:8082/tv/AMEDIA2_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Amedia 2 HD
+http://live2.tvg.ge:8082/tv/AMEDIA2_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Amedia Hit
+http://live2.tvg.ge:8082/tv/AMEDIAHIT_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Amedia Hit HD
+http://live2.tvg.ge:8082/tv/AMEDIAHIT_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000
+http://live2.tvg.ge:8082/tv/TV1000_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000 HD
+http://live2.tvg.ge:8082/tv/TV1000_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000 ACTION
+http://live2.tvg.ge:8082/tv/TV1000ACTION_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000 ACTION HD
+http://live2.tvg.ge:8082/tv/TV1000ACTION_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000 Русское кино
+http://live2.tvg.ge:8082/tv/TV1000RU_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",TV1000 Русское кино HD
+http://live2.tvg.ge:8082/tv/TV1000RU_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ВРЕМЯ
+http://live2.tvg.ge:8082/tv/vremia_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Filmbox Arthouse
+http://live2.tvg.ge:8082/tv/FILMBOX_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ПЕРЕЦ
+http://live2.tvg.ge:8082/tv/PEREC_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",САРАФАН
+http://live2.tvg.ge:8082/tv/SARAFAN_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",АВТО 24
+http://live2.tvg.ge:8082/tv/AVTO24_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",АРСЕНАЛ
+http://live2.tvg.ge:8082/tv/ARSENAL_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",АРСЕНАЛ HD
+http://live2.tvg.ge:8082/tv/ARSENAL_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДРАЙВ
+http://live2.tvg.ge:8082/tv/drive_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",УСАДЬБА
+http://live2.tvg.ge:8082/tv/USADBA_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ВОПРОСЫ И ОТВЕТЫ
+http://live2.tvg.ge:8082/tv/VOPROSYOTVETY_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ЗООПАРК
+http://live2.tvg.ge:8082/tv/ZOOPARK_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ТЕЛЕКАФЕ
+http://live2.tvg.ge:8082/tv/telekafe_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Food Network
+http://live2.tvg.ge:8082/tv/foodnetwork_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",RTVI
+http://live2.tvg.ge:8082/tv/RTVI_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",СТС
+http://live2.tvg.ge:8082/tv/CTC_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",СТС HD
+http://live2.tvg.ge:8082/tv/CTC_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",МИР
+http://live2.tvg.ge:8082/tv/MIR_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",МИР 24
+http://live2.tvg.ge:8082/tv/Mir24_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДОМАШНИЙ
+http://live2.tvg.ge:8082/tv/DOMASHNI_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",CBC
+http://live2.tvg.ge:8082/tv/CBC_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",1 TV GE
+http://live2.tvg.ge:8082/tv/1TV_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",1 TV GE HD
+http://live2.tvg.ge:8082/tv/1TV_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",1 GASARTOBI
+http://live2.tvg.ge:8082/tv/1GASARTOBI_SD-abr/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ENKIBENKI
+http://live2.tvg.ge:8082/tv/ENKIBENKI_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Agrotv HD GE
+http://live2.tvg.ge:8082/tv/agrotv_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",AzTV
+http://live2.tvg.ge:8082/tv/AzTV_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",COMEDY ГРУЗИЯ
+http://live2.tvg.ge:8082/tv/COMEDY_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Formula
+http://live2.tvg.ge:8082/tv/formula_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Formula HD
+http://live2.tvg.ge:8082/tv/formula_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Ictimai TV
+http://live2.tvg.ge:8082/tv/Ictimai_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ICTV
+http://live2.tvg.ge:8082/tv/ICTV_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ICTV HD
+http://live2.tvg.ge:8082/tv/ICTV_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Інтер HD
+http://live2.tvg.ge:8082/tv/INTER_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",MAESTRO
+http://live2.tvg.ge:8082/tv/MAESTRO_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Greentv
+http://live2.tvg.ge:8082/tv/greentv_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",tvmonitoring
+http://live2.tvg.ge:8082/tv/tvmonitoring_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",English Club
+http://live2.tvg.ge:8082/tv/englishclub_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",КАРУСЕЛЬ
+http://live2.tvg.ge:8082/tv/KARUSEL_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",БОБЕР
+http://live2.tvg.ge:8082/tv/BOBER_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",МАМА
+http://live2.tvg.ge:8082/tv/Mama_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",DA VINCI
+http://live2.tvg.ge:8082/tv/DAVINCI_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ДЕТСКИЙ МИР
+http://live2.tvg.ge:8082/tv/detskimir_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",О!
+http://live2.tvg.ge:8082/tv/O_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",МУЛЬТ
+http://live2.tvg.ge:8082/tv/mult_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ТНТ Music
+http://live2.tvg.ge:8082/tv/tntmusic_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",M1
+http://live2.tvg.ge:8082/tv/M1_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",M1 HD
+http://live2.tvg.ge:8082/tv/M1_HD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",M2 HD
+http://live2.tvg.ge:8082/tv/M2_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",ШАНСОН ТВ
+http://live2.tvg.ge:8082/tv/shanson_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",RU.TV
+http://live2.tvg.ge:8082/tv/RUTV_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Russian Music Box
+http://live2.tvg.ge:8082/tv/musicboxru_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",Setanta Sports 2 GE
+http://live2.tvg.ge:8082/tv/setanta2_SD/playlist.m3u8
+#EXTINF:-1 group-title="Airmax LLC",VIASAT Sport
+http://live2.tvg.ge:8082/tv/VIASATSPORT_SD/playlist.m3u8
+
+
+
+
+
 #EXTINF:-1 group-title="Евразия-Стар",Россия К
 http://87.76.32.36:8001/rossiak
 #EXTINF:-1 group-title="Евразия-Стар",НТВ-Мир
@@ -379,6 +983,7 @@ http://87.76.32.36:8001/eurosport1hd
 http://87.76.32.36:8001/matchplaneta
 #EXTINF:-1 group-title="Спорткомплекс 🏆",Бокс ТВ
 http://87.76.32.36:8001/bokstv
+
 
 
 
@@ -1767,6 +2372,507 @@ https://simf.1tvcrimea.ru/simferopol24.m3u8
 https://qazaqstantv-stream.qazcdn.com/qazaqstantv/qazaqstantv/qazaqstantv/qazaqstantv_720/chunks.m3u8
 #EXTINF:-1 group-title="С сайтов (VPN)" tvg-logo="https://www.samru.ru/content/Image/News/logo/gis_logo1.jpg",Телеканал ГИС Самара
 https://tvsamaragis.tk/new/new/tracks-v1a1/mono.m3u8
+
+
+
+#EXTINF:-1 group-title="ОБИТ (VPN)",Первый канал HD
+http://178.16.151.67/ort_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Первый канал
+http://178.16.151.67/ort/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Рен тв
+http://178.16.151.67/ren-tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",НТВ
+http://178.16.151.67/ntv_fed/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ТНТ
+http://178.16.151.67/tnt/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ТНТ HD
+http://178.16.151.67/tnt_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ТНТ4
+http://178.16.151.67/tnt-4/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русский экстрим
+http://178.16.151.67/rus-extrim/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Охотник и рыболов
+http://178.16.151.67/ohotnik/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Живая Планета
+http://178.16.151.67/zhivaya-planeta/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Техно 24
+http://178.16.151.67/t24/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Открытый Мир
+http://178.16.151.67/otkr_mir/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Тайна
+http://178.16.151.67/taina/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Нано ТВ
+http://178.16.151.67/nano-tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Киносерия HD
+http://178.16.151.67/mnogo-tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",НСТ
+http://178.16.151.67/nstv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русская Комедия
+http://178.16.151.67/comedy/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Индия
+http://178.16.151.67/indiya/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Сinema
+http://178.16.151.67/cinema_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Киносат
+http://178.16.151.67/kinosat/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Shot TV HD
+http://178.16.151.67/shot_tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Победа
+http://178.16.151.67/pobeda/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Fan HD
+http://178.16.151.67/fan/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русский Бестселлер
+http://178.16.151.67/rus-bestseller/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русский Роман
+http://178.16.151.67/rus-roman/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русский Роман HD
+http://178.16.151.67/russki_roman_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Русский Детектив
+http://178.16.151.67/rus-detective/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Plan B
+http://178.16.151.67/planb/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Start World HD
+http://178.16.151.67/start_world/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Start Air HD
+http://178.16.151.67/start_air/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",КinoJam 1 HD
+http://178.16.151.67/kinojam1/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",КinoJam 2 HD
+http://178.16.151.67/kinojam2/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Суббота
+http://178.16.151.67/super/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",КВН ТВ
+http://178.16.151.67/kvn_tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",9 Волна
+http://178.16.151.67/9-volna/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Жара тв
+http://178.16.151.67/jara/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Ностальгия
+http://178.16.151.67/nostalgia/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Авто плюс
+http://178.16.151.67/avto-plus/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Звезда+
+http://178.16.151.67/zvezda_plus_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Калейдоскоп ТВ
+http://178.16.151.67/kaleydoskop/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Кухня ТВ
+http://178.16.151.67/kuhnya/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",78 канал
+http://178.16.151.67/life78/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Красная Линия
+http://178.16.151.67/krasnaya_lin/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Доктор HD
+http://178.16.151.67/doctor/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Три Ангела
+http://178.16.151.67/tri_angela/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Точка тв
+http://178.16.151.67/tochka/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Живи HD
+http://178.16.151.67/jivi/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Кто Есть Кто
+http://178.16.151.67/kto-est-kto/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Top Secret
+http://178.16.151.67/dom-magazin/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",360 Новости
+http://178.16.151.67/rubl/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Поехали!
+http://178.16.151.67/Poehali/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Наше
+http://178.16.151.67/nashe/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",2x2
+http://178.16.151.67/2x2/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",РБК
+http://178.16.151.67:80/rbc_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",СТС Love
+http://178.16.151.67/sts-love/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ЧЕ
+http://178.16.151.67/che/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Ю
+http://178.16.151.67/u-tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ТВ3
+http://178.16.151.67/tv3/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ТВ3 HD
+http://178.16.151.67/tv3_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Союз
+http://178.16.151.67/soyuz/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Пятница
+http://178.16.151.67:80/pyatniza/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Пятница HD
+http://178.16.151.67/pyatnica_hd/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Домашний
+http://178.16.151.67/domashniy/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Мир
+http://178.16.151.67/mir/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Мультимания
+http://178.16.151.67/multimania/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",ANI
+http://178.16.151.67/ani/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Уникум
+http://178.16.151.67/detskiy/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Карусель
+http://178.16.151.67/karusel/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Солнце
+http://178.16.151.67/disney/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Карусель
+http://178.16.151.67/karusel/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Ля-Минор
+http://178.16.151.67/la-minor/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Европа Плюс ТВ
+http://178.16.151.67/europa-plus-tv/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Bridge TV Classic
+http://178.16.151.67/topsong/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Bridge TV Hits
+http://178.16.151.67/dange/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Bridge TV Русский Хит
+http://178.16.151.67/rusong/index.m3u8
+#EXTINF:-1 group-title="ОБИТ (VPN)",Russian music box
+http://178.16.151.67/music-box-ru/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",KHL 
+http://178.16.151.67/khl/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",KHL HD
+http://178.16.151.67/khl/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Боец
+http://178.16.151.67/boec/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Игра
+http://178.16.151.67/match-igra/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч Премьер
+http://178.16.151.67/nash-football/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Футбол HD
+http://178.16.151.67/football/index.m3u8
+
+
+
+
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Первый канал HD
+http://91.207.115.228:5000/c99
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Россия 1 HD
+http://91.207.115.228:5000/c100
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",ТНТ4
+http://91.207.115.228:5000/c142
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",ТНТ HD
+http://91.207.115.228:5000/c157
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Моя планета 
+http://91.207.115.228:5000/c82
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Телепутешествия
+http://91.207.115.228:5000/c93
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Big Planet
+http://91.207.115.228:5000/c94
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju Explore
+http://91.207.115.228:5000/c95
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju History
+http://91.207.115.228:5000/c96
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju Nature
+http://91.207.115.228:5000/c97
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Дикий
+http://91.207.115.228:5000/c98
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Охота и Рыбалка
+http://91.207.115.228:5000/c109
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Discovery Channel HD
+http://91.207.115.228:5000/c146
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Animal Planet HD
+http://91.207.115.228:5000/c147
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Investigation Discovery HD
+http://91.207.115.228:5000/c150
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",HD Life
+http://91.207.115.228:5000/c158
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",История
+http://91.207.115.228:5000/c85
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Домашние Животные
+http://91.207.115.228:5000/c159
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Охота и Рыбалка
+http://91.207.115.228:5000/c173
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Наука
+http://91.207.115.228:5000/c83
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",За!ТВ
+http://91.207.115.228:5000/c22
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кинопоказ
+http://91.207.115.228:5000/c28
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)", Мосфильм. Золотая Коллекция
+http://91.207.115.228:5000/c29
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Дом кино
+http://91.207.115.228:5000/c30
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Русский Роман
+http://91.207.115.228:5000/c32
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кино ТВ
+http://91.207.115.228:5000/c33
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Русский Бестселлер
+http://91.207.115.228:5000/c34
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Русский Детектив
+http://91.207.115.228:5000/c35
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",365 Дней ТВ
+http://91.207.115.228:5000/c36
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",.Black
+http://91.207.115.228:5000/c79
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кинохит
+http://91.207.115.228:5000/c38
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Родное Кино
+http://91.207.115.228:5000/c31
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Киносемья
+http://91.207.115.228:5000/c39
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Мужское Кино
+http://91.207.115.228:5000/c40
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Наше новое кино
+http://91.207.115.228:5000/c41
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",КИНОПРЕМЬЕРА HD
+http://91.207.115.228:5000/c42
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Киноужас
+http://91.207.115.228:5000/c43
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Киносвидание
+http://91.207.115.228:5000/c44
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",КИНОСВИДАНИЕ
+http://91.207.115.228:5000/c45
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кинокомедия
+http://91.207.115.228:5000/c46
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Индийское Кино
+http://91.207.115.228:5000/c47
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju TV1000
+http://91.207.115.228:5000/c48
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju TV1000 action
+http://91.207.115.228:5000/c49
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju TV1000 русское
+http://91.207.115.228:5000/c37
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Ю
+http://91.207.115.228:5000/c50
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",СТС Love
+http://91.207.115.228:5000/c51
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Суббота!
+http://91.207.115.228:5000/c52
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Время
+http://91.207.115.228:5000/c53
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Ностальгия
+http://91.207.115.228:5000/c54
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Amedia 1
+http://91.207.115.228:5000/c55
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Amedia 2
+http://91.207.115.228:5000/c56
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",AMEDIA HIT
+http://91.207.115.228:5000/c57
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Amedia Premium HD
+http://91.207.115.228:5000/c58
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Hollywood HD
+http://91.207.115.228:5000/c59
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",FlixSnip
+http://91.207.115.228:5000/c60
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Kinoliving
+http://91.207.115.228:5000/c61
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кухня ТВ
+http://91.207.115.228:5000/c74
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Сарафан
+http://91.207.115.228:5000/c75
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",КВН ТВ
+http://91.207.115.228:5000/c76
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",.Sci-Fi
+http://91.207.115.228:5000/c77
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",.Red
+http://91.207.115.228:5000/c78
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Телекафе
+http://91.207.115.228:5000/c84
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Сапфир HD
+http://91.207.115.228:5000/c90
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Зоо ТВ
+http://91.207.115.228:5000/c91
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Здоровое ТВ
+http://91.207.115.228:5000/c92
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Авто плюс
+http://91.207.115.228:5000/c110
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Таврия Херсон
+http://91.207.115.228:5000/c23
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Соловьев Live HD
+http://91.207.115.228:5000/c27
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Жара
+http://91.207.115.228:5000/c126
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Известия
+http://91.207.115.228:5000/c128
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",360 Новости
+http://91.207.115.228:5000/c129
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",RT DOC
+http://91.207.115.228:5000/c130
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",SHOT TV
+http://91.207.115.228:5000/c131
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Звезда Плюс
+http://91.207.115.228:5000/c132
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Кто Есть Кто
+http://91.207.115.228:5000/c133
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",РБК
+http://91.207.115.228:5000/c134
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",МИР-24
+http://91.207.115.228:5000/c135
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Телеканал 360
+http://91.207.115.228:5000/c136
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Вместе-РФ
+http://91.207.115.228:5000/c137
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Союз
+http://91.207.115.228:5000/c138
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Большая Азия
+http://91.207.115.228:5000/c140
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Беларусь 24
+http://91.207.115.228:5000/c141
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju+ Comedy HD
+http://91.207.115.228:5000/c143
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju+ Megahit HD
+http://91.207.115.228:5000/c144
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",viju+ Premiere HD
+http://91.207.115.228:5000/c145
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",TLC HD
+http://91.207.115.228:5000/c151
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Еврокино
+http://91.207.115.228:5000/c160
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Комедия
+http://91.207.115.228:5000/c168
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",НСТ
+http://91.207.115.228:5000/c169
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Иллюзион+
+http://91.207.115.228:5000/c170
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Cinema
+http://91.207.115.228:5000/c172
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Ретро
+http://91.207.115.228:5000/c174
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Психология 21
+http://91.207.115.228:5000/c175
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Усадьба
+http://91.207.115.228:5000/c176
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Зоо ТВ
+http://91.207.115.228:5000/c177
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Вопросы и ответы
+http://91.207.115.228:5000/c178
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Здоровое ТВ
+http://91.207.115.228:5000/c179
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",2X2
+http://91.207.115.228:5000/c180
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Авто 24
+http://91.207.115.228:5000/c181
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Драйв
+http://91.207.115.228:5000/c182
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Точка отрыва 
+http://91.207.115.228:5000/c183
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Победа
+http://91.207.115.228:5000/c184
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Дорама
+http://91.207.115.228:5000/c185
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Bridge TV
+http://91.207.115.228:5000/c117
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Bridge TV Русский ХИТ
+http://91.207.115.228:5000/c118
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Europa Plus TV
+http://91.207.115.228:5000/c119
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Bridge Hits
+http://91.207.115.228:5000/c120
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",ТНТ Music
+http://91.207.115.228:5000/c121
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",RU.TV
+http://91.207.115.228:5000/c122
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Ля-Минор
+http://91.207.115.228:5000/c127
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Музыка Первого
+http://91.207.115.228:5000/c123
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Mezzo
+http://91.207.115.228:5000/c124
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Mezzo Live HD
+http://91.207.115.228:5000/c125
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Солнце
+http://91.207.115.228:5000/c167
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Рыжий
+http://91.207.115.228:5000/c62
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Мульт
+http://91.207.115.228:5000/c63
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Ani
+http://91.207.115.228:5000/c64
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Уникум
+http://91.207.115.228:5000/c65
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Мультимузыка
+http://91.207.115.228:5000/c66
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Мультиландия
+http://91.207.115.228:5000/c67
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",О!
+http://91.207.115.228:5000/c68
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",СТС Kids HD
+http://91.207.115.228:5000/c69
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Мама
+http://91.207.115.228:5000/c70
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",СуперГерои
+http://91.207.115.228:5000/c71
+#EXTINF:-1 group-title="ДВ-Ком_2 (VPN)",Da Vinci
+http://91.207.115.228:5000/c72
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! HD
+http://91.207.115.228:5000/c101
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Футбол
+http://91.207.115.228:5000/c102
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Планета
+http://91.207.115.228:5000/c156
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! АРЕНА HD
+http://91.207.115.228:5000/c103
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! ИГРА HD
+http://91.207.115.228:5000/c104
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ ПРЕМЬЕР
+http://91.207.115.228:5000/c105
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! СТРАНА HD
+http://91.207.115.228:5000/c106
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! БОЕЦ
+http://91.207.115.228:5000/c107
+#EXTINF:-1 group-title="Спорткомплекс 🏆",KHL
+http://91.207.115.228:5000/c108
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Extreme Sports
+http://91.207.115.228:5000/c112
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! ФУТБОЛ 1 HD
+http://91.207.115.228:5000/c114
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! ФУТБОЛ 2 HD
+http://91.207.115.228:5000/c115
+#EXTINF:-1 group-title="Спорткомплекс 🏆",МАТЧ! ФУТБОЛ 3 HD
+http://91.207.115.228:5000/c116
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Eurosport 1 HD
+http://91.207.115.228:5000/c153
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Eurosport 2 HD
+http://91.207.115.228:5000/c154
+#EXTINF:-1 group-title="Спорткомплекс 🏆",viju+ Sport
+http://91.207.115.228:5000/c113
+
+
+
+
+
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Россия 24
+http://85.192.10.131/hls/ortrum9/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",РЕН ТВ
+http://85.192.10.131/hls/rentv/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Россия К
+http://85.192.10.131/hls/kultura/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Россия 1
+http://85.192.10.131/hls/RossijaM9/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",ТНТ
+http://85.192.10.131/hls/tnt/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",НТВ
+http://85.192.10.131/hls/NtvRuM9/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Пятый канал
+http://85.192.10.131/hls/5kanal/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Кино 24
+http://85.192.10.131/hls/Kino24Ru/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",ОТР
+http://85.192.10.131/hls/OTR/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Пятница
+http://85.192.10.131/hls/pjatnica/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)" tvg-id="pro100", Про100 ТВ
+http://85.192.10.131/hls/Pro100tvRu/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",ТВ3
+http://85.192.10.131/hls/tv3/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",ТВЦ
+http://85.192.10.131/hls/TvciRu/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Звезда
+http://85.192.10.131/hls/zvezda/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN) "tvg-id="mamonttv", Мамонтёнок
+http://85.192.10.131/hls/MamonRu/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Мультимания
+http://85.192.10.131/hls/MultimaniaRu/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Карусель
+http://85.192.10.131/hls/Karusel/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",Пингвин Лоло
+http://85.192.10.131/hls/pingvinru/playlist.m3u8
+#EXTINF:-1 group-title="Диджитал Нетворк (VPN)",МАТЧ ТВ
+http://85.192.10.131/hls/matchtvrum9/playlist.m3u8
+
+
+
+
+
 
 
 
