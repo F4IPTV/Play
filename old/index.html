@@ -1133,17 +1133,8 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:26px;"><br>Очистить кеш
           </button>
-          <button onclick="ignoreNextEnter=true;handleAdbRootDiag(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB диагноз (root)
-          </button>
           <button onclick="ignoreNextEnter=true;handleAdbTcpToggle(true,this)" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic15_connect.webp" alt="" style="height:22px;"><br>ADB TCP 5555 (root)
-          </button>
-          <button onclick="ignoreNextEnter=true;handleAdbTcpToggle(false,this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic16_back.webp" alt="" style="height:22px;"><br>TCP выкл (root)
-          </button>
-          <button onclick="ignoreNextEnter=true;handleAdbdRestart(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:24px;"><br>Перезапуск adbd
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
@@ -1538,6 +1529,20 @@ let lastAdbIndicatorConnected = false;
 let autostartReturnModal = null;
 let autostartOpener = null;
 
+const ADB_ROOT_LOG_ID = 'adbRootDiagOutput';
+
+function setAdbRootLog(text) {
+  const box = document.getElementById(ADB_ROOT_LOG_ID);
+  if (!box) return;
+  if (text && text.length) {
+    box.style.display = 'block';
+    box.textContent = text;
+  } else {
+    box.textContent = '';
+    box.style.display = 'none';
+  }
+}
+
     document.getElementById('passwordBtn').addEventListener('click', () => {
       const ai = window.AndroidInterface;
       if (ai?.requestPasswordPrefill) { ai.requestPasswordPrefill(savedPassword || ""); return; }
@@ -1625,49 +1630,6 @@ function escapeHtml(value) {
 
 window.updateStorageUsage = updateStorageUsage;
 
-const ADB_ROOT_LOG_ID = 'adbRootDiagOutput';
-
-function setAdbRootLog(text) {
-  const box = document.getElementById(ADB_ROOT_LOG_ID);
-  if (!box) return;
-  if (text && text.length) {
-    box.style.display = 'block';
-    box.textContent = text;
-  } else {
-    box.textContent = '';
-    box.style.display = 'none';
-  }
-}
-
-function handleAdbRootDiag(triggerBtn) {
-  const available = window.AndroidInterface?.adbRootDiag;
-  if (!available) {
-    showToast({ message: "❌ Диагностика недоступна в этой сборке", type: "error" });
-    return;
-  }
-  setAdbRootLog('⏳ Диагностика ADB (root)…');
-  let raw = '';
-  try {
-    raw = window.AndroidInterface.adbRootDiag() || '';
-  } catch (e) {
-    showToast({ message: "❌ Ошибка вызова adbRootDiag()", type: "error" });
-    setAdbRootLog(`Ошибка: ${e?.message || e}`);
-    return;
-  }
-  let data = null;
-  try { data = JSON.parse(raw); } catch (_) {}
-  const ok = data?.ok === true;
-  const output = (data?.output || raw || '').trim();
-  setAdbRootLog(output || 'Нет вывода');
-  if (ok) {
-    showToast({ message: "✅ Диагностика ADB выполнена", type: "success" });
-  } else if (data?.error === "root_required") {
-    showToast({ message: "❌ Нужен root (su) для диагностики", type: "error" });
-  } else {
-    showToast({ message: "⚠️ Не удалось выполнить диагностику ADB", type: "warning" });
-  }
-}
-
 function handleAdbTcpToggle(enable, triggerBtn) {
   const method = enable ? 'enableAdbTcp5555' : 'disableAdbTcp';
   const available = window.AndroidInterface?.[method];
@@ -1696,39 +1658,6 @@ function handleAdbTcpToggle(enable, triggerBtn) {
   setAdbRootLog(output || 'Нет вывода');
   if (ok) {
     showToast({ message: enable ? "✅ ADB по сети 5555 включён" : "✅ ADB по сети отключён", type: "success" });
-  } else {
-    const reason = data?.error === "root_required" ? "Нужен root (su)" : (output || "неизвестная ошибка");
-    showToast({ message: `❌ ${reason}`, type: "error" });
-  }
-}
-
-function handleAdbdRestart(triggerBtn) {
-  const available = window.AndroidInterface?.restartAdbdRoot;
-  if (!available) {
-    showToast({ message: "❌ Перезапуск adbd недоступен", type: "error" });
-    return;
-  }
-  if (window.AndroidInterface?.hasRootAccess && !window.AndroidInterface.hasRootAccess()) {
-    showToast({ message: "❌ Нужен root (su)", type: "error" });
-    setAdbRootLog("Нужен root (su) для этой операции");
-    return;
-  }
-  setAdbRootLog('⏳ Перезапуск adbd…');
-  let raw = '';
-  try {
-    raw = window.AndroidInterface.restartAdbdRoot() || '';
-  } catch (e) {
-    showToast({ message: "❌ Ошибка вызова restartAdbdRoot()", type: "error" });
-    setAdbRootLog(`Ошибка: ${e?.message || e}`);
-    return;
-  }
-  let data = null;
-  try { data = JSON.parse(raw); } catch (_) {}
-  const ok = data?.ok === true;
-  const output = (data?.output || raw || '').trim();
-  setAdbRootLog(output || 'Нет вывода');
-  if (ok) {
-    showToast({ message: "✅ adbd перезапущен", type: "success" });
   } else {
     const reason = data?.error === "root_required" ? "Нужен root (su)" : (output || "неизвестная ошибка");
     showToast({ message: `❌ ${reason}`, type: "error" });
