@@ -1410,8 +1410,8 @@
       },
       {
         id: 1018,
-        command: "su -c 'while [ \"$(getprop sys.boot_completed)\" != \"1\" ]; do sleep 1; done; [ -e /sys/class/gpio/gpio474/direction ] || echo 474 > /sys/class/gpio/export 2>/dev/null; [ -e /sys/class/gpio/gpio474/direction ] && echo -n out > /sys/class/gpio/gpio474/direction'",
-        description: "ATV 14: выставляет GPIO 474 в out после загрузки, если такой GPIO есть.",
+        command: "su -c 'while [ \"$(getprop sys.boot_completed)\" != \"1\" ]; do sleep 1; done; GPIO=474; BASE=/sys/class/gpio/gpio$GPIO; [ -e \"$BASE/direction\" ] || echo $GPIO > /sys/class/gpio/export 2>/dev/null; if [ -e \"$BASE/direction\" ]; then echo out > \"$BASE/direction\" 2>/dev/null; fi'",
+        description: "ATV 14: аккуратно ставит GPIO 474 в out после загрузки, если GPIO доступен.",
         label: "USB fix (ATV14)",
         icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
         isEnabled: true,
