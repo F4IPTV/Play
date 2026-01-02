@@ -1567,7 +1567,7 @@ let lastScreenSaverTrigger = null;
 let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
-let screenSaverAllowedOptions = null;
+let screenSaverAllowedOptions = null; // минуты (может быть дробное)
 let currentScreenSaverComponent = null;
 let storageUsageLabel = '';
 let lastAdbIndicatorText = '';
@@ -3682,7 +3682,6 @@ function applyAccessibilityServices() {
           screenSaverAllowedOptions = parsed
             .map((v) => Number(v))
             .filter((v) => Number.isFinite(v) && v > 0)
-            .map((v) => Math.round(v))
             .filter((v, i, arr) => arr.indexOf(v) === i)
             .sort((a, b) => a - b);
         }
@@ -3737,6 +3736,10 @@ function applyAccessibilityServices() {
 
     function formatMinutesLabel(minutes) {
       if (!Number.isFinite(minutes) || minutes <= 0) return '—';
+      if (minutes < 1) {
+        const secs = Math.round(minutes * 60);
+        return `${secs} сек.`;
+      }
       return `${minutes} мин`;
     }
 
@@ -3799,7 +3802,7 @@ function applyAccessibilityServices() {
         ? screenSaverAllowedOptions[0]
         : null;
       const fallback = fallbackAllowed ?? (SCREEN_SAVER_TIMEOUT_DEFAULTS[type] ?? SCREEN_SAVER_TIMEOUT_DEFAULTS.screen);
-      let minutes = parseInt(value, 10);
+      let minutes = parseFloat(value);
       if (!Number.isFinite(minutes) || minutes <= 0) {
         minutes = fallback;
       }
@@ -3808,15 +3811,12 @@ function applyAccessibilityServices() {
 
     function clampScreenSaverMinutes(value) {
       if (Array.isArray(screenSaverAllowedOptions) && screenSaverAllowedOptions.length) {
-        let nearest = screenSaverAllowedOptions[0];
         const target = Number(value);
-        for (const opt of screenSaverAllowedOptions) {
-          if (!Number.isFinite(opt)) continue;
-          if (Math.abs(opt - target) < Math.abs(nearest - target)) {
-            nearest = opt;
-          }
-        }
-        return nearest;
+        if (!Number.isFinite(target)) return screenSaverAllowedOptions[0];
+        return screenSaverAllowedOptions.reduce((nearest, opt) => {
+          if (!Number.isFinite(opt)) return nearest;
+          return Math.abs(opt - target) < Math.abs(nearest - target) ? opt : nearest;
+        }, screenSaverAllowedOptions[0]);
       }
       return Math.min(SCREEN_SAVER_TIMEOUT_LIMITS.max, Math.max(SCREEN_SAVER_TIMEOUT_LIMITS.min, value));
     }
@@ -3834,7 +3834,7 @@ function applyAccessibilityServices() {
       }
       const input = document.getElementById('screenSaverTimeoutInput');
       if (!input) return;
-      let minutes = parseInt(input.value, 10);
+      let minutes = parseFloat(input.value);
       if (!Number.isFinite(minutes)) {
         showToast({ message: 'Введите значение в минутах', type: 'warning' });
         input.focus({ preventScroll: true });
