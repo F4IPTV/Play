@@ -1419,8 +1419,8 @@
       },
       {
         id: 1019,
-        command: "sh -c 'msg=\"$(dumpsys hardware_properties | awk -F\"[\\\\]\\\\[]\" \"/CPU temperatures:/ {print $1 substr($2,1,4)\\\"°C\\\"}\")\"; msg1=\"$(dumpsys meminfo | awk \"/Free RAM:/ {print $1 \\$2 substr(\\$3,1,5)\\\"Kb\\\"}\")\"; am start -a android.intent.action.MAIN -e message \"${msg} ${msg1}\" -n com.rja.utility/.ShowToast'",
-        description: "Показать тост (~4с) с температурой CPU и свободной RAM.",
+        command: "sh -c 'temp=$(dumpsys hardware_properties 2>/dev/null | grep -m1 \"CPU temperatures\" | sed \"s/.*\\[//;s/\\].*//\" | cut -d, -f1 | xargs); ram=$(dumpsys meminfo 2>/dev/null | awk \"/Free RAM:/ {print \\$3}\" | head -n1); msg=\"CPU: ${temp}°C  FreeRAM: ${ram}\"; am start -a android.intent.action.MAIN -e message \"$msg\" -n com.rja.utility/.ShowToast'",
+        description: "Показать тост (~4с) с температурой CPU и свободной RAM (надёжный парсинг).",
         label: "Тост: температура и RAM",
         icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
         isEnabled: true,
