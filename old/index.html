@@ -1419,8 +1419,8 @@
       },
       {
         id: 1019,
-        command: "sh -c 'temp=$(dumpsys thermalservice 2>/dev/null | grep -m1 \"Current temperatures from HAL:\" -A3 | grep -m1 -E \"Temperature\\{mValue=\" | sed -E \"s/.*mValue=([0-9.+-]+).*/\\1/\"); [ -z \"$temp\" ] && temp=$(dumpsys hardware_properties 2>/dev/null | grep -m1 \"CPU temperatures\" | sed \"s/.*\\[//;s/\\].*//\" | cut -d, -f1 | xargs); [ -z \"$temp\" ] && temp=\"n/a\"; mem=$(awk \"/MemAvailable:/ {printf \\\"%dMB\\\", int(\\$2/1024)}\" /proc/meminfo 2>/dev/null); [ -z \"$mem\" ] && mem=$(dumpsys meminfo 2>/dev/null | awk \"/Free RAM:/ {print \\$3}\" | head -n1); [ -z \"$mem\" ] && mem=\"n/a\"; msg=\"CPU: ${temp}°C  RAM: ${mem}\"; cmd notification post -S bigtext com.android.shell toast-temp-ram 1019 \"Температура и RAM\" \"$msg\"'",
-        description: "Показать уведомление с температурой CPU и RAM; без внешней утилиты.",
+        command: "sh -c 'temp=$(dumpsys thermalservice 2>/dev/null | grep -m1 \"Temperature{mValue=\" | head -n1 | sed -E \"s/.*mValue=([0-9.+-]+).*/\\1/\"); [ -z \"$temp\" ] && temp=$(dumpsys hardware_properties 2>/dev/null | grep -m1 \"CPU temperatures\" | sed \"s/.*\\[//;s/\\].*//\" | cut -d, -f1 | xargs); [ -z \"$temp\" ] && temp=\"n/a\"; mem=$(awk \"\$1==\\\"MemAvailable:\\\" {printf \\\"%dMB\\\", int(\\$2/1024)}\" /proc/meminfo 2>/dev/null); [ -z \"$mem\" ] && mem=$(dumpsys meminfo 2>/dev/null | awk \"/Free RAM:/ {print \\$3}\" | head -n1); [ -z \"$mem\" ] && mem=\"n/a\"; msg=\"CPU: ${temp}°C  RAM: ${mem}\"; cmd notification post -S bigtext com.android.shell toast-temp-ram 1019 \"Температура и RAM\" \"$msg\"'",
+        description: "Уведомление с температурой CPU и RAM; без внешней утилиты.",
         label: "Уведомление: температура и RAM",
         icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
         isEnabled: true,
