@@ -1423,15 +1423,7 @@
         isEnabled: true,
         uid: "usb-fix-atv14"
       },
-      {
-        id: 1019,
-        command: "sh -c 'temp=$(dumpsys thermalservice 2>/dev/null | grep -m1 \"Temperature{mValue=\" | head -n1 | sed -E \"s/.*mValue=([0-9.+-]+).*/\\1/\"); [ -z \"$temp\" ] && temp=$(dumpsys hardware_properties 2>/dev/null | grep -m1 \"CPU temperatures\" | sed \"s/.*\\[//;s/\\].*//\" | cut -d, -f1 | xargs); [ -z \"$temp\" ] && temp=\"n/a\"; mem=$(awk \"\$1==\\\"MemAvailable:\\\" {printf \\\"%dMB\\\", int(\\$2/1024)}\" /proc/meminfo 2>/dev/null); [ -z \"$mem\" ] && mem=$(dumpsys meminfo 2>/dev/null | awk \"/Free RAM:/ {print \\$3}\" | head -n1); [ -z \"$mem\" ] && mem=\"n/a\"; msg=\"CPU: ${temp}°C  RAM: ${mem}\"; cmd notification post -S bigtext com.android.shell toast-temp-ram 1019 \"Температура и RAM\" \"$msg\"'",
-        description: "Уведомление с температурой CPU и RAM; без внешней утилиты.",
-        label: "Уведомление: температура и RAM",
-        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
-        isEnabled: true,
-        uid: "toast-temp-ram"
-      },
+      
       { id: 1014, command: "am force-stop com.google.android.katniss", description: "Эффект «стоп-кадр»", label: "Перезапуск Katniss", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "force-stop-katniss" },
       { id: 1001, command: "reboot", description: "reboot", label: "Система", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
       { id: 1002, command: "reboot bootloader", description: "reboot bootloader", label: "Bootloader", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "1000e8c1-025c-4621-92ff-a867210e8b96" },
