@@ -1417,6 +1417,15 @@
         isEnabled: true,
         uid: "usb-fix-atv14"
       },
+      {
+        id: 1019,
+        command: "sh -c 'msg=\"$(dumpsys hardware_properties | awk -F\"[\\\\]\\\\[]\" \"/CPU temperatures:/ {print $1 substr($2,1,4)\\\"°C\\\"}\")\"; msg1=\"$(dumpsys meminfo | awk \"/Free RAM:/ {print $1 \\$2 substr(\\$3,1,5)\\\"Kb\\\"}\")\"; am start -a android.intent.action.MAIN -e message \"${msg} ${msg1}\" -n com.rja.utility/.ShowToast'",
+        description: "Показать тост (~4с) с температурой CPU и свободной RAM.",
+        label: "Тост: температура и RAM",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png",
+        isEnabled: true,
+        uid: "toast-temp-ram"
+      },
       { id: 1014, command: "am force-stop com.google.android.katniss", description: "Эффект «стоп-кадр»", label: "Перезапуск Katniss", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "force-stop-katniss" },
       { id: 1001, command: "reboot", description: "reboot", label: "Система", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
       { id: 1002, command: "reboot bootloader", description: "reboot bootloader", label: "Bootloader", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "1000e8c1-025c-4621-92ff-a867210e8b96" },
