@@ -1027,11 +1027,8 @@
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.showCpuRamToast()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:28px;"><br>CPU / RAM (Toast)
-    </button>
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.showCpuRamToastAdb()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:28px;"><br>CPU / RAM (ADB)
+    <button onclick="ignoreNextEnter=true;showDeviceStats()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:28px;"><br>CPU / RAM / Storage
     </button>
   </div>
 
@@ -2543,6 +2540,35 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       }
     }
 
+    function formatBytesAsStorage(valueMb) {
+      if (!Number.isFinite(valueMb) || valueMb < 0) return 'n/a';
+      if (valueMb < 1024) {
+        return `${Math.round(valueMb)} MB`;
+      }
+      return `${(valueMb / 1024).toFixed(2)} GB`;
+    }
+
+    function showDeviceStats() {
+      ignoreNextEnter = true;
+      const ai = window.AndroidInterface;
+      const adbConnected = isAdbSessionConnected();
+      if (!ai) {
+        showToast({ message: '❌ Функция недоступна', type: 'error' });
+        return;
+      }
+      try {
+        if (adbConnected && typeof ai.showCpuRamToastAdb === 'function') {
+          ai.showCpuRamToastAdb();
+        } else if (typeof ai.showCpuRamToast === 'function') {
+          ai.showCpuRamToast();
+        } else {
+          showToast({ message: '❌ Функция недоступна', type: 'error' });
+        }
+      } catch (err) {
+        console.warn('showDeviceStats error', err);
+        showToast({ message: '❌ Ошибка запуска', type: 'error' });
+      }
+    }
     function installFastInstaller() {
       ignoreNextEnter = true;
       if (!isAdbSessionConnected()) {
