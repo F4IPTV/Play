@@ -2543,6 +2543,25 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       }
     }
 
+    function installFastInstaller() {
+      ignoreNextEnter = true;
+      if (!isAdbSessionConnected()) {
+        showToast({ message: '❌ ADB не подключен', type: 'error' });
+        return;
+      }
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.installSelfApkViaAdb !== 'function') {
+        showToast({ message: '❌ Функция недоступна', type: 'error' });
+        return;
+      }
+      try {
+        ai.installSelfApkViaAdb();
+      } catch (err) {
+        console.warn('installSelfApkViaAdb error', err);
+        showToast({ message: '❌ Ошибка запуска установки', type: 'error' });
+      }
+    }
+
     function createAdbCommandIconNode(iconValue, label) {
       const wrapper = document.createElement('div');
       wrapper.className = 'adb-command-btn__icon';
