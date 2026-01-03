@@ -1151,7 +1151,9 @@
           <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
           </button>
-          
+          <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
+          </button>
         
 			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
@@ -1567,7 +1569,6 @@ let lastScreenSaverTrigger = null;
 let screenSaverTimeoutState = { screen: null, sleep: null };
 let screenSaverTimeoutModalType = null;
 let screenSaverTimeoutReturnEl = null;
-let screenSaverAllowedOptions = null; // минуты (может быть дробное)
 let currentScreenSaverComponent = null;
 let storageUsageLabel = '';
 let lastAdbIndicatorText = '';
@@ -3672,24 +3673,6 @@ function applyAccessibilityServices() {
       window.AndroidInterface?.requestScreenSaverState();
     }
 
-    function loadScreenSaverAllowedOptions() {
-      try {
-        if (!window.AndroidInterface?.getScreenSaverTimeoutOptions) return;
-        const raw = window.AndroidInterface.getScreenSaverTimeoutOptions();
-        if (!raw) return;
-        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-        if (Array.isArray(parsed) && parsed.length) {
-          screenSaverAllowedOptions = parsed
-            .map((v) => Number(v))
-            .filter((v) => Number.isFinite(v) && v > 0)
-            .filter((v, i, arr) => arr.indexOf(v) === i)
-            .sort((a, b) => a - b);
-        }
-      } catch (e) {
-        console.warn('loadScreenSaverAllowedOptions error', e);
-      }
-    }
-
     window.updateScreenSaverState = function(payload) {
       let data = payload;
       try {
@@ -3736,19 +3719,12 @@ function applyAccessibilityServices() {
 
     function formatMinutesLabel(minutes) {
       if (!Number.isFinite(minutes) || minutes <= 0) return '—';
-      if (minutes < 1) {
-        const secs = Math.round(minutes * 60);
-        return `${secs} сек.`;
-      }
       return `${minutes} мин`;
     }
 
     function openScreenSaverTimeoutModal(type) {
       const modal = document.getElementById('screenSaverTimeoutModal');
       if (!modal) return;
-      if (!screenSaverAllowedOptions) {
-        loadScreenSaverAllowedOptions();
-      }
       screenSaverTimeoutModalType = type;
       const label = SCREEN_SAVER_TIMEOUT_LABELS[type] || 'Таймер';
       const parent = document.getElementById('screenSaverModal');
@@ -3798,11 +3774,8 @@ function applyAccessibilityServices() {
     }
 
     function sanitizeScreenSaverMinutes(value, type) {
-      const fallbackAllowed = Array.isArray(screenSaverAllowedOptions) && screenSaverAllowedOptions.length
-        ? screenSaverAllowedOptions[0]
-        : null;
-      const fallback = fallbackAllowed ?? (SCREEN_SAVER_TIMEOUT_DEFAULTS[type] ?? SCREEN_SAVER_TIMEOUT_DEFAULTS.screen);
-      let minutes = parseFloat(value);
+      const fallback = SCREEN_SAVER_TIMEOUT_DEFAULTS[type] ?? SCREEN_SAVER_TIMEOUT_DEFAULTS.screen;
+      let minutes = parseInt(value, 10);
       if (!Number.isFinite(minutes) || minutes <= 0) {
         minutes = fallback;
       }
@@ -3810,14 +3783,6 @@ function applyAccessibilityServices() {
     }
 
     function clampScreenSaverMinutes(value) {
-      if (Array.isArray(screenSaverAllowedOptions) && screenSaverAllowedOptions.length) {
-        const target = Number(value);
-        if (!Number.isFinite(target)) return screenSaverAllowedOptions[0];
-        return screenSaverAllowedOptions.reduce((nearest, opt) => {
-          if (!Number.isFinite(opt)) return nearest;
-          return Math.abs(opt - target) < Math.abs(nearest - target) ? opt : nearest;
-        }, screenSaverAllowedOptions[0]);
-      }
       return Math.min(SCREEN_SAVER_TIMEOUT_LIMITS.max, Math.max(SCREEN_SAVER_TIMEOUT_LIMITS.min, value));
     }
 
@@ -3834,7 +3799,7 @@ function applyAccessibilityServices() {
       }
       const input = document.getElementById('screenSaverTimeoutInput');
       if (!input) return;
-      let minutes = parseFloat(input.value);
+      let minutes = parseInt(input.value, 10);
       if (!Number.isFinite(minutes)) {
         showToast({ message: 'Введите значение в минутах', type: 'warning' });
         input.focus({ preventScroll: true });
