@@ -1048,6 +1048,30 @@
     </div>
   </div>
 
+  <!-- Модалка списка пользовательских приложений по ADB -->
+  <div id="adbAppListModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="adbAppListHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:22px;">
+        Список приложений (ADB)
+      </h3>
+      <div id="adbAppListStatus" style="text-align:center;font-size:13px;opacity:0.85;margin-bottom:12px;">
+        Работает только при активном ADB-подключении. Показываем только пользовательские приложения.
+      </div>
+      <div id="adbAppListContainer" style="max-height:60vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:12px;">
+        <div id="adbAppList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+      <div class="system-buttons" style="justify-content:center;gap:12px;">
+        <button class="sys-btn" onclick="refreshAdbAppList()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:22px;"><br>Обновить
+        </button>
+        <button class="sys-btn" onclick="closeAdbAppListModal()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:22px;"><br>Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <!-- Модалка «Разное» -->
@@ -1141,6 +1165,12 @@
           </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
+          </button>
+          <button onclick="startAppsExport()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Экспорт приложений
+          </button>
+          <button onclick="openAdbAppListModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:26px;"><br>Список приложений (ADB)
           </button>
           <button onclick="openAutostartModal(this)" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
@@ -1572,6 +1602,8 @@ let lastAdbIndicatorText = '';
 let lastAdbIndicatorConnected = false;
 let autostartReturnModal = null;
 let autostartOpener = null;
+let adbAppListReturnModal = null;
+let adbAppListOpener = null;
 
 const ADB_ROOT_LOG_ID = 'adbRootDiagOutput';
 
@@ -1600,7 +1632,7 @@ function setAdbRootLog(text) {
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','adbAppListModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -2895,6 +2927,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     const MODAL_ADB_HEADER_IDS = [
       'miscHeader',
       'miscMoreHeader',
+      'adbAppListHeader',
       'adbScannerHeader',
       'adbManualHeader',
       'adbCommandsHeader',
@@ -4366,6 +4399,7 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
       else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
+      else if (document.getElementById('adbAppListModal')?.style.display === 'flex') closeAdbAppListModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
@@ -4397,6 +4431,154 @@ showStatus(`Началась загрузка приложений, ожидай
       const text = document.getElementById("progress-text");
       container.style.display = "block"; bar.style.width = percent + "%"; text.innerText = `Загрузка ${label}: ${percent}%`;
       if (percent >= 100 && current === total) setTimeout(() => { container.style.display = "none"; bar.style.width = "0%"; text.innerText = ""; }, 1500);
+    }
+
+    function startAppsExport(mode = 'full', size = 192) {
+      const api = window.AndroidInterface;
+      if (!api || typeof api.runAppsExport !== 'function') {
+        showToast({ message: 'Экспорт недоступен: нет AndroidInterface', type: 'error' });
+        return;
+      }
+      const safeMode = (mode || 'full').toString();
+      const safeSize = Number.isFinite(size) ? size : 192;
+      api.runAppsExport(safeMode, safeSize);
+      showToast({ message: `Экспорт запускается (${safeMode}, ${safeSize}px)`, type: 'info', duration: 2500 });
+    }
+
+    function openAdbAppListModal(opener = null) {
+      const actionLabel = 'Список приложений (ADB)';
+      if (!ensureAdbSessionConnected(actionLabel)) return;
+
+      adbAppListOpener = opener instanceof HTMLElement
+        ? opener
+        : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      adbAppListReturnModal = null;
+
+      const miscMore = document.getElementById('miscMoreModal');
+      const misc = document.getElementById('miscModal');
+      if (miscMore && miscMore.style.display === 'flex') {
+        adbAppListReturnModal = 'miscMore';
+        lastFocusedElementMiscMore = null;
+        closeMiscMoreModal();
+        if (misc && misc.style.display === 'flex') {
+          closeMiscModal(false);
+        }
+      } else if (misc && misc.style.display === 'flex') {
+        adbAppListReturnModal = 'misc';
+        closeMiscModal(false);
+      }
+
+      const modal = document.getElementById('adbAppListModal');
+      const status = document.getElementById('adbAppListStatus');
+      const list = document.getElementById('adbAppList');
+      if (!modal || !status || !list) return;
+
+      document.activeElement?.blur();
+      document.body.classList.add('modal-open');
+      modal.style.display = 'flex';
+      status.textContent = 'Запрашиваем список пользовательских приложений...';
+      list.innerHTML = '';
+      refreshAdbAppList(true);
+
+      setTimeout(() => {
+        const first = list.querySelector('.adb-app-row');
+        if (first) first.focus({ preventScroll: true }); else { modal.setAttribute('tabindex','-1'); modal.focus(); }
+      }, 400);
+    }
+
+    function refreshAdbAppList(initial = false) {
+      const status = document.getElementById('adbAppListStatus');
+      const list = document.getElementById('adbAppList');
+      if (!status || !list) return;
+      if (!ensureAdbSessionConnected('Список приложений (ADB)')) {
+        status.textContent = 'ADB не подключен. Подключите ADB и повторите.';
+        list.innerHTML = '';
+        return;
+      }
+
+      let packages = [];
+      try {
+        packages = getUserPackages();
+      } catch (err) {
+        console.warn('getUserPackages failed', err);
+      }
+
+      list.innerHTML = '';
+      if (!packages || !packages.length) {
+        status.textContent = 'Пользовательские приложения не найдены или ADB вернул пустой список.';
+        return;
+      }
+
+      status.textContent = `Найдено пользовательских приложений: ${packages.length}`;
+      const frag = document.createDocumentFragment();
+      packages.forEach((pkg, idx) => {
+        const row = document.createElement('div');
+        row.className = 'adb-app-row';
+        row.setAttribute('tabindex', '0');
+        row.style.cssText = 'display:flex;gap:10px;align-items:center;padding:10px 12px;background:#11131a;border:1px solid #1f2330;border-radius:12px;color:#e7eeff;font-size:14px;outline:none;';
+
+        const idxSpan = document.createElement('span');
+        idxSpan.textContent = `${idx + 1}.`;
+        idxSpan.style.opacity = '0.8';
+        idxSpan.style.minWidth = '32px';
+
+        const pkgSpan = document.createElement('span');
+        pkgSpan.textContent = pkg;
+        pkgSpan.style.wordBreak = 'break-all';
+
+        row.appendChild(idxSpan);
+        row.appendChild(pkgSpan);
+
+        row.onfocus = () => { row.style.borderColor = '#00cfff'; };
+        row.onblur = () => { row.style.borderColor = '#1f2330'; };
+        row.onclick = () => {
+          try { navigator.clipboard?.writeText(pkg); } catch (e) {}
+          showToast({ message: `${pkg} скопирован`, type: 'info', duration: 1800 });
+        };
+
+        frag.appendChild(row);
+      });
+
+      list.appendChild(frag);
+      requestAnimationFrame(() => {
+        const first = list.querySelector('.adb-app-row');
+        if (first) first.focus({ preventScroll: true });
+      });
+    }
+
+    function closeAdbAppListModal() {
+      const modal = document.getElementById('adbAppListModal');
+      if (!modal) return;
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+
+      const returnModal = adbAppListReturnModal;
+      const opener = adbAppListOpener;
+      adbAppListReturnModal = null;
+      adbAppListOpener = null;
+
+      if (returnModal === 'miscMore') {
+        openMiscModal();
+        setTimeout(() => {
+          openMiscMoreModal();
+          if (opener && document.body.contains(opener)) {
+            setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+          }
+        }, 50);
+        return;
+      }
+      if (returnModal === 'misc') {
+        openMiscModal();
+        if (opener && document.body.contains(opener)) {
+          setTimeout(() => opener.focus?.({ preventScroll: true }), 120);
+        }
+        return;
+      }
+
+      const focusTarget = opener || lastFocusedElement;
+      if (focusTarget && document.body.contains(focusTarget)) {
+        setTimeout(() => focusTarget.focus?.({ preventScroll: true }), 50);
+      }
     }
 
     function openAutostartModal(opener = null) {
