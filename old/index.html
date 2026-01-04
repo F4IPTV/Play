@@ -4510,24 +4510,77 @@ showStatus(`Началась загрузка приложений, ожидай
       }
 
       status.textContent = `Найдено пользовательских приложений: ${packages.length}`;
+
+      // Пытаемся обогатить пакеты иконками/лейблами локально; если пакета нет — иконка пустая.
+      let enriched = [];
+      try {
+        const api = window.AndroidInterface;
+        if (api && typeof api.getUserPackagesWithIcons === 'function') {
+          const raw = api.getUserPackagesWithIcons(JSON.stringify(packages));
+          enriched = raw ? JSON.parse(raw) : [];
+        }
+      } catch (err) {
+        console.warn('getUserPackagesWithIcons failed', err);
+      }
+      const byPkg = new Map();
+      (enriched || []).forEach((item) => {
+        if (item?.package) byPkg.set(item.package, item);
+      });
+
       const frag = document.createDocumentFragment();
       packages.forEach((pkg, idx) => {
+        const info = byPkg.get(pkg) || { package: pkg, label: pkg, icon: '' };
         const row = document.createElement('div');
         row.className = 'adb-app-row';
         row.setAttribute('tabindex', '0');
-        row.style.cssText = 'display:flex;gap:10px;align-items:center;padding:10px 12px;background:#11131a;border:1px solid #1f2330;border-radius:12px;color:#e7eeff;font-size:14px;outline:none;';
+        row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:10px 12px;background:#11131a;border:1px solid #1f2330;border-radius:12px;color:#e7eeff;font-size:14px;outline:none;';
 
         const idxSpan = document.createElement('span');
         idxSpan.textContent = `${idx + 1}.`;
         idxSpan.style.opacity = '0.8';
         idxSpan.style.minWidth = '32px';
 
-        const pkgSpan = document.createElement('span');
-        pkgSpan.textContent = pkg;
-        pkgSpan.style.wordBreak = 'break-all';
+        const iconWrap = document.createElement('div');
+        iconWrap.style.width = '32px';
+        iconWrap.style.height = '32px';
+        iconWrap.style.display = 'flex';
+        iconWrap.style.alignItems = 'center';
+        iconWrap.style.justifyContent = 'center';
+        iconWrap.style.borderRadius = '8px';
+        iconWrap.style.background = '#0c101a';
+        if (info.icon) {
+          const img = document.createElement('img');
+          img.src = info.icon;
+          img.alt = '';
+          img.style.height = '28px';
+          img.style.width = '28px';
+          img.loading = 'lazy';
+          iconWrap.appendChild(img);
+        } else {
+          const placeholder = document.createElement('span');
+          placeholder.textContent = '•';
+          placeholder.style.opacity = '0.5';
+          iconWrap.appendChild(placeholder);
+        }
+
+        const textCol = document.createElement('div');
+        textCol.style.display = 'flex';
+        textCol.style.flexDirection = 'column';
+        textCol.style.gap = '2px';
+        const labelEl = document.createElement('div');
+        labelEl.textContent = info.label || pkg;
+        labelEl.style.fontWeight = '600';
+        const pkgEl = document.createElement('div');
+        pkgEl.textContent = pkg;
+        pkgEl.style.opacity = '0.85';
+        pkgEl.style.fontSize = '12px';
+        pkgEl.style.wordBreak = 'break-all';
+        textCol.appendChild(labelEl);
+        textCol.appendChild(pkgEl);
 
         row.appendChild(idxSpan);
-        row.appendChild(pkgSpan);
+        row.appendChild(iconWrap);
+        row.appendChild(textCol);
 
         row.onfocus = () => { row.style.borderColor = '#00cfff'; };
         row.onblur = () => { row.style.borderColor = '#1f2330'; };
