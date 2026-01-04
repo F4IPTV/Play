@@ -4435,12 +4435,24 @@ showStatus(`Началась загрузка приложений, ожидай
 
     function startAppsExport(mode = 'full', size = 192) {
       const api = window.AndroidInterface;
-      if (!api || typeof api.runAppsExport !== 'function') {
+      if (!api) {
         showToast({ message: 'Экспорт недоступен: нет AndroidInterface', type: 'error' });
         return;
       }
       const safeMode = (mode || 'full').toString();
       const safeSize = Number.isFinite(size) ? size : 192;
+
+      // Если есть активное ADB‑подключение — запускаем удалённый экспорт (тихо ставим помощник).
+      if (isAdbSessionConnected() && typeof api.runRemoteExportFull === 'function') {
+        api.runRemoteExportFull(safeMode, safeSize);
+        showToast({ message: `Удалённый экспорт запускается (${safeMode}, ${safeSize}px)`, type: 'info', duration: 3000 });
+        return;
+      }
+
+      if (typeof api.runAppsExport !== 'function') {
+        showToast({ message: 'Экспорт недоступен: нет runAppsExport', type: 'error' });
+        return;
+      }
       api.runAppsExport(safeMode, safeSize);
       showToast({ message: `Экспорт запускается (${safeMode}, ${safeSize}px)`, type: 'info', duration: 2500 });
     }
