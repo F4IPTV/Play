@@ -4527,7 +4527,10 @@ showStatus(`Началась загрузка приложений, ожидай
       let enriched = [];
       try {
         const api = window.AndroidInterface;
-        if (api && typeof api.getUserPackagesWithIcons === 'function') {
+        if (api && typeof api.getUserPackagesWithIconsFromExport === 'function') {
+          const raw = api.getUserPackagesWithIconsFromExport(JSON.stringify(packages));
+          enriched = raw ? JSON.parse(raw) : [];
+        } else if (api && typeof api.getUserPackagesWithIcons === 'function') {
           const raw = api.getUserPackagesWithIcons(JSON.stringify(packages));
           enriched = raw ? JSON.parse(raw) : [];
         }
