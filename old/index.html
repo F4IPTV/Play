@@ -4579,6 +4579,19 @@ showStatus(`Началась загрузка приложений, ожидай
           img.style.height = '28px';
           img.style.width = '28px';
           img.loading = 'lazy';
+          img.onerror = () => {
+            // fallback на apk base64, если локального файла нет
+            if (api && typeof api.getUserPackagesWithIcons === 'function') {
+              try {
+                const raw = api.getUserPackagesWithIcons(JSON.stringify([pkg]));
+                const arr = raw ? JSON.parse(raw) : [];
+                const found = arr.find((x) => x.package === pkg);
+                if (found?.icon) {
+                  img.src = found.icon;
+                }
+              } catch (e) { /* ignore */ }
+            }
+          };
           iconWrap.appendChild(img);
         } else {
           const placeholder = document.createElement('span');
