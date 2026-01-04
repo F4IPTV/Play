@@ -4461,6 +4461,15 @@ showStatus(`Началась загрузка приложений, ожидай
       const actionLabel = 'Список приложений (ADB)';
       if (!ensureAdbSessionConnected(actionLabel)) return;
 
+      try {
+        const api = window.AndroidInterface;
+        if (api && typeof api.syncRemoteExport === 'function') {
+          api.syncRemoteExport();
+        }
+      } catch (err) {
+        console.warn('syncRemoteExport failed', err);
+      }
+
       adbAppListOpener = opener instanceof HTMLElement
         ? opener
         : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
