@@ -2045,7 +2045,8 @@ function attachAdbManualInputHandlers() {
         }
       });
       if (id === 'adbManualPortInput' && !input.dataset.onlyDigits) {
-        input.addEventListener('input', () => {
+        input.addEventListener('input', (ev) => {
+          if (ev.isComposing) return; // не вмешиваемся в IME
           const cleaned = input.value.replace(/\D+/g, '').slice(0, 5); // ограничиваем цифрами и длиной
           if (cleaned !== input.value) input.value = cleaned;
         });
