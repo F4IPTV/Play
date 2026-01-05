@@ -2209,6 +2209,9 @@ function submitAdbManualConnect() {
     const installModal = document.getElementById('installMethodModal');
     if (installModal && installModal.style.display === 'flex') return;
 
+    const activeEl = document.activeElement;
+    const isInput = activeEl && activeEl.tagName === 'INPUT';
+
     const focusables = [
       document.getElementById('adbManualHostInput'),
       document.getElementById('adbManualPortInput'),
@@ -2224,6 +2227,9 @@ function submitAdbManualConnect() {
       closeAdbManualConnectModal();
       return;
     }
+
+    // Если курсор в инпуте, не перехватываем навигацию/Enter — нужно для экранной клавиатуры
+    if (isInput) return;
 
     const navKeys = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Enter'];
     if (!navKeys.includes(key)) return;
