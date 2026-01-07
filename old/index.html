@@ -5825,7 +5825,14 @@ function renderAtvAppsList() {
     return;
   }
 
-  apps.forEach(app => {
+  // Сортировка по алфавиту (по label или package)
+  const sortedApps = [...apps].sort((a, b) => {
+    const nameA = (a.label || atvAppsState.localLabels?.[a.package] || a.package).toLowerCase();
+    const nameB = (b.label || atvAppsState.localLabels?.[b.package] || b.package).toLowerCase();
+    return nameA.localeCompare(nameB, 'ru');
+  });
+
+  sortedApps.forEach(app => {
     const row = document.createElement('div');
     row.className = 'app-row';
     row.tabIndex = 0;
