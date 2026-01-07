@@ -1071,18 +1071,21 @@
       <div id="atvAppsContainer" style="max-height:60vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:12px;">
         <div id="atvAppsList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
-      <div class="system-buttons" style="justify-content:center;gap:6px;">
-        <button class="sys-btn" onclick="refreshAtvAppsList()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:20px;"><br>Обновить
+      <div class="system-buttons" style="justify-content:center;gap:4px;flex-wrap:wrap;">
+        <button class="sys-btn" onclick="refreshAtvAppsList()" tabindex="0" style="min-width:80px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:18px;"><br>Обновить
         </button>
-        <button class="sys-btn" onclick="testAtvServerConnection()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:20px;"><br>Тест сервера
+        <button class="sys-btn" onclick="testAtvServerConnection()" tabindex="0" style="min-width:80px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:18px;"><br>Тест
         </button>
-        <button class="sys-btn" onclick="showLocalAppsAsFallback()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:20px;"><br>Локальные
+        <button class="sys-btn" onclick="debugAtvServer()" tabindex="0" style="min-width:80px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:18px;"><br>Отладка
         </button>
-        <button class="sys-btn" onclick="closeAtvAppsModal()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:20px;"><br>Закрыть
+        <button class="sys-btn" onclick="showLocalAppsAsFallback()" tabindex="0" style="min-width:80px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:18px;"><br>Локальные
+        </button>
+        <button class="sys-btn" onclick="closeAtvAppsModal()" tabindex="0" style="min-width:80px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:18px;"><br>Закрыть
         </button>
       </div>
     </div>
@@ -5676,21 +5679,39 @@ if (cards.includes(active)) {
 
         status.textContent = 'Запрашиваем список приложений...';
         
+        console.log(`Making request to: http://${deviceIp}:15020/apps`);
+        
         // HTTP запрос к серверу на удаленном устройстве
         const response = await fetch(`http://${deviceIp}:15020/apps`, {
           method: 'GET',
           headers: { 
             'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
+            'Cache-Control': 'no-cache',
+            'Accept': 'application/json'
           },
-          signal: AbortSignal.timeout(10000)
+          signal: AbortSignal.timeout(15000)
         });
 
+        console.log(`Response status: ${response.status} ${response.statusText}`);
+        console.log(`Response headers:`, [...response.headers.entries()]);
+
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          const errorText = await response.text();
+          console.log(`Error response body:`, errorText);
+          throw new Error(`HTTP ${response.status}: ${response.statusText}. Body: ${errorText.substring(0, 100)}`);
         }
 
-        const data = await response.json();
+        const responseText = await response.text();
+        console.log(`Response body:`, responseText.substring(0, 200) + '...');
+        
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          console.log('Raw response:', responseText);
+          throw new Error(`Неверный JSON ответ от сервера. Получено: ${responseText.substring(0, 100)}`);
+        }
         
         if (data.code !== 200) {
           throw new Error(data.msg || 'Ошибка получения списка приложений');
@@ -6030,6 +6051,56 @@ if (cards.includes(active)) {
       } catch (error) {
         console.error('Error launching app:', error);
         showToast({ message: `Ошибка запуска: ${error.message}`, type: 'error' });
+      }
+    }
+
+    // Функция отладки сервера
+    async function debugAtvServer() {
+      try {
+        const status = document.getElementById('atvAppsStatus');
+        status.textContent = 'Отладка сервера...';
+        
+        if (!window.AndroidInterface || typeof window.AndroidInterface.debugAtvServer !== 'function') {
+          showToast({ message: 'Функция отладки недоступна', type: 'error' });
+          return;
+        }
+
+        showToast({ message: '🔍 Проверка состояния сервера...', type: 'info' });
+        
+        const debugResult = window.AndroidInterface.debugAtvServer();
+        const data = JSON.parse(debugResult);
+        
+        if (data.success) {
+          console.log('Debug info:', data);
+          
+          const debugInfo = [
+            `📁 Файлы: ${data.files}`,
+            `📄 Apps файл: ${data.apps_content.substring(0, 100)}...`,
+            `🏓 Ping: ${data.ping_content}`,
+            `⚙️ Процессы: ${data.processes}`,
+            `🌐 Сеть: ${data.netstat}`
+          ].join('\n\n');
+          
+          showToast({ 
+            message: `🔍 Отладочная информация получена (см. консоль)`, 
+            type: 'info',
+            duration: 3000
+          });
+          
+          status.textContent = `Отладка: файлы найдены, процессы: ${data.processes.includes('httpd') ? 'httpd работает' : 'httpd не найден'}`;
+          
+        } else {
+          showToast({ 
+            message: `❌ Ошибка отладки: ${data.error}`, 
+            type: 'error',
+            duration: 5000
+          });
+          status.textContent = `Ошибка отладки: ${data.error}`;
+        }
+        
+      } catch (error) {
+        console.error('Error debugging server:', error);
+        showToast({ message: `Ошибка отладки: ${error.message}`, type: 'error' });
       }
     }
 
