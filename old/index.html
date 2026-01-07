@@ -1122,12 +1122,11 @@
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
       <div class="modal-header-tools">
-        <div class="modal-quick-actions" id="atvHeaderQuickActions"></div>
         <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy" style="width:22px;height:22px;">
         </button>
         <button id="atvAdbIndicator" class="modal-adb-indicator disconnected" onclick="reconnectLastAdbFromChip(event)" title="ADB не подключен">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" loading="lazy">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" loading="lazy" style="width:22px;height:22px;">
         </button>
       </div>
       <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:-10px;font-size:1.1rem;">
@@ -5789,13 +5788,6 @@ function openAtvAppsModalFast(btn) {
       firstFilter.focus({ preventScroll: true });
     } else {
       modal.focus();
-    }
-    // Инициализируем быстрые действия в хедере модалки (иконки)
-    const tools = modal.querySelector('.modal-header-tools');
-    const content = modal.querySelector('.modal-content');
-    const indicator = modal.querySelector('#atvAdbIndicator');
-    if (tools && content) {
-      ensureModalQuickActions(tools, content, indicator);
     }
   }, 120);
 }
