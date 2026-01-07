@@ -5854,30 +5854,69 @@ if (cards.includes(active)) {
 
       try {
         // Приоритет 1: Получаем иконку с удаленного Android TV
+        console.log(`Requesting icon for ${packageName} from ${deviceIp}:15020`);
+        
         const remoteIconResponse = await fetch(`http://${deviceIp}:15020/icon?packageName=${encodeURIComponent(packageName)}`, {
-          signal: AbortSignal.timeout(3000)
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
+          },
+          signal: AbortSignal.timeout(5000)
         });
         
         if (remoteIconResponse.ok) {
-          const blob = await remoteIconResponse.blob();
-          if (blob.size > 0) {
-            const iconUrl = URL.createObjectURL(blob);
-            window.iconCache.set(cacheKey, iconUrl);
-            return iconUrl;
+          const responseText = await remoteIconResponse.text();
+          console.log(`Icon response for ${packageName}:`, responseText.substring(0, 100));
+          
+          try {
+            const iconData = JSON.parse(responseText);
+            if (iconData.code === 200 && iconData.data && iconData.data.startsWith('data:image/')) {
+              window.iconCache.set(cacheKey, iconData.data);
+              console.log(`✅ Got remote icon for ${packageName}`);
+              return iconData.data;
+            } else {
+              console.warn(`Remote icon failed for ${packageName}:`, iconData);
+            }
+          } catch (parseError) {
+            console.warn(`Failed to parse icon JSON for ${packageName}:`, parseError);
           }
+        } else {
+          console.warn(`Remote icon HTTP error for ${packageName}: ${remoteIconResponse.status}`);
         }
       } catch (e) {
         console.warn('Failed to get remote icon for', packageName, e);
       }
 
       try {
-        // Приоритет 2: Fallback на локальную иконку с телефона
+        // Приоритет 2: Прямое извлечение иконки с Android TV через ADB
+        if (window.AndroidInterface && typeof window.AndroidInterface.getRemoteAppIcon === 'function') {
+          console.log(`Trying direct ADB icon extraction for ${packageName}`);
+          const remoteIconResult = window.AndroidInterface.getRemoteAppIcon(packageName);
+          if (remoteIconResult) {
+            const iconData = JSON.parse(remoteIconResult);
+            if (iconData.code === 200 && iconData.data) {
+              window.iconCache.set(cacheKey, iconData.data);
+              console.log(`✅ Got ADB icon for ${packageName}`);
+              return iconData.data;
+            } else {
+              console.warn(`ADB icon failed for ${packageName}:`, iconData);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to get ADB icon for', packageName, e);
+      }
+
+      try {
+        // Приоритет 3: Fallback на локальную иконку с телефона
         if (window.AndroidInterface && typeof window.AndroidInterface.getAppIcon === 'function') {
           const localIconResult = window.AndroidInterface.getAppIcon(packageName);
           if (localIconResult) {
             const data = JSON.parse(localIconResult);
             if (data.code === 200 && data.data) {
               window.iconCache.set(cacheKey, data.data);
+              console.log(`✅ Got local fallback icon for ${packageName}`);
               return data.data; // Base64 data URL
             }
           }
