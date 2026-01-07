@@ -5614,13 +5614,19 @@ if (cards.includes(active)) {
     async function deployServerToRemoteDevice() {
       return new Promise((resolve) => {
         try {
-          // Вызываем метод Android для развертывания server.jar
-          if (window.AndroidInterface && typeof window.AndroidInterface.deployAtvServer === 'function') {
+          // Пробуем новый простой метод
+          if (window.AndroidInterface && typeof window.AndroidInterface.deploySimpleAtvServer === 'function') {
+            const result = window.AndroidInterface.deploySimpleAtvServer();
+            const data = result ? JSON.parse(result) : { success: false, error: 'Нет ответа' };
+            resolve(data);
+          } 
+          // Fallback на старый метод
+          else if (window.AndroidInterface && typeof window.AndroidInterface.deployAtvServer === 'function') {
             const result = window.AndroidInterface.deployAtvServer();
             const data = result ? JSON.parse(result) : { success: false, error: 'Нет ответа' };
             resolve(data);
           } else {
-            resolve({ success: false, error: 'Метод deployAtvServer недоступен' });
+            resolve({ success: false, error: 'Методы развертывания сервера недоступны' });
           }
         } catch (error) {
           resolve({ success: false, error: error.message });
