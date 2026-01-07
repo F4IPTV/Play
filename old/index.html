@@ -5720,11 +5720,11 @@ function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
   // Требуем активное ADB-подключение
   if (!isAdbSessionConnected()) {
-    showToast?.({ message: 'ADB не подключен', type: 'warning' });
+    showToast({ message: 'ADB не подключен', type: 'warning', position: 'top-center' });
     ignoreNextEnter = false;
     return;
   }
-  showToast?.({ message: 'Открываю список приложений', type: 'info' });
+  showToast({ message: 'Открываю список приложений', type: 'info', position: 'top-center', duration: 2000 });
 
   const modal = document.getElementById('atvAppsModal');
   if (!modal) return;
