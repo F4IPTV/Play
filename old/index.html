@@ -1081,19 +1081,19 @@
           <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" loading="lazy">
         </button>
       </div>
-      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;margin-top:-6px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:25px;">
+      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:-10px;font-size:1.1rem;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:22px;">
         Приложения Android TV
       </h3>
-      <div class="app-filters" id="atvAppsFilters" style="margin-bottom:8px;">
-        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="all" onclick="setAtvAppsFilter('all')">Все</button>
-        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="user" onclick="setAtvAppsFilter('user')">Сторонние</button>
-        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="system" onclick="setAtvAppsFilter('system')">Системные</button>
-        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="disabled" onclick="setAtvAppsFilter('disabled')">Отключенные</button>
-        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="deleted" onclick="setAtvAppsFilter('deleted')">Удаленные</button>
+      <div class="app-filters" id="atvAppsFilters" style="margin-bottom:6px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="all" onclick="setAtvAppsFilter('all')">Все</button>
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="user" onclick="setAtvAppsFilter('user')">Сторонние</button>
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="system" onclick="setAtvAppsFilter('system')">Системные</button>
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="disabled" onclick="setAtvAppsFilter('disabled')">Отключенные</button>
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="deleted" onclick="setAtvAppsFilter('deleted')">Удаленные</button>
       </div>
 
-      <div id="atvAppsContainer" style="max-height:68vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:16px;">
+      <div id="atvAppsContainer" style="max-height:72vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
         <div id="atvAppsList" class="apps-list"></div>
       </div>
     </div>
@@ -1663,7 +1663,7 @@ function setAdbRootLog(text) {
       const btn = document.getElementById('passwordBtn');
       btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -4429,7 +4429,9 @@ showStatus(`Началась загрузка приложений, ожидай
     })();
 
     function handleBackButton() {
-      if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      if (document.getElementById('atvAppActionsModal')?.style.display === 'flex') closeAtvAppActions();
+      else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
+      else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
@@ -5567,7 +5569,138 @@ function selectInstallMethod(method, targetElement = null) {
 </script>
 
 <script>
-// === ATV Apps modal ===
+// === Навигация для ATV Apps модалок ===
+(function attachAtvAppsNavOnce(){
+  if (window.__atvAppsNavBound) return;
+  window.__atvAppsNavBound = true;
+
+  // Глобальный обработчик для Back/Escape с высоким приоритетом
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Back' && e.key !== 'Escape') return;
+    
+    const actionsModal = document.getElementById('atvAppActionsModal');
+    if (actionsModal && actionsModal.style.display === 'flex') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      closeAtvAppActions();
+      return;
+    }
+    
+    const appsModal = document.getElementById('atvAppsModal');
+    if (appsModal && appsModal.style.display === 'flex') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      closeAtvAppsModal();
+      return;
+    }
+  }, true);
+
+  // Навигация внутри списка приложений
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('atvAppsModal');
+    if (!modal || modal.style.display !== 'flex') return;
+    
+    const actionsModal = document.getElementById('atvAppActionsModal');
+    if (actionsModal && actionsModal.style.display === 'flex') return;
+    
+    if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const filters = Array.from(modal.querySelectorAll('.app-filters .sys-btn'));
+    const rows = Array.from(modal.querySelectorAll('.app-row'));
+    const active = document.activeElement;
+    
+    if (filters.includes(active)) {
+      const idx = filters.indexOf(active);
+      if (e.key === 'ArrowDown' && rows.length > 0) {
+        rows[0].focus();
+        rows[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (e.key === 'ArrowLeft' && idx > 0) {
+        filters[idx - 1].focus();
+      } else if (e.key === 'ArrowRight' && idx < filters.length - 1) {
+        filters[idx + 1].focus();
+      } else if (e.key === 'Enter') {
+        active.click();
+      }
+      return;
+    }
+    
+    if (rows.includes(active)) {
+      const idx = rows.indexOf(active);
+      if (e.key === 'ArrowDown' && idx < rows.length - 1) {
+        rows[idx + 1].focus();
+        rows[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (e.key === 'ArrowUp') {
+        if (idx > 0) {
+          rows[idx - 1].focus();
+          rows[idx - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (filters.length > 0) {
+          filters[0].focus();
+        }
+      } else if (e.key === 'Enter') {
+        active.click();
+      }
+      return;
+    }
+    
+    if (filters.length > 0) {
+      filters[0].focus();
+    } else if (rows.length > 0) {
+      rows[0].focus();
+    }
+  }, true);
+
+  // Навигация внутри модалки действий
+  document.addEventListener('keydown', function (e) {
+    const modal = document.getElementById('atvAppActionsModal');
+    if (!modal || modal.style.display !== 'flex') return;
+    
+    if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const buttons = Array.from(modal.querySelectorAll('.sys-btn'));
+    if (!buttons.length) return;
+    
+    const active = document.activeElement;
+    const idx = buttons.indexOf(active);
+    
+    if (idx === -1) {
+      buttons[0].focus();
+      return;
+    }
+    
+    if (e.key === 'Enter') {
+      active.click();
+      return;
+    }
+    
+    const cols = Math.min(3, buttons.length);
+    const row = Math.floor(idx / cols);
+    const col = idx % cols;
+    
+    if (e.key === 'ArrowDown') {
+      const nextIdx = idx + cols;
+      if (nextIdx < buttons.length) buttons[nextIdx].focus();
+    } else if (e.key === 'ArrowUp') {
+      const prevIdx = idx - cols;
+      if (prevIdx >= 0) buttons[prevIdx].focus();
+    } else if (e.key === 'ArrowLeft') {
+      if (col > 0) buttons[idx - 1].focus();
+    } else if (e.key === 'ArrowRight') {
+      if (col < cols - 1 && idx + 1 < buttons.length) buttons[idx + 1].focus();
+    }
+  }, true);
+})();
+</script>
+
+<!-- ATV Apps state and functions -->
+<script>
 const atvAppsState = {
   apps: [],
   filter: 'all',
@@ -5587,17 +5720,31 @@ function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
   const modal = document.getElementById('atvAppsModal');
   if (!modal) return;
+  document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
   setAtvAppsFilter('all', false);
   refreshAtvAppsList('auto');
+  
+  setTimeout(() => {
+    const firstFilter = modal.querySelector('.app-filters .sys-btn');
+    if (firstFilter) {
+      firstFilter.focus({ preventScroll: true });
+    } else {
+      modal.focus();
+    }
+  }, 120);
 }
 
 function closeAtvAppsModal() {
   const modal = document.getElementById('atvAppsModal');
-  if (modal) modal.style.display = 'none';
+  if (!modal) return;
+  modal.style.display = 'none';
+  modal.style.zIndex = '';
   closeAtvAppActions();
-  document.body.classList.remove('modal-open');
+  if (!anyModalOpen()) {
+    document.body.classList.remove('modal-open');
+  }
   setTimeout(() => {
     ignoreNextEnter = false;
   }, 100);
@@ -5612,8 +5759,6 @@ function setAtvAppsFilter(filter, rerender = true) {
 }
 
 function refreshAtvAppsList(source = 'auto') {
-  const status = document.getElementById('atvAppsStatus');
-  if (status) status.textContent = 'Обновление списка…';
   try {
     const raw = window.AndroidInterface?.getAppsInventory?.(source) || '';
     handleAtvAppsPayload(raw);
@@ -5628,8 +5773,7 @@ function handleAtvAppsPayload(raw) {
   let data = null;
   try { data = JSON.parse(raw); } catch (_) {}
   if (!data || !Array.isArray(data.apps)) {
-    const status = document.getElementById('atvAppsStatus');
-    if (status) status.textContent = 'Не удалось получить список приложений';
+    showToast({ message: 'Не удалось получить список приложений', type: 'error' });
     renderAtvAppsList([]);
     return;
   }
@@ -5639,10 +5783,8 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.localIcons = data.localIcons || {};
   atvAppsState.localLabels = data.localLabels || {};
   atvAppsState.localVersions = atvAppsState.source === 'adb' ? {} : (data.localVersions || {});
-  const status = document.getElementById('atvAppsStatus');
-  if (status) {
-    const err = data.error ? ` (${data.error})` : '';
-    status.textContent = `${atvAppsState.sourceLabel}${err}`;
+  if (data.error) {
+    showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
   }
   setAtvAdbIndicator(data?.adbConnected, atvAppsState.sourceLabel);
   renderAtvAppsList();
@@ -5764,7 +5906,10 @@ function openAtvAppActions(app) {
   const title = document.getElementById('atvAppActionsTitle');
   if (title) title.textContent = app.label || app.package;
   const info = document.getElementById('atvAppActionsInfo');
-  if (info) info.textContent = `${app.package} · ${app.type === 'system' ? 'system' : 'user'}${app.state === 'disabled' ? ' (откл)' : app.state === 'deleted' ? ' (del)' : ''}`;
+  if (info) {
+    const stateText = app.state === 'disabled' ? ' · отключено' : app.state === 'deleted' ? ' · удалено' : '';
+    info.innerHTML = `${app.package} · ${app.type === 'system' ? 'system' : 'user'}<span style="color:#f75c5c;">${stateText}</span>`;
+  }
 
   const buttons = document.getElementById('atvAppActionsButtons');
   if (buttons) {
@@ -5786,7 +5931,17 @@ function openAtvAppActions(app) {
 
 function closeAtvAppActions() {
   const modal = document.getElementById('atvAppActionsModal');
-  if (modal) modal.style.display = 'none';
+  if (!modal) return;
+  modal.style.display = 'none';
+  modal.style.zIndex = '';
+  
+  // Если есть открытая модалка ATV Apps, возвращаем на неё modal-open
+  const parentModal = document.getElementById('atvAppsModal');
+  if (parentModal && parentModal.style.display === 'flex') {
+    document.body.classList.add('modal-open');
+  } else {
+    document.body.classList.remove('modal-open');
+  }
 }
 
 function makeAtvActionBtn(action, label) {
