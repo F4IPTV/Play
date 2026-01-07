@@ -291,7 +291,7 @@
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#0e4457; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .app-sub { font-size:12px; color:rgba(255,255,255,0.85); overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px; }
+    .app-sub { font-size:12px; color:rgba(255,255,255,0.85); overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
     .app-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; background:#d0a447; color:#0b1d25; font-weight:700; text-transform:uppercase; }
     .app-state { font-size:12px; color:#ffc107; }
     #miscModal .sys-btn:focus {
@@ -5575,7 +5575,9 @@ const atvAppsState = {
   filter: 'all',
   source: 'local',
   sourceLabel: 'Локальное устройство',
-  localIcons: {}
+  localIcons: {},
+  localLabels: {},
+  localVersions: {}
 };
 
 const atvDefaultIcons = {
@@ -5634,6 +5636,8 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.source = data.source || 'local';
   atvAppsState.sourceLabel = data.sourceLabel || (atvAppsState.source === 'adb' ? 'ADB устройство' : 'Локальное устройство');
   atvAppsState.localIcons = data.localIcons || {};
+  atvAppsState.localLabels = data.localLabels || {};
+  atvAppsState.localVersions = data.localVersions || {};
   const status = document.getElementById('atvAppsStatus');
   if (status) {
     const err = data.error ? ` (${data.error})` : '';
@@ -5698,7 +5702,8 @@ function renderAtvAppsList() {
 
     const title = document.createElement('div');
     title.className = 'app-title';
-    title.textContent = app.label || app.package;
+    const localLabel = atvAppsState.localLabels?.[app.package];
+    title.textContent = app.label || localLabel || app.package;
 
     const sub = document.createElement('div');
     sub.className = 'app-sub';
@@ -5707,11 +5712,18 @@ function renderAtvAppsList() {
     badge.textContent = app.type === 'system' ? 'system' : 'user';
     const pkg = document.createElement('span');
     pkg.textContent = app.package;
+    pkg.style.whiteSpace = 'normal';
+    pkg.style.wordBreak = 'break-all';
+    const versionText = app.version || atvAppsState.localVersions?.[app.package];
+    const version = document.createElement('span');
+    version.textContent = versionText ? `v${versionText}` : '';
+    version.style.opacity = '0.85';
     const state = document.createElement('span');
     state.className = 'app-state';
     state.textContent = app.state === 'disabled' ? '(откл)' : app.state === 'deleted' ? '(del)' : '';
     sub.appendChild(pkg);
     sub.appendChild(badge);
+    if (version.textContent) sub.appendChild(version);
     if (state.textContent) sub.appendChild(state);
 
     meta.appendChild(title);
