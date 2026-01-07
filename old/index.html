@@ -283,16 +283,16 @@
     .app-filters .sys-btn.active { background:#00cfff; color:#000; }
     .apps-list { display:flex; flex-direction:column; gap:8px; }
     .app-row {
-      display:flex; gap:12px; align-items:center; padding:10px 12px;
+      display:flex; gap:12px; align-items:flex-start; padding:10px 12px;
       background:#0a2f3c; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
     .app-row:hover { background:#0f3f50; }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#0e4457; padding:6px; }
-    .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; }
-    .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .app-sub { font-size:12px; color:rgba(255,255,255,0.85); overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-    .app-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; background:#d0a447; color:#0b1d25; font-weight:700; text-transform:uppercase; }
+    .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; }
+    .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; }
+    .app-sub { font-size:12px; color:rgba(255,255,255,0.85); overflow:hidden; text-overflow:ellipsis; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:nowrap; width:100%; gap:8px; }
+    .app-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; background:#d0a447; color:#0b1d25; font-weight:700; text-transform:uppercase; margin-left:12px; white-space:nowrap; }
     .app-state { font-size:12px; color:#ffc107; }
     #miscModal .sys-btn:focus {
       background-color: #00cfff; color:#000;
@@ -5707,13 +5707,18 @@ function renderAtvAppsList() {
 
     const sub = document.createElement('div');
     sub.className = 'app-sub';
-    const badge = document.createElement('span');
-    badge.className = 'app-badge';
-    badge.textContent = app.type === 'system' ? 'system' : 'user';
+
+    const left = document.createElement('div');
+    left.style.display = 'flex';
+    left.style.flexDirection = 'column';
+    left.style.gap = '2px';
+    left.style.maxWidth = '70%';
+
     const pkg = document.createElement('span');
     pkg.textContent = app.package;
     pkg.style.whiteSpace = 'normal';
     pkg.style.wordBreak = 'break-all';
+
     const versionText = app.version || atvAppsState.localVersions?.[app.package];
     const version = document.createElement('span');
     version.textContent = versionText ? `v${versionText}` : '';
@@ -5721,10 +5726,23 @@ function renderAtvAppsList() {
     const state = document.createElement('span');
     state.className = 'app-state';
     state.textContent = app.state === 'disabled' ? '(откл)' : app.state === 'deleted' ? '(del)' : '';
-    sub.appendChild(pkg);
+
+    const bottomLine = document.createElement('div');
+    bottomLine.style.display = 'flex';
+    bottomLine.style.alignItems = 'center';
+    bottomLine.style.gap = '6px';
+    if (version.textContent) bottomLine.appendChild(version);
+    if (state.textContent) bottomLine.appendChild(state);
+
+    left.appendChild(pkg);
+    if (bottomLine.children.length) left.appendChild(bottomLine);
+
+    const badge = document.createElement('span');
+    badge.className = 'app-badge';
+    badge.textContent = app.type === 'system' ? 'system' : 'user';
+
+    sub.appendChild(left);
     sub.appendChild(badge);
-    if (version.textContent) sub.appendChild(version);
-    if (state.textContent) sub.appendChild(state);
 
     meta.appendChild(title);
     meta.appendChild(sub);
