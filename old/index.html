@@ -1081,20 +1081,16 @@
           <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" loading="lazy">
         </button>
       </div>
-      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;margin-top:-6px;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:25px;">
         Приложения Android TV
       </h3>
-      <div id="atvAppsStatus" style="text-align:center;font-size:13px;opacity:0.85;margin-bottom:10px;">
-        Отображаем локальные приложения или с подключенного ADB устройства.
-      </div>
-
-      <div class="app-filters" id="atvAppsFilters">
-        <button class="sys-btn" data-filter="all" onclick="setAtvAppsFilter('all')">Все</button>
-        <button class="sys-btn" data-filter="user" onclick="setAtvAppsFilter('user')">Сторонние</button>
-        <button class="sys-btn" data-filter="system" onclick="setAtvAppsFilter('system')">Системные</button>
-        <button class="sys-btn" data-filter="disabled" onclick="setAtvAppsFilter('disabled')">Отключенные</button>
-        <button class="sys-btn" data-filter="deleted" onclick="setAtvAppsFilter('deleted')">Удаленные</button>
+      <div class="app-filters" id="atvAppsFilters" style="margin-bottom:8px;">
+        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="all" onclick="setAtvAppsFilter('all')">Все</button>
+        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="user" onclick="setAtvAppsFilter('user')">Сторонние</button>
+        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="system" onclick="setAtvAppsFilter('system')">Системные</button>
+        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="disabled" onclick="setAtvAppsFilter('disabled')">Отключенные</button>
+        <button class="sys-btn" style="min-width:86px; padding:8px 10px; font-size:12px;" data-filter="deleted" onclick="setAtvAppsFilter('deleted')">Удаленные</button>
       </div>
 
       <div id="atvAppsContainer" style="max-height:68vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:16px;">
@@ -5602,6 +5598,9 @@ function closeAtvAppsModal() {
   if (modal) modal.style.display = 'none';
   closeAtvAppActions();
   document.body.classList.remove('modal-open');
+  setTimeout(() => {
+    ignoreNextEnter = false;
+  }, 100);
 }
 
 function setAtvAppsFilter(filter, rerender = true) {
@@ -5727,7 +5726,8 @@ function renderAtvAppsList() {
     version.style.opacity = '0.85';
     const state = document.createElement('span');
     state.className = 'app-state';
-    state.textContent = app.state === 'disabled' ? '(откл)' : app.state === 'deleted' ? '(del)' : '';
+    state.style.color = '#f75c5c';
+    state.textContent = app.state === 'disabled' ? 'отключено' : app.state === 'deleted' ? 'удалено' : '';
 
     const bottomLine = document.createElement('div');
     bottomLine.style.display = 'flex';
@@ -5833,6 +5833,22 @@ document.addEventListener('keydown', function(e) {
     }
   }
 }, true);
+
+// Закрытие по native back через AndroidInterface, если доступно
+window.AndroidInterface?.registerOnBackPressed?.("atvAppsBackHandler");
+window.atvAppsBackHandler = function() {
+  const actions = document.getElementById('atvAppActionsModal');
+  const main = document.getElementById('atvAppsModal');
+  if (actions && actions.style.display === 'flex') {
+    closeAtvAppActions();
+    return true;
+  }
+  if (main && main.style.display === 'flex') {
+    closeAtvAppsModal();
+    return true;
+  }
+  return false;
+};
 </script>
 
 <!-- Модалка настроек метода установки -->
