@@ -295,10 +295,10 @@
     .app-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; margin-left:12px; white-space:nowrap; background:#d0a447; color:#0b1d25; }
     .badge-user { background:#2abf6d; color:#0b1d25; }
     .badge-system { background:#d0a447; color:#0b1d25; }
-    /* Кнопки в хедере модалки ATV */
-    .modal-header-tools { display:flex; gap:6px; justify-content:flex-end; align-items:center; }
-    .modal-header-tools button { background:transparent; border:none; padding:4px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-    .modal-header-tools button img { height:18px; }
+    /* Кнопки в хедере модалки ATV (локально, чтобы не трогать другие модалки) */
+    #atvAppsModal .modal-header-tools { display:flex; gap:6px; justify-content:flex-end; align-items:center; }
+    #atvAppsModal .modal-header-tools .modal-adb-indicator { width:26px; height:26px; padding:0; background:transparent; border:none; }
+    #atvAppsModal .modal-header-tools .modal-adb-indicator img { width:100%; height:100%; object-fit:contain; }
     .app-state { font-size:12px; color:#ffc107; }
     #miscModal .sys-btn:focus {
       background-color: #00cfff; color:#000;
@@ -1082,7 +1082,7 @@
     <div class="modal-content">
       <div class="modal-header-tools" style="justify-content:flex-end;">
         <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy" style="height:18px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
         </button>
         <button id="atvAdbIndicator" class="modal-adb-indicator disconnected" onclick="reconnectLastAdbFromChip(event)" title="ADB не подключен">
           <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png" alt="ADB статус" loading="lazy">
@@ -6008,25 +6008,24 @@ function handleAtvAppAction(action) {
     showToast?.({ message: '❌ Ошибка выполнения', type: 'error' });
   } finally {
     closeAtvAppActions();
-    // Локально обновляем состояние без полного рефреша
-    if (data?.success && atvSelectedApp) {
-      const pkg = atvSelectedApp.package;
+    // Оптимистичное обновление статуса локально (без полного рефреша)
+    if (atvSelectedApp) {
+      const targetState =
+        action === 'enable' ? 'enabled' :
+        action === 'disable' ? 'disabled' :
+        action === 'delete' ? 'deleted' :
+        atvSelectedApp.state;
+
       const apps = atvAppsState.apps || [];
-      const idx = apps.findIndex(a => a.package === pkg);
+      const idx = apps.findIndex(a => a.package === atvSelectedApp.package);
       if (idx !== -1) {
-        const app = { ...apps[idx] };
-        if (action === 'enable') {
-          app.state = 'enabled';
-        } else if (action === 'disable') {
-          app.state = 'disabled';
-        } else if (action === 'delete') {
-          app.state = 'deleted';
-        }
-        apps[idx] = app;
+        apps[idx] = { ...apps[idx], state: targetState };
         atvAppsState.apps = apps;
         renderAtvAppsList();
       }
     }
+    // при необходимости можно раскомментировать фоновый полный рефреш:
+    // setTimeout(() => refreshAtvAppsList('remote'), 2000);
   }
 }
 
