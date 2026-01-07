@@ -5921,15 +5921,32 @@ function openAtvAppActions(app) {
   const buttons = document.getElementById('atvAppActionsButtons');
   if (buttons) {
     buttons.innerHTML = '';
-    if (app.state !== 'deleted') {
-      buttons.appendChild(makeAtvActionBtn(app.state === 'disabled' ? 'enable' : 'disable', app.state === 'disabled' ? 'Включить' : 'Отключить'));
+    
+    // Для удалённых приложений показываем только "Включить" (восстановление)
+    if (app.state === 'deleted') {
+      buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
+    } 
+    // Для отключённых: "Включить" + "Открыть"
+    else if (app.state === 'disabled') {
+      buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
+      buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
+    } 
+    // Для включённых: "Отключить" + "Открыть"
+    else {
+      buttons.appendChild(makeAtvActionBtn('disable', 'Отключить'));
       buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
     }
+    
+    // Удаление доступно для user всегда, для system только по ADB, и не для deleted
     const allowDelete = (app.type === 'user') || (atvAppsState.source === 'adb');
     if (allowDelete && app.state !== 'deleted') {
       buttons.appendChild(makeAtvActionBtn('delete', 'Удалить'));
     }
-    buttons.appendChild(makeAtvActionBtn('save', 'Сохранить (APK)'));
+    
+    // Сохранение APK доступно только для не-deleted
+    if (app.state !== 'deleted') {
+      buttons.appendChild(makeAtvActionBtn('save', 'Сохранить (APK)'));
+    }
   }
 
   modal.style.display = 'flex';
