@@ -1006,7 +1006,7 @@
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
     </button>
-    <button onclick="openAtvAppsModal(this)" class="sys-btn">
+    <button onclick="openAtvAppsModalFast(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:28px;"><br>Приложения Android TV
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
@@ -1071,15 +1071,18 @@
       <div id="atvAppsContainer" style="max-height:60vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:12px;">
         <div id="atvAppsList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
-      <div class="system-buttons" style="justify-content:center;gap:8px;">
+      <div class="system-buttons" style="justify-content:center;gap:6px;">
         <button class="sys-btn" onclick="refreshAtvAppsList()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:22px;"><br>Обновить
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:20px;"><br>Обновить
         </button>
         <button class="sys-btn" onclick="testAtvServerConnection()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:22px;"><br>Тест сервера
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:20px;"><br>Тест сервера
+        </button>
+        <button class="sys-btn" onclick="showLocalAppsAsFallback()" tabindex="0">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:20px;"><br>Локальные
         </button>
         <button class="sys-btn" onclick="closeAtvAppsModal()" tabindex="0">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:22px;"><br>Закрыть
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:20px;"><br>Закрыть
         </button>
       </div>
     </div>
@@ -5305,6 +5308,39 @@ if (cards.includes(active)) {
 
     // === Android TV Apps Modal Functions ===
     
+    function openAtvAppsModalFast(opener = null) {
+      // Немедленно открываем модалку без блокирующих проверок
+      const modal = document.getElementById('atvAppsModal');
+      const status = document.getElementById('atvAppsStatus');
+      const list = document.getElementById('atvAppsList');
+      if (!modal || !status || !list) return;
+
+      document.activeElement?.blur();
+      document.body.classList.add('modal-open');
+      modal.style.display = 'flex';
+      bringModalToFront(modal);
+      
+      status.textContent = 'Проверка подключения...';
+      list.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spin" style="font-size:24px;">🔍</div><br><br>Проверка ADB подключения...</div>';
+      
+      // Фокус на модалке
+      setTimeout(() => {
+        modal.setAttribute('tabindex', '-1');
+        modal.focus();
+      }, 100);
+      
+      // Проверяем подключение и запускаем процесс
+      setTimeout(() => {
+        if (!isRemoteServerConnected()) {
+          status.textContent = 'Нет ADB подключения - показываем локальные приложения';
+          showToast({ message: 'ADB не подключен, показываем локальные приложения', type: 'warning' });
+          setTimeout(() => showLocalAppsAsFallback(), 500);
+        } else {
+          deployServerAndGetApps();
+        }
+      }, 300);
+    }
+    
     function openAtvAppsModal(opener = null) {
       const actionLabel = 'Приложения Android TV';
       
@@ -5319,22 +5355,25 @@ if (cards.includes(active)) {
       const list = document.getElementById('atvAppsList');
       if (!modal || !status || !list) return;
 
+      // Немедленно открываем модалку с индикатором загрузки
       document.activeElement?.blur();
       document.body.classList.add('modal-open');
       modal.style.display = 'flex';
       bringModalToFront(modal);
       
       status.textContent = 'Подготовка сервера на удаленном устройстве...';
-      list.innerHTML = '<div style="text-align:center;padding:20px;"><div class="spin">⏳</div> Запуск сервера...</div>';
+      list.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spin" style="font-size:24px;">⏳</div><br><br>Запуск сервера на Android TV...<br><small style="opacity:0.7;">Это может занять несколько секунд</small></div>';
       
-      // Запускаем сервер и получаем список приложений
-      deployServerAndGetApps();
-
+      // Фокус на модалке для навигации
       setTimeout(() => {
-        const first = list.querySelector('.atv-app-row');
-        if (first) first.focus({ preventScroll: true });
-        else { modal.setAttribute('tabindex','-1'); modal.focus(); }
-      }, 800);
+        modal.setAttribute('tabindex', '-1');
+        modal.focus();
+      }, 100);
+      
+      // Запускаем развертывание сервера асинхронно
+      setTimeout(() => {
+        deployServerAndGetApps();
+      }, 200);
     }
 
     function closeAtvAppsModal() {
@@ -5359,11 +5398,18 @@ if (cards.includes(active)) {
       const list = document.getElementById('atvAppsList');
       
       try {
-        // Шаг 1: Развертываем сервер на удаленном устройстве
+        // Шаг 1: Запускаем развертывание сервера (асинхронно)
         status.textContent = 'Развертывание сервера на Android TV...';
         showToast({ message: '🚀 Запуск сервера на Android TV...', type: 'info', duration: 3000 });
         
         const deployResult = await deployServerToRemoteDevice();
+        
+        if (deployResult.status === 'deploying') {
+          // Сервер развертывается в фоне, ждем callback
+          status.textContent = 'Сервер развертывается в фоне...';
+          return; // Ждем window.onServerDeployResult
+        }
+        
         if (!deployResult.success) {
           // Если не удалось развернуть сервер, попробуем fallback на локальные приложения
           console.warn('Server deployment failed, trying local fallback');
@@ -5371,6 +5417,22 @@ if (cards.includes(active)) {
           return;
         }
         
+        // Если развертывание прошло синхронно (не должно происходить)
+        await continueAfterServerDeploy(deployResult);
+        
+      } catch (error) {
+        console.error('Error in deployServerAndGetApps:', error);
+        
+        // Fallback на локальные приложения при любой ошибке
+        console.warn('Falling back to local apps due to error:', error);
+        await showLocalAppsAsFallback();
+      }
+    }
+
+    async function continueAfterServerDeploy(deployResult) {
+      const status = document.getElementById('atvAppsStatus');
+      
+      try {
         // Шаг 2: Ждем запуска сервера
         status.textContent = 'Ожидание запуска сервера...';
         showToast({ message: '⏳ Сервер запускается...', type: 'blue', duration: 2000 });
@@ -5390,13 +5452,28 @@ if (cards.includes(active)) {
         showToast({ message: '✅ Список приложений Android TV загружен', type: 'success' });
         
       } catch (error) {
-        console.error('Error in deployServerAndGetApps:', error);
-        
-        // Fallback на локальные приложения при любой ошибке
-        console.warn('Falling back to local apps due to error:', error);
+        console.error('Error continuing after server deploy:', error);
         await showLocalAppsAsFallback();
       }
     }
+
+    // Callback для результата развертывания сервера
+    window.onServerDeployResult = function(resultJson) {
+      try {
+        const result = JSON.parse(resultJson);
+        console.log('Server deploy result:', result);
+        
+        if (result.success) {
+          continueAfterServerDeploy(result);
+        } else {
+          console.warn('Server deployment failed:', result.error);
+          showLocalAppsAsFallback();
+        }
+      } catch (error) {
+        console.error('Error parsing server deploy result:', error);
+        showLocalAppsAsFallback();
+      }
+    };
 
     async function showLocalAppsAsFallback() {
       const status = document.getElementById('atvAppsStatus');
@@ -5959,28 +6036,72 @@ if (cards.includes(active)) {
     // Функция тестирования сервера
     async function testAtvServerConnection() {
       try {
-        if (!window.AndroidInterface || typeof window.AndroidInterface.testAtvServerConnection !== 'function') {
-          showToast({ message: 'Функция тестирования недоступна', type: 'error' });
+        const status = document.getElementById('atvAppsStatus');
+        status.textContent = 'Тестирование соединения с сервером...';
+        
+        // Сначала проверим базовые вещи
+        if (!window.AndroidInterface) {
+          showToast({ message: 'AndroidInterface недоступен', type: 'error' });
           return;
         }
-
-        showToast({ message: '🔍 Тестирование соединения с сервером...', type: 'info' });
         
-        const testResult = window.AndroidInterface.testAtvServerConnection();
-        const data = JSON.parse(testResult);
+        if (!isRemoteServerConnected()) {
+          showToast({ message: 'ADB не подключен', type: 'error' });
+          status.textContent = 'ADB не подключен - требуется подключение к Android TV';
+          return;
+        }
         
-        if (data.success) {
-          showToast({ 
-            message: `✅ Сервер работает на ${data.deviceIp}:15020`, 
-            type: 'success',
-            duration: 4000
-          });
+        const deviceIp = getRemoteDeviceIp();
+        if (!deviceIp) {
+          showToast({ message: 'IP адрес устройства не найден', type: 'error' });
+          return;
+        }
+        
+        showToast({ message: `🔍 Тестирование ${deviceIp}:15020...`, type: 'info' });
+        
+        if (typeof window.AndroidInterface.testAtvServerConnection === 'function') {
+          // Используем метод Android для тестирования
+          const testResult = window.AndroidInterface.testAtvServerConnection();
+          const data = JSON.parse(testResult);
+          
+          if (data.success) {
+            showToast({ 
+              message: `✅ Сервер работает на ${data.deviceIp}:15020`, 
+              type: 'success',
+              duration: 4000
+            });
+            status.textContent = `Сервер работает на ${data.deviceIp}:15020`;
+          } else {
+            showToast({ 
+              message: `❌ Сервер не отвечает: ${data.error}`, 
+              type: 'error',
+              duration: 5000
+            });
+            status.textContent = `Ошибка: ${data.error}`;
+          }
         } else {
-          showToast({ 
-            message: `❌ Сервер не отвечает: ${data.error}`, 
-            type: 'error',
-            duration: 5000
-          });
+          // Прямое тестирование через fetch
+          try {
+            const response = await fetch(`http://${deviceIp}:15020/ping`, {
+              method: 'GET',
+              signal: AbortSignal.timeout(3000)
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              if (data.code === 200) {
+                showToast({ message: `✅ Сервер отвечает на ${deviceIp}:15020`, type: 'success' });
+                status.textContent = `Сервер работает на ${deviceIp}:15020`;
+              } else {
+                showToast({ message: `⚠️ Сервер отвечает, но код: ${data.code}`, type: 'warning' });
+              }
+            } else {
+              showToast({ message: `❌ HTTP ${response.status}: ${response.statusText}`, type: 'error' });
+            }
+          } catch (fetchError) {
+            showToast({ message: `❌ Нет ответа от сервера: ${fetchError.message}`, type: 'error' });
+            status.textContent = `Сервер не отвечает: ${fetchError.message}`;
+          }
         }
         
       } catch (error) {
