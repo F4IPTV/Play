@@ -1072,20 +1072,20 @@
         <div id="atvAppsList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
       <div class="system-buttons" style="justify-content:center;gap:4px;flex-wrap:wrap;">
-        <button class="sys-btn" onclick="refreshAtvAppsList()" tabindex="0" style="min-width:80px;">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:18px;"><br>Обновить
+        <button class="sys-btn" onclick="refreshAtvAppsList()" tabindex="0" style="min-width:70px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:16px;"><br>HTTP
         </button>
-        <button class="sys-btn" onclick="testAtvServerConnection()" tabindex="0" style="min-width:80px;">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:18px;"><br>Тест
+        <button class="sys-btn" onclick="getRemoteAppsDirectly()" tabindex="0" style="min-width:70px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:16px;"><br>ADB
         </button>
-        <button class="sys-btn" onclick="debugAtvServer()" tabindex="0" style="min-width:80px;">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:18px;"><br>Отладка
+        <button class="sys-btn" onclick="testAtvServerConnection()" tabindex="0" style="min-width:70px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic15_connect.webp" alt="" style="height:16px;"><br>Тест
         </button>
-        <button class="sys-btn" onclick="showLocalAppsAsFallback()" tabindex="0" style="min-width:80px;">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:18px;"><br>Локальные
+        <button class="sys-btn" onclick="showLocalAppsAsFallback()" tabindex="0" style="min-width:70px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:16px;"><br>Локальные
         </button>
-        <button class="sys-btn" onclick="closeAtvAppsModal()" tabindex="0" style="min-width:80px;">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:18px;"><br>Закрыть
+        <button class="sys-btn" onclick="closeAtvAppsModal()" tabindex="0" style="min-width:70px;">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:16px;"><br>Закрыть
         </button>
       </div>
     </div>
@@ -5531,14 +5531,14 @@ if (cards.includes(active)) {
       const row = document.createElement('div');
       row.className = 'atv-app-row local-app-row';
       row.setAttribute('tabindex', '0');
-      row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:10px 12px;background:#1a1a0c;border:1px solid #2f2f1f;border-radius:12px;color:#fff3e7;font-size:14px;outline:none;cursor:pointer;transition:border-color 0.2s ease;';
+      row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:12px;background:#11131a;border:1px solid #1f2330;border-radius:12px;color:#e7eeff;font-size:14px;outline:none;cursor:pointer;transition:border-color 0.2s ease;';
 
       const idxSpan = document.createElement('span');
       idxSpan.textContent = `${index}.`;
-      idxSpan.style.cssText = 'opacity:0.8;min-width:32px;font-weight:600;';
+      idxSpan.style.cssText = 'opacity:0.8;min-width:32px;font-weight:600;color:#00cfff;';
 
       const iconWrap = document.createElement('div');
-      iconWrap.style.cssText = 'width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#0c0c1a;overflow:hidden;';
+      iconWrap.style.cssText = 'width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#0c101a;overflow:hidden;flex-shrink:0;';
       
       // Получаем локальную иконку
       try {
@@ -5550,63 +5550,59 @@ if (cards.includes(active)) {
               const img = document.createElement('img');
               img.src = iconData.data;
               img.alt = '';
-              img.style.cssText = 'height:36px;width:36px;border-radius:6px;object-fit:cover;';
+              img.style.cssText = 'height:44px;width:44px;border-radius:6px;object-fit:cover;';
               img.loading = 'lazy';
+              img.onerror = () => {
+                iconWrap.innerHTML = '<span style="font-size:28px;">📱</span>';
+              };
               iconWrap.appendChild(img);
             } else {
-              iconWrap.innerHTML = '<span style="font-size:24px;">📱</span>';
+              iconWrap.innerHTML = '<span style="font-size:28px;">📱</span>';
             }
           } else {
-            iconWrap.innerHTML = '<span style="font-size:24px;">📱</span>';
+            iconWrap.innerHTML = '<span style="font-size:28px;">📱</span>';
           }
         } else {
-          iconWrap.innerHTML = '<span style="font-size:24px;">📱</span>';
+          iconWrap.innerHTML = '<span style="font-size:28px;">📱</span>';
         }
       } catch (e) {
-        iconWrap.innerHTML = '<span style="font-size:24px;">📱</span>';
+        iconWrap.innerHTML = '<span style="font-size:28px;">📱</span>';
       }
 
       const textCol = document.createElement('div');
-      textCol.style.cssText = 'display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;';
+      textCol.style.cssText = 'display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;';
       
       const labelEl = document.createElement('div');
       labelEl.textContent = app.label || app.packageName;
-      labelEl.style.cssText = 'font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      labelEl.style.cssText = 'font-weight:600;font-size:16px;color:#fff;line-height:1.2;';
       
       const pkgEl = document.createElement('div');
       pkgEl.textContent = app.packageName;
-      pkgEl.style.cssText = 'opacity:0.7;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      pkgEl.style.cssText = 'opacity:0.7;font-size:12px;color:#a0a0a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
       
       const versionEl = document.createElement('div');
-      versionEl.textContent = `v${app.versionName || 'unknown'} (локальное)`;
-      versionEl.style.cssText = 'opacity:0.6;font-size:11px;color:#ffa500;';
+      versionEl.textContent = `v${app.versionName || 'unknown'}`;
+      versionEl.style.cssText = 'opacity:0.6;font-size:11px;color:#888;';
       
       textCol.appendChild(labelEl);
       textCol.appendChild(pkgEl);
       textCol.appendChild(versionEl);
 
-      const infoBtn = document.createElement('button');
-      infoBtn.innerHTML = 'ℹ️';
-      infoBtn.style.cssText = 'background:#614d00;color:#fff;border:none;border-radius:8px;padding:10px;cursor:pointer;font-size:18px;transition:background-color 0.2s ease;flex-shrink:0;';
-      infoBtn.title = 'Локальное приложение (не запускается удаленно)';
-      infoBtn.onmouseover = () => infoBtn.style.backgroundColor = '#ffcf00';
-      infoBtn.onmouseout = () => infoBtn.style.backgroundColor = '#614d00';
-      infoBtn.onclick = (e) => {
-        e.stopPropagation();
-        showToast({ message: 'Это локальное приложение с телефона. Для запуска нужно подключение к Android TV.', type: 'info', duration: 4000 });
-      };
+      const localBadge = document.createElement('div');
+      localBadge.textContent = 'Локальное';
+      localBadge.style.cssText = 'background:#614d00;color:#fff;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:600;text-align:center;flex-shrink:0;';
 
       row.appendChild(idxSpan);
       row.appendChild(iconWrap);
       row.appendChild(textCol);
-      row.appendChild(infoBtn);
+      row.appendChild(localBadge);
 
-      row.onfocus = () => { row.style.borderColor = '#ffcf00'; };
-      row.onblur = () => { row.style.borderColor = '#2f2f1f'; };
+      row.onfocus = () => { row.style.borderColor = '#00cfff'; };
+      row.onblur = () => { row.style.borderColor = '#1f2330'; };
       row.onclick = () => {
         try { 
           navigator.clipboard?.writeText(app.packageName); 
-          showToast({ message: `${app.packageName} скопирован`, type: 'info', duration: 1500 });
+          showToast({ message: `${app.label || app.packageName} скопировано`, type: 'info', duration: 1500 });
         } catch (e) {
           console.warn('Clipboard not available');
         }
@@ -6051,6 +6047,189 @@ if (cards.includes(active)) {
       } catch (error) {
         console.error('Error launching app:', error);
         showToast({ message: `Ошибка запуска: ${error.message}`, type: 'error' });
+      }
+    }
+
+    // Функция получения приложений напрямую через ADB (без HTTP сервера)
+    async function getRemoteAppsDirectly() {
+      const status = document.getElementById('atvAppsStatus');
+      const list = document.getElementById('atvAppsList');
+      
+      try {
+        if (!isRemoteServerConnected()) {
+          showToast({ message: 'ADB не подключен', type: 'error' });
+          return;
+        }
+        
+        status.textContent = 'Получение приложений напрямую через ADB...';
+        list.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spin" style="font-size:24px;">⚡</div><br><br>Прямой запрос через ADB...</div>';
+        
+        if (!window.AndroidInterface || typeof window.AndroidInterface.getRemoteAppsDirectly !== 'function') {
+          showToast({ message: 'Метод getRemoteAppsDirectly недоступен', type: 'error' });
+          return;
+        }
+        
+        showToast({ message: '⚡ Получение списка через ADB...', type: 'info' });
+        
+        const result = window.AndroidInterface.getRemoteAppsDirectly();
+        const data = JSON.parse(result);
+        
+        if (data.code !== 200) {
+          throw new Error(data.msg || 'Ошибка получения приложений через ADB');
+        }
+        
+        const remoteApps = data.data || [];
+        
+        if (!remoteApps.length) {
+          status.textContent = 'Пользовательские приложения не найдены на Android TV';
+          list.innerHTML = '<div style="text-align:center;padding:20px;">📱 Приложения не найдены</div>';
+          return;
+        }
+        
+        status.textContent = `Найдено приложений через ADB: ${remoteApps.length}`;
+        
+        const frag = document.createDocumentFragment();
+        
+        for (let idx = 0; idx < remoteApps.length; idx++) {
+          const app = remoteApps[idx];
+          const appRow = await createRemoteAppRow(app, idx + 1);
+          frag.appendChild(appRow);
+        }
+        
+        list.innerHTML = '';
+        list.appendChild(frag);
+        
+        showToast({ message: `✅ Получено ${remoteApps.length} приложений через ADB`, type: 'success' });
+        
+        requestAnimationFrame(() => {
+          const first = list.querySelector('.atv-app-row');
+          if (first) first.focus({ preventScroll: true });
+        });
+        
+      } catch (error) {
+        console.error('Error getting remote apps directly:', error);
+        status.textContent = `Ошибка ADB: ${error.message}`;
+        list.innerHTML = '<div style="text-align:center;padding:20px;color:#ff5252;">❌ Ошибка получения через ADB</div>';
+        showToast({ message: `Ошибка ADB: ${error.message}`, type: 'error' });
+      }
+    }
+
+    async function createRemoteAppRow(app, index) {
+      const row = document.createElement('div');
+      row.className = 'atv-app-row remote-app-row';
+      row.setAttribute('tabindex', '0');
+      row.style.cssText = 'display:flex;gap:12px;align-items:center;padding:12px;background:#11131a;border:1px solid #1f2330;border-radius:12px;color:#e7eeff;font-size:14px;outline:none;cursor:pointer;transition:border-color 0.2s ease;';
+
+      const idxSpan = document.createElement('span');
+      idxSpan.textContent = `${index}.`;
+      idxSpan.style.cssText = 'opacity:0.8;min-width:32px;font-weight:600;color:#00cfff;';
+
+      const iconWrap = document.createElement('div');
+      iconWrap.style.cssText = 'width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#0c101a;overflow:hidden;flex-shrink:0;';
+      
+      // Пока используем fallback на локальные иконки
+      try {
+        if (window.AndroidInterface && typeof window.AndroidInterface.getAppIcon === 'function') {
+          const iconResult = window.AndroidInterface.getAppIcon(app.packageName);
+          if (iconResult) {
+            const iconData = JSON.parse(iconResult);
+            if (iconData.code === 200 && iconData.data) {
+              const img = document.createElement('img');
+              img.src = iconData.data;
+              img.alt = '';
+              img.style.cssText = 'height:44px;width:44px;border-radius:6px;object-fit:cover;';
+              img.loading = 'lazy';
+              img.onerror = () => {
+                iconWrap.innerHTML = '<span style="font-size:28px;">📺</span>';
+              };
+              iconWrap.appendChild(img);
+            } else {
+              iconWrap.innerHTML = '<span style="font-size:28px;">📺</span>';
+            }
+          } else {
+            iconWrap.innerHTML = '<span style="font-size:28px;">📺</span>';
+          }
+        } else {
+          iconWrap.innerHTML = '<span style="font-size:28px;">📺</span>';
+        }
+      } catch (e) {
+        iconWrap.innerHTML = '<span style="font-size:28px;">📺</span>';
+      }
+
+      const textCol = document.createElement('div');
+      textCol.style.cssText = 'display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;';
+      
+      const labelEl = document.createElement('div');
+      labelEl.textContent = app.label || app.packageName;
+      labelEl.style.cssText = 'font-weight:600;font-size:16px;color:#fff;line-height:1.2;';
+      
+      const pkgEl = document.createElement('div');
+      pkgEl.textContent = app.packageName;
+      pkgEl.style.cssText = 'opacity:0.7;font-size:12px;color:#a0a0a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      
+      const versionEl = document.createElement('div');
+      versionEl.textContent = `v${app.versionName || 'unknown'}`;
+      versionEl.style.cssText = 'opacity:0.6;font-size:11px;color:#888;';
+      
+      textCol.appendChild(labelEl);
+      textCol.appendChild(pkgEl);
+      textCol.appendChild(versionEl);
+
+      const launchBtn = document.createElement('button');
+      launchBtn.innerHTML = '▶️';
+      launchBtn.style.cssText = 'background:#004d61;color:#fff;border:none;border-radius:8px;padding:10px;cursor:pointer;font-size:18px;transition:background-color 0.2s ease;flex-shrink:0;';
+      launchBtn.title = 'Запустить на Android TV';
+      launchBtn.onmouseover = () => launchBtn.style.backgroundColor = '#00cfff';
+      launchBtn.onmouseout = () => launchBtn.style.backgroundColor = '#004d61';
+      launchBtn.onclick = (e) => {
+        e.stopPropagation();
+        launchRemoteAppDirectly(app.packageName, app.label);
+      };
+
+      row.appendChild(idxSpan);
+      row.appendChild(iconWrap);
+      row.appendChild(textCol);
+      row.appendChild(launchBtn);
+
+      row.onfocus = () => { row.style.borderColor = '#00cfff'; };
+      row.onblur = () => { row.style.borderColor = '#1f2330'; };
+      row.onclick = () => {
+        try { 
+          navigator.clipboard?.writeText(app.packageName); 
+          showToast({ message: `${app.label || app.packageName} скопировано`, type: 'info', duration: 1500 });
+        } catch (e) {
+          console.warn('Clipboard not available');
+        }
+      };
+
+      return row;
+    }
+
+    async function launchRemoteAppDirectly(packageName, appLabel) {
+      try {
+        if (!window.AndroidInterface || typeof window.AndroidInterface.runShellCommandSimple !== 'function') {
+          showToast({ message: 'Запуск приложений недоступен', type: 'error' });
+          return;
+        }
+        
+        showToast({ message: `🚀 Запускаем ${appLabel} на Android TV...`, type: 'info' });
+        
+        // Запускаем через ADB команду напрямую
+        const launchCommand = `monkey -p ${packageName} -c android.intent.category.LAUNCHER 1`;
+        const result = window.AndroidInterface.runShellCommandSimple(launchCommand);
+        
+        if (result && result.includes('Events injected')) {
+          showToast({ message: `✅ ${appLabel} запущено на Android TV`, type: 'success' });
+        } else {
+          // Попробуем альтернативную команду
+          const altCommand = `am start -n ${packageName}/.MainActivity`;
+          window.AndroidInterface.runShellCommandSimple(altCommand);
+          showToast({ message: `🔄 Попытка запуска ${appLabel}...`, type: 'blue' });
+        }
+        
+      } catch (error) {
+        console.error('Error launching app directly:', error);
+        showToast({ message: `❌ Ошибка запуска: ${error.message}`, type: 'error' });
       }
     }
 
