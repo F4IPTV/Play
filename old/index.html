@@ -301,6 +301,10 @@
       gap: 6px;
       justify-content: flex-end;
       align-items: center;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      z-index: 6;
     }
     #atvAppsModal .modal-header-tools .modal-adb-indicator {
       width: 26px;
@@ -1100,7 +1104,8 @@
   <!-- Модалка списка приложений Android TV -->
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <div class="modal-header-tools" style="justify-content:flex-end;">
+      <div class="modal-header-tools">
+        <div class="modal-quick-actions" id="atvHeaderQuickActions"></div>
         <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
           <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
         </button>
@@ -5767,6 +5772,13 @@ function openAtvAppsModalFast(btn) {
       firstFilter.focus({ preventScroll: true });
     } else {
       modal.focus();
+    }
+    // Инициализируем быстрые действия в хедере модалки (иконки)
+    const tools = modal.querySelector('.modal-header-tools');
+    const content = modal.querySelector('.modal-content');
+    const indicator = modal.querySelector('#atvAdbIndicator');
+    if (tools && content) {
+      ensureModalQuickActions(tools, content, indicator);
     }
   }, 120);
 }
