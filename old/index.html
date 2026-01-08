@@ -5731,6 +5731,7 @@ const atvAppsState = {
   localIcons: {},
   localLabels: {},
   localVersions: {},
+  defaultIcon: null,
   loading: false
 };
 
@@ -5833,6 +5834,7 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.localIcons = data.localIcons || {};
   atvAppsState.localLabels = data.localLabels || {};
   atvAppsState.localVersions = atvAppsState.source === 'adb' ? {} : (data.localVersions || {});
+  atvAppsState.defaultIcon = data.defaultIcon || null;
   if (data.error) {
     showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
   }
@@ -5906,7 +5908,7 @@ function renderAtvAppsList() {
     const img = document.createElement('img');
     img.className = 'app-icon';
     img.loading = 'lazy';
-    const fallbackIcon = atvDefaultIcons[app.type === 'system' ? 'system' : 'user'];
+    const fallbackIcon = atvAppsState.defaultIcon || atvDefaultIcons[app.type === 'system' ? 'system' : 'user'];
     const localIcon = atvAppsState.localIcons?.[app.package];
     img.src = app.icon || localIcon || fallbackIcon;
     img.alt = app.label || app.package;
