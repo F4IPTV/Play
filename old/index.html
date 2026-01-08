@@ -3467,28 +3467,47 @@ function applyAccessibilityServices() {
       const cur = center(currentEl.getBoundingClientRect());
       let best = null;
       let bestScore = Infinity;
+      let bestIndex = -1;
 
-      for (const el of items) {
-        if (el === currentEl) continue;
+      const isH = direction === 'left' || direction === 'right';
+      const primarySign = direction === 'left' ? -1 : direction === 'up' ? -1 : 1;
+
+      const fitsDirection = (dx, dy) => {
+        if (direction === 'left') return dx < -2;
+        if (direction === 'right') return dx > 2;
+        if (direction === 'up') return dy < -2;
+        if (direction === 'down') return dy > 2;
+        return false;
+      };
+
+      const withinCone = (dx, dy) => {
+        // Сужаем «конус» навигации, чтобы не прыгать в другой ряд/колонку.
+        const adx = Math.abs(dx);
+        const ady = Math.abs(dy);
+        if (isH) {
+          return ady <= adx * 0.8 + 14; // чуть допускаем высоту, но удерживаем ряд
+        }
+        return adx <= ady * 0.8 + 14;
+      };
+
+      items.forEach((el, idx) => {
+        if (el === currentEl) return;
         const c = center(el.getBoundingClientRect());
         const dx = c.x - cur.x;
         const dy = c.y - cur.y;
+        if (!fitsDirection(dx, dy)) return;
+        if (!withinCone(dx, dy)) return;
 
-        let ok = false;
-        if (direction === 'left') ok = dx < -2;
-        if (direction === 'right') ok = dx > 2;
-        if (direction === 'up') ok = dy < -2;
-        if (direction === 'down') ok = dy > 2;
-        if (!ok) continue;
-
-        const primary = (direction === 'left' || direction === 'right') ? Math.abs(dx) : Math.abs(dy);
-        const secondary = (direction === 'left' || direction === 'right') ? Math.abs(dy) : Math.abs(dx);
-        const score = primary + secondary * 0.35;
-        if (score < bestScore) {
+        const primary = isH ? Math.abs(dx) : Math.abs(dy);
+        const secondary = isH ? Math.abs(dy) : Math.abs(dx);
+        // Чуть слабее штраф за вторичную ось, чтобы сохранять ряд/колонку
+        const score = primary + secondary * 0.25;
+        if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
           bestScore = score;
           best = el;
+          bestIndex = idx;
         }
-      }
+      });
       return best;
     }
 
@@ -3533,6 +3552,25 @@ function applyAccessibilityServices() {
     document.addEventListener('keydown', (e) => {
       // Back/Escape обрабатываются ниже отдельно
       if (e.key === 'Back' || e.key === 'Escape') return;
+
+      // Спец-правила для модалки таймаута заставки:
+      // если фокус в инпуте и стрелка вниз — идём на кнопку "Применить"
+      if (document.getElementById('screenSaverTimeoutModal')?.style.display === 'flex') {
+        const input = document.getElementById('screenSaverTimeoutInput');
+        const applyBtn = document.getElementById('screenSaverTimeoutApply');
+        const cancelBtn = document.getElementById('screenSaverTimeoutCancel');
+        if (document.activeElement === input && e.key === 'ArrowDown' && applyBtn) {
+          e.preventDefault();
+          try { applyBtn.focus({ preventScroll: true }); } catch (_) { applyBtn.focus(); }
+          return;
+        }
+        if (document.activeElement === cancelBtn && e.key === 'ArrowLeft' && applyBtn) {
+          e.preventDefault();
+          try { applyBtn.focus({ preventScroll: true }); } catch (_) { applyBtn.focus(); }
+          return;
+        }
+      }
+
       for (const id of NAVIGATION_MODALS) {
         const m = document.getElementById(id);
         if (m && m.style.display === 'flex') {
@@ -4618,8 +4656,6 @@ function selectInstallMethod(method, targetElement = null) {
     window.location.assign(url);
   }
 </script>
-
-<script>
 
 <!-- ATV Apps state and functions -->
 <script>
