@@ -1572,6 +1572,13 @@ const ACCESSIBILITY_PACKAGES = [
     const DEFAULT_SCREENSAVER_PACKAGE = "com.neilturner.aerialviews";
     const ADB_ICON_CONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_on.png";
     const ADB_ICON_DISCONNECTED = "https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_off.png";
+    const modalActionAtvRefresh = {
+      key: 'modal-action-atv-refresh',
+      icon: 'https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png',
+      label: 'Обновить список',
+      run() { refreshAtvAppsList('remote'); }
+    };
+
     const MODAL_HEADER_ACTIONS = [
       {
         key: 'modal-action-all-apps',
@@ -1601,7 +1608,8 @@ const ACCESSIBILITY_PACKAGES = [
         run(btn) {
           openAdbCommandsFromButton(btn);
         }
-      }
+      },
+      modalActionAtvRefresh
     ];
     let modalOverlayCounter = 1000;
     const MODAL_Z_STEP = 5;
@@ -3019,6 +3027,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
     function ensureModalQuickActions(container, content, indicator) {
       const modalEl = content?.closest?.('.modal');
+      const isAtv = modalEl && modalEl.id === 'atvAppsModal';
+
       if (modalEl && modalEl.id === 'adbScannerModal') {
         container.querySelectorAll('.modal-quick-action').forEach((btn) => btn.remove());
         return;
@@ -3032,7 +3042,9 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         skipKeys.add('modal-action-screen-saver');
       }
 
-      const allowedActions = MODAL_HEADER_ACTIONS.filter((action) => !skipKeys.has(action.key));
+      const allowedActions = isAtv
+        ? [modalActionAtvRefresh]
+        : MODAL_HEADER_ACTIONS.filter((action) => !skipKeys.has(action.key) && action.key !== 'modal-action-atv-refresh');
       const allowedKeys = new Set(allowedActions.map((action) => action.key));
 
       container.querySelectorAll('.modal-quick-action').forEach((btn) => {
@@ -3044,6 +3056,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       const insertBeforeNode = indicator && indicator.parentElement === container ? indicator : null;
       allowedActions.forEach((action) => {
+        if (!action) return;
         let btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
         if (!btn) {
           btn = createModalQuickActionButton(action);
@@ -3057,13 +3070,14 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 
       // Обеспечиваем порядок согласно allowedActions
       allowedActions.forEach((action) => {
+        if (!action) return;
         const btn = container.querySelector(`.modal-quick-action[data-action="${action.key}"]`);
-        if (!btn || !insertBeforeNode) return;
+        if (!btn || !indicator) return;
         const currentOrder = Array.from(container.children);
-        const targetIndex = currentOrder.indexOf(insertBeforeNode);
+        const targetIndex = currentOrder.indexOf(indicator);
         const btnIndex = currentOrder.indexOf(btn);
-        if (btnIndex > targetIndex || btn.nextSibling !== insertBeforeNode) {
-          container.insertBefore(btn, insertBeforeNode);
+        if (btnIndex > targetIndex || btn.nextSibling !== indicator) {
+          container.insertBefore(btn, indicator);
         }
       });
     }
