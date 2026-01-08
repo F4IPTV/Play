@@ -1077,8 +1077,10 @@
   <!-- Модалка списка приложений Android TV -->
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <div class="modal-header-tools">
-        <div class="modal-quick-actions" id="atvHeaderQuickActions"></div>
+      <div class="modal-header-tools" style="justify-content:flex-end;">
+        <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
+        </button>
       </div>
       <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:0;font-size:1.1rem;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:22px;">
@@ -5717,20 +5719,20 @@ const atvDefaultIcons = {
 };
 
 function openAtvAppsModalFast(btn) {
- 
+  ignoreNextEnter = true;
+  // Требуем активное ADB-подключение
+  if (!isAdbSessionConnected()) {
+    showToast({ message: 'ADB не подключен', type: 'warning', position: 'top-center' });
+    ignoreNextEnter = false;
+    return;
+  }
+  showToast({ message: 'Открываю список приложений', type: 'info', position: 'top-center', duration: 2000 });
+
   const modal = document.getElementById('atvAppsModal');
   if (!modal) return;
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
-  // Инициализируем быстрые действия (иконки) в шапке модалки
-  const tools = modal.querySelector('.modal-header-tools');
-  const content = modal.querySelector('.modal-content');
-  const indicator = modal.querySelector('#atvAdbIndicator');
-  if (tools && content) {
-    ensureModalQuickActions(tools, content, indicator);
-    syncModalAdbIndicators(); // обновим статус ADB для иконки
-  }
   setAtvAppsFilter('all', false);
   refreshAtvAppsList('remote');
   
