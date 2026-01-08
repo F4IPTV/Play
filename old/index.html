@@ -5836,7 +5836,7 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.sourceLabel = data.sourceLabel || (atvAppsState.source === 'adb' ? 'ADB устройство' : 'Локальное устройство');
   atvAppsState.localIcons = data.localIcons || {};
   atvAppsState.localLabels = data.localLabels || {};
-  atvAppsState.localVersions = atvAppsState.source === 'adb' ? {} : (data.localVersions || {});
+  atvAppsState.localVersions = data.localVersions || {};
   atvAppsState.defaultIcon = data.defaultIcon || null;
   if (data.error) {
     showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
