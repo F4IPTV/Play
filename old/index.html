@@ -5803,14 +5803,18 @@ function setAtvAppsFilter(filter, rerender = true) {
 
 function refreshAtvAppsList(source = 'auto') {
   setAtvLoading(true);
-  try {
-    const raw = window.AndroidInterface?.getAppsInventory?.(source) || '';
-    handleAtvAppsPayload(raw);
-  } catch (e) {
-    handleAtvAppsPayload('{}');
-    console.warn('getAppsInventory error', e);
-    showToast?.({ message: '❌ Ошибка получения списка', type: 'error' });
-  }
+  // Даем браузеру время прорисовать спиннер, затем дергаем тяжёлый вызов
+  renderAtvAppsList();
+  setTimeout(() => {
+    try {
+      const raw = window.AndroidInterface?.getAppsInventory?.(source) || '';
+      handleAtvAppsPayload(raw);
+    } catch (e) {
+      handleAtvAppsPayload('{}');
+      console.warn('getAppsInventory error', e);
+      showToast?.({ message: '❌ Ошибка получения списка', type: 'error' });
+    }
+  }, 30);
 }
 
 function handleAtvAppsPayload(raw) {
