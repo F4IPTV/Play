@@ -1094,7 +1094,7 @@
         <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="system" onclick="setAtvAppsFilter('system')">Системные</button>
         <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="disabled" onclick="setAtvAppsFilter('disabled')">Отключенные</button>
         <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="deleted" onclick="setAtvAppsFilter('deleted')">Удаленные</button>
-        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" onclick="loadSystemLaunchables()">Сист откр</button>
+        <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="system_launchable" onclick="setAtvAppsFilter('system_launchable')">Сист откр</button>
       </div>
 
       <div id="atvAppsContainer" style="max-height:72vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
@@ -5824,32 +5824,6 @@ function handleAtvAppsPayload(raw) {
   renderAtvAppsList();
 }
 
-// Загрузка системных приложений с лаунч-активностью (ADB)
-function loadSystemLaunchables() {
-  try {
-    const raw = window.AndroidInterface?.getSystemLaunchables?.() || '[]';
-    const items = JSON.parse(raw);
-    if (!Array.isArray(items) || !items.length) {
-      showToast({ message: 'Системные лаунчеры не найдены', type: 'warning' });
-      return;
-    }
-    atvAppsState.apps = items.map(a => ({
-      label: a.label || a.package,
-      package: a.package,
-      type: 'system',
-      state: 'enabled',
-      icon: a.icon || null,
-      version: a.version || null
-    }));
-    atvAppsState.filter = 'system';
-    setAtvAppsFilter('system', false);
-    renderAtvAppsList();
-  } catch (e) {
-    console.warn('loadSystemLaunchables error', e);
-    showToast({ message: 'Ошибка получения системных приложений', type: 'error' });
-  }
-}
-
 function setAtvAdbIndicator(connected, label) {
   const btn = document.getElementById('atvAdbIndicator');
   if (!btn) return;
@@ -5870,6 +5844,7 @@ function getFilteredAtvApps() {
   if (f === 'all') return atvAppsState.apps;
   if (f === 'user') return atvAppsState.apps.filter(a => a.type === 'user');
   if (f === 'system') return atvAppsState.apps.filter(a => a.type === 'system');
+  if (f === 'system_launchable') return atvAppsState.apps.filter(a => a.type === 'system' && a.launchable === true);
   if (f === 'disabled') return atvAppsState.apps.filter(a => a.state === 'disabled');
   if (f === 'deleted') return atvAppsState.apps.filter(a => a.state === 'deleted');
   return atvAppsState.apps;
