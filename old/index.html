@@ -298,6 +298,7 @@
     /* Кнопки в хедере модалки ATV — используем общие стили modal-header-tools/modal-quick-action */
     #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
     #atvAppsModal #atvAppsHeader { margin-top: 6px; margin-bottom: 6px; }
+    #atvAppsModal .modal-content { max-height: 90vh; }
     #atvAppsModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px; opacity:0.9; }
     #atvAppsModal .atv-loading img { height:32px; }
     .app-state { font-size:12px; color:#ffc107; }
@@ -1099,7 +1100,7 @@
         <button class="sys-btn" style="min-width:70px; padding:6px 8px; font-size:11px;" data-filter="system_launchable" onclick="setAtvAppsFilter('system_launchable')">Сист откр</button>
       </div>
 
-      <div id="atvAppsContainer" style="max-height:72vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
+      <div id="atvAppsContainer" style="max-height:calc(90vh - 160px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
         <div id="atvAppsList" class="apps-list"></div>
       </div>
     </div>
