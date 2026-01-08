@@ -1030,7 +1030,7 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
     </button>
     <button onclick="openAtvAppsModalFast(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:28px;"><br>Пакеты
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Пакеты
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Спец возможности
@@ -5749,6 +5749,13 @@ function openAtvAppsModalFast(btn) {
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
+  // Обновляем заголовок и иконку из кнопки-триггера
+  const header = document.getElementById('atvAppsHeader');
+  const iconSrc = btn?.querySelector('img')?.src || 'https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png';
+  const titleText = (btn?.innerText || 'Приложения Android TV').trim();
+  if (header) {
+    header.innerHTML = `<img src="${iconSrc}" alt="" style="height:22px; vertical-align:middle; margin-right:6px;">${titleText}`;
+  }
   setAtvAppsFilter('all', false);
   refreshAtvAppsList('remote');
   
