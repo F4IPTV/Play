@@ -2267,74 +2267,6 @@ function submitAdbManualConnect() {
   }
 }
 
-(function attachAdbManualNavOnce(){
-  if (window.__adbManualNavBound) return;
-  window.__adbManualNavBound = true;
-
-  function focusManualEl(el) {
-    if (!el) return;
-    requestAnimationFrame(() => el.focus({ preventScroll: true }));
-  }
-
-  document.addEventListener('keydown', function (e) {
-    const modal = document.getElementById('adbManualConnectModal');
-    if (!modal || modal.style.display !== 'flex') return;
-
-    const installModal = document.getElementById('installMethodModal');
-    if (installModal && installModal.style.display === 'flex') return;
-
-    const activeEl = document.activeElement;
-    const isInput = activeEl && activeEl.tagName === 'INPUT';
-
-    const focusables = [
-      document.getElementById('adbManualHostInput'),
-      document.getElementById('adbManualPortInput'),
-      document.getElementById('adbManualSubmitBtn'),
-      document.getElementById('adbManualCloseBtn')
-    ].filter(Boolean);
-
-    const key = e.key;
-    if (key === 'Back' || key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      closeAdbManualConnectModal();
-      return;
-    }
-
-    // Если курсор в инпуте, не перехватываем навигацию/Enter — нужно для экранной клавиатуры
-    if (isInput) return;
-
-    const navKeys = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Enter'];
-    if (!navKeys.includes(key)) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-
-    if (!focusables.length) return;
-
-    const submitBtn = document.getElementById('adbManualSubmitBtn');
-    const closeBtn = document.getElementById('adbManualCloseBtn');
-    let index = focusables.indexOf(document.activeElement);
-
-    if (index === -1) {
-      focusManualEl(focusables[0]);
-      return;
-    }
-
-    if (key === 'Enter') {
-      if (document.activeElement === submitBtn) submitAdbManualConnect();
-      else if (document.activeElement === closeBtn) closeAdbManualConnectModal();
-      return;
-    }
-
-    const step = (key === 'ArrowDown' || key === 'ArrowRight') ? 1 : -1;
-    const nextIndex = Math.min(Math.max(index + step, 0), focusables.length - 1);
-    focusManualEl(focusables[nextIndex]);
-  }, true);
-})();
-
 // Вспомогательная функция для скролла в сканере ADB
 function focusAndRevealAdbCard(el, margin = 12) {
   if (!el) return;
@@ -2363,188 +2295,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
 }
 
 // Навигация в модалке сканера ADB
-(function attachAdbScannerNavOnce(){
-  if (window.__adbScannerNavBound) return;
-  window.__adbScannerNavBound = true;
-
-  let lastIndexBeforeFooter = null;
-
-  document.addEventListener('keydown', function (e) {
-    const modal = document.getElementById('adbScannerModal');
-    if (!modal || modal.style.display !== 'flex') return;
-    
-    // Если открыта модалка установки, не обрабатываем события
-    const installModal = document.getElementById('installMethodModal');
-    if (installModal && installModal.style.display === 'flex') return;
-
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-
-    const cards = Array.from(modal.querySelectorAll('#adbScanList .adb-device-card'));
-    const buttons = Array.from(modal.querySelectorAll('.system-buttons .sys-btn'));
-    const active = document.activeElement;
-    const lastBtn = document.getElementById('lastAdbConnectionBtn');
-    const lastWrapper = document.getElementById('lastAdbConnectionWrapper');
-    const lastVisible = lastBtn && lastWrapper && lastWrapper.style.display !== 'none';
-
-    if (e.key === 'Back' || e.key === 'Escape') {
-      e.preventDefault();
-      closeAdbScanner();
-      return;
-    }
-
-    if (lastVisible && active === lastBtn) {
-      switch (e.key) {
-        case 'ArrowDown': {
-          e.preventDefault();
-          if (cards.length > 0) {
-            focusAndRevealAdbCard(cards[0]);
-          } else if (buttons.length > 0) {
-            buttons[0].focus({ preventScroll: true });
-          }
-          break;
-        }
-        case 'ArrowUp':
-        case 'ArrowLeft':
-        case 'ArrowRight':
-          e.preventDefault();
-          break;
-        case 'Enter':
-          e.preventDefault();
-          lastBtn.click();
-          break;
-        case 'Back':
-        case 'Escape':
-          e.preventDefault();
-          closeAdbScanner();
-          break;
-        default:
-          break;
-      }
-      return;
-    }
-
-    // Навигация по кнопкам управления (внизу)
-    if (buttons.includes(active)) {
-      const i = buttons.indexOf(active);
-      switch (e.key) {
-        case 'ArrowLeft':
-          e.preventDefault();
-          buttons[(i - 1 + buttons.length) % buttons.length].focus();
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          buttons[(i + 1) % buttons.length].focus();
-          break;
-        case 'ArrowUp': {
-          e.preventDefault();
-          if (cards.length > 0) {
-            const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % getAdbColumnsCount()) : 0;
-            const lastRowStart = Math.floor((cards.length - 1) / getAdbColumnsCount()) * getAdbColumnsCount();
-            const targetIndex = Math.min(lastRowStart + col, cards.length - 1);
-            focusAndRevealAdbCard(cards[targetIndex]);
-          }
-          break;
-        }
-        case 'ArrowDown':
-          e.preventDefault();
-          break;
-        case 'Enter':
-          e.preventDefault();
-          active.click();
-          break;
-      }
-      return;
-    }
-
-    // Навигация по карточкам устройств
-    if (cards.includes(active)) {
-      const index = cards.indexOf(active);
-      const cols = getAdbColumnsCount();
-      const total = cards.length;
-      const row = Math.floor(index / cols);
-      const col = index % cols;
-      const lastRow = Math.floor((total - 1) / cols);
-
-      switch (e.key) {
-        case 'ArrowDown': {
-          e.preventDefault();
-          if (row < lastRow) {
-            const nextIndex = (row + 1) * cols + col;
-            const targetIndex = (nextIndex < total) ? nextIndex : Math.min((lastRow * cols) + col, total - 1);
-            focusAndRevealAdbCard(cards[targetIndex]);
-          } else {
-            // Переход к кнопкам управления
-            lastIndexBeforeFooter = index;
-            if (buttons.length > 0) {
-              cards[index]?.classList.remove('selected');
-              buttons[0].focus();
-            }
-          }
-          break;
-        }
-        case 'ArrowUp': {
-          e.preventDefault();
-          if (row === 0) {
-            if (lastVisible && focusLastAdbConnectionButton(true)) {
-              return;
-            }
-            const container = document.getElementById('adbScanListContainer');
-            if (container) container.scrollTop = 0;
-            return;
-          }
-          const prevIndex = (row - 1) * cols + col;
-          focusAndRevealAdbCard(cards[prevIndex]);
-          break;
-        }
-        case 'ArrowLeft': {
-          e.preventDefault();
-          if (col === 0) return;
-          focusAndRevealAdbCard(cards[index - 1]);
-          break;
-        }
-        case 'ArrowRight': {
-          e.preventDefault();
-          if ((col === cols - 1) || (index + 1 >= total)) return;
-          focusAndRevealAdbCard(cards[index + 1]);
-          break;
-        }
-        case 'Enter': {
-          e.preventDefault();
-          // Нажатие Enter на карточке = подключение
-          const connectBtn = active.querySelector('.adb-connect-btn');
-          if (connectBtn) connectBtn.click();
-          break;
-        }
-      }
-      return;
-    }
-
-    // Если фокус не на элементах модалки - переводим на первую карточку или кнопку
-    if (cards.length > 0) {
-      e.preventDefault();
-      focusAndRevealAdbCard(cards[0]);
-    } else if (buttons.length > 0) {
-      e.preventDefault();
-      buttons[0].focus();
-    }
-  }, true);
-
-  // Автоопределение количества колонок
-  function getAdbColumnsCount() {
-    const cards = Array.from(document.querySelectorAll('#adbScanList .adb-device-card'));
-    if (cards.length < 2) return 1;
-    const firstTop = cards[0].getBoundingClientRect().top;
-    let cols = 1;
-    for (let i = 1; i < cards.length; i++) {
-      if (Math.abs(cards[i].getBoundingClientRect().top - firstTop) < 5) {
-        cols++;
-      } else break;
-    }
-    return cols;
-  }
-})();
-
     function selectCard(card) {
       document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -3701,6 +3451,97 @@ function applyAccessibilityServices() {
 
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+    // === Spatial navigation helpers (геометрия вместо rows/cols) ===
+    function getFocusable(scope = document) {
+      return Array.from(scope.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+        .filter(el => !el.disabled && el.offsetParent !== null);
+    }
+
+    function center(rect) {
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    }
+
+    function findNextByDirection(currentEl, direction, scopeEl) {
+      const items = getFocusable(scopeEl);
+      if (!currentEl || !items.length) return null;
+      const cur = center(currentEl.getBoundingClientRect());
+      let best = null;
+      let bestScore = Infinity;
+
+      for (const el of items) {
+        if (el === currentEl) continue;
+        const c = center(el.getBoundingClientRect());
+        const dx = c.x - cur.x;
+        const dy = c.y - cur.y;
+
+        let ok = false;
+        if (direction === 'left') ok = dx < -2;
+        if (direction === 'right') ok = dx > 2;
+        if (direction === 'up') ok = dy < -2;
+        if (direction === 'down') ok = dy > 2;
+        if (!ok) continue;
+
+        const primary = (direction === 'left' || direction === 'right') ? Math.abs(dx) : Math.abs(dy);
+        const secondary = (direction === 'left' || direction === 'right') ? Math.abs(dy) : Math.abs(dx);
+        const score = primary + secondary * 0.35;
+        if (score < bestScore) {
+          bestScore = score;
+          best = el;
+        }
+      }
+      return best;
+    }
+
+    function handleDpadInScope(e, scopeEl) {
+      const dir = e.key === 'ArrowLeft' ? 'left'
+        : e.key === 'ArrowRight' ? 'right'
+          : e.key === 'ArrowUp' ? 'up'
+            : e.key === 'ArrowDown' ? 'down' : null;
+      if (!dir) return;
+      const active = document.activeElement;
+      if (!scopeEl.contains(active)) return;
+      e.preventDefault();
+      const next = findNextByDirection(active, dir, scopeEl);
+      if (next) {
+        try { next.focus({ preventScroll: true }); } catch (_) { next.focus(); }
+        try { next.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) { next.scrollIntoView(); }
+      }
+    }
+
+    function focusFirst(scope) {
+      const first = getFocusable(scope)[0];
+      if (first) {
+        try { first.focus({ preventScroll: true }); } catch (_) { first.focus(); }
+      }
+    }
+
+    const NAVIGATION_MODALS = [
+      'installMethodModal',
+      'atvAppActionsModal',
+      'adbManualConnectModal',
+      'screenSaverTimeoutModal',
+      'adbCommandsModal',
+      'adbScannerModal',
+      'miscMoreModal',
+      'miscModal',
+      'atvAppsModal',
+      'screenSaverModal',
+      'autostartModal',
+      'modal'
+    ];
+
+    document.addEventListener('keydown', (e) => {
+      // Back/Escape обрабатываются ниже отдельно
+      if (e.key === 'Back' || e.key === 'Escape') return;
+      for (const id of NAVIGATION_MODALS) {
+        const m = document.getElementById(id);
+        if (m && m.style.display === 'flex') {
+          handleDpadInScope(e, m);
+          return;
+        }
+      }
+    }, true);
+
     async function runAllAutoPermissions() {
       const actionLabel = 'Авторазрешения';
       if (!getAdbInterfaceOrWarn(actionLabel)) return;
@@ -4248,211 +4089,6 @@ showStatus(`Началась загрузка приложений, ожидай
       }
     }
 
-    // Навигация в модалке групп (адаптивные колонки)
-    (function () {
-      const modal     = document.getElementById('modal');
-      const list      = document.getElementById('modalList');
-      const container = document.getElementById('modalListContainer');
-      let navLock = false;
-      let lastIndexBeforeFooter = null;
-      
-      // Функция для динамического определения количества колонок
-      function getColumnsCount() {
-        const buttons = Array.from(list.querySelectorAll('.component-btn'));
-        if (buttons.length < 2) return 1;
-        
-        const firstTop = buttons[0].getBoundingClientRect().top;
-        let cols = 1;
-        for (let i = 1; i < buttons.length; i++) {
-          if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
-            cols++;
-          } else break;
-        }
-        return cols;
-      }
-
-      function focusAndReveal(el, margin = 12) {
-        if (!el || !container) return;
-        const cr = container.getBoundingClientRect();
-        const er = el.getBoundingClientRect();
-        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
-        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
-        requestAnimationFrame(() => el.focus({ preventScroll: true }));
-      }
-
-      document.addEventListener('keydown', (e) => {
-        if (modal.style.display !== 'flex') return;
-        
-        // Если открыта модалка установки, не обрабатываем события
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-        
-        const keys = ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Enter'];
-        if (!keys.includes(e.key)) return;
-        if (e.repeat) { e.preventDefault(); return; }
-
-        const buttons = Array.from(list.querySelectorAll('.component-btn'));
-        if (!buttons.length) return;
-        
-        const cols = getColumnsCount(); // Динамическое определение колонок
-        const installBtn = document.getElementById('installAllBtn');
-        const active = document.activeElement;
-
-        if (active === installBtn) {
-          e.preventDefault(); e.stopPropagation();
-          if (e.key === 'ArrowDown') return;
-
-          const lastRowStart = Math.floor((buttons.length - 1) / cols) * cols;
-          const fallbackCol = 0;
-          const colFromMemory = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : fallbackCol;
-          const targetIndex = Math.min(lastRowStart + colFromMemory, buttons.length - 1);
-
-          if (e.key === 'ArrowUp') { focusAndReveal(buttons[targetIndex]); return; }
-          if (e.key === 'ArrowLeft' && cols > 1) { const leftIndex = Math.max(targetIndex - 1, lastRowStart); focusAndReveal(buttons[leftIndex]); return; }
-          if (e.key === 'ArrowRight' && cols > 1) { const rowEnd = Math.min(lastRowStart + cols - 1, buttons.length - 1); const rightIndex = Math.min(targetIndex + 1, rowEnd); focusAndReveal(buttons[rightIndex]); return; }
-          if (e.key === 'Enter') { installBtn.click(); return; }
-          return;
-        }
-
-        let index = buttons.indexOf(active);
-        if (index === -1) { e.preventDefault(); focusAndReveal(buttons[0]); return; }
-
-        e.preventDefault(); e.stopPropagation();
-        if (e.key === 'Enter') { active?.click(); return; }
-        if (navLock) return;
-        navLock = true; setTimeout(() => (navLock = false), 90);
-
-        if (e.key === 'ArrowDown') {
-          if (index + cols < buttons.length) { focusAndReveal(buttons[index + cols]); }
-          else {
-            lastIndexBeforeFooter = index;
-            if (installBtn) { focusAndReveal(installBtn); }
-          }
-          return;
-        }
-        if (e.key === 'ArrowUp') { const prev = index - cols; focusAndReveal(buttons[Math.max(prev, 0)]); return; }
-        if (e.key === 'ArrowRight' && cols > 1) { if ((index % cols) < (cols - 1) && index + 1 < buttons.length) focusAndReveal(buttons[index + 1]); return; }
-        if (e.key === 'ArrowLeft' && cols > 1) { if ((index % cols) > 0) focusAndReveal(buttons[index - 1]); return; }
-      });
-    })();
-
-    (function attachAdbCommandsNavOnce(){
-      if (window.__adbCommandsNavBound) return;
-      window.__adbCommandsNavBound = true;
-
-      let lastIndexBeforeClose = null;
-
-      function getAdbCommandColumns() {
-        const buttons = Array.from(document.querySelectorAll('#adbCommandsList .adb-command-btn'));
-        if (buttons.length < 2) return 1;
-        const firstTop = buttons[0].getBoundingClientRect().top;
-        let cols = 1;
-        for (let i = 1; i < buttons.length; i++) {
-          if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
-            cols++;
-          } else {
-            break;
-          }
-        }
-        return cols;
-      }
-
-      document.addEventListener('keydown', (e) => {
-        const modal = document.getElementById('adbCommandsModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-
-        const allowed = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
-        if (!allowed.includes(e.key)) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const buttons = Array.from(document.querySelectorAll('#adbCommandsList .adb-command-btn'));
-        const closeBtn = document.getElementById('adbCommandsCloseBtn');
-
-        if (e.key === 'Back' || e.key === 'Escape') {
-          e.preventDefault();
-          closeAdbCommandsModal();
-          return;
-        }
-
-        if (!buttons.length) {
-          if (e.key === 'Enter' && closeBtn) {
-            e.preventDefault();
-            closeBtn.click();
-          }
-          return;
-        }
-
-        const cols = getAdbCommandColumns();
-        const active = document.activeElement;
-
-        if (active === closeBtn) {
-          e.preventDefault();
-          if (e.key === 'ArrowUp') {
-            const total = buttons.length;
-            const lastRowStart = Math.floor((total - 1) / cols) * cols;
-            const col = (lastIndexBeforeClose != null) ? (lastIndexBeforeClose % cols) : 0;
-            const targetIndex = Math.min(lastRowStart + col, total - 1);
-            focusAndRevealAdbCommand(buttons[targetIndex]);
-          } else if (e.key === 'Enter') {
-            closeBtn.click();
-          }
-          return;
-        }
-
-        let index = buttons.indexOf(active);
-        if (index === -1) {
-          e.preventDefault();
-          focusAndRevealAdbCommand(buttons[0]);
-          return;
-        }
-
-        e.preventDefault();
-
-        const row = Math.floor(index / cols);
-        const col = index % cols;
-        const lastRow = Math.floor((buttons.length - 1) / cols);
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            if (row < lastRow) {
-              const nextIndex = (row + 1) * cols + col;
-              const targetIndex = (nextIndex < buttons.length) ? nextIndex : Math.min(((row + 1) * cols), buttons.length - 1);
-              focusAndRevealAdbCommand(buttons[targetIndex]);
-            } else {
-              lastIndexBeforeClose = index;
-              focusAndRevealAdbCommand(closeBtn);
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            if (row === 0) return;
-            const prevIndex = (row - 1) * cols + col;
-            focusAndRevealAdbCommand(buttons[prevIndex]);
-            break;
-          }
-          case 'ArrowLeft': {
-            if (col === 0) return;
-            focusAndRevealAdbCommand(buttons[index - 1]);
-            break;
-          }
-          case 'ArrowRight': {
-            if (col === cols - 1 || index + 1 >= buttons.length) return;
-            focusAndRevealAdbCommand(buttons[index + 1]);
-            break;
-          }
-          case 'Enter': {
-            active?.click();
-            break;
-          }
-        }
-      }, true);
-    })();
-
     function handleBackButton() {
       if (document.getElementById('atvAppActionsModal')?.style.display === 'flex') closeAtvAppActions();
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
@@ -4467,6 +4103,15 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
       else { window.AndroidInterface.requestAppExit(); }
     }
+
+    // Глобальное закрытие модалок по Back/Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Back' && e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      handleBackButton();
+    }, true);
 
     
 
@@ -4708,170 +4353,6 @@ showStatus(`Началась загрузка приложений, ожидай
       document.body.style.overflow = '';
     }, 4000);
 
-    // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
-    (function attachAutostartNavOnce(){
-      if (window.__autoStartNavBoundV4) return;
-      window.__autoStartNavBoundV4 = true;
-
-      let lastIndexBeforeHeader = null; // откуда ушли НА верхнюю кнопку
-      let lastIndexBeforeFooter = null; // откуда ушли НА "Закрыть"
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('autostartModal');
-        if (!modal || modal.style.display !== 'flex') return;
-        
-        // Если открыта модалка установки, не обрабатываем события
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-const list      = document.getElementById('autostartList');
-const cards     = Array.from(list.querySelectorAll('.card'));
-const headerBtns = Array.from(modal.querySelectorAll('.sys-btn')); // обе верхние кнопки
-const closeBtn  = document.getElementById('autostartCloseBtn');
-if (!cards.length) return;
-
-const cols   = getAutostartCols();
-const active = document.activeElement;
-
-// Фокус на верхних кнопках // === Навигация в автозапуске (адаптивные колонки, «Закрыть» внутри того же скролла) ===
-if (headerBtns.includes(active)) {
-  document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
-  const i = headerBtns.indexOf(active);
-  switch (e.key) {
-    case 'ArrowLeft':
-      e.preventDefault();
-      headerBtns[(i - 1 + headerBtns.length) % headerBtns.length].focus();
-      break;
-    case 'ArrowRight':
-      e.preventDefault();
-      headerBtns[(i + 1) % headerBtns.length].focus();
-      break;
-    case 'ArrowDown': {
-      e.preventDefault();
-      const col = (lastIndexBeforeHeader != null) ? (lastIndexBeforeHeader % cols) : 0;
-      const targetIndex = Math.min(col, cards.length - 1);
-      focusAndRevealAuto(cards[targetIndex]);
-      break;
-    }
-    case 'ArrowUp':
-      e.preventDefault(); // не уходим выше
-      break;
-    case 'Enter':
-      e.preventDefault(); active.click(); break;
-    case 'Back':
-    case 'Escape':
-      e.preventDefault(); closeAutostartModal(); break;
-  }
-  return;
-}
-
-// Фокус на карточках: стрелка Вверх из первой строки — к верхним кнопкам
-if (cards.includes(active)) {
-  const idx = cards.indexOf(active);
-  if (e.key === 'ArrowUp' && idx < cols) {
-    e.preventDefault();
-    lastIndexBeforeHeader = idx;
-    // Привязываем к ближайшей верхней кнопке: 0 -> первая, 1 -> вторая (если есть)
-    headerBtns[Math.min(idx, headerBtns.length - 1)].focus();
-    return;
-  }
-}
-
-        // Нижняя кнопка (внутри того же контейнера)
-        if (active === closeBtn) {
-          document.querySelectorAll('#autostartList .card.selected').forEach(c => c.classList.remove('selected'));
-          switch (e.key) {
-            case 'ArrowUp': {
-              e.preventDefault();
-              const total = cards.length;
-              const lastRow = Math.floor((total - 1) / cols);
-              const lastRowStart = lastRow * cols;
-              const col = (lastIndexBeforeFooter != null) ? (lastIndexBeforeFooter % cols) : 0;
-              const targetIndex = Math.min(lastRowStart + col, total - 1);
-              focusAndRevealAuto(cards[targetIndex]);
-              break;
-            }
-            case 'ArrowDown':
-            case 'ArrowLeft':
-            case 'ArrowRight':
-              e.preventDefault(); break; // упор внизу
-            case 'Enter':
-              e.preventDefault(); closeBtn.click(); break;
-            case 'Back':
-            case 'Escape':
-              e.preventDefault(); closeAutostartModal(); break;
-          }
-          return;
-        }
-
-        // Обычная сетка карточек
-        const index = cards.indexOf(active);
-        if (index === -1 && e.key.startsWith('Arrow')) {
-          e.preventDefault();
-          focusAndRevealAuto(cards[0]);
-          return;
-        }
-
-        const total = cards.length;
-        const row   = Math.floor(index / cols);
-        const col   = index % cols;
-        const lastRow = Math.floor((total - 1) / cols);
-        const lastRowStart = lastRow * cols;
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            if (row < lastRow) {
-              // Кандидат под нами
-              const nextIndex = (row + 1) * cols + col;
-              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
-              focusAndRevealAuto(cards[targetIndex]);
-            } else {
-              // Уже на последней строке — уходим на «Закрыть»
-              lastIndexBeforeFooter = index;
-              cards[index]?.classList.remove('selected');
-              if (closeBtn) focusAndRevealAuto(closeBtn);
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) {
-              lastIndexBeforeHeader = index;
-              cards[index]?.classList.remove('selected');
-              headerBtn?.focus({ preventScroll: true });
-            } else {
-              const prevIndex = (row - 1) * cols + col;
-              focusAndRevealAuto(cards[prevIndex]);
-            }
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
-            const target = index - 1;
-            if (target >= 0) focusAndRevealAuto(cards[target]);
-            break;
-          }
-          case 'ArrowRight': {
-            e.preventDefault();
-            const inRowEnd = (col === cols - 1) || (index + 1 >= total);
-            if (inRowEnd) return;
-            focusAndRevealAuto(cards[index + 1]);
-            break;
-          }
-          case 'Enter':
-            e.preventDefault(); active?.click(); break;
-          case 'Back':
-          case 'Escape':
-            e.preventDefault(); closeAutostartModal(); break;
-        }
-      });
-    })();
-
     // misc modal open/close
     function openMiscModal(triggerBtn=null) {
       lastFocusedElement = document.activeElement;
@@ -4986,376 +4467,6 @@ if (cards.includes(active)) {
       }, 50);
     }
 
-    (function attachMiscMoreNavOnce(){
-      if (window.__miscMoreNavBound) return;
-      window.__miscMoreNavBound = true;
-
-      function focusAndRevealMore(el, margin = 12) {
-        if (!el) return;
-        const container = document.querySelector('#miscMoreModal .misc-buttons-container');
-        if (!container) return;
-        const cr = container.getBoundingClientRect();
-        const er = el.getBoundingClientRect();
-        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
-        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
-        requestAnimationFrame(() => el.focus({ preventScroll: true }));
-      }
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('miscMoreModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
-        if (!buttons.length) {
-          if (e.key === 'Back' || e.key === 'Escape') {
-            e.preventDefault();
-            closeMiscMoreModal();
-          }
-          return;
-        }
-
-        const active = document.activeElement;
-        const index = buttons.indexOf(active);
-        const cols = (() => {
-          if (buttons.length < 2) return 1;
-          const firstTop = buttons[0].getBoundingClientRect().top;
-          let c = 1;
-          for (let i = 1; i < buttons.length; i++) {
-            if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) c++;
-            else break;
-          }
-          return c;
-        })();
-
-        if (index === -1 && e.key.startsWith('Arrow')) {
-          e.preventDefault();
-          focusAndRevealMore(buttons[0]);
-          return;
-        }
-
-        const total = buttons.length;
-        const row   = Math.floor(index / cols);
-        const col   = index % cols;
-        const lastRow = Math.floor((total - 1) / cols);
-        const lastRowStart = lastRow * cols;
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            if (row < lastRow) {
-              const nextIndex = (row + 1) * cols + col;
-              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
-              focusAndRevealMore(buttons[targetIndex]);
-            }
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) return;
-            const prevIndex = (row - 1) * cols + col;
-            focusAndRevealMore(buttons[prevIndex]);
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
-            focusAndRevealMore(buttons[index - 1]);
-            break;
-          }
-          case 'ArrowRight': {
-            e.preventDefault();
-            if ((col === cols - 1) || (index + 1 >= total)) return;
-            focusAndRevealMore(buttons[index + 1]);
-            break;
-          }
-          case 'Enter':
-            e.preventDefault();
-            active?.click();
-            break;
-          case 'Back':
-          case 'Escape':
-            e.preventDefault();
-            closeMiscMoreModal();
-            break;
-        }
-      });
-    })();
-
-    (function attachScreenSaverNavOnce(){
-      if (window.__screenSaverNavBound) return;
-      window.__screenSaverNavBound = true;
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('screenSaverModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') return;
-
-        const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
-        if (!keys.includes(e.key)) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        if (e.key === 'Back' || e.key === 'Escape') {
-          e.preventDefault();
-          closeScreenSaverModal();
-          return;
-        }
-
-        const focusables = Array.from(modal.querySelectorAll('.screen-saver-body .sys-btn'));
-        if (!focusables.length) return;
-        const container = modal.querySelector('.screen-saver-body');
-
-        let index = focusables.indexOf(document.activeElement);
-        if (index === -1) {
-          const first = focusables[0];
-          if (first) {
-            container?.scrollTo({ top: 0, behavior: 'auto' });
-            first.focus({ preventScroll: true });
-          }
-          return;
-        }
-
-        const scrollIntoView = (el) => {
-          if (!el || !container) return;
-          const cr = container.getBoundingClientRect();
-          const er = el.getBoundingClientRect();
-          if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
-          else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
-        };
-
-        const moveFocus = (targetIndex) => {
-          if (targetIndex < 0 || targetIndex >= focusables.length) return;
-          const el = focusables[targetIndex];
-          if (!el) return;
-          if (targetIndex === 0) {
-            container?.scrollTo({ top: 0, behavior: 'auto' });
-          } else {
-            scrollIntoView(el);
-          }
-          el.focus({ preventScroll: true });
-        };
-
-        const forwardKeys = ['ArrowDown', 'ArrowRight'];
-        const backwardKeys = ['ArrowUp', 'ArrowLeft'];
-
-        if (forwardKeys.includes(e.key)) {
-          e.preventDefault();
-          if (index < focusables.length - 1) {
-            moveFocus(index + 1);
-          } else {
-            moveFocus(focusables.length - 1);
-          }
-          return;
-        }
-
-        if (backwardKeys.includes(e.key)) {
-          e.preventDefault();
-          if (index === 0) {
-            container?.scrollTo({ top: 0, behavior: 'auto' });
-            moveFocus(0);
-          } else {
-            moveFocus(index - 1);
-          }
-          return;
-        }
-
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          document.activeElement?.click();
-        }
-      }, true);
-    })();
-
-    (function attachScreenSaverTimeoutNavOnce(){
-      if (window.__screenSaverTimeoutNavBound) return;
-      window.__screenSaverTimeoutNavBound = true;
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('screenSaverTimeoutModal');
-        if (!modal || modal.style.display !== 'flex') return;
-
-        const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
-        if (!keys.includes(e.key)) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        if (e.key === 'Back' || e.key === 'Escape') {
-          e.preventDefault();
-          closeScreenSaverTimeoutModal();
-          return;
-        }
-
-        const focusables = [
-          document.getElementById('screenSaverTimeoutInput'),
-          document.getElementById('screenSaverTimeoutApply'),
-          document.getElementById('screenSaverTimeoutCancel')
-        ].filter(Boolean);
-        if (!focusables.length) return;
-
-        let index = focusables.indexOf(document.activeElement);
-        if (index === -1) {
-          focusables[0].focus({ preventScroll: true });
-          return;
-        }
-
-        if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
-          e.preventDefault();
-        }
-
-        if (e.key === 'Enter') {
-          const active = document.activeElement;
-          if (!active) return;
-          e.preventDefault();
-          if (active.dataset?.step) {
-            adjustScreenSaverTimeout(parseInt(active.dataset.step, 10));
-          } else if (active.id === 'screenSaverTimeoutApply') {
-            applyScreenSaverTimeout();
-          } else if (active.id === 'screenSaverTimeoutCancel') {
-            closeScreenSaverTimeoutModal();
-          }
-          return;
-        }
-
-        const delta = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
-        const nextIndex = Math.min(Math.max(index + delta, 0), focusables.length - 1);
-        focusables[nextIndex]?.focus({ preventScroll: true });
-      }, true);
-    })();
-
-    // Навигация в модалке "Разное" 
-    (function attachMiscNavOnce(){
-      if (window.__miscNavBound) return;
-      window.__miscNavBound = true;
-
-      let lastIndexBeforeFooter = null;
-
-      function focusAndReveal(el, margin = 12) {
-        if (!el) return;
-        const container = document.querySelector('#miscModal .misc-buttons-container');
-        if (!container) return;
-        const cr = container.getBoundingClientRect();
-        const er = el.getBoundingClientRect();
-        if (er.top < cr.top + margin) container.scrollTop -= (cr.top + margin - er.top);
-        else if (er.bottom > cr.bottom - margin) container.scrollTop += (er.bottom - (cr.bottom - margin));
-        requestAnimationFrame(() => el.focus({ preventScroll: true }));
-      }
-      // Синхронизируем подсветку строго с реальным фокусом
-      const misc = document.getElementById('miscModal');
-      misc?.addEventListener('focusin', (e)=>{
-        const modal = document.getElementById('miscModal');
-        if (!modal) return;
-        modal.querySelectorAll('.misc-buttons-container .sys-btn.selected').forEach(b => b.classList.remove('selected'));
-        const btn = e.target.closest('.misc-buttons-container .sys-btn');
-        if (btn) btn.classList.add('selected');
-      });
-      // При клике приводим фокус к нажатой кнопке, чтобы не расходился с подсветкой
-      misc?.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.misc-buttons-container .sys-btn');
-        if (btn) btn.focus({ preventScroll: true });
-      }, true);
-
-      document.addEventListener('keydown', function (e) {
-        const modal = document.getElementById('miscModal');
-        if (!modal || modal.style.display !== 'flex') return;
-        const childModal = document.getElementById('miscMoreModal');
-        if (childModal && childModal.style.display === 'flex') return;
-        
-        // Если открыта модалка установки, не обрабатываем события
-        const installModal = document.getElementById('installMethodModal');
-        if (installModal && installModal.style.display === 'flex') {
-          // Полностью игнорируем события, если открыта модалка установки
-          return;
-        }
-
-        // Дополнительная проверка - если событие уже обработано, не трогаем
-        if (e.defaultPrevented) return;
-
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const buttons = Array.from(modal.querySelectorAll('.misc-buttons-container .sys-btn'));
-        if (!buttons.length) return;
-
-        // Автоопределение количества колонок по позиции кнопок
-        function getColumnsCount(buttons) {
-          if (buttons.length < 2) return 1;
-          const firstTop = buttons[0].getBoundingClientRect().top;
-          let cols = 1;
-          for (let i = 1; i < buttons.length; i++) {
-            if (Math.abs(buttons[i].getBoundingClientRect().top - firstTop) < 5) {
-              cols++;
-            } else break;
-          }
-          return cols;
-        }
-        const cols = getColumnsCount(buttons);
-        const active = document.activeElement;
-
-        // Обычная сетка кнопок
-        const index = buttons.indexOf(active);
-        if (index === -1 && e.key.startsWith('Arrow')) {
-          e.preventDefault();
-          focusAndReveal(buttons[0]);
-          return;
-        }
-
-        const total = buttons.length;
-        const row   = Math.floor(index / cols);
-        const col   = index % cols;
-        const lastRow = Math.floor((total - 1) / cols);
-        const lastRowStart = lastRow * cols;
-
-        switch (e.key) {
-          case 'ArrowDown': {
-            e.preventDefault();
-            if (row < lastRow) {
-              const nextIndex = (row + 1) * cols + col;
-              const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
-              focusAndReveal(buttons[targetIndex]);
-            }
-            // Убираем переход к кнопке "Закрыть" - её больше нет
-            break;
-          }
-          case 'ArrowUp': {
-            e.preventDefault();
-            if (row === 0) return; // упор вверху
-            const prevIndex = (row - 1) * cols + col;
-            focusAndReveal(buttons[prevIndex]);
-            break;
-          }
-          case 'ArrowLeft': {
-            e.preventDefault();
-            if (col === 0) return;
-            const target = index - 1;
-            if (target >= 0) focusAndReveal(buttons[target]);
-            break;
-          }
-          case 'ArrowRight': {
-            e.preventDefault();
-            const inRowEnd = (col === cols - 1) || (index + 1 >= total);
-            if (inRowEnd) return;
-            focusAndReveal(buttons[index + 1]);
-            break;
-          }
-          case 'Enter':
-            e.preventDefault(); active?.click(); break;
-          case 'Back':
-          case 'Escape':
-            e.preventDefault(); closeMiscModal(); break;
-        }
-      });
-    })();
-
   </script>
 <script>
 // 1) Режем автоповтор клавиши Enter/OK по всему приложению (CAPTURE + immediate)
@@ -5444,91 +4555,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Навигация в модалке настроек установки (как модалка "Разное")
-(function attachInstallMethodNavOnce(){
-  if (window.__installMethodNavBound) return;
-  window.__installMethodNavBound = true;
-  
-  // Глобальный обработчик для кнопки Back с максимальным приоритетом
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'Back' || e.key === 'Escape') {
-      const installModal = document.getElementById('installMethodModal');
-      if (installModal && installModal.style.display === 'flex') {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        closeInstallMethodSettings();
-        return;
-      }
-    }
-  }, true);
-
-  document.addEventListener('keydown', function (e) {
-    const modal = document.getElementById('installMethodModal');
-    if (!modal || modal.style.display !== 'flex') return;
-
-    // Блокируем ВСЕ события клавиатуры для модалки установки
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    
-    // Дополнительная блокировка для кнопки Back
-    if (e.key === 'Back' || e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-    }
-
-    const options = Array.from(document.querySelectorAll('#installMethodModal .method-option'));
-    if (!options.length) return;
-
-    const cols = 1; // 1 колонка для модалки установки
-    const active = document.activeElement;
-
-    // Обычная сетка опций
-    const index = options.indexOf(active);
-    if (index === -1 && e.key.startsWith('Arrow')) {
-      options[0]?.focus({ preventScroll: true });
-      return;
-    }
-
-    const total = options.length;
-    const row   = Math.floor(index / cols);
-    const col   = index % cols;
-    const lastRow = Math.floor((total - 1) / cols);
-    const lastRowStart = lastRow * cols;
-
-    switch (e.key) {
-      case 'ArrowDown': {
-        if (row < lastRow) {
-          const nextIndex = (row + 1) * cols + col;
-          const targetIndex = (nextIndex < total) ? nextIndex : Math.min(lastRowStart + col, total - 1);
-          options[targetIndex]?.focus({ preventScroll: true });
-        }
-        break;
-      }
-      case 'ArrowUp': {
-        if (row === 0) return; // упор вверху
-        const prevIndex = (row - 1) * cols + col;
-        options[prevIndex]?.focus({ preventScroll: true });
-        break;
-      }
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        break; // не используем горизонтальную навигацию
-      case 'Enter':
-        if (index >= 0) {
-          const method = options[index].querySelector('input[type="radio"]').value;
-          selectInstallMethod(method, options[index]);
-        }
-        break;
-      case 'Back':
-      case 'Escape':
-        closeInstallMethodSettings(); break;
-    }
-  }, true); // Добавляем capture: true для более высокого приоритета
-})();
-
 function selectInstallMethod(method, targetElement = null) {
   if (__installMethodApplying) return;
   __installMethodApplying = true;
@@ -5594,135 +4620,6 @@ function selectInstallMethod(method, targetElement = null) {
 </script>
 
 <script>
-// === Навигация для ATV Apps модалок ===
-(function attachAtvAppsNavOnce(){
-  if (window.__atvAppsNavBound) return;
-  window.__atvAppsNavBound = true;
-
-  // Глобальный обработчик для Back/Escape с высоким приоритетом
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Back' && e.key !== 'Escape') return;
-    
-    const actionsModal = document.getElementById('atvAppActionsModal');
-    if (actionsModal && actionsModal.style.display === 'flex') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      closeAtvAppActions();
-      return;
-    }
-    
-    const appsModal = document.getElementById('atvAppsModal');
-    if (appsModal && appsModal.style.display === 'flex') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      closeAtvAppsModal();
-      return;
-    }
-  }, true);
-
-  // Навигация внутри списка приложений
-  document.addEventListener('keydown', function (e) {
-    const modal = document.getElementById('atvAppsModal');
-    if (!modal || modal.style.display !== 'flex') return;
-    
-    const actionsModal = document.getElementById('atvAppActionsModal');
-    if (actionsModal && actionsModal.style.display === 'flex') return;
-    
-    if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const filters = Array.from(modal.querySelectorAll('.app-filters .sys-btn'));
-    const rows = Array.from(modal.querySelectorAll('.app-row'));
-    const active = document.activeElement;
-    
-    if (filters.includes(active)) {
-      const idx = filters.indexOf(active);
-      if (e.key === 'ArrowDown' && rows.length > 0) {
-        rows[0].focus();
-        rows[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (e.key === 'ArrowLeft' && idx > 0) {
-        filters[idx - 1].focus();
-      } else if (e.key === 'ArrowRight' && idx < filters.length - 1) {
-        filters[idx + 1].focus();
-      } else if (e.key === 'Enter') {
-        active.click();
-      }
-      return;
-    }
-    
-    if (rows.includes(active)) {
-      const idx = rows.indexOf(active);
-      if (e.key === 'ArrowDown' && idx < rows.length - 1) {
-        rows[idx + 1].focus();
-        rows[idx + 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (e.key === 'ArrowUp') {
-        if (idx > 0) {
-          rows[idx - 1].focus();
-          rows[idx - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else if (filters.length > 0) {
-          filters[0].focus();
-        }
-      } else if (e.key === 'Enter') {
-        active.click();
-      }
-      return;
-    }
-    
-    if (filters.length > 0) {
-      filters[0].focus();
-    } else if (rows.length > 0) {
-      rows[0].focus();
-    }
-  }, true);
-
-  // Навигация внутри модалки действий
-  document.addEventListener('keydown', function (e) {
-    const modal = document.getElementById('atvAppActionsModal');
-    if (!modal || modal.style.display !== 'flex') return;
-    
-    if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)) return;
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const buttons = Array.from(modal.querySelectorAll('.sys-btn'));
-    if (!buttons.length) return;
-    
-    const active = document.activeElement;
-    const idx = buttons.indexOf(active);
-    
-    if (idx === -1) {
-      buttons[0].focus();
-      return;
-    }
-    
-    if (e.key === 'Enter') {
-      active.click();
-      return;
-    }
-    
-    const cols = Math.min(3, buttons.length);
-    const row = Math.floor(idx / cols);
-    const col = idx % cols;
-    
-    if (e.key === 'ArrowDown') {
-      const nextIdx = idx + cols;
-      if (nextIdx < buttons.length) buttons[nextIdx].focus();
-    } else if (e.key === 'ArrowUp') {
-      const prevIdx = idx - cols;
-      if (prevIdx >= 0) buttons[prevIdx].focus();
-    } else if (e.key === 'ArrowLeft') {
-      if (col > 0) buttons[idx - 1].focus();
-    } else if (e.key === 'ArrowRight') {
-      if (col < cols - 1 && idx + 1 < buttons.length) buttons[idx + 1].focus();
-    }
-  }, true);
-})();
-</script>
 
 <!-- ATV Apps state and functions -->
 <script>
