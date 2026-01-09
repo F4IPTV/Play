@@ -3475,7 +3475,6 @@ function applyAccessibilityServices() {
         return false;
       };
 
-      // Более широкий «конус» + доп. допуск, чтобы гарантировать переходы вниз/вверх к единственной кнопке
       const slope = 1.2;
       const pad = 32;
       const bandH = 36; // держим ряд при горизонтальной навигации
@@ -3484,7 +3483,12 @@ function applyAccessibilityServices() {
       const withinBand = (dx, dy) => {
         const adx = Math.abs(dx);
         const ady = Math.abs(dy);
-        return isH ? ady <= bandH : adx <= bandV;
+        if (isH) {
+          // Для горизонтали: разрешаем только текущий ряд (узкая полоса)
+          return ady <= bandH;
+        }
+        // Для вертикали пока не ограничиваем колонку, оставляем прежний конус/фолбэк
+        return true;
       };
 
       const withinCone = (dx, dy) => {
