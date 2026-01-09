@@ -3470,7 +3470,6 @@ function applyAccessibilityServices() {
       let bestIndex = -1;
 
       const isH = direction === 'left' || direction === 'right';
-      const primarySign = direction === 'left' ? -1 : direction === 'up' ? -1 : 1;
 
       const fitsDirection = (dx, dy) => {
         if (direction === 'left') return dx < -2;
@@ -3480,16 +3479,25 @@ function applyAccessibilityServices() {
         return false;
       };
 
+      // Более широкий «конус» + доп. допуск, чтобы гарантировать переходы вниз/вверх к единственной кнопке
       const withinCone = (dx, dy) => {
-        // Сужаем «конус» навигации, чтобы не прыгать в другой ряд/колонку.
         const adx = Math.abs(dx);
         const ady = Math.abs(dy);
+        const slope = 1.2;
+        const pad = 32;
         if (isH) {
-          return ady <= adx * 0.8 + 14; // чуть допускаем высоту, но удерживаем ряд
+          return ady <= adx * slope + pad;
         }
-        return adx <= ady * 0.8 + 14;
+        return adx <= ady * slope + pad;
       };
 
+      const scoreItem = (dx, dy) => {
+        const primary = isH ? Math.abs(dx) : Math.abs(dy);
+        const secondary = isH ? Math.abs(dy) : Math.abs(dx);
+        return primary + secondary * 0.1;
+      };
+
+      // Первый проход: с конусом
       items.forEach((el, idx) => {
         if (el === currentEl) return;
         const c = center(el.getBoundingClientRect());
@@ -3497,17 +3505,31 @@ function applyAccessibilityServices() {
         const dy = c.y - cur.y;
         if (!fitsDirection(dx, dy)) return;
         if (!withinCone(dx, dy)) return;
-
-        const primary = isH ? Math.abs(dx) : Math.abs(dy);
-        const secondary = isH ? Math.abs(dy) : Math.abs(dx);
-        // Чуть слабее штраф за вторичную ось, чтобы сохранять ряд/колонку
-        const score = primary + secondary * 0.25;
+        const score = scoreItem(dx, dy);
         if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
           bestScore = score;
           best = el;
           bestIndex = idx;
         }
       });
+
+      if (best) return best;
+
+      // Фолбэк: без конуса, лишь по направлению, если конус не дал кандидатов
+      items.forEach((el, idx) => {
+        if (el === currentEl) return;
+        const c = center(el.getBoundingClientRect());
+        const dx = c.x - cur.x;
+        const dy = c.y - cur.y;
+        if (!fitsDirection(dx, dy)) return;
+        const score = scoreItem(dx, dy) + 50; // небольшой штраф, чтобы предпочесть любой «по направлению»
+        if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
+          bestScore = score;
+          best = el;
+          bestIndex = idx;
+        }
+      });
+
       return best;
     }
 
@@ -4922,6 +4944,14 @@ function openAtvAppActions(app) {
   atvSelectedApp = app;
   const modal = document.getElementById('atvAppActionsModal');
   if (!modal) return;
+  const parentModal = document.getElementById('atvAppsModal');
+  if (parentModal && parentModal.style.display === 'flex') {
+    modal.dataset.restoreParent = '1';
+    parentModal.setAttribute('inert', '');
+    parentModal.style.pointerEvents = 'none';
+  } else {
+    modal.dataset.restoreParent = '0';
+  }
   const title = document.getElementById('atvAppActionsTitle');
   if (title) title.textContent = app.label || app.package;
   const info = document.getElementById('atvAppActionsInfo');
@@ -4974,6 +5004,11 @@ function closeAtvAppActions() {
   // Если есть открытая модалка ATV Apps, возвращаем на неё modal-open
   const parentModal = document.getElementById('atvAppsModal');
   if (parentModal && parentModal.style.display === 'flex') {
+    if (modal.dataset.restoreParent === '1') {
+      parentModal.removeAttribute('inert');
+      parentModal.style.pointerEvents = '';
+      modal.dataset.restoreParent = '0';
+    }
     document.body.classList.add('modal-open');
   } else {
     document.body.classList.remove('modal-open');
@@ -5065,21 +5100,21 @@ window.atvAppsBackHandler = function() {
     <h3>Способ установки:</h3>
     <div class="install-method-settings">
       <div class="method-option" onclick="selectInstallMethod('sai', this)" tabindex="0">
-        <input type="radio" id="method_sai" name="install_method" value="sai" checked>
+        <input type="radio" id="method_sai" name="install_method" value="sai" checked tabindex="-1">
         <label for="method_sai">
           <strong>Быстрая установка</strong><br>
           <small>FAST-метод (рекомендуется)</small>
         </label>
       </div>
       <div class="method-option" onclick="selectInstallMethod('standard', this)" tabindex="0">
-        <input type="radio" id="method_standard" name="install_method" value="standard">
+        <input type="radio" id="method_standard" name="install_method" value="standard" tabindex="-1">
         <label for="method_standard">
           <strong>Стандартная установка</strong><br>
           <small>Встроенный установщик пакетов</small>
         </label>
       </div>
       <div class="method-option" onclick="selectInstallMethod('adb', this)" tabindex="0">
-        <input type="radio" id="method_adb" name="install_method" value="adb">
+        <input type="radio" id="method_adb" name="install_method" value="adb" tabindex="-1">
         <label for="method_adb">
           <strong>Установка через ADB</strong><br>
           <small>Требуется в меню для разработчиков включить «Отладку по USB</small>
