@@ -3465,10 +3465,6 @@ function applyAccessibilityServices() {
       const items = getFocusable(scopeEl);
       if (!currentEl || !items.length) return null;
       const cur = center(currentEl.getBoundingClientRect());
-      let best = null;
-      let bestScore = Infinity;
-      let bestIndex = -1;
-
       const isH = direction === 'left' || direction === 'right';
 
       const fitsDirection = (dx, dy) => {
@@ -3480,57 +3476,61 @@ function applyAccessibilityServices() {
       };
 
       // Более широкий «конус» + доп. допуск, чтобы гарантировать переходы вниз/вверх к единственной кнопке
+      const slope = 1.2;
+      const pad = 32;
+      const bandH = 36; // держим ряд при горизонтальной навигации
+      const bandV = 48; // держим колонку при вертикальной навигации
+
+      const withinBand = (dx, dy) => {
+        const adx = Math.abs(dx);
+        const ady = Math.abs(dy);
+        return isH ? ady <= bandH : adx <= bandV;
+      };
+
       const withinCone = (dx, dy) => {
         const adx = Math.abs(dx);
         const ady = Math.abs(dy);
-        const slope = 1.2;
-        const pad = 32;
-        if (isH) {
-          return ady <= adx * slope + pad;
-        }
+        if (isH) return ady <= adx * slope + pad;
         return adx <= ady * slope + pad;
       };
 
-      const scoreItem = (dx, dy) => {
+      const scoreItem = (dx, dy, penalty = 0) => {
         const primary = isH ? Math.abs(dx) : Math.abs(dy);
         const secondary = isH ? Math.abs(dy) : Math.abs(dx);
-        return primary + secondary * 0.1;
+        return primary + secondary * 0.1 + penalty;
       };
 
-      // Первый проход: с конусом
-      items.forEach((el, idx) => {
-        if (el === currentEl) return;
-        const c = center(el.getBoundingClientRect());
-        const dx = c.x - cur.x;
-        const dy = c.y - cur.y;
-        if (!fitsDirection(dx, dy)) return;
-        if (!withinCone(dx, dy)) return;
-        const score = scoreItem(dx, dy);
-        if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
-          bestScore = score;
-          best = el;
-          bestIndex = idx;
-        }
-      });
+      const pick = (opts) => {
+        let best = null;
+        let bestScore = Infinity;
+        let bestIndex = -1;
+        items.forEach((el, idx) => {
+          if (el === currentEl) return;
+          const c = center(el.getBoundingClientRect());
+          const dx = c.x - cur.x;
+          const dy = c.y - cur.y;
+          if (!fitsDirection(dx, dy)) return;
+          if (opts.band && !withinBand(dx, dy)) return;
+          if (opts.cone && !withinCone(dx, dy)) return;
+          const score = scoreItem(dx, dy, opts.penalty || 0);
+          if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
+            bestScore = score;
+            best = el;
+            bestIndex = idx;
+          }
+        });
+        return best;
+      };
 
-      if (best) return best;
-
-      // Фолбэк: без конуса, лишь по направлению, если конус не дал кандидатов
-      items.forEach((el, idx) => {
-        if (el === currentEl) return;
-        const c = center(el.getBoundingClientRect());
-        const dx = c.x - cur.x;
-        const dy = c.y - cur.y;
-        if (!fitsDirection(dx, dy)) return;
-        const score = scoreItem(dx, dy) + 50; // небольшой штраф, чтобы предпочесть любой «по направлению»
-        if (score < bestScore - 1e-6 || (Math.abs(score - bestScore) < 1e-6 && idx < bestIndex)) {
-          bestScore = score;
-          best = el;
-          bestIndex = idx;
-        }
-      });
-
-      return best;
+      // Приоритет 1: стараемся держать тот же ряд/колонку
+      let cand = pick({ band: true });
+      if (cand) return cand;
+      // Приоритет 2: конус
+      cand = pick({ cone: true });
+      if (cand) return cand;
+      // Фолбэк: любое по направлению с лёгким штрафом
+      cand = pick({ cone: false, penalty: 50 });
+      return cand;
     }
 
     function handleDpadInScope(e, scopeEl) {
