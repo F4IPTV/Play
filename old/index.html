@@ -4649,6 +4649,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Не позволяем фокусу попадать в radio, держим его на карточке
+let __installMethodIndex = 0;
+
 (function ensureInstallMethodFocus() {
   const modal = document.getElementById('installMethodModal');
   if (!modal) return;
@@ -4668,17 +4670,28 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   modal.addEventListener('focusin', (e) => {
+    const cardTarget = e.target?.closest?.('.method-option');
+    if (cardTarget) {
+      const idx = cards.indexOf(cardTarget);
+      if (idx >= 0) __installMethodIndex = idx;
+    }
+
     const radio = e.target?.closest?.('input[type="radio"]');
     if (!radio) return;
     e.preventDefault();
-    const card = radio.closest('.method-option');
-    if (card) requestAnimationFrame(() => card.focus({ preventScroll: true }));
+    const radioCard = radio.closest('.method-option');
+    if (radioCard) requestAnimationFrame(() => {
+      const idx = cards.indexOf(radioCard);
+      if (idx >= 0) __installMethodIndex = idx;
+      radioCard.focus({ preventScroll: true });
+    });
   }, true);
 
   // на всякий случай фокусируем первую карточку при открытии
   modal.addEventListener('transitionend', () => {
     const first = cards[0];
     if (first && modal.style.display === 'flex') {
+      __installMethodIndex = 0;
       first.focus({ preventScroll: true });
     }
   });
@@ -4701,10 +4714,11 @@ document.addEventListener('keydown', (e) => {
   const active = document.activeElement;
   const activeCard = active?.closest?.('.method-option');
   let index = activeCard ? cards.indexOf(activeCard) : -1;
-  if (index === -1) index = 0;
+  if (index === -1) index = __installMethodIndex || 0;
 
   const move = (delta) => {
     const next = Math.min(Math.max(index + delta, 0), cards.length - 1);
+    __installMethodIndex = next;
     cards[next]?.focus({ preventScroll: true });
   };
 
