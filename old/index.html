@@ -5086,6 +5086,21 @@ function handleAtvAppAction(action) {
   }
 }
 
+// Оптимистичное обновление состояния приложения в списке (используется после подтверждения в native диалоге)
+window.applyAtvActionState = function(action, pkg) {
+  const apps = atvAppsState.apps || [];
+  const idx = apps.findIndex(a => a.package === pkg);
+  if (idx === -1) return;
+  const targetState =
+    action === 'enable' ? 'enabled' :
+    action === 'disable' ? 'disabled' :
+    action === 'delete' ? 'deleted' :
+    apps[idx].state;
+  apps[idx] = { ...apps[idx], state: targetState };
+  atvAppsState.apps = apps;
+  renderAtvAppsList();
+};
+
 // Back/Escape закрывают модалки
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Back' || e.key === 'Escape') {
