@@ -4918,8 +4918,21 @@ function renderAtvAppsList() {
 
     const badge = document.createElement('span');
     badge.className = 'app-badge';
-    badge.classList.add(app.type === 'system' ? 'badge-system' : 'badge-user');
-    badge.textContent = app.type === 'system' ? 'system' : 'user';
+    const isSystem = app.type === 'system';
+    const isDisabled = app.state === 'disabled';
+    const isDeleted = app.state === 'deleted';
+    if (isDeleted) {
+      badge.style.background = 'red';
+      badge.style.color = '#000';
+      badge.textContent = 'deleted';
+    } else if (isDisabled) {
+      badge.style.background = 'orange';
+      badge.style.color = '#000';
+      badge.textContent = 'disabled';
+    } else {
+      badge.classList.add(isSystem ? 'badge-system' : 'badge-user');
+      badge.textContent = isSystem ? 'system' : 'user';
+    }
 
     sub.appendChild(left);
     sub.appendChild(badge);
