@@ -4851,6 +4851,8 @@ const atvAppsState = {
   loading: false
 };
 
+let atvLastFocusedAppEl = null;
+
 const atvDefaultIcons = {
   user: 'https://appassets.androidplatform.net/assets/webview/icons/list/user.png',
   system: 'https://appassets.androidplatform.net/assets/webview/icons/list/system.png'
@@ -5020,6 +5022,7 @@ function renderAtvAppsList() {
     row.tabIndex = 0;
     row.onclick = () => openAtvAppActions(app);
     row.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); openAtvAppActions(app); } };
+    row.onfocus = () => { atvLastFocusedAppEl = row; };
 
     const img = document.createElement('img');
     img.className = 'app-icon';
@@ -5115,6 +5118,11 @@ function dumpLocalApps() {
 let atvSelectedApp = null;
 function openAtvAppActions(app) {
   atvSelectedApp = app;
+  // запоминаем текущую строку списка для восстановления фокуса после закрытия
+  if (!atvLastFocusedAppEl) {
+    const activeRow = document.activeElement?.closest?.('.app-row');
+    if (activeRow) atvLastFocusedAppEl = activeRow;
+  }
   const modal = document.getElementById('atvAppActionsModal');
   if (!modal) return;
   const parentModal = document.getElementById('atvAppsModal');
@@ -5215,6 +5223,18 @@ function closeAtvAppActions() {
       modal.dataset.restoreParent = '0';
     }
     document.body.classList.add('modal-open');
+
+    // возвращаем фокус на последнюю выбранную строку списка
+    if (atvLastFocusedAppEl && document.body.contains(atvLastFocusedAppEl)) {
+      const container = document.getElementById('atvAppsContainer');
+      if (container) {
+        const cr = container.getBoundingClientRect();
+        const er = atvLastFocusedAppEl.getBoundingClientRect();
+        if (er.top < cr.top + 12) container.scrollTop -= (cr.top + 12 - er.top);
+        else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
+      }
+      requestAnimationFrame(() => atvLastFocusedAppEl?.focus({ preventScroll: true }));
+    }
   } else {
     document.body.classList.remove('modal-open');
   }
