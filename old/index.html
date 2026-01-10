@@ -301,7 +301,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
     .app-row:hover { background:#152b45; }
-    .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#000000; padding:6px; }
+    .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
     .app-sub { font-size:12px; color:rgba(255,255,255,0.85); overflow:hidden; text-overflow:ellipsis; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:nowrap; width:100%; gap:8px; text-align:left; }
@@ -659,6 +659,7 @@
   transform: scale(1.2);
   flex-shrink: 0;
   pointer-events: none; /* не даём фокусу/клику уходить в кружок */
+  opacity: 1;
 }
 
 #installMethodModal .method-option label {
@@ -4615,7 +4616,7 @@ function showInstallMethodSettings() {
     document.body.classList.add("modal-open");
     document.activeElement?.blur();
     const firstOption = modal.querySelector('.method-option');
-    if (firstOption) setTimeout(() => firstOption.focus(), 100); else modal.focus();
+    if (firstOption) setTimeout(() => firstOption.focus({ preventScroll: true }), 80); else modal.focus();
 }
 
 // Закрыть настройки метода установки (как модалка "Разное")
@@ -4652,16 +4653,35 @@ document.addEventListener('DOMContentLoaded', function() {
   const modal = document.getElementById('installMethodModal');
   if (!modal) return;
   const radios = modal.querySelectorAll('.method-option input[type="radio"]');
-  radios.forEach(r => r.setAttribute('tabindex', '-1'));
+  const cards = modal.querySelectorAll('.method-option');
+
+  radios.forEach(r => {
+    r.setAttribute('tabindex', '-1');
+    r.setAttribute('aria-hidden', 'true');
+    r.disabled = true; // убираем фокус/навигацию внутрь radio
+    r.style.pointerEvents = 'none';
+    r.addEventListener('focus', (e) => {
+      e.preventDefault();
+      const card = r.closest('.method-option');
+      if (card) card.focus({ preventScroll: true });
+    }, true);
+  });
 
   modal.addEventListener('focusin', (e) => {
     const radio = e.target?.closest?.('input[type="radio"]');
     if (!radio) return;
-    const card = radio.closest('.method-option');
-    if (!card) return;
     e.preventDefault();
-    requestAnimationFrame(() => card.focus({ preventScroll: true }));
+    const card = radio.closest('.method-option');
+    if (card) requestAnimationFrame(() => card.focus({ preventScroll: true }));
   }, true);
+
+  // на всякий случай фокусируем первую карточку при открытии
+  modal.addEventListener('transitionend', () => {
+    const first = cards[0];
+    if (first && modal.style.display === 'flex') {
+      first.focus({ preventScroll: true });
+    }
+  });
 })();
 
 function selectInstallMethod(method, targetElement = null) {
