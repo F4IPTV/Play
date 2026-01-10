@@ -5001,8 +5001,8 @@ function openAtvAppActions(app) {
         ? 'отключено'
         : (app.type === 'system' ? 'system' : 'user');
     info.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;color:#000;">
-        <span style="color:#000;">${app.package}</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;color:#fff;">
+        <span style="color:#fff; font-size:11px; opacity:0.9;">${app.package}</span>
         <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;
           background:${badgeColor}; color:#000; font-weight:700; text-transform:uppercase; font-size:12px;">
           ${badgeText}
