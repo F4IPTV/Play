@@ -5038,10 +5038,15 @@ function makeAtvActionBtn(action, label) {
 
 function handleAtvAppAction(action) {
   if (!atvSelectedApp) return;
-  if (action === 'disable' || action === 'enable') {
+  if (action === 'disable' || action === 'enable' || action === 'delete') {
     const name = atvSelectedApp.label || atvSelectedApp.package;
-    const question = action === 'disable' ? 'Отключить' : 'Включить';
-    if (!confirm(`${question} ${name}?`)) return;
+    const verb = action === 'disable'
+      ? 'Отключить'
+      : action === 'enable'
+        ? 'Включить'
+        : 'Удалить';
+    const message = `Вы хотите «${verb}» ${name}?`;
+    if (!confirm(message)) return;
   }
   try {
     const raw = window.AndroidInterface?.performAppAction?.(action, atvSelectedApp.package, atvAppsState.source) || '{"success":false}';
