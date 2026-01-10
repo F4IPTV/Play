@@ -109,16 +109,18 @@
       z-index: 6;
     }
     .modal-header-tools button {
-      width: 26px;
-      height: 26px;
-      border: none;
+      width: 36px;
+      height: 36px;
+      border: 2px solid transparent;
       background: transparent;
-      padding: 0;
+      padding: 4px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      border-radius: 50%;
       -webkit-tap-highlight-color: transparent;
+      transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
     }
     .modal-header-tools button img {
       width: 100%;
@@ -131,8 +133,9 @@
     .modal-header-tools button:hover,
     .modal-header-tools button:active {
       outline: none !important;
-      background: transparent !important;
-      box-shadow: none !important;
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
       filter: none !important;
     }
     .modal-adb-indicator {
@@ -2784,6 +2787,16 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'modal-quick-action';
+      btn.style.width = '36px';
+      btn.style.height = '36px';
+      btn.style.padding = '4px';
+      btn.style.border = '2px solid transparent';
+      btn.style.borderRadius = '50%';
+      btn.style.background = 'transparent';
+      btn.style.display = 'inline-flex';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.transition = 'border-color .2s ease, box-shadow .2s ease, background-color .2s ease';
       btn.dataset.action = action.key;
       btn.title = action.label;
       btn.setAttribute('aria-label', action.label);
@@ -2803,6 +2816,28 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         } catch (err) {
           console.warn(`modal quick action ${action.key} failed`, err);
         }
+      });
+
+      // focus/hover стили (дополнительно к CSS, чтобы работало для динамики)
+      btn.addEventListener('focus', () => {
+        btn.style.borderColor = '#fff';
+        btn.style.boxShadow = '0 0 0 2px rgba(255,255,255,0.25)';
+        btn.style.background = 'rgba(255,255,255,0.08)';
+      });
+      btn.addEventListener('blur', () => {
+        btn.style.borderColor = 'transparent';
+        btn.style.boxShadow = 'none';
+        btn.style.background = 'transparent';
+      });
+      btn.addEventListener('mouseenter', () => {
+        btn.style.borderColor = '#fff';
+        btn.style.boxShadow = '0 0 0 2px rgba(255,255,255,0.25)';
+        btn.style.background = 'rgba(255,255,255,0.08)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.borderColor = 'transparent';
+        btn.style.boxShadow = 'none';
+        btn.style.background = 'transparent';
       });
 
       return btn;
