@@ -3589,8 +3589,8 @@ function applyAccessibilityServices() {
       }
     }
 
-    const NAVIGATION_MODALS = [
-      'installMethodModal',
+const NAVIGATION_MODALS = [
+      // 'installMethodModal', // локальный хендлер, исключаем из глобального DPAD
       'atvAppActionsModal',
       'adbManualConnectModal',
       'screenSaverTimeoutModal',
@@ -3625,6 +3625,11 @@ function applyAccessibilityServices() {
           return;
         }
       }
+
+    // Для модалки выбора способа установки работаем только локальным хендлером
+    if (document.getElementById('installMethodModal')?.style.display === 'flex') {
+      return;
+    }
 
       for (const id of NAVIGATION_MODALS) {
         const m = document.getElementById(id);
