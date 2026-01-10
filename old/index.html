@@ -4699,7 +4699,8 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
   const active = document.activeElement;
-  let index = cards.indexOf(active);
+  const activeCard = active?.closest?.('.method-option');
+  let index = activeCard ? cards.indexOf(activeCard) : -1;
   if (index === -1) index = 0;
 
   const move = (delta) => {
