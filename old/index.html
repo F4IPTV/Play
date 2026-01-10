@@ -4684,6 +4684,54 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 
+// Клавиатурная навигация только по карточкам installMethodModal
+document.addEventListener('keydown', (e) => {
+  const modal = document.getElementById('installMethodModal');
+  if (!modal || modal.style.display !== 'flex') return;
+  const keys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Back','Escape'];
+  if (!keys.includes(e.key)) return;
+
+  const cards = Array.from(modal.querySelectorAll('.method-option'));
+  if (!cards.length) return;
+
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  e.preventDefault();
+
+  const active = document.activeElement;
+  let index = cards.indexOf(active);
+  if (index === -1) index = 0;
+
+  const move = (delta) => {
+    const next = Math.min(Math.max(index + delta, 0), cards.length - 1);
+    cards[next]?.focus({ preventScroll: true });
+  };
+
+  switch (e.key) {
+    case 'ArrowDown':
+    case 'ArrowRight':
+      move(1);
+      break;
+    case 'ArrowUp':
+    case 'ArrowLeft':
+      move(-1);
+      break;
+    case 'Enter': {
+      const card = cards[index];
+      if (card) {
+        const radio = card.querySelector('input[type="radio"]');
+        if (radio && !radio.checked) radio.checked = true;
+        card.click();
+      }
+      break;
+    }
+    case 'Back':
+    case 'Escape':
+      closeInstallMethodSettings();
+      break;
+  }
+}, true);
+
 function selectInstallMethod(method, targetElement = null) {
   if (__installMethodApplying) return;
   __installMethodApplying = true;
