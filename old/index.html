@@ -4649,8 +4649,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Не позволяем фокусу попадать в radio, держим его на карточке
-let __installMethodIndex = 0;
-
 (function ensureInstallMethodFocus() {
   const modal = document.getElementById('installMethodModal');
   if (!modal) return;
@@ -4671,33 +4669,25 @@ let __installMethodIndex = 0;
 
   modal.addEventListener('focusin', (e) => {
     const cardTarget = e.target?.closest?.('.method-option');
-    if (cardTarget) {
-      const idx = cards.indexOf(cardTarget);
-      if (idx >= 0) __installMethodIndex = idx;
-    }
+    if (cardTarget) return; // уже на карточке — оставляем
 
     const radio = e.target?.closest?.('input[type="radio"]');
     if (!radio) return;
     e.preventDefault();
     const radioCard = radio.closest('.method-option');
-    if (radioCard) requestAnimationFrame(() => {
-      const idx = cards.indexOf(radioCard);
-      if (idx >= 0) __installMethodIndex = idx;
-      radioCard.focus({ preventScroll: true });
-    });
+    if (radioCard) requestAnimationFrame(() => radioCard.focus({ preventScroll: true }));
   }, true);
 
   // на всякий случай фокусируем первую карточку при открытии
   modal.addEventListener('transitionend', () => {
     const first = cards[0];
     if (first && modal.style.display === 'flex') {
-      __installMethodIndex = 0;
       first.focus({ preventScroll: true });
     }
   });
 })();
 
-// Клавиатурная навигация только по карточкам installMethodModal
+// Простая навигация по карточкам installMethodModal
 document.addEventListener('keydown', (e) => {
   const modal = document.getElementById('installMethodModal');
   if (!modal || modal.style.display !== 'flex') return;
@@ -4711,40 +4701,24 @@ document.addEventListener('keydown', (e) => {
   e.stopImmediatePropagation();
   e.preventDefault();
 
-  const active = document.activeElement;
-  const activeCard = active?.closest?.('.method-option');
-  let index = activeCard ? cards.indexOf(activeCard) : -1;
-  if (index === -1) index = __installMethodIndex || 0;
+  const activeCard = document.activeElement?.closest?.('.method-option');
+  let index = activeCard ? cards.indexOf(activeCard) : 0;
 
-  const move = (delta) => {
-    const next = Math.min(Math.max(index + delta, 0), cards.length - 1);
-    __installMethodIndex = next;
-    cards[next]?.focus({ preventScroll: true });
-  };
+  const clamp = (i) => Math.min(Math.max(i, 0), cards.length - 1);
 
-  switch (e.key) {
-    case 'ArrowDown':
-    case 'ArrowRight':
-      move(1);
-      break;
-    case 'ArrowUp':
-    case 'ArrowLeft':
-      move(-1);
-      break;
-    case 'Enter': {
-      const card = cards[index];
-      if (card) {
-        const radio = card.querySelector('input[type="radio"]');
-        if (radio && !radio.checked) radio.checked = true;
-        card.click();
-      }
-      break;
-    }
-    case 'Back':
-    case 'Escape':
-      closeInstallMethodSettings();
-      break;
+  if (e.key === 'Enter') {
+    const card = cards[clamp(index)];
+    card?.click();
+    return;
   }
+  if (e.key === 'Back' || e.key === 'Escape') {
+    closeInstallMethodSettings();
+    return;
+  }
+
+  const delta = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
+  const next = clamp(index + delta);
+  cards[next]?.focus({ preventScroll: true });
 }, true);
 
 function selectInstallMethod(method, targetElement = null) {
