@@ -4615,6 +4615,7 @@ function showInstallMethodSettings() {
     modal.style.display = "flex";
     document.body.classList.add("modal-open");
     document.activeElement?.blur();
+    __installMethodIndex = 0;
     const firstOption = modal.querySelector('.method-option');
     if (firstOption) setTimeout(() => firstOption.focus({ preventScroll: true }), 80); else modal.focus();
 }
@@ -4649,11 +4650,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Не позволяем фокусу попадать в radio, держим его на карточке
+let __installMethodIndex = 0;
+
 (function ensureInstallMethodFocus() {
   const modal = document.getElementById('installMethodModal');
   if (!modal) return;
   const radios = modal.querySelectorAll('.method-option input[type="radio"]');
-  const cards = modal.querySelectorAll('.method-option');
+  const cards = Array.from(modal.querySelectorAll('.method-option'));
+
+  // назначаем tabindex для карточек и запоминаем порядок
+  cards.forEach((card, idx) => {
+    card.tabIndex = 0;
+    card.dataset.methodIdx = String(idx);
+  });
 
   radios.forEach(r => {
     r.setAttribute('tabindex', '-1');
@@ -4669,7 +4678,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   modal.addEventListener('focusin', (e) => {
     const cardTarget = e.target?.closest?.('.method-option');
-    if (cardTarget) return; // уже на карточке — оставляем
+    if (cardTarget) {
+      const idx = Number(cardTarget.dataset.methodIdx ?? cards.indexOf(cardTarget));
+      if (Number.isFinite(idx)) __installMethodIndex = Math.max(0, Math.min(idx, cards.length - 1));
+      return; // уже на карточке — оставляем
+    }
 
     const radio = e.target?.closest?.('input[type="radio"]');
     if (!radio) return;
@@ -4702,12 +4715,15 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault();
 
   const activeCard = document.activeElement?.closest?.('.method-option');
-  let index = activeCard ? cards.indexOf(activeCard) : 0;
+  if (activeCard) {
+    const idx = Number(activeCard.dataset.methodIdx ?? cards.indexOf(activeCard));
+    if (Number.isFinite(idx)) __installMethodIndex = idx;
+  }
 
   const clamp = (i) => Math.min(Math.max(i, 0), cards.length - 1);
 
   if (e.key === 'Enter') {
-    const card = cards[clamp(index)];
+    const card = cards[clamp(__installMethodIndex)];
     card?.click();
     return;
   }
@@ -4717,7 +4733,8 @@ document.addEventListener('keydown', (e) => {
   }
 
   const delta = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
-  const next = clamp(index + delta);
+  const next = clamp(__installMethodIndex + delta);
+  __installMethodIndex = next;
   cards[next]?.focus({ preventScroll: true });
 }, true);
 
