@@ -4957,7 +4957,16 @@ function openAtvAppActions(app) {
     modal.dataset.restoreParent = '0';
   }
   const title = document.getElementById('atvAppActionsTitle');
-  if (title) title.textContent = app.label || app.package;
+  if (title) {
+    const iconSrc = app.icon
+      || atvAppsState.localIcons?.[app.package]
+      || atvAppsState.defaultIcon
+      || atvDefaultIcons[app.type === 'system' ? 'system' : 'user'];
+    const label = app.label || app.package;
+    title.innerHTML = iconSrc
+      ? `<img src="${iconSrc}" alt="" style="height:22px;width:22px;object-fit:contain;"> <span>${label}</span>`
+      : label;
+  }
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
     const stateText = app.state === 'disabled' ? ' · отключено' : app.state === 'deleted' ? ' · удалено' : '';
@@ -5029,6 +5038,11 @@ function makeAtvActionBtn(action, label) {
 
 function handleAtvAppAction(action) {
   if (!atvSelectedApp) return;
+  if (action === 'disable' || action === 'enable') {
+    const name = atvSelectedApp.label || atvSelectedApp.package;
+    const question = action === 'disable' ? 'Отключить' : 'Включить';
+    if (!confirm(`${question} ${name}?`)) return;
+  }
   try {
     const raw = window.AndroidInterface?.performAppAction?.(action, atvSelectedApp.package, atvAppsState.source) || '{"success":false}';
     let data = null;
