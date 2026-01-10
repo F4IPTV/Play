@@ -4969,8 +4969,25 @@ function openAtvAppActions(app) {
   }
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
-    const stateText = app.state === 'disabled' ? ' · отключено' : app.state === 'deleted' ? ' · удалено' : '';
-    info.innerHTML = `${app.package} · ${app.type === 'system' ? 'system' : 'user'}<span style="color:#f75c5c;">${stateText}</span>`;
+    const badgeColor = app.state === 'deleted'
+      ? 'red'
+      : app.state === 'disabled'
+        ? 'orange'
+        : '#ffca28'; // как system badge в списке
+    const badgeText = app.state === 'deleted'
+      ? 'удалено'
+      : app.state === 'disabled'
+        ? 'отключено'
+        : (app.type === 'system' ? 'system' : 'user');
+    info.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;color:#000;">
+        <span style="color:#000;">${app.package}</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;
+          background:${badgeColor}; color:#000; font-weight:700; text-transform:uppercase; font-size:12px;">
+          ${badgeText}
+        </span>
+      </div>
+    `;
   }
 
   const buttons = document.getElementById('atvAppActionsButtons');
