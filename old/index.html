@@ -658,6 +658,7 @@
   margin: 0;
   transform: scale(1.2);
   flex-shrink: 0;
+  pointer-events: none; /* не даём фокусу/клику уходить в кружок */
 }
 
 #installMethodModal .method-option label {
@@ -4645,6 +4646,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Не позволяем фокусу попадать в radio, держим его на карточке
+(function ensureInstallMethodFocus() {
+  const modal = document.getElementById('installMethodModal');
+  if (!modal) return;
+  const radios = modal.querySelectorAll('.method-option input[type="radio"]');
+  radios.forEach(r => r.setAttribute('tabindex', '-1'));
+
+  modal.addEventListener('focusin', (e) => {
+    const radio = e.target?.closest?.('input[type="radio"]');
+    if (!radio) return;
+    const card = radio.closest('.method-option');
+    if (!card) return;
+    e.preventDefault();
+    requestAnimationFrame(() => card.focus({ preventScroll: true }));
+  }, true);
+})();
 
 function selectInstallMethod(method, targetElement = null) {
   if (__installMethodApplying) return;
