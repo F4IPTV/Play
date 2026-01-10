@@ -5050,22 +5050,6 @@ function handleAtvAppAction(action) {
     } catch (_) {
       // fallback: ничего
     }
-    // Оптимистичное обновление статуса в списке
-    closeAtvAppActions();
-    if (atvSelectedApp) {
-      const targetState =
-        action === 'enable' ? 'enabled' :
-        action === 'disable' ? 'disabled' :
-        action === 'delete' ? 'deleted' :
-        atvSelectedApp.state;
-      const apps = atvAppsState.apps || [];
-      const idx = apps.findIndex(a => a.package === atvSelectedApp.package);
-      if (idx !== -1) {
-        apps[idx] = { ...apps[idx], state: targetState };
-        atvAppsState.apps = apps;
-        renderAtvAppsList();
-      }
-    }
     return;
   }
   // Для прочих действий — старая логика без подтверждения
