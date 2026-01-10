@@ -279,15 +279,28 @@
 
     /* ATV список приложений */
     .app-filters { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:8px 0 12px; }
-    .app-filters .sys-btn { min-width: 92px; max-width: 140px; padding: 8px; font-size: 12px; }
-    .app-filters .sys-btn.active { background:#00cfff; color:#000; }
+    .app-filters .sys-btn {
+      min-width: 92px;
+      max-width: 140px;
+      padding: 8px;
+      font-size: 12px;
+      background: #0f1f33;
+      border: 1px solid #1f3a5a;
+      color: #e8f0ff;
+    }
+    .app-filters .sys-btn.active,
+    .app-filters .sys-btn:focus {
+      background: #1b3d66;
+      border-color: #3fa9f5;
+      color: #fff;
+    }
     .apps-list { display:flex; flex-direction:column; gap:8px; }
     .app-row {
       display:flex; gap:12px; align-items:flex-start; padding:10px 12px;
-      background:#0a2f3c; border-radius:14px; border:1px solid rgba(255,255,255,0.08);
+      background:#0f1f33; border-radius:14px; border:1px solid #1f3a5a;
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
-    .app-row:hover { background:#0f3f50; }
+    .app-row:hover { background:#152b45; }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#0e4457; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
