@@ -5040,14 +5040,19 @@ function handleAtvAppAction(action) {
   if (!atvSelectedApp) return;
   if (action === 'disable' || action === 'enable' || action === 'delete') {
     const name = atvSelectedApp.label || atvSelectedApp.package;
-    const verb = action === 'disable'
-      ? 'Отключить'
-      : action === 'enable'
-        ? 'Включить'
-        : 'Удалить';
-    const message = `Вы хотите «${verb}» ${name}?`;
-    if (!confirm(message)) return;
+    try {
+      window.AndroidInterface?.confirmAndPerformAppAction?.(
+        action,
+        atvSelectedApp.package,
+        name,
+        atvAppsState.source
+      );
+    } catch (_) {
+      // fallback: ничего
+    }
+    return;
   }
+  // Для прочих действий — старая логика без подтверждения
   try {
     const raw = window.AndroidInterface?.performAppAction?.(action, atvSelectedApp.package, atvAppsState.source) || '{"success":false}';
     let data = null;
@@ -5063,7 +5068,6 @@ function handleAtvAppAction(action) {
     showToast?.({ message: '❌ Ошибка выполнения', type: 'error' });
   } finally {
     closeAtvAppActions();
-    // Оптимистичное обновление статуса локально (без полного рефреша)
     if (atvSelectedApp) {
       const targetState =
         action === 'enable' ? 'enabled' :
@@ -5079,8 +5083,6 @@ function handleAtvAppAction(action) {
         renderAtvAppsList();
       }
     }
-    // при необходимости можно раскомментировать фоновый полный рефреш:
-    // setTimeout(() => refreshAtvAppsList('remote'), 2000);
   }
 }
 
