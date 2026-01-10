@@ -5206,6 +5206,10 @@ function openAtvAppActions(app) {
     if (app.state !== 'deleted') {
       buttons.appendChild(makeAtvActionBtn('save', 'Сохранить (APK)'));
     }
+    // Инфо по пакету — только для не-deleted
+    if (app.state !== 'deleted') {
+      buttons.appendChild(makeAtvActionBtn('info', 'Инфо'));
+    }
   }
 
   modal.style.display = 'flex';
@@ -5254,6 +5258,13 @@ function makeAtvActionBtn(action, label) {
 
 function handleAtvAppAction(action) {
   if (!atvSelectedApp) return;
+  if (action === 'info') {
+    try {
+      window.AndroidInterface?.openSettingsForPackage?.(atvSelectedApp.package);
+    } catch (_) {}
+    closeAtvAppActions();
+    return;
+  }
   if (action === 'disable' || action === 'enable' || action === 'delete') {
     const name = atvSelectedApp.label || atvSelectedApp.package;
     try {
