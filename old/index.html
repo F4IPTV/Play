@@ -710,9 +710,9 @@
   width: 100%;
   max-width: 280px;
   min-height: 64px;
-  background-color: #2a2a2a;
-  color: #fff;
-  border: 2px solid transparent;
+  background: #10131A;
+  color: #e8f0ff;
+  border: 1px solid #1f3a5a;
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -723,20 +723,13 @@
   transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.adb-command-btn:hover {
-  background-color: #3a3a3a;
-  color: #fff;
-  border-color: rgba(255,255,255,0.2);
-  box-shadow: none;
-  outline: none;
-}
-
+.adb-command-btn:hover,
 .adb-command-btn:focus,
 .adb-command-btn.selected {
-  background-color: #00cfff;
-  color: #000;
-  border-color: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,.4);
+  background: #10131A;
+  border-color: #3fa9f5;
+  color: #fff;
+  box-shadow: none;
   outline: none;
 }
 
@@ -785,6 +778,16 @@
 #adbCommandsCloseBtn {
   margin: 16px auto 0;
   width: min(280px, 90%);
+  background: #10131A;
+  border: 1px solid #1f3a5a;
+  color: #e8f0ff;
+}
+#adbCommandsCloseBtn:hover,
+#adbCommandsCloseBtn:focus {
+  background: #10131A;
+  border-color: #3fa9f5;
+  color: #fff;
+  box-shadow: none;
 }
 
 #screenSaverModal .modal-content {
