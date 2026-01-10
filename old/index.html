@@ -4903,8 +4903,23 @@ function renderAtvAppsList() {
     version.style.opacity = '0.85';
     const state = document.createElement('span');
     state.className = 'app-state';
-    state.style.color = '#f75c5c';
-    state.textContent = app.state === 'disabled' ? 'отключено' : app.state === 'deleted' ? 'удалено' : '';
+    const isDisabled = app.state === 'disabled';
+    const isDeleted = app.state === 'deleted';
+    if (isDisabled || isDeleted) {
+      state.textContent = isDeleted ? 'удалено' : 'отключено';
+      state.style.display = 'inline-flex';
+      state.style.alignItems = 'center';
+      state.style.gap = '4px';
+      state.style.padding = '2px 8px';
+      state.style.borderRadius = '10px';
+      state.style.fontWeight = '700';
+      state.style.textTransform = 'uppercase';
+      state.style.fontSize = '11px';
+      state.style.background = isDeleted ? 'red' : 'orange';
+      state.style.color = '#000';
+    } else {
+      state.textContent = '';
+    }
 
     const bottomLine = document.createElement('div');
     bottomLine.style.display = 'flex';
@@ -4918,21 +4933,8 @@ function renderAtvAppsList() {
 
     const badge = document.createElement('span');
     badge.className = 'app-badge';
-    const isSystem = app.type === 'system';
-    const isDisabled = app.state === 'disabled';
-    const isDeleted = app.state === 'deleted';
-    if (isDeleted) {
-      badge.style.background = 'red';
-      badge.style.color = '#000';
-      badge.textContent = 'deleted';
-    } else if (isDisabled) {
-      badge.style.background = 'orange';
-      badge.style.color = '#000';
-      badge.textContent = 'disabled';
-    } else {
-      badge.classList.add(isSystem ? 'badge-system' : 'badge-user');
-      badge.textContent = isSystem ? 'system' : 'user';
-    }
+    badge.classList.add(app.type === 'system' ? 'badge-system' : 'badge-user');
+    badge.textContent = app.type === 'system' ? 'system' : 'user';
 
     sub.appendChild(left);
     sub.appendChild(badge);
