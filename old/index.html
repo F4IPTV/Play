@@ -186,8 +186,8 @@
     }
     #passwordRow .password-row-icon-btn img,
     #passwordRow .modal-adb-indicator img {
-      height: 22px;
-      width: 22px;
+      height: 30px;
+      width: 30px;
       object-fit: contain;
     }
     #passwordRow .password-row-icon-btn:focus,
@@ -5403,7 +5403,7 @@ document.addEventListener('keydown', function(e) {
   }
 }, true);
 
-//  Закрытие по native back через AndroidInterface, если доступно
+// Закрытие по native back через AndroidInterface, если доступно
 window.AndroidInterface?.registerOnBackPressed?.("atvAppsBackHandler");
 window.atvAppsBackHandler = function() {
   const actions = document.getElementById('atvAppActionsModal');
