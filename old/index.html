@@ -5327,7 +5327,7 @@ function handleAtvAppAction(action) {
     closeAtvAppActions();
     return;
   }
-  if (action === 'disable' || action === 'enable' || action === 'delete') {
+  if (action === 'disable' || action === 'disable_clear' || action === 'enable' || action === 'delete' || action === 'clear') {
     const name = atvSelectedApp.label || atvSelectedApp.package;
     try {
       window.AndroidInterface?.confirmAndPerformAppAction?.(
