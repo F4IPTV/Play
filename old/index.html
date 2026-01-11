@@ -1157,7 +1157,15 @@
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
       <div class="modal-header-tools" style="justify-content:flex-end;">
-        <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
+        <button
+          type="button"
+          class="modal-quick-action"
+          data-action="modal-action-atv-refresh"
+          onclick="refreshAtvAppsList('remote')"
+          title="Обновить список"
+          aria-label="Обновить список"
+          style="width:42px;height:42px;padding:4px;"
+        >
           <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
         </button>
       </div>
@@ -2989,6 +2997,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function ensureModalAdbIndicators() {
       const headerSelector = MODAL_ADB_HEADER_SELECTOR;
       document.querySelectorAll('.modal .modal-content').forEach((content) => {
+        const modalEl = content.closest('.modal');
+        const isAtvModal = modalEl && modalEl.id === 'atvAppsModal';
         const hasHeader = headerSelector ? content.querySelector(headerSelector) : false;
         if (!hasHeader) {
           const tools = content.querySelector('.modal-header-tools');
@@ -3009,6 +3019,16 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           content.appendChild(tools);
         } else if (!tools.classList.contains('modal-header-tools')) {
           tools.className = 'modal-header-tools';
+        }
+
+        if (isAtvModal) {
+          tools.querySelectorAll('.modal-adb-indicator').forEach((btn) => btn.remove());
+          const strayIndicator = content.querySelector('.modal-adb-indicator');
+          if (strayIndicator && strayIndicator.parentElement === content) {
+            strayIndicator.remove();
+          }
+          ensureModalQuickActions(tools, content, null);
+          return;
         }
 
         let indicator = tools.querySelector('.modal-adb-indicator');
