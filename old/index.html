@@ -5244,15 +5244,18 @@ function openAtvAppActions(app) {
     if (app.state === 'deleted') {
       buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
     } 
-    // Для отключённых: "Включить" + "Открыть"
+    // Для отключённых: "Включить" + "Открыть" + "Очистить данные"
     else if (app.state === 'disabled') {
       buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
       buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
+      buttons.appendChild(makeAtvActionBtn('clear', 'Очистить данные'));
     } 
-    // Для включённых: "Отключить" + "Открыть"
+    // Для включённых: "Отключить" + "Открыть" + "Очистить данные" + "Отключить с очисткой"
     else {
       buttons.appendChild(makeAtvActionBtn('disable', 'Отключить'));
       buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
+      buttons.appendChild(makeAtvActionBtn('clear', 'Очистить данные'));
+      buttons.appendChild(makeAtvActionBtn('disable_clear', 'Отключить с очисткой'));
     }
     
     // Удаление доступно для user всегда, для system только по ADB, и не для deleted
@@ -5355,11 +5358,11 @@ function handleAtvAppAction(action) {
   } finally {
     closeAtvAppActions();
     if (atvSelectedApp) {
-      const targetState =
-        action === 'enable' ? 'enabled' :
-        action === 'disable' ? 'disabled' :
-        action === 'delete' ? 'deleted' :
-        atvSelectedApp.state;
+    const targetState =
+      action === 'enable' ? 'enabled' :
+      (action === 'disable' || action === 'disable_clear') ? 'disabled' :
+      action === 'delete' ? 'deleted' :
+      atvSelectedApp.state;
 
       const apps = atvAppsState.apps || [];
       const idx = apps.findIndex(a => a.package === atvSelectedApp.package);
@@ -5379,7 +5382,7 @@ window.applyAtvActionState = function(action, pkg) {
   if (idx === -1) return;
   const targetState =
     action === 'enable' ? 'enabled' :
-    action === 'disable' ? 'disabled' :
+    (action === 'disable' || action === 'disable_clear') ? 'disabled' :
     action === 'delete' ? 'deleted' :
     apps[idx].state;
   apps[idx] = { ...apps[idx], state: targetState };
