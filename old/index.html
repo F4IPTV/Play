@@ -331,7 +331,16 @@
       background:#10131A; border-radius:14px; border:1px solid #1f3a5a;
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
-    .app-row:hover { background:#152b45; }
+    /* ТВ: убираем hover, чтобы не "залипало" при D-pad */
+    #atvAppsList .app-row:hover { background:#10131A; }
+    /* ТВ: явная подсветка по фокусу/selected */
+    #atvAppsList .app-row:focus-visible,
+    #atvAppsList .app-row.selected {
+      background:#152b45;
+      border-color:#3fa9f5;
+      box-shadow: 0 0 0 2px #fcb900;
+      outline:none;
+    }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
@@ -5112,7 +5121,13 @@ function renderAtvAppsList() {
     row.tabIndex = 0;
     row.onclick = () => openAtvAppActions(app);
     row.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); openAtvAppActions(app); } };
-    row.onfocus = () => { atvLastFocusedAppEl = row; };
+    row.onfocus = () => {
+      document.querySelectorAll('#atvAppsList .app-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      row.scrollIntoView({ block: 'nearest' });
+      atvLastFocusedAppEl = row;
+    };
+    row.onblur = () => row.classList.remove('selected');
 
     const img = document.createElement('img');
     img.className = 'app-icon';
