@@ -1034,6 +1034,18 @@
 </h5>
   <div id="adbStatusIndicator" class="adb-status-indicator">Проверка подключения ADB…</div>
 
+  <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0;">
+    <button class="modal-adb-indicator" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" loading="lazy">
+    </button>
+
+    <button type="button" id="passwordBtn">🔑 Введите пароль</button>
+
+    <button class="modal-adb-indicator adb-status-icon" title="Статус ADB">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
+    </button>
+  </div>
+
   <div id="progress-container" style="display:none; width:100%; background:#000; padding:5px; z-index:1002; position:fixed; bottom:0; left:0; right:0;">
     <div id="progress-text" style="color:#fff; margin-bottom:5px;">Загрузка...</div>
     <div style="width:100%; background:#000; height:8px; border-radius:6px;">
@@ -1058,7 +1070,6 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <button type="button" id="passwordBtn">🔑 Введите пароль</button>
   <div id="status"></div>
 
   <div class="system-buttons" id="mainSystemButtons">
@@ -1728,8 +1739,6 @@ function setAdbRootLog(text) {
 let adbStatusRetryTimer = null;
 
 function setAdbIndicator(text, connected) {
-  const el = document.getElementById('adbStatusIndicator');
-  if (!el) return;
   lastAdbIndicatorText = text || '';
   lastAdbIndicatorConnected = !!connected;
   const safeBase = escapeHtml(lastAdbIndicatorText);
@@ -1737,8 +1746,15 @@ function setAdbIndicator(text, connected) {
   const storagePart = storageUsageLabel
     ? ` <span class="storage-usage-badge">${escapeHtml(storageUsageLabel)}</span>`
     : '';
-  el.innerHTML = `${base}${storagePart}`;
-  el.classList.toggle('connected', !!connected);
+  document.querySelectorAll('.adb-status-indicator').forEach((el) => {
+    el.innerHTML = `${base}${storagePart}`;
+    el.classList.toggle('connected', !!connected);
+  });
+  document.querySelectorAll('#passwordRow .adb-status-icon').forEach((btn) => {
+    btn.title = (text || '').trim() || 'Статус ADB';
+    btn.setAttribute('aria-label', btn.title);
+    btn.classList.toggle('connected', !!connected);
+  });
   syncModalAdbIndicators(!!connected);
 }
 
