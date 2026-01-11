@@ -171,6 +171,30 @@
       filter: none !important;
     }
 
+    /* Кнопки-иконки у блока ввода пароля */
+    #passwordRow .modal-adb-indicator {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      padding: 6px;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #passwordRow .modal-adb-indicator img {
+      height: 22px;
+      width: 22px;
+      object-fit: contain;
+    }
+    #passwordRow .modal-adb-indicator:focus,
+    #passwordRow .modal-adb-indicator:focus-visible {
+      outline: none !important;
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
+    }
+
     #adbScannerModal .modal-content {
       max-height: 85vh;
       overflow-y: auto;
@@ -1059,7 +1083,7 @@
 
   <select id="groupSelect" style="display:none;"></select>
   <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0;">
-    <button class="modal-adb-indicator" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)">
+    <button class="modal-adb-indicator password-row-scan-btn" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" loading="lazy">
     </button>
 
