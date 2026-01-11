@@ -344,6 +344,37 @@
     #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
     #atvAppsModal #atvAppsHeader { margin-top: 6px; margin-bottom: 6px; }
     #atvAppsModal .modal-content { max-height: 90vh; }
+
+    /* Улучшение тапа по иконкам шапки при полноэкранной модалке */
+    #atvAppsModal .modal-content {
+      padding-top: 70px;
+      position: relative;
+    }
+    #atvAppsModal .modal-header-tools {
+      position: sticky;
+      top: 10px;
+      right: 10px;
+      z-index: 12;
+      padding: 10px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0));
+      touch-action: manipulation;
+    }
+    #atvAppsModal .modal-header-tools .modal-adb-indicator {
+      width: 48px;
+      height: 48px;
+      padding: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      touch-action: manipulation;
+    }
+    #atvAppsModal .modal-header-tools .modal-adb-indicator img {
+      width: 32px;
+      height: 32px;
+    }
     #atvAppsModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px; opacity:0.9; }
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
