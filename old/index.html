@@ -344,7 +344,7 @@
       width: 42px;
       height: 42px;
       padding: 4px;
-      transform: translate(var(--atv-refresh-offset-x, -20px), var(--atv-refresh-offset-y, 10px));
+      transform: translate(var(--atv-refresh-offset-x, 0px), var(--atv-refresh-offset-y, 0px));
     }
     /* Кнопки в хедере модалки ATV — используем общие стили modal-header-tools/modal-quick-action */
     #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
@@ -1171,7 +1171,7 @@
           onclick="refreshAtvAppsList('remote')"
           title="Обновить список"
           aria-label="Обновить список"
-          style="--atv-refresh-offset-x: 6px; --atv-refresh-offset-y: -6px;"
+          style="--atv-refresh-offset-x: -20px; --atv-refresh-offset-y: 10px;"
         >
           <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
         </button>
