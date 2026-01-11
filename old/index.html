@@ -2578,7 +2578,23 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       header.appendChild(title);
     }
 
+    // Сброс выделения команд, если фокус ушёл из списка (например, на иконки в шапке)
+    function bindAdbCommandsFocusReset() {
+      const modal = document.getElementById('adbCommandsModal');
+      if (!modal || modal.dataset.focusResetBound) return;
+      modal.dataset.focusResetBound = '1';
+      modal.addEventListener('focusin', (e) => {
+        const list = document.getElementById('adbCommandsList');
+        if (!list) return;
+        if (!list.contains(e.target)) {
+          document.querySelectorAll('#adbCommandsList .adb-command-btn.selected')
+            .forEach(el => el.classList.remove('selected'));
+        }
+      });
+    }
+
     function openAdbCommandsModal(triggerBtn = null) {
+      bindAdbCommandsFocusReset();
       const modal = document.getElementById('adbCommandsModal');
       if (!modal) return;
 
