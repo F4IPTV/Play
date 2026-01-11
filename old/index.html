@@ -139,11 +139,11 @@
       filter: none !important;
     }
     .modal-adb-indicator {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      height: 42px;
       border: none;
       background: transparent;
-      padding: 10px;
+      padding: 0;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -151,14 +151,13 @@
       z-index: 5;
       -webkit-tap-highlight-color: transparent;
       appearance: none;
-      touch-action: manipulation;
     }
     .modal-adb-indicator:focus-visible {
       outline: none;
     }
     .modal-adb-indicator img {
-      width: 24px;
-      height: 24px;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       pointer-events: none;
     }
@@ -341,21 +340,7 @@
     .badge-user { background:#2abf6d; color:#0b1d25; }
     .badge-system { background:#7e6735; color:#e2e3e4; }
     /* Кнопки в хедере модалки ATV — используем общие стили modal-header-tools/modal-quick-action */
-    #atvAppsModal .modal-header-tools { right: -3px; top: 0px; gap: 1px; }
-    #atvAppsModal .modal-header-tools .modal-adb-indicator {
-  width: 48px;
-  height: 48px;
-  padding: 5px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: manipulation;
-}
-
-#atvAppsModal .modal-header-tools .modal-adb-indicator img {
-  width: 36px;  /* как у тебя сейчас */
-  height: 36px;
-}
+    #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
     #atvAppsModal #atvAppsHeader { margin-top: 6px; margin-bottom: 6px; }
     #atvAppsModal .modal-content { max-height: 90vh; }
     #atvAppsModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px; opacity:0.9; }
@@ -1171,11 +1156,6 @@
   <!-- Модалка списка приложений Android TV -->
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <div class="modal-header-tools" style="justify-content:flex-end;">
-        <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
-          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
-        </button>
-      </div>
       <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:0;font-size:1.1rem;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:22px;">
         Приложения Android TV
