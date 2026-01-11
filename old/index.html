@@ -349,6 +349,19 @@
            box-shadow: none; */
       }
     }
+    /* Глобально блокируем выделение/копирование длинным тапом (кроме ввода) */
+    html, body, .modal, .modal * {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    /* Разрешаем выделение там, где нужен ввод/редактирование текста */
+    input, textarea, [contenteditable],
+    input *, textarea *, [contenteditable] * {
+      -webkit-user-select: text;
+      user-select: text;
+      -webkit-touch-callout: default;
+    }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
