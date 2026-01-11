@@ -376,6 +376,25 @@
       padding: 4px;
       transform: translate(var(--atv-refresh-offset-x, 0px), var(--atv-refresh-offset-y, 0px));
     }
+    /* Подсказка по фокусу (для кнопок без hover) */
+    .focus-tooltip {
+      position: relative;
+    }
+    .focus-tooltip:focus-visible::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translate(-50%, -100%);
+      white-space: nowrap;
+      background: #1f3a5a;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      z-index: 10;
+    }
     /* Кнопки в хедере модалки ATV — используем общие стили modal-header-tools/modal-quick-action */
     #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
     #atvAppsModal #atvAppsHeader { margin-top: 6px; margin-bottom: 6px; }
@@ -1124,13 +1143,13 @@
 
   <select id="groupSelect" style="display:none;"></select>
   <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:5px;margin:8px 0;">
-    <button class="password-row-icon-btn" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)">
+    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
     </button>
 
     <button type="button" id="passwordBtn">🔑 Введите пароль</button>
 
-    <button class="modal-adb-indicator adb-status-icon" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB">
+    <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB" data-tip="Подключиться к последнему ADB">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
     </button>
   </div>
