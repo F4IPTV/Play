@@ -1156,7 +1156,12 @@
   <!-- Модалка списка приложений Android TV -->
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
-      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0px;margin-top:30px;font-size:1.1rem;">
+      <div class="modal-header-tools" style="justify-content:flex-end;">
+        <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
+        </button>
+      </div>
+      <h3 id="atvAppsHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:0;font-size:1.1rem;">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png" alt="" style="height:22px;">
         Приложения Android TV
       </h3>
