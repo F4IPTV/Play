@@ -195,6 +195,7 @@
     #passwordRow .modal-adb-indicator:focus,
     #passwordRow .modal-adb-indicator:focus-visible {
       outline: none !important;
+      border-color: #fff;
       background: transparent !important;
       box-shadow: none !important;
       filter: none !important;
@@ -363,10 +364,14 @@
       user-select: text;
       -webkit-touch-callout: default;
     }
-    /* Перенос кнопок ввода/ADB, чтобы не уезжали за край на телефонах */
+    /* Flex для кнопок ввода/ADB: центрируем каждую строку */
     #passwordRow {
+      display: flex;
       flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
       gap: 8px;
+      margin: 8px 0;
     }
     #passwordRow .password-row-icon-btn,
     #passwordRow #passwordBtn,
@@ -1153,11 +1158,12 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0;">
+  <div id="passwordRow" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
+    
     <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
     </button>
-    
+
 
     <button type="button" id="passwordBtn">🔑 Введите пароль</button>
 
