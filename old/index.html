@@ -362,6 +362,16 @@
       user-select: text;
       -webkit-touch-callout: default;
     }
+    /* Перенос кнопок ввода/ADB, чтобы не уезжали за край на телефонах */
+    #passwordRow {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #passwordRow .password-row-icon-btn,
+    #passwordRow #passwordBtn,
+    #passwordRow .adb-status-icon {
+      flex: 0 0 auto;
+    }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
@@ -1142,12 +1152,48 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:5px;margin:8px 0;">
+  <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0;">
     <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button>
+    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
     </button>
 
     <button type="button" id="passwordBtn">🔑 Введите пароль</button>
+    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+    </button>
 
     <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB" data-tip="Подключиться к последнему ADB">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
