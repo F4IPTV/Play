@@ -34,7 +34,6 @@
     }
 
     
-    /* Старая сетка карт (используется в других местах) */
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card {
       background-color: #2a2a2a; border-radius: 16px; padding: 20px;
@@ -43,52 +42,6 @@
     }
     .card:hover, .card:focus { background-color: #004d61; border-color: #00cfff; box-shadow: 0 0 10px rgba(0,0,0,.5); outline: none; }
     .card.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
-
-    /* Горизонтальная карусель групп (стиль Google TV) */
-    .group-carousel {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 10px 12px;
-      margin: 0 auto 16px;
-      max-width: 1200px;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: thin;
-    }
-    .group-carousel::-webkit-scrollbar { height: 6px; }
-    .group-carousel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 999px; }
-
-    .group-pill {
-      flex: 0 0 auto;
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      background: #10131a;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      scroll-snap-align: start;
-      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
-    }
-    .group-pill img {
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
-    }
-    .group-pill:focus-visible,
-    .group-pill:hover {
-      outline: none;
-      border-color: #00cfff;
-      box-shadow: 0 0 0 3px rgba(0,207,255,0.25);
-      transform: translateY(-2px);
-      background: #10131a;
-    }
-    .group-pill.selected {
-      border-color: #fff;
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
-    }
 
     .modal { 
       position: fixed; 
@@ -100,7 +53,7 @@
       z-index: 999; 
       outline: none;
       overscroll-behavior: contain;
-      touch-action: none; /* Блокируем touch события на фоне мод алки */
+      touch-action: none; /* Блокируем touch события на фоне модалки */
     }
 
     .adb-status-indicator {
@@ -288,7 +241,7 @@
     #modalListContainer { max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: auto; scrollbar-gutter: stable both-edges; }
     #modalList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; justify-items: center; }
     
-    /* Адаптация модального списка для портретной ориентации - 1 колонка для лучшей эстетики на телефонах  */
+    /* Адаптация модального списка для портретной ориентации - 1 колонка для лучшей эстетики на телефонах */
     @media (orientation: portrait) {
       #modalList { 
         grid-template-columns: 1fr; 
@@ -1188,7 +1141,7 @@
     </div>
   </div>
 
-  <div id="groupCarousel" class="group-carousel" aria-label="Группы"></div>
+  <div class="card-container" id="groupCards"></div>
 
   <script>
     // Enter/OK на главном экране
@@ -4192,7 +4145,7 @@ const NAVIGATION_MODALS = [
     }
 
     function renderGroupsFromConfig(config) {
-      const container = document.getElementById('groupCarousel') || document.querySelector('.group-carousel');
+      const container = document.getElementById('groupCards') || document.querySelector('.card-container');
       if (!container) return;
       container.innerHTML = '';
 
@@ -4204,19 +4157,21 @@ const NAVIGATION_MODALS = [
       }
 
       entries.forEach(([groupKey, groupObj]) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'group-pill card';
-        btn.setAttribute('tabindex', '0');
-        btn.dataset.group = groupKey;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('tabindex', '0');
+        card.dataset.group = groupKey;
 
-        const iconEl = createGroupIcon(groupObj?.icon || 'https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png');
-        btn.appendChild(iconEl);
+        if (groupObj && groupObj.icon) {
+          const iconEl = createGroupIcon(groupObj.icon);
+          card.appendChild(iconEl);
+        }
+        card.appendChild(document.createTextNode(groupKey));
 
-        btn.onclick = () => { selectCard(btn); startInstall(); };
-        btn.onfocus = () => selectCard(btn);
+        card.onclick = () => { selectCard(card); startInstall(); };
+        card.onfocus = () => selectCard(card);
 
-        container.appendChild(btn);
+        container.appendChild(card);
       });
     }
 
@@ -5568,7 +5523,7 @@ window.atvAppsBackHandler = function() {
 };
 </script>
 
-<!-- Модалка настроек метода установки -->
+<!-- Модалка настроек метода установки  -->
 <div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
   <div class="modal-content">
     <h3>Способ установки:</h3>
