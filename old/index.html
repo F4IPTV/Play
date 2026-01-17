@@ -420,24 +420,13 @@
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
     #atvAppsModal { position: relative; }
-    #atvAppsModal.atv-loading-active::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: transparent;
-      z-index: 5;
-      pointer-events: auto; /* ловим клики, не затемняя */
-    }
     #atvAppsModal .modal-content { position: relative; z-index: 1; }
     #atvAppsModal.atv-loading-active #atvAppsFilters,
     #atvAppsModal.atv-loading-active #atvAppsList {
       pointer-events: none;
       opacity: 0.85;
     }
-    #atvAppsModal .atv-loading {
-      position: relative;
-      z-index: 6; /* поверх прозрачного оверлея */
-    }
+    #atvAppsModal .atv-loading { position: relative; }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -5042,6 +5031,11 @@ const atvLoadingHtml = `
 const atvLoadingBlockEvents = ['click','mousedown','mouseup','keydown','keyup','keypress','touchstart','touchend'];
 const stopAtvInteractionWhileLoading = (e) => {
   if (!atvAppsState.loading) return;
+  const modal = document.getElementById('atvAppsModal');
+  const modalVisible = modal && modal.style.display === 'flex';
+  if (!modalVisible) return;
+  // блокируем только события, пришедшие изнутри модалки
+  if (!modal.contains(e.target)) return;
   e.stopPropagation();
   if (e.stopImmediatePropagation) e.stopImmediatePropagation();
   e.preventDefault();
