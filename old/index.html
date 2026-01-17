@@ -419,6 +419,21 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
+    #atvAppsModal.atv-loading-active { position: relative; }
+    #atvAppsModal.atv-loading-active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(2px);
+      z-index: 5;
+    }
+    #atvAppsModal.atv-loading-active .modal-content,
+    #atvAppsModal.atv-loading-active .modal-header,
+    #atvAppsModal.atv-loading-active .modal-footer {
+      pointer-events: none;
+      filter: grayscale(0.35);
+    }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -5020,6 +5035,12 @@ const atvLoadingHtml = `
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
+const stopAtvInteractionWhileLoading = (e) => {
+  if (atvAppsState.loading) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+};
 
 function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
@@ -5121,7 +5142,16 @@ function handleAtvAppsPayload(raw) {
 function setAtvLoading(flag) {
   atvAppsState.loading = !!flag;
   const modal = document.getElementById('atvAppsModal');
-  if (modal) modal.classList.toggle('atv-loading-active', !!flag);
+  if (modal) {
+    modal.classList.toggle('atv-loading-active', !!flag);
+    if (flag) {
+      modal.addEventListener('click', stopAtvInteractionWhileLoading, true);
+      modal.addEventListener('keydown', stopAtvInteractionWhileLoading, true);
+    } else {
+      modal.removeEventListener('click', stopAtvInteractionWhileLoading, true);
+      modal.removeEventListener('keydown', stopAtvInteractionWhileLoading, true);
+    }
+  }
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
   if (refreshBtn) refreshBtn.disabled = !!flag;
 }
@@ -5280,6 +5310,7 @@ function dumpLocalApps() {
 
 let atvSelectedApp = null;
 function openAtvAppActions(app) {
+  if (atvAppsState.loading) return;
   atvSelectedApp = app;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
