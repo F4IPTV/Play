@@ -1167,7 +1167,10 @@
     </button>
 
 
-    <button type="button" id="passwordBtn">🔑 Введите пароль</button>
+    <button type="button" id="passwordBtn" class="password-row-icon-btn focus-tooltip"
+            title="Введите пароль" aria-label="Введите пароль" data-tip="Введите пароль">
+      <img id="passwordBtnIcon" src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="" loading="lazy">
+    </button>
 
     <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB" data-tip="Подключиться к последнему ADB">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
@@ -1832,7 +1835,18 @@ function setAdbRootLog(text) {
     function setPasswordFromAndroid(pwd) { savedPassword = (pwd || "").trim(); updatePasswordBtn(); }
     function updatePasswordBtn() {
       const btn = document.getElementById('passwordBtn');
-      btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
+      const icon = document.getElementById('passwordBtnIcon');
+      const hasPwd = !!savedPassword;
+      const tip = hasPwd ? `Пароль: ${'*'.repeat(savedPassword.length)}` : 'Введите пароль';
+      const iconSrc = hasPwd
+        ? 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp'
+        : 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp';
+      if (icon) icon.src = iconSrc;
+      if (btn) {
+        btn.title = tip;
+        btn.setAttribute('aria-label', tip);
+        btn.setAttribute('data-tip', tip);
+      }
     }
     function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
