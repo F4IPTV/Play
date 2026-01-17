@@ -419,10 +419,23 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
+    #atvAppsModal.atv-loading-active { position: relative; }
+    #atvAppsModal.atv-loading-active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0);
+      z-index: 8;
+      pointer-events: auto; /* ловим клики, не затемняя */
+    }
     #atvAppsModal.atv-loading-active #atvAppsFilters,
     #atvAppsModal.atv-loading-active #atvAppsList {
       pointer-events: none;
       opacity: 0.85;
+    }
+    #atvAppsModal .atv-loading {
+      position: relative;
+      z-index: 9;
     }
 
     /* Модалка действий по приложению ATV */
@@ -5025,6 +5038,12 @@ const atvLoadingHtml = `
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
+const stopAtvInteractionWhileLoading = (e) => {
+  if (atvAppsState.loading) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+};
 
 function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
@@ -5126,7 +5145,15 @@ function handleAtvAppsPayload(raw) {
 function setAtvLoading(flag) {
   atvAppsState.loading = !!flag;
   const modal = document.getElementById('atvAppsModal');
-  if (modal) modal.classList.toggle('atv-loading-active', !!flag);
+  if (modal) {
+    modal.classList.toggle('atv-loading-active', !!flag);
+    const events = ['click', 'mousedown', 'mouseup', 'keydown', 'keyup', 'touchstart', 'touchend'];
+    if (flag) {
+      events.forEach(ev => modal.addEventListener(ev, stopAtvInteractionWhileLoading, true));
+    } else {
+      events.forEach(ev => modal.removeEventListener(ev, stopAtvInteractionWhileLoading, true));
+    }
+  }
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
   if (refreshBtn) refreshBtn.disabled = !!flag;
 }
