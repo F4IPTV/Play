@@ -419,14 +419,8 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
-    #atvAppsModal { position: relative; }
-    #atvAppsModal .modal-content { position: relative; z-index: 1; }
-    #atvAppsModal.atv-loading-active #atvAppsFilters,
-    #atvAppsModal.atv-loading-active #atvAppsList {
-      pointer-events: none;
-      opacity: 0.85;
-    }
-    #atvAppsModal .atv-loading { position: relative; }
+    #atvAppsModal.atv-loading-active { pointer-events: none; }
+    #atvAppsModal.atv-loading-active .modal-content { opacity: 0.85; }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -3803,6 +3797,15 @@ const NAVIGATION_MODALS = [
       // Back/Escape обрабатываются ниже отдельно
       if (e.key === 'Back' || e.key === 'Escape') return;
 
+  // Во время загрузки списка ATV блокируем любую навигацию/действия
+  const atvModal = document.getElementById('atvAppsModal');
+  if (typeof atvAppsState !== 'undefined'
+      && atvAppsState.loading
+      && atvModal?.style.display === 'flex') {
+    e.preventDefault();
+    return;
+  }
+
       // Спец-правила для модалки таймаута заставки:
       // если фокус в инпуте и стрелка вниз — идём на кнопку "Применить"
       if (document.getElementById('screenSaverTimeoutModal')?.style.display === 'flex') {
@@ -5028,19 +5031,6 @@ const atvLoadingHtml = `
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
-const atvLoadingBlockEvents = ['click','mousedown','mouseup','keydown','keyup','keypress','touchstart','touchend'];
-const stopAtvInteractionWhileLoading = (e) => {
-  if (!atvAppsState.loading) return;
-  const modal = document.getElementById('atvAppsModal');
-  const modalVisible = modal && modal.style.display === 'flex';
-  if (!modalVisible) return;
-  // блокируем только события, пришедшие изнутри модалки
-  if (!modal.contains(e.target)) return;
-  e.stopPropagation();
-  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-  e.preventDefault();
-  return false;
-};
 
 function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
@@ -5145,12 +5135,10 @@ function setAtvLoading(flag) {
   if (modal) {
     modal.classList.toggle('atv-loading-active', !!flag);
   }
-  // глобальная блокировка (capture) чтобы ловить события пульта/клавы/тача
+  // блокируем нажатия Enter на период загрузки
   if (flag) {
-    atvLoadingBlockEvents.forEach(ev => document.addEventListener(ev, stopAtvInteractionWhileLoading, true));
     ignoreNextEnter = true;
   } else {
-    atvLoadingBlockEvents.forEach(ev => document.removeEventListener(ev, stopAtvInteractionWhileLoading, true));
     setTimeout(() => { ignoreNextEnter = false; }, 120);
   }
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
