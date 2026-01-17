@@ -3799,8 +3799,8 @@ const NAVIGATION_MODALS = [
 
   // Во время загрузки списка ATV блокируем любую навигацию/действия
   const atvModal = document.getElementById('atvAppsModal');
-  if (typeof atvAppsState !== 'undefined'
-      && atvAppsState.loading
+  if (typeof isAtvInputBlocked === 'function'
+      && isAtvInputBlocked()
       && atvModal?.style.display === 'flex') {
     e.preventDefault();
     return;
@@ -5020,6 +5020,10 @@ const atvAppsState = {
 };
 
 let atvLastFocusedAppEl = null;
+let atvInputBlockUntil = 0;
+function isAtvInputBlocked() {
+  return atvAppsState.loading || Date.now() < atvInputBlockUntil;
+}
 
 const atvDefaultIcons = {
   user: 'https://appassets.androidplatform.net/assets/webview/icons/list/user.png',
@@ -5082,6 +5086,7 @@ function closeAtvAppsModal() {
 }
 
 function setAtvAppsFilter(filter, rerender = true) {
+  if (isAtvInputBlocked()) return;
   atvAppsState.filter = filter;
   document.querySelectorAll('#atvAppsFilters .sys-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.filter === filter);
@@ -5137,8 +5142,11 @@ function setAtvLoading(flag) {
   }
   // блокируем нажатия Enter на период загрузки
   if (flag) {
+    atvInputBlockUntil = 0;
+    document.activeElement?.blur();
     ignoreNextEnter = true;
   } else {
+    atvInputBlockUntil = Date.now() + 450;
     setTimeout(() => { ignoreNextEnter = false; }, 120);
   }
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
@@ -5299,7 +5307,7 @@ function dumpLocalApps() {
 
 let atvSelectedApp = null;
 function openAtvAppActions(app) {
-  if (atvAppsState.loading) return;
+  if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
