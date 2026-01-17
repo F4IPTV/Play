@@ -419,15 +419,16 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
-    #atvAppsModal.atv-loading-active { position: relative; }
+    #atvAppsModal { position: relative; }
     #atvAppsModal.atv-loading-active::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0);
-      z-index: 8;
+      background: transparent;
+      z-index: 3;
       pointer-events: auto; /* ловим клики, не затемняя */
     }
+    #atvAppsModal .modal-content { position: relative; z-index: 1; }
     #atvAppsModal.atv-loading-active #atvAppsFilters,
     #atvAppsModal.atv-loading-active #atvAppsList {
       pointer-events: none;
@@ -435,7 +436,7 @@
     }
     #atvAppsModal .atv-loading {
       position: relative;
-      z-index: 9;
+      z-index: 4; /* поверх прозрачного оверлея */
     }
 
     /* Модалка действий по приложению ATV */
