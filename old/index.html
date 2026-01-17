@@ -424,15 +424,22 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(2px);
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(1px);
       z-index: 5;
     }
     #atvAppsModal.atv-loading-active .modal-content,
     #atvAppsModal.atv-loading-active .modal-header,
     #atvAppsModal.atv-loading-active .modal-footer {
       pointer-events: none;
-      filter: grayscale(0.35);
+      filter: none;
+    }
+    #atvAppsModal .atv-loading {
+      position: relative;
+      z-index: 6;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      padding: 24px;
     }
 
     /* Модалка действий по приложению ATV */
