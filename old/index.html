@@ -419,12 +419,25 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
+    #atvAppsModal { position: relative; }
+    #atvAppsModal.atv-loading-active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      z-index: 5;
+      pointer-events: auto; /* ловим клики, не затемняя */
+    }
+    #atvAppsModal .modal-content { position: relative; z-index: 1; }
     #atvAppsModal.atv-loading-active #atvAppsFilters,
     #atvAppsModal.atv-loading-active #atvAppsList {
       pointer-events: none;
       opacity: 0.85;
     }
-    #atvAppsModal .atv-loading { position: relative; }
+    #atvAppsModal .atv-loading {
+      position: relative;
+      z-index: 6; /* поверх прозрачного оверлея */
+    }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -5026,12 +5039,13 @@ const atvLoadingHtml = `
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
+const atvLoadingBlockEvents = ['click','mousedown','mouseup','keydown','keyup','keypress','touchstart','touchend'];
 const stopAtvInteractionWhileLoading = (e) => {
-  if (atvAppsState.loading) {
-    e.stopPropagation();
-    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-    e.preventDefault();
-  }
+  if (!atvAppsState.loading) return;
+  e.stopPropagation();
+  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+  e.preventDefault();
+  return false;
 };
 
 function openAtvAppsModalFast(btn) {
@@ -5136,12 +5150,14 @@ function setAtvLoading(flag) {
   const modal = document.getElementById('atvAppsModal');
   if (modal) {
     modal.classList.toggle('atv-loading-active', !!flag);
-    const events = ['click', 'mousedown', 'mouseup', 'keydown', 'keyup', 'touchstart', 'touchend'];
-    if (flag) {
-      events.forEach(ev => modal.addEventListener(ev, stopAtvInteractionWhileLoading, true));
-    } else {
-      events.forEach(ev => modal.removeEventListener(ev, stopAtvInteractionWhileLoading, true));
-    }
+  }
+  // глобальная блокировка (capture) чтобы ловить события пульта/клавы/тача
+  if (flag) {
+    atvLoadingBlockEvents.forEach(ev => document.addEventListener(ev, stopAtvInteractionWhileLoading, true));
+    ignoreNextEnter = true;
+  } else {
+    atvLoadingBlockEvents.forEach(ev => document.removeEventListener(ev, stopAtvInteractionWhileLoading, true));
+    setTimeout(() => { ignoreNextEnter = false; }, 120);
   }
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
   if (refreshBtn) refreshBtn.disabled = !!flag;
