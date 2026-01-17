@@ -37,8 +37,11 @@
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card {
       background-color: #2a2a2a; border-radius: 16px; padding: 10px;
-      width: 80px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #fff; font-size: 13px; border: 2px solid transparent; transition: all .2s ease; cursor: pointer;
+      text-align: center; line-height: 1.1;
+      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px;
+      width: auto; height: auto;
     }
     .card:hover, .card:focus { background-color: #004d61; border-color: #00cfff; box-shadow: 0 0 10px rgba(0,0,0,.5); outline: none; }
     .card.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
@@ -292,7 +295,7 @@
 
     .system-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
     .sys-btn {
-      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px; padding: 5px 3px; font-size: 13px; text-align: center;
+      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px; padding: 3px; font-size: 13px; text-align: center;
       background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: background-color .3s ease;
     }
     .sys-btn:hover { background-color: #00cfff; }
@@ -1234,7 +1237,7 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>AnyDesk
     </button>
     <button onclick="AndroidInterface.updateWebView()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView fdbdf dfg dfgdf
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Обновить AndroidWebView
     </button>
     <button onclick="ignoreNextEnter=true;showDeviceStats()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:28px;"><br>CPU / RAM / Storage
