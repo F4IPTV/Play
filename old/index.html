@@ -36,12 +36,26 @@
     
     .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; margin-bottom: 12px; }
     .card {
-      background-color: #2a2a2a; border-radius: 16px; padding: 10px;
+      background-color: #2a2a2a; border-radius: 16px; padding: 6px 10px 8px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #fff; font-size: 13px; border: 2px solid transparent; transition: all .2s ease; cursor: pointer;
       text-align: center; line-height: 1.1;
-      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px;
+      flex: 1 1 calc(33.33% - 10px); min-width: 0; max-width: 240px;
       width: auto; height: auto;
+    }
+    .card img {
+      margin-top: 0;
+      margin-bottom: 4px;
+    }
+    .card .group-title {
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.1;
+      min-height: calc(1.1em * 2);
+      text-align: center;
     }
     .card:hover, .card:focus { background-color: #004d61; border-color: #00cfff; box-shadow: 0 0 10px rgba(0,0,0,.5); outline: none; }
     .card.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
@@ -4247,7 +4261,10 @@ const NAVIGATION_MODALS = [
           const iconEl = createGroupIcon(groupObj.icon);
           card.appendChild(iconEl);
         }
-        card.appendChild(document.createTextNode(groupKey));
+        const label = document.createElement('div');
+        label.className = 'group-title';
+        label.textContent = groupKey;
+        card.appendChild(label);
 
         card.onclick = () => { selectCard(card); startInstall(); };
         card.onfocus = () => selectCard(card);
