@@ -1211,9 +1211,42 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
     </button>
     -->
+    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>ADB локально
+    </button>
+
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+    </button>
+
+    <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB команды
+    </button>
+
     <button onclick="openAtvAppsModalFast(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Пакеты
     </button>
+
+    <button onclick="openScreenSaverModal(this)" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:26px;"><br>Заставка
+    </button>
+
+    <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic22_disableside.png" alt="" style="height:26px;"><br>Откл\вкл системные
+    </button>
+
+    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+    </button>
+
+    <button onclick="showInstallMethodSettings()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+      </button>
+
+      <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmDeleteCopiedBackups()" class="sys-btn">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление бэкапов
+      </button>
+
     <!--
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Спец возможности
@@ -1316,39 +1349,39 @@
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
 	  <!-- Кнопка настроек метода установки -->
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
-    </button>
-    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
-    </button>
+    
+   
     <button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
     </button>
-    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
-    </button>
+    
     <button onclick="dumpLocalApps()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Дамп иконок
     </button>
-          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic22_disableside.png" alt="" style="height:26px;"><br>Откл\вкл системные
-          </button>
+          
            <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление всех приложений
           </button>
-          <button onclick="openScreenSaverModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:26px;"><br>Заставка
+
+          <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
           </button>
-          <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB команды
+          
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
           </button>
-			<button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmDeleteCopiedBackups()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление бэкапов
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
           </button>
-          <button onclick="showInstallMethodSettings()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
-            </button>
+
+          <button onclick="openAutostartModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
+          </button>
+          <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
+          </button>
+			
+          
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
@@ -1386,12 +1419,7 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
-          </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
-          </button>
+          
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:26px;"><br>Очистить кеш
           </button>
@@ -1401,15 +1429,9 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
-          <button onclick="openAutostartModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
-          </button>
-          <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
-          </button>
-          <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
-          </button>
+          
+          
+          
         
 			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
