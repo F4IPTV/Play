@@ -2787,6 +2787,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function openAdbCommandsModal(triggerBtn = null) {
+      saveMainScroll();
       bindAdbCommandsFocusReset();
       const modal = document.getElementById('adbCommandsModal');
       if (!modal) return;
@@ -2878,6 +2879,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
       lastAdbCommandsTriggerButton = null;
+      restoreMainScroll();
       restoreGroupModalOverlay();
     }
 
