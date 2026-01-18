@@ -3956,6 +3956,7 @@ const NAVIGATION_MODALS = [
     }
 
     function openScreenSaverModal(triggerBtn = null) {
+  saveMainScroll();
       lastScreenSaverTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
       const modal = document.getElementById('screenSaverModal');
@@ -4008,6 +4009,7 @@ const NAVIGATION_MODALS = [
       if (target && document.body.contains(target)) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
+  restoreMainScroll();
       restoreGroupModalOverlay();
     }
 
@@ -4859,6 +4861,7 @@ document.addEventListener('click', function(e) {
 
 // Показать настройки метода установки (как модалка "Разное")
 function showInstallMethodSettings(triggerBtn = null) {
+    saveMainScroll();
     lastFocusedElement = triggerBtn || document.activeElement;
     
     // Получаем текущий метод установки
@@ -4902,6 +4905,7 @@ function closeInstallMethodSettings() {
       misc.style.pointerEvents = ''; 
     }
     
+    restoreMainScroll();
     setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
 }
 
@@ -5089,6 +5093,17 @@ let atvLastFocusedAppEl = null;
 let atvInputBlockUntil = 0;
 function isAtvInputBlocked() {
   return atvAppsState.loading || Date.now() < atvInputBlockUntil;
+}
+let __mainScrollTop = null;
+function saveMainScroll() {
+  const scroller = document.scrollingElement || document.documentElement;
+  __mainScrollTop = scroller.scrollTop;
+}
+function restoreMainScroll() {
+  if (__mainScrollTop === null) return;
+  const scroller = document.scrollingElement || document.documentElement;
+  scroller.scrollTop = __mainScrollTop;
+  __mainScrollTop = null;
 }
 
 const atvDefaultIcons = {
