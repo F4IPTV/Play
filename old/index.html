@@ -1239,7 +1239,7 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
     </button>
 
-    <button onclick="showInstallMethodSettings()" class="sys-btn">
+    <button onclick="showInstallMethodSettings(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
       </button>
 
@@ -3962,7 +3962,7 @@ const NAVIGATION_MODALS = [
       if (!modal) return;
   setModalHeaderTitle('screenSaverHeader', (container) => {
     try {
-      const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
+      const btn = triggerBtn || lastScreenSaverTrigger || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
       const btnIcon = btn?.querySelector('img');
       const titleText = btn?.innerText?.trim() || 'Заставка';
       const fallbackIcon = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png';
@@ -4858,8 +4858,8 @@ document.addEventListener('click', function(e) {
 }, true);
 
 // Показать настройки метода установки (как модалка "Разное")
-function showInstallMethodSettings() {
-    lastFocusedElement = document.activeElement;
+function showInstallMethodSettings(triggerBtn = null) {
+    lastFocusedElement = triggerBtn || document.activeElement;
     
     // Получаем текущий метод установки
     const currentMethod = window.AndroidInterface?.getInstallMethod?.() || 'sai';
