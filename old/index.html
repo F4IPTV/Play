@@ -4098,8 +4098,8 @@ const NAVIGATION_MODALS = [
       event.stopPropagation();
       if (adbRemoteRepeatState.has(btn)) return;
       sendAdbRemoteKey(keyCode);
-      const initialDelay = 220;
-      const intervalMs = 90;
+      const initialDelay = 150;
+      const intervalMs = 70;
       const timeoutId = setTimeout(() => {
         const intervalId = setInterval(() => sendAdbRemoteKey(keyCode), intervalMs);
         adbRemoteRepeatState.set(btn, { intervalId, timeoutId: null });
@@ -4111,12 +4111,19 @@ const NAVIGATION_MODALS = [
       const btn = event.currentTarget;
       const state = adbRemoteRepeatState.get(btn);
       if (!state) return;
-      event.preventDefault();
-      event.stopPropagation();
+      event.preventDefault?.();
+      event.stopPropagation?.();
       if (state.timeoutId) clearTimeout(state.timeoutId);
       if (state.intervalId) clearInterval(state.intervalId);
       adbRemoteRepeatState.delete(btn);
     }
+
+    document.addEventListener('pointerup', () => {
+      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+    }, { passive: true });
+    document.addEventListener('touchend', () => {
+      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+    }, { passive: true });
 
     function openScreenSaverModal(triggerBtn = null) {
   saveMainScroll();
