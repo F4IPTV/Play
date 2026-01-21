@@ -4101,6 +4101,9 @@ const NAVIGATION_MODALS = [
       if (!keyCode) return;
       event.preventDefault();
       event.stopPropagation();
+      if (btn?.setPointerCapture && event.pointerId != null) {
+        try { btn.setPointerCapture(event.pointerId); } catch (_) {}
+      }
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
       if (!ai) return;
       if (!ensureAdbSessionConnected('Пульт ДУ')) return;
@@ -4123,6 +4126,9 @@ const NAVIGATION_MODALS = [
 
     function stopAdbRemoteRepeat(event) {
       const btn = event.currentTarget;
+      if (btn?.releasePointerCapture && event.pointerId != null) {
+        try { btn.releasePointerCapture(event.pointerId); } catch (_) {}
+      }
       const ai = window.AndroidInterface;
       if (adbRemoteRepeatUseNative && ai && typeof ai.stopAdbKeyRepeat === 'function') {
         ai.stopAdbKeyRepeat();
@@ -4140,10 +4146,14 @@ const NAVIGATION_MODALS = [
     }
 
     document.addEventListener('pointerup', () => {
-      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      if (!adbRemoteRepeatUseNative) {
+        adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      }
     }, { passive: true });
     document.addEventListener('touchend', () => {
-      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      if (!adbRemoteRepeatUseNative) {
+        adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      }
     }, { passive: true });
 
     function openScreenSaverModal(triggerBtn = null) {
