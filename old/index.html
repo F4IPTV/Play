@@ -196,6 +196,38 @@
       box-shadow: none !important;
       filter: none !important;
     }
+    /* Пульт ADB */
+    #adbRemoteModal .adb-remote-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 70px);
+      gap: 10px;
+      justify-content: center;
+      margin: 12px 0 6px;
+    }
+    #adbRemoteModal .adb-remote-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    #adbRemoteModal .adb-remote-btn {
+      width: 70px;
+      height: 52px;
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #adbRemoteModal .adb-remote-spacer {
+      width: 70px;
+      height: 52px;
+    }
+    #adbRemoteModal .adb-remote-btn.wide {
+      width: 110px;
+    }
 
     /* Кнопки-иконки у блока ввода пароля */
     #passwordRow .password-row-icon-btn,
@@ -1246,6 +1278,10 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB команды
     </button>
 
+    <button onclick="openAdbRemoteModal(this)" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:24px;"><br>Пульт ДУ
+    </button>
+
     <button onclick="openAtvAppsModalFast(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Пакеты
     </button>
@@ -1547,6 +1583,34 @@
       <div id="adbCommandsListContainer">
         <div id="adbCommandsList"></div>
         <button id="adbCommandsCloseBtn" class="component-btn" onclick="closeAdbCommandsModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка пульта ADB -->
+  <div id="adbRemoteModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="adbRemoteHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
+        Пульт ДУ (ADB)
+      </h3>
+      <div class="adb-remote-grid">
+        <div class="adb-remote-spacer"></div>
+        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(19)">▲</button>
+        <div class="adb-remote-spacer"></div>
+        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(21)">◀</button>
+        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(23)">OK</button>
+        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(22)">▶</button>
+        <div class="adb-remote-spacer"></div>
+        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(20)">▼</button>
+        <div class="adb-remote-spacer"></div>
+      </div>
+      <div class="adb-remote-row">
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(4)">Назад</button>
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(3)">Домой</button>
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(82)">Меню</button>
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(4, true)">Назад (долго)</button>
+        <button class="sys-btn adb-remote-btn wide" onclick="closeAdbRemoteModal()">Закрыть</button>
       </div>
     </div>
   </div>
@@ -1923,7 +1987,7 @@ function setAdbRootLog(text) {
         btn.setAttribute('data-tip', tip);
       }
     }
-    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -3876,6 +3940,7 @@ const NAVIGATION_MODALS = [
       'screenSaverTimeoutModal',
       'adbCommandsModal',
       'adbScannerModal',
+      'adbRemoteModal',
       'miscMoreModal',
       'miscModal',
       'atvAppsModal',
@@ -3978,6 +4043,50 @@ const NAVIGATION_MODALS = [
         console.warn('openRunAdbCommandsModal failed, fallback to JS modal', err);
       }
       openAdbCommandsModal(triggerBtn);
+    }
+
+    let lastAdbRemoteTrigger = null;
+    function openAdbRemoteModal(triggerBtn = null) {
+      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      saveMainScroll();
+      lastAdbRemoteTrigger = triggerBtn || document.activeElement;
+      document.activeElement?.blur();
+      const modal = document.getElementById('adbRemoteModal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      bringModalToFront(modal);
+      document.body.classList.add('modal-open');
+      const firstBtn = modal.querySelector('.adb-remote-btn');
+      if (firstBtn) setTimeout(() => firstBtn.focus({ preventScroll: true }), 80);
+    }
+
+    function closeAdbRemoteModal() {
+      const modal = document.getElementById('adbRemoteModal');
+      if (!modal) return;
+      modal.style.display = 'none';
+      modal.style.zIndex = '';
+      document.body.classList.remove('modal-open');
+      const target = lastAdbRemoteTrigger;
+      lastAdbRemoteTrigger = null;
+      restoreMainScroll();
+      if (target && document.body.contains(target)) {
+        setTimeout(() => target.focus({ preventScroll: true }), 60);
+      }
+      restoreGroupModalOverlay();
+    }
+
+    function sendAdbRemoteKey(keyCode, longPress = false) {
+      const ai = getAdbInterfaceOrWarn('Пульт ДУ');
+      if (!ai) return;
+      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      if (typeof ai.sendAdbKeyEvent === 'function') {
+        ai.sendAdbKeyEvent(Number(keyCode), !!longPress);
+        return;
+      }
+      const cmd = `input keyevent ${longPress ? '--longpress ' : ''}${Number(keyCode)}`;
+      if (typeof ai.runAdbShellCommand === 'function') {
+        ai.runAdbShellCommand(cmd, '', true);
+      }
     }
 
     function openScreenSaverModal(triggerBtn = null) {
@@ -4486,6 +4595,7 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
       else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
+      else if (document.getElementById('adbRemoteModal')?.style.display === 'flex') closeAdbRemoteModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
