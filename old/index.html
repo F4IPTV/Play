@@ -1596,13 +1596,13 @@
       </h3>
       <div class="adb-remote-grid">
         <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(19)">▲</button>
+        <button class="sys-btn adb-remote-btn" data-key="19" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▲</button>
         <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(21)">◀</button>
+        <button class="sys-btn adb-remote-btn" data-key="21" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">◀</button>
         <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(23)">OK</button>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(22)">▶</button>
+        <button class="sys-btn adb-remote-btn" data-key="22" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▶</button>
         <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(20)">▼</button>
+        <button class="sys-btn adb-remote-btn" data-key="20" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▼</button>
         <div class="adb-remote-spacer"></div>
       </div>
       <div class="adb-remote-row">
@@ -4087,6 +4087,35 @@ const NAVIGATION_MODALS = [
       if (typeof ai.runAdbShellCommand === 'function') {
         ai.runAdbShellCommand(cmd, '', true);
       }
+    }
+
+    const adbRemoteRepeatState = new Map();
+    function startAdbRemoteRepeat(event) {
+      const btn = event.currentTarget;
+      const keyCode = Number(btn?.dataset?.key);
+      if (!keyCode) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (adbRemoteRepeatState.has(btn)) return;
+      sendAdbRemoteKey(keyCode);
+      const initialDelay = 220;
+      const intervalMs = 90;
+      const timeoutId = setTimeout(() => {
+        const intervalId = setInterval(() => sendAdbRemoteKey(keyCode), intervalMs);
+        adbRemoteRepeatState.set(btn, { intervalId, timeoutId: null });
+      }, initialDelay);
+      adbRemoteRepeatState.set(btn, { intervalId: null, timeoutId });
+    }
+
+    function stopAdbRemoteRepeat(event) {
+      const btn = event.currentTarget;
+      const state = adbRemoteRepeatState.get(btn);
+      if (!state) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (state.timeoutId) clearTimeout(state.timeoutId);
+      if (state.intervalId) clearInterval(state.intervalId);
+      adbRemoteRepeatState.delete(btn);
     }
 
     function openScreenSaverModal(triggerBtn = null) {
