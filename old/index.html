@@ -4076,7 +4076,6 @@ const NAVIGATION_MODALS = [
     }
 
     function sendAdbRemoteKey(keyCode, longPress = false) {
-      if (!longPress && !adbRemoteRepeatActive) return;
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
       if (!ai) return;
       if (!ensureAdbSessionConnected('Пульт ДУ')) return;
@@ -4091,7 +4090,6 @@ const NAVIGATION_MODALS = [
     }
 
     const adbRemoteRepeatState = new Map();
-    let adbRemoteRepeatActive = false;
     function startAdbRemoteRepeat(event) {
       const btn = event.currentTarget;
       const keyCode = Number(btn?.dataset?.key);
@@ -4099,7 +4097,6 @@ const NAVIGATION_MODALS = [
       event.preventDefault();
       event.stopPropagation();
       if (adbRemoteRepeatState.has(btn)) return;
-      adbRemoteRepeatActive = true;
       sendAdbRemoteKey(keyCode);
       const initialDelay = 150;
       const intervalMs = 70;
@@ -4119,7 +4116,6 @@ const NAVIGATION_MODALS = [
       if (state.timeoutId) clearTimeout(state.timeoutId);
       if (state.intervalId) clearInterval(state.intervalId);
       adbRemoteRepeatState.delete(btn);
-      adbRemoteRepeatActive = false;
     }
 
     document.addEventListener('pointerup', () => {
