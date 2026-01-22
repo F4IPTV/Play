@@ -1845,6 +1845,9 @@
       "ru.yourok.torrserve",
       "org.acestream.media"
     ];
+    const PROJECT_MEDIA_PACKAGES = [
+      "com.carriez.flutter_hbb"
+    ];
     const EXACT_ALARM_PACKAGES = [
       "dev.vodik7.tvquickactions",
       "org.amnezia.awg"
@@ -3647,6 +3650,19 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       });
     }
 
+    function applyProjectMediaAccess() {
+      return runAdbBatch({
+        items: PROJECT_MEDIA_PACKAGES,
+        buildCommands: (pkg) => ({
+          command: `appops set ${pkg} PROJECT_MEDIA allow`,
+          label: `Project media ${pkg}`
+        }),
+        perItemStatus: (pkg) => {
+          showStatus(`🎥 ${pkg}: PROJECT_MEDIA`, '#00cfff', 2500);
+        }
+      });
+    }
+
     function applyExactAlarmAccess() {
       return runAdbBatch({
         items: EXACT_ALARM_PACKAGES,
@@ -4012,6 +4028,7 @@ const NAVIGATION_MODALS = [
           applyManageStorageAccess(),
           applyOverlayAccess(),
           applyWriteSettingsAccess(),
+          applyProjectMediaAccess(),
           applyExactAlarmAccess(),
           applyAccessibilityServices(),
           applyScreenSaverDefaults(),
