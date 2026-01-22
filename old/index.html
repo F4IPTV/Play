@@ -34,37 +34,11 @@
     }
 
     
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 12px;
-      margin-bottom: 12px;
-    }
+    .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
     .card {
-      background-color: #2a2a2a; border-radius: 10px; padding: 2px 2px 2px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background-color: #2a2a2a; border-radius: 16px; padding: 20px;
+      width: 80px; height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #fff; font-size: 13px; border: 2px solid transparent; transition: all .2s ease; cursor: pointer;
-      text-align: center; line-height: 1.1;
-      flex: 0 0 calc((100% - 20px) / 3);
-      max-width: calc((100% - 20px) / 3);
-      min-width: 0;
-      width: auto; height: auto;
-      box-sizing: border-box;
-    }
-    .card img {
-      margin-top: 0;
-      margin-bottom: 4px;
-    }
-    .card .group-title {
-      display: -webkit-box;
-      line-clamp: 2;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.1;
-      text-align: center;
     }
     .card:hover, .card:focus { background-color: #004d61; border-color: #00cfff; box-shadow: 0 0 10px rgba(0,0,0,.5); outline: none; }
     .card.selected { background-color: #00cfff; color: #000; border: 2px solid #fff; }
@@ -165,8 +139,8 @@
       filter: none !important;
     }
     .modal-adb-indicator {
-      width: 42px;
-      height: 42px;
+      width: 26px;
+      height: 26px;
       border: none;
       background: transparent;
       padding: 0;
@@ -196,38 +170,6 @@
       box-shadow: none !important;
       filter: none !important;
     }
-    /* Пульт ADB */
-    #adbRemoteModal .adb-remote-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 70px);
-      gap: 10px;
-      justify-content: center;
-      margin: 12px 0 6px;
-    }
-    #adbRemoteModal .adb-remote-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 8px;
-    }
-    #adbRemoteModal .adb-remote-btn {
-      width: 70px;
-      height: 52px;
-      padding: 6px;
-      font-size: 14px;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #adbRemoteModal .adb-remote-spacer {
-      width: 70px;
-      height: 52px;
-    }
-    #adbRemoteModal .adb-remote-btn.wide {
-      width: 110px;
-    }
 
     /* Кнопки-иконки у блока ввода пароля */
     #passwordRow .password-row-icon-btn,
@@ -254,9 +196,7 @@
     #passwordRow .modal-adb-indicator:focus-visible {
       outline: none !important;
       border-color: #fff;
-      background: transparent !important;
-      box-shadow: none !important;
-      filter: none !important;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
     }
 
     #adbScannerModal .modal-content {
@@ -350,7 +290,7 @@
 
     .system-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
     .sys-btn {
-      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px; padding: 3px; font-size: 13px; text-align: center;
+      flex: 1 1 calc(33.33% - 20px); min-width: 100px; max-width: 240px; padding: 10px; font-size: 13px; text-align: center;
       background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 10px; cursor: pointer; transition: background-color .3s ease;
     }
     .sys-btn:hover { background-color: #00cfff; }
@@ -391,51 +331,7 @@
       background:#10131A; border-radius:14px; border:1px solid #1f3a5a;
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
-    /* ТВ: убираем hover, чтобы не "залипало" при D-pad */
-    #atvAppsList .app-row:hover { background:#10131A; }
-    /* ТВ/общий случай: подсветка по фокусу/selected */
-    #atvAppsList .app-row:focus-visible,
-    #atvAppsList .app-row.selected {
-      background:#152b45;
-      border-color:#fcb900;
-      outline:none;
-    }
-    /* Телефоны/планшеты: отключаем рамку (и при желании подсветку) */
-    @media (hover: none) and (pointer: coarse) {
-      #atvAppsList .app-row:focus-visible,
-      #atvAppsList .app-row.selected {
-        border-color: transparent;
-        /* при необходимости уберите подсветку:
-           box-shadow: none; */
-      }
-    }
-    /* Глобально блокируем выделение/копирование длинным тапом (кроме ввода) */
-    html, body, .modal, .modal * {
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-    }
-    /* Разрешаем выделение там, где нужен ввод/редактирование текста */
-    input, textarea, [contenteditable],
-    input *, textarea *, [contenteditable] * {
-      -webkit-user-select: text;
-      user-select: text;
-      -webkit-touch-callout: default;
-    }
-    /* Flex для кнопок ввода/ADB: центрируем каждую строку */
-    #passwordRow {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin: 8px 0;
-    }
-    #passwordRow .password-row-icon-btn,
-    #passwordRow #passwordBtn,
-    #passwordRow .adb-status-icon {
-      flex: 0 0 auto;
-    }
+    .app-row:hover { background:#152b45; }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
     .app-title { font-weight:700; font-size:15px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:left; }
@@ -443,32 +339,6 @@
     .app-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; margin-left:12px; white-space:nowrap; background:#d0a447; color:#0b1d25; }
     .badge-user { background:#2abf6d; color:#0b1d25; }
     .badge-system { background:#7e6735; color:#e2e3e4; }
-    /* Кнопка обновления списка ATV с отдельными отступами по осям */
-    .atv-refresh-btn {
-      width: 48px;
-      height: 48px;
-      padding: 4px;
-      transform: translate(var(--atv-refresh-offset-x, 0px), var(--atv-refresh-offset-y, 0px));
-    }
-    /* Подсказка по фокусу (для кнопок без hover) */
-    .focus-tooltip {
-      position: relative;
-    }
-    .focus-tooltip:focus-visible::after {
-      content: attr(data-tip);
-      position: absolute;
-      left: 50%;
-      top: -8px;
-      transform: translate(-50%, -100%);
-      white-space: nowrap;
-      background: #1f3a5a52;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      z-index: 10;
-    }
     /* Кнопки в хедере модалки ATV — используем общие стили modal-header-tools/modal-quick-action */
     #atvAppsModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
     #atvAppsModal #atvAppsHeader { margin-top: 6px; margin-bottom: 6px; }
@@ -477,8 +347,6 @@
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
     .app-state { font-size:12px; color:#ffc107; }
-    #atvAppsModal.atv-loading-active { pointer-events: none; }
-    #atvAppsModal.atv-loading-active .modal-content { opacity: 0.85; }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -1218,113 +1086,44 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <div id="passwordRow" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
-    
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+  <div id="passwordRow" style="display:flex;align-items:center;justify-content:center;gap:-8px;margin:8px 0;">
+    <button class="password-row-icon-btn" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
     </button>
 
+    <button type="button" id="passwordBtn">🔑 Введите пароль</button>
 
-    <button type="button" id="passwordBtn" class="password-row-icon-btn focus-tooltip"
-            title="Введите пароль" aria-label="Введите пароль" data-tip="Введите пароль">
-      <img id="passwordBtnIcon" src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="" loading="lazy">
-    </button>
-
-    <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB" data-tip="Подключиться к последнему ADB">
+    <button class="modal-adb-indicator adb-status-icon" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
-    </button>
-
-    <button class="password-row-icon-btn focus-tooltip" onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()"
-            title="Неизвестные источники" aria-label="Неизвестные источники" data-tip="Неизвестные источники">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()"
-            title="Все приложения" aria-label="Все приложения" data-tip="Все приложения">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()"
-            title="Спец возможности" aria-label="Спец возможности" data-tip="Спец возможности">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()"
-            title="Общие настройки" aria-label="Общие настройки" data-tip="Общие настройки">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()"
-            title="Меню приложений" aria-label="Меню приложений" data-tip="Меню приложений">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" loading="lazy">
     </button>
   </div>
   <div id="status"></div>
 
   <div class="system-buttons" id="mainSystemButtons">
-    <!--
     <button onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" style="height:30px;"><br>Неизвестные источники
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Все приложения
     </button>
-    -->
-    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>ADB локально
-    </button>
-
-    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
-    </button>
-
-    <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB команды
-    </button>
-
-    <button onclick="openAdbRemoteModal(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:24px;"><br>Пульт ДУ
-    </button>
-
     <button onclick="openAtvAppsModalFast(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Пакеты
     </button>
-
-    <button onclick="openScreenSaverModal(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:26px;"><br>Заставка
-    </button>
-
-    <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic22_disableside.png" alt="" style="height:26px;"><br>Откл\вкл системные
-    </button>
-
-    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
-    </button>
-
-    <button onclick="showInstallMethodSettings(this)" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
-      </button>
-
-      <button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmDeleteCopiedBackups()" class="sys-btn">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление бэкапов
-      </button>
-
-    <!--
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Спец возможности
     </button>
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" style="height:28px;"><br>Общие настройки
     </button>
-    -->
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openFileManagerPlus()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic5_FileManagerPlus.png" alt="" style="height:25px;"><br>File Manager
     </button>
     <button onclick="openMiscModal(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic_launcher_round.png" alt="" style="height:30px;"><br>FastInstaller+
     </button>
-    <!--
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" style="height:28px;"><br>Меню приложений
           </button>
-    -->
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAnydesk()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic8_anydesk.png" alt="" style="height:28px;"><br>AnyDesk
     </button>
@@ -1358,15 +1157,7 @@
   <div id="atvAppsModal" class="modal" style="display:none;" tabindex="-1">
     <div class="modal-content">
       <div class="modal-header-tools" style="justify-content:flex-end;">
-        <button
-          type="button"
-          class="modal-quick-action atv-refresh-btn"
-          data-action="modal-action-atv-refresh"
-          onclick="refreshAtvAppsList('remote')"
-          title="Обновить список"
-          aria-label="Обновить список"
-          style="--atv-refresh-offset-x: -10px; --atv-refresh-offset-y: 7px;"
-        >
+        <button class="modal-adb-indicator" onclick="refreshAtvAppsList('remote')" title="Обновить список">
           <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
         </button>
       </div>
@@ -1408,39 +1199,39 @@
             <img src="https://raw.githubusercontent.com/F4IPTV/Play/main/Pictures/Без названия (15).svg" alt="" style="height:26px;"><br>Файловый менеджер
           </button> -->
 	  <!-- Кнопка настроек метода установки -->
-    
-   
+    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+    </button>
+    <button onclick="ignoreNextEnter=true;requestLocalAdbConnection()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>Подключить ADB (RSA)
+    </button>
     <button onclick="ignoreNextEnter=true;openAdbScanner()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;"><br>К другому (RSA)
     </button>
-    
+    <button onclick="handleOpenApkFilePicker()" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Установить APK+
+    </button>
     <button onclick="dumpLocalApps()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Дамп иконок
     </button>
-          
+          <button onclick="disablePackages(['com.amazon.amazonvideo.livingroom','com.android.cts.priv.ctsshim','com.android.printspooler','com.android.providers.calendar','com.android.providers.contacts','com.apple.atve.androidtv.appletv','com.google.android.feedback','com.xiaomi.mitv.mediaexplorer','com.google.android.play.games','com.google.android.syncadapters.calendar','com.iqiyi.i18n.tv','com.mitv.tvhome.michannel','com.mitv.tvhome.mitvplus','com.mitv.videoplayer','com.miui.tv.analytics','com.netflix.ninja','com.google.android.videos','com.sonyliv','in.startv.hotstar','com.android.dreams.basic','com.google.android.apps.tv.dreamx','com.mitv.tvhome.atv','com.mitv.dream'])" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic22_disableside.png" alt="" style="height:26px;"><br>Откл\вкл системные
+          </button>
            <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление всех приложений
           </button>
-
-          <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
+          <button onclick="openScreenSaverModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:26px;"><br>Заставка
           </button>
-          
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+          <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic13_ADB_cmd.png" alt="" style="height:24px;"><br>ADB команды
           </button>
-          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
+			<button onclick="ignoreNextEnter=true;window.AndroidInterface.confirmDeleteCopiedBackups()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление бэкапов
           </button>
-
-          <button onclick="openAutostartModal(this)" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
-          </button>
-          <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
-          </button>
-			
-          
+          <button onclick="showInstallMethodSettings()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Выбор способа установки
+            </button>
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
     <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_disable.png" alt="" style="height:26px;"><br>Доп. функции
   </button>
@@ -1478,7 +1269,12 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openSettingsForPackage('com.google.android.katniss')" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic5_googlekatniss.png" alt="" style="height:24px;"><br>Google Katniss
           </button>
-          
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openApkFilePickerDownload()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Загрузить на устройство
+          </button>
+          <button onclick="ignoreNextEnter=true;window.AndroidInterface.openDownloadToDevice()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic11_usb.png" alt="" style="height:26px;"><br>Скачать на устройство
+          </button>
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.clearWebCache()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic7_clearcash.png" alt="" style="height:26px;"><br>Очистить кеш
           </button>
@@ -1488,9 +1284,15 @@
           <button onclick="ignoreNextEnter=true;window.AndroidInterface.openAddAccountSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic6_account.png" alt="" style="height:28px;"><br>Вход в аккаунт
           </button>
-          
-          
-          
+          <button onclick="openAutostartModal(this)" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic2_autostart.png" alt="" style="height:26px;"><br>Автозагрузка приложения
+          </button>
+          <button onclick="ignoreNextEnter=true;runAllAutoPermissions()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Авторазрешения
+          </button>
+          <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
+          </button>
         
 			    <button onclick="ignoreNextEnter=true;window.AndroidInterface.openNetworkSettings()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_wifi.png" alt="" style="height:28px;"><br>Настройки Wi-Fi
@@ -1583,34 +1385,6 @@
       <div id="adbCommandsListContainer">
         <div id="adbCommandsList"></div>
         <button id="adbCommandsCloseBtn" class="component-btn" onclick="closeAdbCommandsModal()">Закрыть</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка пульта ADB -->
-  <div id="adbRemoteModal" class="modal" style="display:none;" tabindex="-1">
-    <div class="modal-content">
-      <h3 id="adbRemoteHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
-        Пульт ДУ (ADB)
-      </h3>
-      <div class="adb-remote-grid">
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="19" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▲</button>
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="21" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">◀</button>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(23)">OK</button>
-        <button class="sys-btn adb-remote-btn" data-key="22" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▶</button>
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="20" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▼</button>
-        <div class="adb-remote-spacer"></div>
-      </div>
-      <div class="adb-remote-row">
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(4)">Назад</button>
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(3)">Домой</button>
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(82)">Меню</button>
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(4, true)">Назад (долго)</button>
-        <button class="sys-btn adb-remote-btn wide" onclick="closeAdbRemoteModal()">Закрыть</button>
       </div>
     </div>
   </div>
@@ -1974,20 +1748,9 @@ function setAdbRootLog(text) {
     function setPasswordFromAndroid(pwd) { savedPassword = (pwd || "").trim(); updatePasswordBtn(); }
     function updatePasswordBtn() {
       const btn = document.getElementById('passwordBtn');
-      const icon = document.getElementById('passwordBtnIcon');
-      const hasPwd = !!savedPassword;
-      const tip = hasPwd ? `Пароль: ${'*'.repeat(savedPassword.length)}` : 'Введите пароль';
-      const iconSrc = hasPwd
-        ? 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp'
-        : 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp';
-      if (icon) icon.src = iconSrc;
-      if (btn) {
-        btn.title = tip;
-        btn.setAttribute('aria-label', tip);
-        btn.setAttribute('data-tip', tip);
-      }
+      btn.textContent = savedPassword ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : "🔑 Введите пароль";
     }
-    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -2874,7 +2637,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     function openAdbCommandsModal(triggerBtn = null) {
-      saveMainScroll();
       bindAdbCommandsFocusReset();
       const modal = document.getElementById('adbCommandsModal');
       if (!modal) return;
@@ -2966,7 +2728,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
       lastAdbCommandsTriggerButton = null;
-      restoreMainScroll();
       restoreGroupModalOverlay();
     }
 
@@ -3228,8 +2989,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function ensureModalAdbIndicators() {
       const headerSelector = MODAL_ADB_HEADER_SELECTOR;
       document.querySelectorAll('.modal .modal-content').forEach((content) => {
-        const modalEl = content.closest('.modal');
-        const isAtvModal = modalEl && modalEl.id === 'atvAppsModal';
         const hasHeader = headerSelector ? content.querySelector(headerSelector) : false;
         if (!hasHeader) {
           const tools = content.querySelector('.modal-header-tools');
@@ -3250,16 +3009,6 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           content.appendChild(tools);
         } else if (!tools.classList.contains('modal-header-tools')) {
           tools.className = 'modal-header-tools';
-        }
-
-        if (isAtvModal) {
-          tools.querySelectorAll('.modal-adb-indicator').forEach((btn) => btn.remove());
-          const strayIndicator = content.querySelector('.modal-adb-indicator');
-          if (strayIndicator && strayIndicator.parentElement === content) {
-            strayIndicator.remove();
-          }
-          ensureModalQuickActions(tools, content, null);
-          return;
         }
 
         let indicator = tools.querySelector('.modal-adb-indicator');
@@ -3940,7 +3689,6 @@ const NAVIGATION_MODALS = [
       'screenSaverTimeoutModal',
       'adbCommandsModal',
       'adbScannerModal',
-      'adbRemoteModal',
       'miscMoreModal',
       'miscModal',
       'atvAppsModal',
@@ -3952,15 +3700,6 @@ const NAVIGATION_MODALS = [
     document.addEventListener('keydown', (e) => {
       // Back/Escape обрабатываются ниже отдельно
       if (e.key === 'Back' || e.key === 'Escape') return;
-
-  // Во время загрузки списка ATV блокируем любую навигацию/действия
-  const atvModal = document.getElementById('atvAppsModal');
-  if (typeof isAtvInputBlocked === 'function'
-      && isAtvInputBlocked()
-      && atvModal?.style.display === 'flex') {
-    e.preventDefault();
-    return;
-  }
 
       // Спец-правила для модалки таймаута заставки:
       // если фокус в инпуте и стрелка вниз — идём на кнопку "Применить"
@@ -4045,116 +3784,14 @@ const NAVIGATION_MODALS = [
       openAdbCommandsModal(triggerBtn);
     }
 
-    let lastAdbRemoteTrigger = null;
-    function openAdbRemoteModal(triggerBtn = null) {
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
-      saveMainScroll();
-      lastAdbRemoteTrigger = triggerBtn || document.activeElement;
-      document.activeElement?.blur();
-      const modal = document.getElementById('adbRemoteModal');
-      if (!modal) return;
-      modal.style.display = 'flex';
-      bringModalToFront(modal);
-      document.body.classList.add('modal-open');
-      const firstBtn = modal.querySelector('.adb-remote-btn');
-      if (firstBtn) setTimeout(() => firstBtn.focus({ preventScroll: true }), 80);
-    }
-
-    function closeAdbRemoteModal() {
-      const modal = document.getElementById('adbRemoteModal');
-      if (!modal) return;
-      if (adbRemoteRepeatUseNative || adbRemoteRepeatState.size) {
-        stopAdbRemoteRepeat({ currentTarget: modal });
-      }
-      modal.style.display = 'none';
-      modal.style.zIndex = '';
-      document.body.classList.remove('modal-open');
-      const target = lastAdbRemoteTrigger;
-      lastAdbRemoteTrigger = null;
-      restoreMainScroll();
-      if (target && document.body.contains(target)) {
-        setTimeout(() => target.focus({ preventScroll: true }), 60);
-      }
-      restoreGroupModalOverlay();
-    }
-
-    function sendAdbRemoteKey(keyCode, longPress = false) {
-      const ai = getAdbInterfaceOrWarn('Пульт ДУ');
-      if (!ai) return;
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
-      if (typeof ai.sendAdbKeyEvent === 'function') {
-        ai.sendAdbKeyEvent(Number(keyCode), !!longPress);
-        return;
-      }
-      const cmd = `input keyevent ${longPress ? '--longpress ' : ''}${Number(keyCode)}`;
-      if (typeof ai.runAdbShellCommand === 'function') {
-        ai.runAdbShellCommand(cmd, '', true);
-      }
-    }
-
-    const adbRemoteRepeatState = new Map();
-    let adbRemoteRepeatActive = false;
-    let adbRemoteRepeatUseNative = false;
-    function startAdbRemoteRepeat(event) {
-      const btn = event.currentTarget;
-      const keyCode = Number(btn?.dataset?.key);
-      if (!keyCode) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const ai = getAdbInterfaceOrWarn('Пульт ДУ');
-      if (!ai) return;
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
-      if (typeof ai.startAdbKeyRepeat === 'function') {
-        adbRemoteRepeatUseNative = true;
-        ai.startAdbKeyRepeat(keyCode, 180, 85);
-        return;
-      }
-      if (adbRemoteRepeatState.has(btn)) return;
-      adbRemoteRepeatActive = true;
-      sendAdbRemoteKey(keyCode);
-      const initialDelay = 150;
-      const intervalMs = 70;
-      const timeoutId = setTimeout(() => {
-        const intervalId = setInterval(() => sendAdbRemoteKey(keyCode), intervalMs);
-        adbRemoteRepeatState.set(btn, { intervalId, timeoutId: null });
-      }, initialDelay);
-      adbRemoteRepeatState.set(btn, { intervalId: null, timeoutId });
-    }
-
-    function stopAdbRemoteRepeat(event) {
-      const btn = event.currentTarget;
-      const ai = window.AndroidInterface;
-      if (adbRemoteRepeatUseNative && ai && typeof ai.stopAdbKeyRepeat === 'function') {
-        ai.stopAdbKeyRepeat();
-        adbRemoteRepeatUseNative = false;
-        return;
-      }
-      const state = adbRemoteRepeatState.get(btn);
-      if (!state) return;
-      event.preventDefault?.();
-      event.stopPropagation?.();
-      if (state.timeoutId) clearTimeout(state.timeoutId);
-      if (state.intervalId) clearInterval(state.intervalId);
-      adbRemoteRepeatState.delete(btn);
-      adbRemoteRepeatActive = false;
-    }
-
-    document.addEventListener('pointerup', () => {
-      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
-    }, { passive: true });
-    document.addEventListener('touchend', () => {
-      adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
-    }, { passive: true });
-
     function openScreenSaverModal(triggerBtn = null) {
-  saveMainScroll();
       lastScreenSaverTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
       const modal = document.getElementById('screenSaverModal');
       if (!modal) return;
   setModalHeaderTitle('screenSaverHeader', (container) => {
     try {
-      const btn = triggerBtn || lastScreenSaverTrigger || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
+      const btn = triggerBtn || document.querySelector('.system-buttons .sys-btn[onclick*="openScreenSaverModal"]');
       const btnIcon = btn?.querySelector('img');
       const titleText = btn?.innerText?.trim() || 'Заставка';
       const fallbackIcon = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png';
@@ -4200,7 +3837,6 @@ const NAVIGATION_MODALS = [
       if (target && document.body.contains(target)) {
         setTimeout(() => target.focus({ preventScroll: true }), 60);
       }
-  restoreMainScroll();
       restoreGroupModalOverlay();
     }
 
@@ -4391,8 +4027,8 @@ const NAVIGATION_MODALS = [
         const img = document.createElement('img');
         img.src = url;
         img.alt = '';
-        img.style.height = '24px';
-        img.style.width = '24px';
+        img.style.height = '25px';
+        img.style.width = '25px';
         img.style.objectFit = 'contain';
         return img;
       };
@@ -4436,10 +4072,7 @@ const NAVIGATION_MODALS = [
           const iconEl = createGroupIcon(groupObj.icon);
           card.appendChild(iconEl);
         }
-        const label = document.createElement('div');
-        label.className = 'group-title';
-        label.textContent = groupKey;
-        card.appendChild(label);
+        card.appendChild(document.createTextNode(groupKey));
 
         card.onclick = () => { selectCard(card); startInstall(); };
         card.onfocus = () => selectCard(card);
@@ -4652,7 +4285,6 @@ showStatus(`Началась загрузка приложений, ожидай
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
       else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
-      else if (document.getElementById('adbRemoteModal')?.style.display === 'flex') closeAdbRemoteModal();
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
@@ -4897,8 +4529,8 @@ showStatus(`Началась загрузка приложений, ожидай
       });
     }
 
-    // Снятие выделения с группы при фокусе на нижних кнопках и новых иконках
-    document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn, .password-row-icon-btn, .adb-status-icon").forEach(btn => {
+    // Снятие выделения с группы при фокусе на нижних кнопках
+    document.querySelectorAll(".system-buttons .sys-btn, #passwordBtn, #startBtn").forEach(btn => {
       btn.addEventListener("focus", () => { document.querySelectorAll(".card").forEach(c => c.classList.remove("selected")); });
     });
 
@@ -5055,9 +4687,8 @@ document.addEventListener('click', function(e) {
 }, true);
 
 // Показать настройки метода установки (как модалка "Разное")
-function showInstallMethodSettings(triggerBtn = null) {
-    saveMainScroll();
-    lastFocusedElement = triggerBtn || document.activeElement;
+function showInstallMethodSettings() {
+    lastFocusedElement = document.activeElement;
     
     // Получаем текущий метод установки
     const currentMethod = window.AndroidInterface?.getInstallMethod?.() || 'sai';
@@ -5100,7 +4731,6 @@ function closeInstallMethodSettings() {
       misc.style.pointerEvents = ''; 
     }
     
-    restoreMainScroll();
     setTimeout(() => { if (lastFocusedElement && document.body.contains(lastFocusedElement)) lastFocusedElement.focus?.(); lastFocusedElement = null; }, 50);
 }
 
@@ -5285,21 +4915,6 @@ const atvAppsState = {
 };
 
 let atvLastFocusedAppEl = null;
-let atvInputBlockUntil = 0;
-function isAtvInputBlocked() {
-  return atvAppsState.loading || Date.now() < atvInputBlockUntil;
-}
-let __mainScrollTop = null;
-function saveMainScroll() {
-  const scroller = document.scrollingElement || document.documentElement;
-  __mainScrollTop = scroller.scrollTop;
-}
-function restoreMainScroll() {
-  if (__mainScrollTop === null) return;
-  const scroller = document.scrollingElement || document.documentElement;
-  scroller.scrollTop = __mainScrollTop;
-  __mainScrollTop = null;
-}
 
 const atvDefaultIcons = {
   user: 'https://appassets.androidplatform.net/assets/webview/icons/list/user.png',
@@ -5362,7 +4977,6 @@ function closeAtvAppsModal() {
 }
 
 function setAtvAppsFilter(filter, rerender = true) {
-  if (isAtvInputBlocked()) return;
   atvAppsState.filter = filter;
   document.querySelectorAll('#atvAppsFilters .sys-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.filter === filter);
@@ -5413,18 +5027,7 @@ function handleAtvAppsPayload(raw) {
 function setAtvLoading(flag) {
   atvAppsState.loading = !!flag;
   const modal = document.getElementById('atvAppsModal');
-  if (modal) {
-    modal.classList.toggle('atv-loading-active', !!flag);
-  }
-  // блокируем нажатия Enter на период загрузки
-  if (flag) {
-    atvInputBlockUntil = 0;
-    document.activeElement?.blur();
-    ignoreNextEnter = true;
-  } else {
-    atvInputBlockUntil = Date.now() + 450;
-    setTimeout(() => { ignoreNextEnter = false; }, 120);
-  }
+  if (modal) modal.classList.toggle('atv-loading-active', !!flag);
   const refreshBtn = document.getElementById('modal-action-atv-refresh');
   if (refreshBtn) refreshBtn.disabled = !!flag;
 }
@@ -5482,13 +5085,7 @@ function renderAtvAppsList() {
     row.tabIndex = 0;
     row.onclick = () => openAtvAppActions(app);
     row.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); openAtvAppActions(app); } };
-    row.onfocus = () => {
-      document.querySelectorAll('#atvAppsList .app-row').forEach(r => r.classList.remove('selected'));
-      row.classList.add('selected');
-      row.scrollIntoView({ block: 'nearest' });
-      atvLastFocusedAppEl = row;
-    };
-    row.onblur = () => row.classList.remove('selected');
+    row.onfocus = () => { atvLastFocusedAppEl = row; };
 
     const img = document.createElement('img');
     img.className = 'app-icon';
@@ -5583,7 +5180,6 @@ function dumpLocalApps() {
 
 let atvSelectedApp = null;
 function openAtvAppActions(app) {
-  if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
@@ -5648,18 +5244,15 @@ function openAtvAppActions(app) {
     if (app.state === 'deleted') {
       buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
     } 
-    // Для отключённых: "Включить" + "Открыть" + "Очистить данные"
+    // Для отключённых: "Включить" + "Открыть"
     else if (app.state === 'disabled') {
       buttons.appendChild(makeAtvActionBtn('enable', 'Включить'));
       buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
-      buttons.appendChild(makeAtvActionBtn('clear', 'Очистить данные'));
     } 
-    // Для включённых: "Отключить" + "Открыть" + "Очистить данные" + "Отключить с очисткой"
+    // Для включённых: "Отключить" + "Открыть"
     else {
       buttons.appendChild(makeAtvActionBtn('disable', 'Отключить'));
       buttons.appendChild(makeAtvActionBtn('open', 'Открыть'));
-      buttons.appendChild(makeAtvActionBtn('clear', 'Очистить данные'));
-      buttons.appendChild(makeAtvActionBtn('disable_clear', 'Отключить с очисткой'));
     }
     
     // Удаление доступно для user всегда, для system только по ADB, и не для deleted
@@ -5731,7 +5324,7 @@ function handleAtvAppAction(action) {
     closeAtvAppActions();
     return;
   }
-  if (action === 'disable' || action === 'disable_clear' || action === 'enable' || action === 'delete' || action === 'clear') {
+  if (action === 'disable' || action === 'enable' || action === 'delete') {
     const name = atvSelectedApp.label || atvSelectedApp.package;
     try {
       window.AndroidInterface?.confirmAndPerformAppAction?.(
@@ -5762,11 +5355,11 @@ function handleAtvAppAction(action) {
   } finally {
     closeAtvAppActions();
     if (atvSelectedApp) {
-    const targetState =
-      action === 'enable' ? 'enabled' :
-      (action === 'disable' || action === 'disable_clear') ? 'disabled' :
-      action === 'delete' ? 'deleted' :
-      atvSelectedApp.state;
+      const targetState =
+        action === 'enable' ? 'enabled' :
+        action === 'disable' ? 'disabled' :
+        action === 'delete' ? 'deleted' :
+        atvSelectedApp.state;
 
       const apps = atvAppsState.apps || [];
       const idx = apps.findIndex(a => a.package === atvSelectedApp.package);
@@ -5786,7 +5379,7 @@ window.applyAtvActionState = function(action, pkg) {
   if (idx === -1) return;
   const targetState =
     action === 'enable' ? 'enabled' :
-    (action === 'disable' || action === 'disable_clear') ? 'disabled' :
+    action === 'disable' ? 'disabled' :
     action === 'delete' ? 'deleted' :
     apps[idx].state;
   apps[idx] = { ...apps[idx], state: targetState };
@@ -5827,7 +5420,7 @@ window.atvAppsBackHandler = function() {
 };
 </script>
 
-<!-- Модалка настроек метода установки  -->
+<!-- Модалка настроек метода установки -->
 <div id="installMethodModal" class="modal" style="display:none;" tabindex="-1">
   <div class="modal-content">
     <h3>Способ установки:</h3>
