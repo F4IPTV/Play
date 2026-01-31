@@ -4646,6 +4646,7 @@ const NAVIGATION_MODALS = [
     let groupItemsByKey = new Map();
     let groupItemCounter = 0;
     const GROUP_LONG_PRESS_MS = 600;
+    let groupModalSuppressKeyUntil = 0;
 
     function resetGroupSelectionState() {
       groupSelectMode = false;
@@ -4769,6 +4770,11 @@ const NAVIGATION_MODALS = [
       btn.addEventListener('keydown', (e) => {
         const isActivateKey = ['Enter', 'OK', 'NumpadEnter', ' '].includes(e.key);
         if (!isActivateKey) return;
+        if (Date.now() < groupModalSuppressKeyUntil) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         if (e.repeat) { e.preventDefault(); e.stopPropagation(); return; }
         clearKey();
         keyLongPressTimer = setTimeout(() => {
@@ -4783,6 +4789,11 @@ const NAVIGATION_MODALS = [
       btn.addEventListener('keyup', (e) => {
         const isActivateKey = ['Enter', 'OK', 'NumpadEnter', ' '].includes(e.key);
         if (!isActivateKey) return;
+        if (Date.now() < groupModalSuppressKeyUntil) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         if (keyLongPressTimer) {
           clearTimeout(keyLongPressTimer);
           keyLongPressTimer = null;
@@ -4897,6 +4908,7 @@ const NAVIGATION_MODALS = [
       const list  = document.getElementById('modalList');
       list.innerHTML = "";
       resetGroupSelectionState();
+      groupModalSuppressKeyUntil = Date.now() + 400;
 
 
       document.activeElement?.blur();
