@@ -363,13 +363,12 @@
       background: transparent;
       box-sizing: border-box;
     }
+    #modalList.selection-mode .component-btn.selected::after {
+      border-color: #00cfff;
+      background: #00cfff;
+    }
     #modalList.selection-mode .component-btn.selected::before {
-      content: "✓";
-      position: absolute;
-      top: 2px;
-      right: 8px;
-      font-size: 14px;
-      color: #00cfff;
+      content: none;
     }
     /* Кнопки в стиле Google TV */
     button {
@@ -5035,7 +5034,13 @@ const NAVIGATION_MODALS = [
       else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
-      else if (document.getElementById('modal')?.style.display === 'flex') closeModal();
+      else if (document.getElementById('modal')?.style.display === 'flex') {
+        if (groupSelectMode) {
+          clearGroupSelection();
+        } else {
+          closeModal();
+        }
+      }
       else { window.AndroidInterface.requestAppExit(); }
     }
 
