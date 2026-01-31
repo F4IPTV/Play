@@ -363,6 +363,7 @@
       background: transparent;
       box-sizing: border-box;
       transform: translateY(-50%);
+      z-index: 0;
     }
     #modalList.selection-mode .component-btn.selected::after {
       border-color: #00cfff;
@@ -373,9 +374,12 @@
       position: absolute;
       top: 50%;
       right: 8px;
-      font-size: 14px;
+      font-size: 16px;
       color: #000;
       transform: translateY(-50%);
+      font-weight: 700;
+      line-height: 1;
+      z-index: 1;
     }
     /* Кнопки в стиле Google TV */
     button {
