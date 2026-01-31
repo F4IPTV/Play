@@ -354,7 +354,7 @@
     #modalList.selection-mode .component-btn::after {
       content: "";
       position: absolute;
-      top: 4px;
+      top: 50%;
       right: 6px;
       width: 14px;
       height: 14px;
@@ -362,13 +362,20 @@
       border-radius: 4px;
       background: transparent;
       box-sizing: border-box;
+      transform: translateY(-50%);
     }
     #modalList.selection-mode .component-btn.selected::after {
       border-color: #00cfff;
       background: #00cfff;
     }
     #modalList.selection-mode .component-btn.selected::before {
-      content: none;
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      font-size: 14px;
+      color: #000;
+      transform: translateY(-50%);
     }
     /* Кнопки в стиле Google TV */
     button {
