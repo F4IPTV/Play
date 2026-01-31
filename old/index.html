@@ -360,6 +360,9 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
+    #groupSelectActions { display: none; gap: 8px; justify-content: center; margin-top: 10px; }
+    #groupSelectActions.visible { display: flex; }
+    #groupSelectActions .component-btn { width: auto; min-width: 140px; }
     /* Кнопки в стиле Google TV */
     button {
       background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 8px;
@@ -1718,6 +1721,10 @@
       <h3 id="modalGroupHeader" style="display:flex;gap:8px;align-items:center;justify-content:center;"></h3>
       <div id="modalListContainer">
         <div id="modalList"></div>
+        <div id="groupSelectActions">
+          <button id="selectAllBtn" class="component-btn" onclick="selectAllGroupItems()">Выбрать все</button>
+          <button id="clearSelectionBtn" class="component-btn" onclick="clearGroupSelection()">Сбросить выбор</button>
+        </div>
         <button id="installAllBtn" onclick="installAll()" class="component-btn">Установить всё</button>
       </div>
     </div>
@@ -4650,17 +4657,57 @@ const NAVIGATION_MODALS = [
 
     function updateInstallAllButton() {
       const btn = document.getElementById('installAllBtn');
+      const actions = document.getElementById('groupSelectActions');
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      const clearBtn = document.getElementById('clearSelectionBtn');
+      const total = groupItemsByKey.size;
+      const selected = groupSelectedKeys.size;
+
+      if (actions) actions.classList.toggle('visible', groupSelectMode);
+      if (selectAllBtn) {
+        const allSelected = total > 0 && selected === total;
+        selectAllBtn.textContent = allSelected ? 'Снять все' : 'Выбрать все';
+        selectAllBtn.disabled = total === 0;
+      }
+      if (clearBtn) clearBtn.disabled = selected === 0;
+
       if (!btn) return;
       if (groupSelectMode) {
-        const count = groupSelectedKeys.size;
-        btn.textContent = count ? `Установить выбранные (${count})` : 'Установить выбранные';
-        btn.disabled = count === 0;
+        btn.textContent = selected ? `Установить выбранные (${selected})` : 'Установить выбранные';
+        btn.disabled = selected === 0;
         btn.classList.toggle('disabled', btn.disabled);
       } else {
         btn.textContent = 'Установить всё';
         btn.disabled = false;
         btn.classList.remove('disabled');
       }
+    }
+
+    function selectAllGroupItems() {
+      const total = groupItemsByKey.size;
+      if (!total) return;
+      const allSelected = groupSelectedKeys.size === total;
+      if (allSelected) {
+        clearGroupSelection();
+        return;
+      }
+      groupSelectMode = true;
+      groupSelectedKeys.clear();
+      document.querySelectorAll('#modalList .component-btn').forEach(btn => {
+        const key = btn.dataset.itemKey;
+        if (!key) return;
+        groupSelectedKeys.add(key);
+        btn.classList.add('selected');
+      });
+      updateInstallAllButton();
+    }
+
+    function clearGroupSelection() {
+      groupSelectedKeys.clear();
+      groupSelectMode = false;
+      document.querySelectorAll('#modalList .component-btn.selected')
+        .forEach(btn => btn.classList.remove('selected'));
+      updateInstallAllButton();
     }
 
     function createGroupItemKey(type, item) {
@@ -4840,6 +4887,7 @@ const NAVIGATION_MODALS = [
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = app.file;
         const itemKey = createGroupItemKey('app', app);
         groupItemsByKey.set(itemKey, { type: 'app', data: app });
+        btn.dataset.itemKey = itemKey;
         attachGroupItemHandlers(btn, itemKey, () => installSingleApp(app));
         list.appendChild(btn);
       });
@@ -4849,6 +4897,7 @@ const NAVIGATION_MODALS = [
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = backup.file;
         const itemKey = createGroupItemKey('backup', backup);
         groupItemsByKey.set(itemKey, { type: 'backup', data: backup });
+        btn.dataset.itemKey = itemKey;
         attachGroupItemHandlers(btn, itemKey, () => installSingleBackup(backup));
         list.appendChild(btn);
       });
@@ -4858,6 +4907,7 @@ const NAVIGATION_MODALS = [
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = link.file;
         const itemKey = createGroupItemKey('link', link);
         groupItemsByKey.set(itemKey, { type: 'link', data: link });
+        btn.dataset.itemKey = itemKey;
         attachGroupItemHandlers(btn, itemKey, () => openLinkItem(link));
         list.appendChild(btn);
       });
