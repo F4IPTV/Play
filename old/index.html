@@ -4738,11 +4738,20 @@ const NAVIGATION_MODALS = [
     function attachGroupItemHandlers(btn, itemKey, onActivate) {
       let longPressTimer = null;
       let ignoreClick = false;
+      let keyLongPressTimer = null;
+      let keyLongPressFired = false;
       const clear = () => {
         if (longPressTimer) {
           clearTimeout(longPressTimer);
           longPressTimer = null;
         }
+      };
+      const clearKey = () => {
+        if (keyLongPressTimer) {
+          clearTimeout(keyLongPressTimer);
+          keyLongPressTimer = null;
+        }
+        keyLongPressFired = false;
       };
 
       btn.addEventListener('pointerdown', (e) => {
@@ -4756,6 +4765,40 @@ const NAVIGATION_MODALS = [
       btn.addEventListener('pointerup', clear);
       btn.addEventListener('pointerleave', clear);
       btn.addEventListener('pointercancel', clear);
+
+      btn.addEventListener('keydown', (e) => {
+        const isActivateKey = ['Enter', 'OK', 'NumpadEnter', ' '].includes(e.key);
+        if (!isActivateKey) return;
+        if (e.repeat) { e.preventDefault(); e.stopPropagation(); return; }
+        clearKey();
+        keyLongPressTimer = setTimeout(() => {
+          keyLongPressFired = true;
+          ignoreClick = true;
+          enterGroupSelectMode(itemKey, btn);
+        }, GROUP_LONG_PRESS_MS);
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      btn.addEventListener('keyup', (e) => {
+        const isActivateKey = ['Enter', 'OK', 'NumpadEnter', ' '].includes(e.key);
+        if (!isActivateKey) return;
+        if (keyLongPressTimer) {
+          clearTimeout(keyLongPressTimer);
+          keyLongPressTimer = null;
+        }
+        ignoreClick = true;
+        if (!keyLongPressFired) {
+          if (groupSelectMode) {
+            toggleGroupSelection(itemKey, btn);
+          } else {
+            onActivate?.();
+          }
+        }
+        keyLongPressFired = false;
+        e.preventDefault();
+        e.stopPropagation();
+      });
 
       btn.addEventListener('click', (e) => {
         if (ignoreClick) {
