@@ -320,7 +320,7 @@
         margin: 12px auto 0;
       }
     }
-    #modalList .component-btn { transition: none !important; }
+    #modalList .component-btn { transition: none !important; position: relative; }
     #modalList .component-btn:focus,
     #installAllBtn:focus,
     #installAllBtn.selected { background-color: #00cfff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0) !important; border-color: #fff !important; outline: none; }
@@ -339,6 +339,27 @@
   min-height: 48px;          /* чтобы высота не "прыгала" */
   max-height: 48px; 
 }
+    #modalList .component-btn.selected {
+      background-color: #003b4a;
+      border-color: #00cfff;
+      box-shadow: 0 0 0 2px rgba(0, 207, 255, 0.6);
+    }
+    #modalList .component-btn.selected::after {
+      content: "✓";
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      font-size: 12px;
+      line-height: 1;
+      color: #000;
+      background: #00cfff;
+      border-radius: 10px;
+      padding: 2px 5px;
+    }
+    #installAllBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     /* Кнопки в стиле Google TV */
     button {
       background-color: #004d61; color: #fff; border: 2px solid transparent; border-radius: 8px;
@@ -4612,11 +4633,180 @@ const NAVIGATION_MODALS = [
       toast.addEventListener('click', () => { clearTimeout(timer); hide(); });
     }
 
+    // ===== Выбор элементов в списке группы =====
+    let groupSelectMode = false;
+    let groupSelectedKeys = new Set();
+    let groupItemsByKey = new Map();
+    let groupItemCounter = 0;
+    const GROUP_LONG_PRESS_MS = 600;
+
+    function resetGroupSelectionState() {
+      groupSelectMode = false;
+      groupSelectedKeys.clear();
+      groupItemsByKey.clear();
+      groupItemCounter = 0;
+      updateInstallAllButton();
+    }
+
+    function updateInstallAllButton() {
+      const btn = document.getElementById('installAllBtn');
+      if (!btn) return;
+      if (groupSelectMode) {
+        const count = groupSelectedKeys.size;
+        btn.textContent = count ? `Установить выбранные (${count})` : 'Установить выбранные';
+        btn.disabled = count === 0;
+        btn.classList.toggle('disabled', btn.disabled);
+      } else {
+        btn.textContent = 'Установить всё';
+        btn.disabled = false;
+        btn.classList.remove('disabled');
+      }
+    }
+
+    function createGroupItemKey(type, item) {
+      const base = item?.uid || item?.url || item?.file || item?.label || '';
+      const safeBase = (typeof base === 'string' && base.trim()) ? base.trim() : 'item';
+      return `${type}:${safeBase}:${groupItemCounter++}`;
+    }
+
+    function toggleGroupSelection(itemKey, btn) {
+      if (groupSelectedKeys.has(itemKey)) {
+        groupSelectedKeys.delete(itemKey);
+        btn?.classList.remove('selected');
+      } else {
+        groupSelectedKeys.add(itemKey);
+        btn?.classList.add('selected');
+      }
+      if (groupSelectedKeys.size === 0) {
+        groupSelectMode = false;
+      }
+      updateInstallAllButton();
+    }
+
+    function enterGroupSelectMode(itemKey, btn) {
+      if (!groupSelectMode) groupSelectMode = true;
+      toggleGroupSelection(itemKey, btn);
+    }
+
+    function attachGroupItemHandlers(btn, itemKey, onActivate) {
+      let longPressTimer = null;
+      let ignoreClick = false;
+      const clear = () => {
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+      };
+
+      btn.addEventListener('pointerdown', (e) => {
+        if (e.button && e.button !== 0) return;
+        clear();
+        longPressTimer = setTimeout(() => {
+          ignoreClick = true;
+          enterGroupSelectMode(itemKey, btn);
+        }, GROUP_LONG_PRESS_MS);
+      });
+      btn.addEventListener('pointerup', clear);
+      btn.addEventListener('pointerleave', clear);
+      btn.addEventListener('pointercancel', clear);
+
+      btn.addEventListener('click', (e) => {
+        if (ignoreClick) {
+          ignoreClick = false;
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        if (groupSelectMode) {
+          e.preventDefault();
+          toggleGroupSelection(itemKey, btn);
+          return;
+        }
+        onActivate?.();
+      });
+    }
+
+    function installSingleApp(app) {
+      const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
+      const statusMsg = method === 'adb'
+        ? `ADB установка...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`
+        : `Загрузка APK...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`;
+      showStatus(statusMsg, "#00cfff", 4000);
+      window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
+    }
+
+    function installSingleBackup(backup) {
+      if (backup.files) {
+        showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+        window.AndroidInterface?.copyFilesWithTargets(JSON.stringify(backup.files));
+      } else {
+        const urls = backup.urls || (backup.url ? [backup.url] : []);
+        if (!urls.length) return;
+        showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+        window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder || 'Download');
+      }
+    }
+
+    function openLinkItem(link) {
+      showStatus("🔗 Открытие инструкции...", "green", 3000);
+      window.AndroidInterface?.openLink(link.url);
+    }
+
+    function installSingleItem(item) {
+      if (!item) return;
+      if (item.type === 'app') installSingleApp(item.data);
+      else if (item.type === 'backup') installSingleBackup(item.data);
+      else if (item.type === 'link') openLinkItem(item.data);
+    }
+
+    function collectSelectedItems() {
+      const items = [];
+      groupSelectedKeys.forEach((key) => {
+        const item = groupItemsByKey.get(key);
+        if (item) items.push(item);
+      });
+      return items;
+    }
+
+    function runSelectedItemsFallback(items) {
+      let index = 0;
+      const runNext = () => {
+        if (index >= items.length) return;
+        installSingleItem(items[index++]);
+        setTimeout(runNext, 350);
+      };
+      runNext();
+    }
+
+    function installSelectedItems(items) {
+      if (!items.length) return;
+      const apps = items.filter(i => i.type === 'app').map(i => i.data);
+      const backups = items.filter(i => i.type === 'backup').map(i => i.data);
+      const links = items.filter(i => i.type === 'link').map(i => i.data);
+
+      if (apps.length || backups.length) {
+        if (window.AndroidInterface?.startSelectedInstallation) {
+          window.AndroidInterface.startSelectedInstallation(JSON.stringify({ group: currentGroup || '', apps, backups }));
+        } else {
+          runSelectedItemsFallback(items);
+        }
+        if (links.length) {
+          showToast({ message: 'Ссылки не входят в пакетную установку', type: 'warning', duration: 3000 });
+        }
+        return;
+      }
+
+      if (links.length) {
+        links.forEach(link => window.AndroidInterface?.openLink?.(link.url));
+      }
+    }
+
     // ===== Список группы =====
     function showGroupList(config)  {
       const modal = document.getElementById('modal');
       const list  = document.getElementById('modalList');
       list.innerHTML = "";
+      resetGroupSelectionState();
 
 
       document.activeElement?.blur();
@@ -4648,38 +4838,27 @@ const NAVIGATION_MODALS = [
       apps.forEach(app => {
         const btn = document.createElement('button');
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = app.file;
-        btn.onclick = () => {
-          const method = window.AndroidInterface?.getInstallMethod?.() || 'sai';
-          const statusMsg = method === 'adb'
-            ? `ADB установка...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`
-            : `Загрузка APK...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`;
-          showStatus(statusMsg, "#00cfff", 4000);
-          window.AndroidInterface?.installSingle(app.url, app.file || "Приложение");
-        };
+        const itemKey = createGroupItemKey('app', app);
+        groupItemsByKey.set(itemKey, { type: 'app', data: app });
+        attachGroupItemHandlers(btn, itemKey, () => installSingleApp(app));
         list.appendChild(btn);
       });
 
       backups.forEach(backup => {
         const btn = document.createElement('button');
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = backup.file;
-        btn.onclick = () => {
-  if (backup.files) {
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
-    window.AndroidInterface?.copyFilesWithTargets(JSON.stringify(backup.files));
-  } else {
-    const urls = backup.urls || (backup.url ? [backup.url] : []);
-    if (!urls.length) return;
-    showStatus(`Копирование бэкапов... <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
-    window.AndroidInterface?.copyMultipleBackups(JSON.stringify(urls), backup.target_folder || 'Download');
-  }
-};
+        const itemKey = createGroupItemKey('backup', backup);
+        groupItemsByKey.set(itemKey, { type: 'backup', data: backup });
+        attachGroupItemHandlers(btn, itemKey, () => installSingleBackup(backup));
         list.appendChild(btn);
       });
 
       links.forEach(link => {
         const btn = document.createElement('button');
         btn.className = 'component-btn'; btn.setAttribute('tabindex','0'); btn.textContent = link.file;
-        btn.onclick = () => { showStatus("🔗 Открытие инструкции...", "green", 3000); window.AndroidInterface?.openLink(link.url); };
+        const itemKey = createGroupItemKey('link', link);
+        groupItemsByKey.set(itemKey, { type: 'link', data: link });
+        attachGroupItemHandlers(btn, itemKey, () => openLinkItem(link));
         list.appendChild(btn);
       });
 
@@ -4691,24 +4870,35 @@ const NAVIGATION_MODALS = [
     
 
     function installAll() {
-  if (window.AndroidInterface) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        window.AndroidInterface.startInstallation(currentGroup);
-      }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
-    });
-  }
-}
+      if (groupSelectMode) {
+        const items = collectSelectedItems();
+        if (!items.length) return;
+        installSelectedItems(items);
+        return;
+      }
+      if (window.AndroidInterface) {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            window.AndroidInterface.startInstallation(currentGroup);
+          }, 100);  // Можно увеличить задержку до 200-300, если совсем не видно
+        });
+      }
+    }
 
  function installAllSend() {
   /* showStatus("⏳ Началась загрузка приложений, ожидайте!!! <span class='spin'>⏳</span>", "orange", 4000); */
-showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+  showStatus(`Началась загрузка приложений, ожидайте!!!<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
+ }
+
+ function installSelectedSend() {
+  showStatus(`Началась установка выбранных компонентов...<span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" style="height:29px; vertical-align:middle;"></span>`, "#00cfff", 4000);
  }
     
 
 
     function closeModal() {
       const modal = document.getElementById('modal');
+      resetGroupSelectionState();
       modal.style.display = "none";
       document.body.classList.remove("modal-open"); // Разблокируем скролл основного интерфейса
       restoreGroupModalOverlay();
