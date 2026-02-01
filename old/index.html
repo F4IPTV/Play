@@ -1741,7 +1741,6 @@
         <div id="modalList"></div>
         <div id="groupSelectActions">
           <button id="selectAllBtn" class="component-btn" onclick="selectAllGroupItems()">Выбрать все</button>
-          <button id="clearSelectionBtn" class="component-btn" onclick="clearGroupSelection()">Сбросить выбор</button>
         </div>
         <button id="installAllBtn" onclick="installAll()" class="component-btn">Установить всё</button>
       </div>
@@ -4678,7 +4677,6 @@ const NAVIGATION_MODALS = [
       const btn = document.getElementById('installAllBtn');
       const actions = document.getElementById('groupSelectActions');
       const selectAllBtn = document.getElementById('selectAllBtn');
-      const clearBtn = document.getElementById('clearSelectionBtn');
       const list = document.getElementById('modalList');
       const total = groupItemsByKey.size;
       const selected = groupSelectedKeys.size;
@@ -4690,7 +4688,6 @@ const NAVIGATION_MODALS = [
         selectAllBtn.textContent = allSelected ? 'Снять все' : 'Выбрать все';
         selectAllBtn.disabled = total === 0;
       }
-      if (clearBtn) clearBtn.disabled = selected === 0;
 
       if (!btn) return;
       if (groupSelectMode) {
