@@ -4381,9 +4381,11 @@ const NAVIGATION_MODALS = [
 
     let okHoldTimer = null;
     let okHoldFired = false;
+    let okHoldActive = false;
     function startOkHold(event) {
       event.preventDefault();
       event.stopPropagation();
+      okHoldActive = true;
       okHoldFired = false;
       clearTimeout(okHoldTimer);
       okHoldTimer = setTimeout(() => {
@@ -4395,6 +4397,8 @@ const NAVIGATION_MODALS = [
     function stopOkHold(event) {
       event?.preventDefault?.();
       event?.stopPropagation?.();
+      if (!okHoldActive) return;
+      okHoldActive = false;
       clearTimeout(okHoldTimer);
       if (!okHoldFired) {
         sendAdbRemoteKey(23, false);
@@ -4435,9 +4439,11 @@ const NAVIGATION_MODALS = [
 
     let backHoldTimer = null;
     let backHoldFired = false;
+    let backHoldActive = false;
     function startBackHold(event) {
       event.preventDefault?.();
       event.stopPropagation?.();
+      backHoldActive = true;
       backHoldFired = false;
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
       if (ai && typeof ai.startBackHold === 'function') {
@@ -4454,6 +4460,8 @@ const NAVIGATION_MODALS = [
     function stopBackHold(event) {
       event.preventDefault?.();
       event.stopPropagation?.();
+      if (!backHoldActive) return;
+      backHoldActive = false;
       const ai = window.AndroidInterface;
       if (ai && typeof ai.stopBackHold === 'function') {
         ai.stopBackHold();
