@@ -199,34 +199,59 @@
     /* Пульт ADB */
     #adbRemoteModal .adb-remote-grid {
       display: grid;
-      grid-template-columns: repeat(3, 70px);
-      gap: 10px;
+      grid-template-columns: repeat(3, 64px);
+      gap: 12px;
       justify-content: center;
-      margin: 12px 0 6px;
+      margin: 12px 0 8px;
     }
     #adbRemoteModal .adb-remote-row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     #adbRemoteModal .adb-remote-btn {
-      width: 70px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
       padding: 6px;
-      font-size: 14px;
-      border-radius: 12px;
+      font-size: 18px;
+      border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      background: #2b2b2b;
+      border: 2px solid #3b3b3b;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
+    }
+    #adbRemoteModal .adb-remote-btn:focus,
+    #adbRemoteModal .adb-remote-btn:focus-visible,
+    #adbRemoteModal .adb-remote-btn:hover,
+    #adbRemoteModal .adb-remote-btn:active {
+      outline: none !important;
+      border-color: #6a6a6a;
+      background: #343434;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.35);
+      filter: none !important;
+    }
+    #adbRemoteModal .adb-remote-btn.ok {
+      width: 84px;
+      height: 84px;
+      font-size: 16px;
+      background: #3a3a3a;
+      border-color: #4a4a4a;
     }
     #adbRemoteModal .adb-remote-spacer {
-      width: 70px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
     }
     #adbRemoteModal .adb-remote-btn.wide {
       width: 110px;
+      height: 44px;
+      font-size: 14px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
     }
 
     /* Кнопки-иконки у блока ввода пароля */
@@ -1641,7 +1666,7 @@
         <button class="sys-btn adb-remote-btn" data-key="19" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▲</button>
         <div class="adb-remote-spacer"></div>
         <button class="sys-btn adb-remote-btn" data-key="21" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">◀</button>
-        <button class="sys-btn adb-remote-btn" onclick="sendAdbRemoteKey(23)">OK</button>
+        <button class="sys-btn adb-remote-btn ok" onclick="sendAdbRemoteKey(23)">OK</button>
         <button class="sys-btn adb-remote-btn" data-key="22" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▶</button>
         <div class="adb-remote-spacer"></div>
         <button class="sys-btn adb-remote-btn" data-key="20" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▼</button>
