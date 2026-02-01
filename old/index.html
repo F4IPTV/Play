@@ -4400,9 +4400,9 @@ const NAVIGATION_MODALS = [
       clearTimeout(okMenuTimer);
       okHoldTimer = setTimeout(() => {
         okHoldFired = true;
-        sendAdbRemoteKey(23, true);
+        sendAdbRemoteKey(82, false);
         if (okHoldActive) {
-          sendAdbRemoteKey(82, false);
+          sendAdbRemoteKey(23, true);
         }
       }, 450);
     }
