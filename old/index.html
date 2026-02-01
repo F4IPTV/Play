@@ -4388,7 +4388,7 @@ const NAVIGATION_MODALS = [
     }
 
     let okHoldTimer = null;
-    let okMenuFallbackTimer = null;
+    let okMenuTimer = null;
     let okHoldFired = false;
     let okHoldActive = false;
     function startOkHold(event) {
@@ -4397,15 +4397,15 @@ const NAVIGATION_MODALS = [
       okHoldActive = true;
       okHoldFired = false;
       clearTimeout(okHoldTimer);
-      clearTimeout(okMenuFallbackTimer);
+      clearTimeout(okMenuTimer);
       okHoldTimer = setTimeout(() => {
         okHoldFired = true;
         sendAdbRemoteKey(23, true);
-        okMenuFallbackTimer = setTimeout(() => {
+        okMenuTimer = setTimeout(() => {
           if (okHoldActive) {
             sendAdbRemoteKey(82, false);
           }
-        }, 180);
+        }, 120);
       }, 450);
     }
 
@@ -4415,7 +4415,7 @@ const NAVIGATION_MODALS = [
       if (!okHoldActive) return;
       okHoldActive = false;
       clearTimeout(okHoldTimer);
-      clearTimeout(okMenuFallbackTimer);
+      clearTimeout(okMenuTimer);
       if (!okHoldFired) {
         sendAdbRemoteKey(23, false);
       }
