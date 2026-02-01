@@ -1783,7 +1783,10 @@
              role="button"
              tabindex="0"
              aria-label="OK"
-             onclick="sendAdbRemoteKey(23)"
+             onpointerdown="startOkHold(event)"
+             onpointerup="stopOkHold(event)"
+             onpointerleave="stopOkHold(event)"
+             onpointercancel="stopOkHold(event)"
              onkeydown="if (event.key === 'Enter' || event.key === 'OK' || event.code === 'Enter') { sendAdbRemoteKey(23); }">
           OK
         </div>
@@ -4272,8 +4275,7 @@ const NAVIGATION_MODALS = [
 
     let lastAdbRemoteTrigger = null;
     function openAdbRemoteModal(triggerBtn = null) {
-      // TEMP: bypass ADB check for remote modal
-      // if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       saveMainScroll();
       lastAdbRemoteTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
@@ -4375,6 +4377,29 @@ const NAVIGATION_MODALS = [
       const dpad = event?.currentTarget;
       if (dpad) delete dpad.dataset.dir;
       stopDpadRepeat();
+    }
+
+    let okHoldTimer = null;
+    let okHoldFired = false;
+    function startOkHold(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      okHoldFired = false;
+      clearTimeout(okHoldTimer);
+      okHoldTimer = setTimeout(() => {
+        okHoldFired = true;
+        sendAdbRemoteKey(23, true);
+      }, 450);
+    }
+
+    function stopOkHold(event) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      clearTimeout(okHoldTimer);
+      if (!okHoldFired) {
+        sendAdbRemoteKey(23, false);
+      }
+      okHoldFired = false;
     }
 
     function startDpadRepeat(keyCode) {
