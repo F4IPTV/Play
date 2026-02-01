@@ -198,11 +198,97 @@
     }
     /* Пульт ADB */
     #adbRemoteModal .adb-remote-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 64px);
-      gap: 12px;
-      justify-content: center;
-      margin: 12px 0 8px;
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 10px auto 14px;
+    }
+    #adbRemoteModal .adb-remote-dpad {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 40%, #f6f6f6 0%, #e9e9e9 60%, #d8d8d8 100%);
+      border: 2px solid #f4f4f4;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.28), inset 0 -4px 6px rgba(0,0,0,0.18);
+      cursor: pointer;
+      touch-action: none;
+    }
+    #adbRemoteModal .adb-remote-dpad {
+      --dpad-line-color: rgba(0,0,0,0.18);
+      --dpad-gap: 58px;
+      --dpad-highlight-start: 315deg;
+    }
+    #adbRemoteModal .adb-remote-dpad-highlight {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 120ms ease;
+      background: conic-gradient(
+        from var(--dpad-highlight-start),
+        rgba(255,255,255,0.35) 0deg,
+        rgba(255,255,255,0.35) 90deg,
+        transparent 90deg,
+        transparent 360deg
+      );
+      -webkit-mask: radial-gradient(circle, transparent 0 54%, #000 55% 100%);
+      mask: radial-gradient(circle, transparent 0 54%, #000 55% 100%);
+      pointer-events: none;
+    }
+    #adbRemoteModal .adb-remote-dpad[data-dir] .adb-remote-dpad-highlight {
+      opacity: 1;
+    }
+    #adbRemoteModal .adb-remote-dpad[data-dir="up"] {
+      --dpad-highlight-start: 315deg;
+    }
+    #adbRemoteModal .adb-remote-dpad[data-dir="right"] {
+      --dpad-highlight-start: 45deg;
+    }
+    #adbRemoteModal .adb-remote-dpad[data-dir="down"] {
+      --dpad-highlight-start: 135deg;
+    }
+    #adbRemoteModal .adb-remote-dpad[data-dir="left"] {
+      --dpad-highlight-start: 225deg;
+    }
+    #adbRemoteModal .adb-remote-dpad-line {
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+    }
+    #adbRemoteModal .adb-remote-dpad-line.vertical {
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%) rotate(45deg);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        var(--dpad-line-color) 0,
+        var(--dpad-line-color) calc(50% - var(--dpad-gap)),
+        transparent calc(50% - var(--dpad-gap)),
+        transparent calc(50% + var(--dpad-gap)),
+        var(--dpad-line-color) calc(50% + var(--dpad-gap)),
+        var(--dpad-line-color) 100%
+      );
+    }
+    #adbRemoteModal .adb-remote-dpad-line.horizontal {
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%) rotate(45deg);
+      height: 2px;
+      width: 100%;
+      background: linear-gradient(
+        to right,
+        var(--dpad-line-color) 0,
+        var(--dpad-line-color) calc(50% - var(--dpad-gap)),
+        transparent calc(50% - var(--dpad-gap)),
+        transparent calc(50% + var(--dpad-gap)),
+        var(--dpad-line-color) calc(50% + var(--dpad-gap)),
+        var(--dpad-line-color) 100%
+      );
     }
     #adbRemoteModal .adb-remote-row {
       display: flex;
@@ -212,8 +298,10 @@
       margin-top: 10px;
     }
     #adbRemoteModal .adb-remote-btn {
-      width: 64px;
-      height: 64px;
+      position: relative;
+      z-index: 2;
+      width: 58px;
+      height: 58px;
       padding: 6px;
       font-size: 18px;
       border-radius: 50%;
@@ -235,16 +323,29 @@
       box-shadow: 0 0 0 2px rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.35);
       filter: none !important;
     }
-    #adbRemoteModal .adb-remote-btn.ok {
-      width: 84px;
-      height: 84px;
-      font-size: 16px;
+    #adbRemoteModal .adb-remote-grid .adb-remote-ok {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 110px;
+      height: 110px;
+      font-size: 15px;
       background: #3a3a3a;
       border-color: #4a4a4a;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 2px solid #4a4a4a;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
+      cursor: pointer;
+      touch-action: none;
     }
-    #adbRemoteModal .adb-remote-spacer {
-      width: 64px;
-      height: 64px;
+    #adbRemoteModal .adb-remote-grid .adb-remote-ok:active {
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.25), 0 3px 8px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
+      filter: brightness(1.06);
     }
     #adbRemoteModal .adb-remote-btn.wide {
       width: 110px;
@@ -1662,15 +1763,26 @@
         Пульт ДУ (ADB)
       </h3>
       <div class="adb-remote-grid">
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="19" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▲</button>
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="21" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">◀</button>
-        <button class="sys-btn adb-remote-btn ok" onclick="sendAdbRemoteKey(23)">OK</button>
-        <button class="sys-btn adb-remote-btn" data-key="22" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▶</button>
-        <div class="adb-remote-spacer"></div>
-        <button class="sys-btn adb-remote-btn" data-key="20" onpointerdown="startAdbRemoteRepeat(event)" onpointerup="stopAdbRemoteRepeat(event)" onpointerleave="stopAdbRemoteRepeat(event)" onpointercancel="stopAdbRemoteRepeat(event)">▼</button>
-        <div class="adb-remote-spacer"></div>
+        <div id="adbRemoteDpad"
+             class="adb-remote-dpad"
+             aria-label="Навигация"
+             onpointerdown="startAdbDpad(event)"
+             onpointermove="moveAdbDpad(event)"
+             onpointerup="stopAdbDpad(event)"
+             onpointerleave="stopAdbDpad(event)"
+             onpointercancel="stopAdbDpad(event)">
+          <span class="adb-remote-dpad-highlight"></span>
+          <span class="adb-remote-dpad-line vertical"></span>
+          <span class="adb-remote-dpad-line horizontal"></span>
+        </div>
+        <div class="adb-remote-ok"
+             role="button"
+             tabindex="0"
+             aria-label="OK"
+             onclick="sendAdbRemoteKey(23)"
+             onkeydown="if (event.key === 'Enter' || event.key === 'OK' || event.code === 'Enter') { sendAdbRemoteKey(23); }">
+          OK
+        </div>
       </div>
       <div class="adb-remote-row">
         <button class="sys-btn adb-remote-btn wide"
@@ -4156,7 +4268,8 @@ const NAVIGATION_MODALS = [
 
     let lastAdbRemoteTrigger = null;
     function openAdbRemoteModal(triggerBtn = null) {
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      // TEMP: bypass ADB check for remote modal
+      // if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       saveMainScroll();
       lastAdbRemoteTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
@@ -4199,6 +4312,96 @@ const NAVIGATION_MODALS = [
       if (typeof ai.runAdbShellCommand === 'function') {
         ai.runAdbShellCommand(cmd, '', true);
       }
+    }
+
+    const adbRemoteDpadState = {
+      keyCode: null,
+      timeoutId: null,
+      intervalId: null,
+      useNative: false
+    };
+
+    function getDpadKeyFromEvent(event) {
+      const dpad = event.currentTarget;
+      if (!dpad) return null;
+      const rect = dpad.getBoundingClientRect();
+      const x = event.clientX - (rect.left + rect.width / 2);
+      const y = event.clientY - (rect.top + rect.height / 2);
+      const deadZone = rect.width * 0.12;
+      if (Math.abs(x) < deadZone && Math.abs(y) < deadZone) return null;
+      if (Math.abs(x) >= Math.abs(y)) return x > 0 ? 22 : 21;
+      return y > 0 ? 20 : 19;
+    }
+
+    function getDpadDirectionFromEvent(event) {
+      const dpad = event.currentTarget;
+      if (!dpad) return null;
+      const rect = dpad.getBoundingClientRect();
+      const x = event.clientX - (rect.left + rect.width / 2);
+      const y = event.clientY - (rect.top + rect.height / 2);
+      const deadZone = rect.width * 0.12;
+      if (Math.abs(x) < deadZone && Math.abs(y) < deadZone) return null;
+      if (Math.abs(x) >= Math.abs(y)) return x > 0 ? 'right' : 'left';
+      return y > 0 ? 'down' : 'up';
+    }
+
+    function startAdbDpad(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const keyCode = getDpadKeyFromEvent(event);
+      if (!keyCode) return;
+      const dir = getDpadDirectionFromEvent(event);
+      if (dir) event.currentTarget.dataset.dir = dir;
+      startDpadRepeat(keyCode);
+    }
+
+    function moveAdbDpad(event) {
+      if (adbRemoteDpadState.keyCode == null) return;
+      const keyCode = getDpadKeyFromEvent(event);
+      if (!keyCode || keyCode === adbRemoteDpadState.keyCode) return;
+      const dir = getDpadDirectionFromEvent(event);
+      if (dir) event.currentTarget.dataset.dir = dir;
+      stopDpadRepeat();
+      startDpadRepeat(keyCode);
+    }
+
+    function stopAdbDpad(event) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      const dpad = event?.currentTarget;
+      if (dpad) delete dpad.dataset.dir;
+      stopDpadRepeat();
+    }
+
+    function startDpadRepeat(keyCode) {
+      const ai = getAdbInterfaceOrWarn('Пульт ДУ');
+      if (!ai) return;
+      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      adbRemoteDpadState.keyCode = keyCode;
+      if (typeof ai.startAdbKeyRepeat === 'function') {
+        adbRemoteDpadState.useNative = true;
+        ai.startAdbKeyRepeat(keyCode, 180, 85);
+        return;
+      }
+      sendAdbRemoteKey(keyCode);
+      const initialDelay = 150;
+      const intervalMs = 70;
+      adbRemoteDpadState.timeoutId = setTimeout(() => {
+        adbRemoteDpadState.intervalId = setInterval(() => sendAdbRemoteKey(keyCode), intervalMs);
+      }, initialDelay);
+    }
+
+    function stopDpadRepeat() {
+      const ai = window.AndroidInterface;
+      if (adbRemoteDpadState.useNative && ai && typeof ai.stopAdbKeyRepeat === 'function') {
+        ai.stopAdbKeyRepeat();
+        adbRemoteDpadState.useNative = false;
+      }
+      if (adbRemoteDpadState.timeoutId) clearTimeout(adbRemoteDpadState.timeoutId);
+      if (adbRemoteDpadState.intervalId) clearInterval(adbRemoteDpadState.intervalId);
+      adbRemoteDpadState.timeoutId = null;
+      adbRemoteDpadState.intervalId = null;
+      adbRemoteDpadState.keyCode = null;
     }
 
     let backHoldTimer = null;
@@ -4282,9 +4485,15 @@ const NAVIGATION_MODALS = [
 
     document.addEventListener('pointerup', () => {
       adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      const dpad = document.getElementById('adbRemoteDpad');
+      if (dpad) delete dpad.dataset.dir;
+      stopDpadRepeat();
     }, { passive: true });
     document.addEventListener('touchend', () => {
       adbRemoteRepeatState.forEach((_, btn) => stopAdbRemoteRepeat({ currentTarget: btn }));
+      const dpad = document.getElementById('adbRemoteDpad');
+      if (dpad) delete dpad.dataset.dir;
+      stopDpadRepeat();
     }, { passive: true });
 
     function openScreenSaverModal(triggerBtn = null) {
