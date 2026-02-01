@@ -207,14 +207,17 @@
       position: absolute;
       inset: 0;
       margin: auto;
-      width: 200px;
-      height: 200px;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
       background: radial-gradient(circle at 50% 40%, #f6f6f6 0%, #e9e9e9 60%, #d8d8d8 100%);
       border: 2px solid #f4f4f4;
       box-shadow: 0 6px 12px rgba(0,0,0,0.28), inset 0 -4px 6px rgba(0,0,0,0.18);
       cursor: pointer;
       touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
     }
     #adbRemoteModal .adb-remote-dpad {
       --dpad-line-color: rgba(0,0,0,0.18);
@@ -328,8 +331,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 110px;
-      height: 110px;
+      width: 96px;
+      height: 96px;
       font-size: 15px;
       background: #3a3a3a;
       border-color: #4a4a4a;
@@ -342,6 +345,9 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
       cursor: pointer;
       touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
     }
     #adbRemoteModal .adb-remote-grid .adb-remote-ok:active {
       box-shadow: 0 0 0 3px rgba(255,255,255,0.25), 0 3px 8px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
