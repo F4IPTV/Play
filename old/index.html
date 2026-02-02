@@ -203,6 +203,73 @@
       height: 220px;
       margin: 10px auto 14px;
     }
+    #adbRemoteModal .modal-content {
+      min-height: 72vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    #adbRemoteModal .adb-remote-top {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-top: -6px;
+    }
+    #adbRemoteModal .adb-remote-left-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    #adbRemoteModal .adb-remote-volume {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    #adbRemoteModal .adb-remote-round-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #3b3b3b;
+      background: #2b2b2b;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+    #adbRemoteModal .adb-remote-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #adbRemoteModal .adb-remote-icon svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+    #adbRemoteModal .adb-remote-icon svg path,
+    #adbRemoteModal .adb-remote-icon svg line,
+    #adbRemoteModal .adb-remote-icon svg circle,
+    #adbRemoteModal .adb-remote-icon svg rect {
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    #adbRemoteModal .adb-remote-icon.power svg circle {
+      stroke: #ff3b30;
+    }
+    #adbRemoteModal .adb-remote-icon.power svg line {
+      stroke: #ff3b30;
+    }
     #adbRemoteModal .adb-remote-dpad {
       position: absolute;
       inset: 0;
@@ -292,11 +359,13 @@
       );
     }
     #adbRemoteModal .adb-remote-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      justify-items: center;
+      align-items: center;
+      margin-top: 8px;
     }
     #adbRemoteModal .adb-remote-btn {
       position: relative;
@@ -1774,6 +1843,31 @@
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Пульт ДУ (ADB)
       </h3>
+      <div class="adb-remote-top">
+        <div class="adb-remote-left-buttons">
+          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(26)" aria-label="Питание">
+            <span class="adb-remote-icon power" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="13" r="7"></circle>
+                <line x1="12" y1="3" x2="12" y2="9"></line>
+              </svg>
+            </span>
+          </button>
+          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(164)" aria-label="Без звука">
+            <span class="adb-remote-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 9h4l5-4v14l-5-4H4z"></path>
+                <line x1="16" y1="8" x2="21" y2="13"></line>
+                <line x1="21" y1="8" x2="16" y2="13"></line>
+              </svg>
+            </span>
+          </button>
+        </div>
+        <div class="adb-remote-volume" aria-label="Громкость">
+          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(24)" aria-label="Громкость +">+</button>
+          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(25)" aria-label="Громкость -">-</button>
+        </div>
+      </div>
       <div class="adb-remote-grid">
         <div id="adbRemoteDpad"
              class="adb-remote-dpad"
@@ -1807,9 +1901,8 @@
                 onpointercancel="stopBackHold(event)">
           Назад
         </button>
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(3)">Домой</button>
         <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(82)">Меню</button>
-        <button class="sys-btn adb-remote-btn wide" onclick="closeAdbRemoteModal()">Закрыть</button>
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(3)">Домой</button>
       </div>
     </div>
   </div>
@@ -4283,7 +4376,8 @@ const NAVIGATION_MODALS = [
 
     let lastAdbRemoteTrigger = null;
     function openAdbRemoteModal(triggerBtn = null) {
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      // TEMP: bypass ADB check for remote modal
+      // if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       saveMainScroll();
       lastAdbRemoteTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
