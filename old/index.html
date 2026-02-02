@@ -237,7 +237,7 @@
       border: 2px solid #3b3b3b;
       background: #2b2b2b;
       color: #fff;
-      font-size: 14px;
+      font-size: 18px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
       -webkit-tap-highlight-color: transparent;
       outline: none;
@@ -361,11 +361,15 @@
     #adbRemoteModal .adb-remote-row {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       justify-items: center;
       align-items: center;
       margin-top: 8px;
+    }
+    #adbRemoteModal .adb-remote-row.menu {
+      grid-template-columns: 1fr;
+      margin-top: 6px;
     }
     #adbRemoteModal .adb-remote-btn {
       position: relative;
@@ -1845,7 +1849,13 @@
       </h3>
       <div class="adb-remote-top">
         <div class="adb-remote-left-buttons">
-          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(26)" aria-label="Питание">
+          <button class="adb-remote-round-btn"
+                  aria-label="Питание"
+                  onpointerdown="startAdbRemoteRepeat(event)"
+                  onpointerup="stopAdbRemoteRepeat(event)"
+                  onpointerleave="stopAdbRemoteRepeat(event)"
+                  onpointercancel="stopAdbRemoteRepeat(event)"
+                  data-key="26">
             <span class="adb-remote-icon power" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="13" r="7"></circle>
@@ -1864,8 +1874,20 @@
           </button>
         </div>
         <div class="adb-remote-volume" aria-label="Громкость">
-          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(24)" aria-label="Громкость +">+</button>
-          <button class="adb-remote-round-btn" onclick="sendAdbRemoteKey(25)" aria-label="Громкость -">-</button>
+          <button class="adb-remote-round-btn"
+                  aria-label="Громкость +"
+                  onpointerdown="startAdbRemoteRepeat(event)"
+                  onpointerup="stopAdbRemoteRepeat(event)"
+                  onpointerleave="stopAdbRemoteRepeat(event)"
+                  onpointercancel="stopAdbRemoteRepeat(event)"
+                  data-key="24">+</button>
+          <button class="adb-remote-round-btn"
+                  aria-label="Громкость -"
+                  onpointerdown="startAdbRemoteRepeat(event)"
+                  onpointerup="stopAdbRemoteRepeat(event)"
+                  onpointerleave="stopAdbRemoteRepeat(event)"
+                  onpointercancel="stopAdbRemoteRepeat(event)"
+                  data-key="25">-</button>
         </div>
       </div>
       <div class="adb-remote-grid">
@@ -1901,8 +1923,10 @@
                 onpointercancel="stopBackHold(event)">
           Назад
         </button>
-        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(82)">Меню</button>
         <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(3)">Домой</button>
+      </div>
+      <div class="adb-remote-row menu">
+        <button class="sys-btn adb-remote-btn wide" onclick="sendAdbRemoteKey(82)">Меню</button>
       </div>
     </div>
   </div>
