@@ -259,19 +259,23 @@
       height: 108px;
       border-radius: 999px;
       border: 2px solid #3b3b3b;
-      background: #2b2b2b;
+      background: #232323;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 6px;
+      align-items: center;
+      padding: 6px 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 -2px 4px rgba(0,0,0,0.35);
       -webkit-tap-highlight-color: transparent;
       outline: none;
     }
     #adbRemoteModal .adb-remote-rocker-btn {
-      height: 40px;
+      height: 48px;
+      width: 100%;
+      flex: 1 1 auto;
       border: none;
       background: transparent;
+      color: #fff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -279,16 +283,24 @@
       -webkit-tap-highlight-color: transparent;
       outline: none;
       text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+      position: relative;
     }
-    #adbRemoteModal .adb-remote-rocker-btn svg {
+    #adbRemoteModal .adb-remote-rocker-btn::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: 22px;
       height: 22px;
-      display: block;
+      background:
+        linear-gradient(#ffffff, #ffffff) center/22px 3px no-repeat;
+      z-index: 1;
     }
-    #adbRemoteModal .adb-remote-rocker-btn svg line {
-      stroke: #fff;
-      stroke-width: 3;
-      stroke-linecap: round;
+    #adbRemoteModal .adb-remote-rocker-btn.plus::after {
+      background:
+        linear-gradient(#ffffff, #ffffff) center/22px 3px no-repeat,
+        linear-gradient(#ffffff, #ffffff) center/3px 22px no-repeat;
     }
     #adbRemoteModal .adb-remote-icon svg path,
     #adbRemoteModal .adb-remote-icon svg line,
@@ -1910,29 +1922,20 @@
         </div>
         <div class="adb-remote-volume" aria-label="Громкость">
           <div class="adb-remote-volume-rocker" aria-label="Громкость">
-            <button class="adb-remote-rocker-btn"
+            <button class="adb-remote-rocker-btn plus"
                     aria-label="Громкость +"
                     onpointerdown="startAdbRemoteRepeat(event)"
                     onpointerup="stopAdbRemoteRepeat(event)"
                     onpointerleave="stopAdbRemoteRepeat(event)"
                     onpointercancel="stopAdbRemoteRepeat(event)"
-                    data-key="24">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <line x1="12" y1="6" x2="12" y2="18"></line>
-                <line x1="6" y1="12" x2="18" y2="12"></line>
-              </svg>
-            </button>
-            <button class="adb-remote-rocker-btn"
+                    data-key="24"></button>
+            <button class="adb-remote-rocker-btn minus"
                     aria-label="Громкость -"
                     onpointerdown="startAdbRemoteRepeat(event)"
                     onpointerup="stopAdbRemoteRepeat(event)"
                     onpointerleave="stopAdbRemoteRepeat(event)"
                     onpointercancel="stopAdbRemoteRepeat(event)"
-                    data-key="25">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <line x1="6" y1="12" x2="18" y2="12"></line>
-              </svg>
-            </button>
+                    data-key="25"></button>
           </div>
         </div>
       </div>
