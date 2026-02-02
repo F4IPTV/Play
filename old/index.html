@@ -1851,11 +1851,10 @@
         <div class="adb-remote-left-buttons">
           <button class="adb-remote-round-btn"
                   aria-label="Питание"
-                  onpointerdown="startAdbRemoteRepeat(event)"
-                  onpointerup="stopAdbRemoteRepeat(event)"
-                  onpointerleave="stopAdbRemoteRepeat(event)"
-                  onpointercancel="stopAdbRemoteRepeat(event)"
-                  data-key="26">
+                  onpointerdown="startPwrHold(event)"
+                  onpointerup="stopPwrHold(event)"
+                  onpointerleave="stopPwrHold(event)"
+                  onpointercancel="stopPwrHold(event)">
             <span class="adb-remote-icon power" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="13" r="7"></circle>
@@ -4530,6 +4529,33 @@ const NAVIGATION_MODALS = [
         sendAdbRemoteKey(23, false);
       }
       okHoldFired = false;
+    }
+
+    let pwrHoldTimer = null;
+    let pwrHoldFired = false;
+    let pwrHoldActive = false;
+    function startPwrHold(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      pwrHoldActive = true;
+      pwrHoldFired = false;
+      clearTimeout(pwrHoldTimer);
+      pwrHoldTimer = setTimeout(() => {
+        pwrHoldFired = true;
+        sendAdbRemoteKey(26, true);
+      }, 450);
+    }
+
+    function stopPwrHold(event) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      if (!pwrHoldActive) return;
+      pwrHoldActive = false;
+      clearTimeout(pwrHoldTimer);
+      if (!pwrHoldFired) {
+        sendAdbRemoteKey(26, false);
+      }
+      pwrHoldFired = false;
     }
 
     function startDpadRepeat(keyCode) {
