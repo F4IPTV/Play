@@ -383,6 +383,171 @@ https://river-3-349.rtbcdn.ru/hls-vod/aC_JAATLZO3p-jCvH0yg-A/1771089156/1788/0x5
 https://river-4-430.rtbcdn.ru/hls-vod/PCTf1ikLFUyPXhHhLYGK7g/1771089157/1846/0x5000c500db17284f/3a14e22cc0b24da0b4c9994cfbbfff0a.mp4.m3u8?i=3840x2160_15561
 
 
+#EXTINF:-1 group-title="Евразия-Стар", Россия К
+http://87.76.32.36:8001/rossiak
+#EXTINF:-1 group-title="Евразия-Стар", НТВ-Мир
+http://87.76.32.36:8001/ntvmir
+#EXTINF:-1 group-title="Евразия-Стар", ТНТ
+http://87.76.32.36:8001/tnt
+#EXTINF:-1 group-title="Евразия-Стар", Техно 24
+http://87.76.32.36:8001/t24
+#EXTINF:-1 group-title="Евразия-Стар", ТНВ-Планета
+http://87.76.32.36:8001/tnv
+#EXTINF:-1 group-title="Евразия-Стар", Охота и рыбалка
+http://87.76.32.36:8001/ohotairibalka
+#EXTINF:-1 group-title="Евразия-Стар", Точка отрыва
+http://87.76.32.36:8001/tochkaotriva
+#EXTINF:-1 group-title="Евразия-Стар", 365 дней
+http://87.76.32.36:8001/365
+#EXTINF:-1 group-title="Евразия-Стар", 8 канал
+http://87.76.32.36:8001/8kanal
+#EXTINF:-1 group-title="Евразия-Стар", Авто 24
+http://87.76.32.36:8001/avto24
+#EXTINF:-1 group-title="Евразия-Стар", ctv
+http://87.76.32.36:8001/ctv
+#EXTINF:-1 group-title="Евразия-Стар", Дорама
+http://87.76.32.36:8001/dorama
+#EXTINF:-1 group-title="Евразия-Стар", Еврокино
+http://87.76.32.36:8001/evrokino
+#EXTINF:-1 group-title="Евразия-Стар", Иллюзион+
+http://87.76.32.36:8001/illuzion
+#EXTINF:-1 group-title="Евразия-Стар", Кинопремьера HD
+http://87.76.32.36:8001/kinopremyerahd
+#EXTINF:-1 group-title="Евразия-Стар", Родное кино
+http://87.76.32.36:8001/rodnoekino
+#EXTINF:-1 group-title="Евразия-Стар", Мужской
+http://87.76.32.36:8001/muzhskoy
+#EXTINF:-1 group-title="Евразия-Стар", Кухня ТВ
+http://87.76.32.36:8001/kuhnya
+#EXTINF:-1 group-title="Евразия-Стар", Мир 24
+http://87.76.32.36:8001/mir24
+#EXTINF:-1 group-title="Евразия-Стар", Мир сериала
+http://87.76.32.36:8001/mirseriala
+#EXTINF:-1 group-title="Евразия-Стар", Ностальгия
+http://87.76.32.36:8001/nostalgiya
+#EXTINF:-1 group-title="Евразия-Стар", НСТ
+http://87.76.32.36:8001/nstv
+#EXTINF:-1 group-title="Евразия-Стар", Cinema
+http://87.76.32.36:8001/sinema
+#EXTINF:-1 group-title="Евразия-Стар", ТВЦ
+http://87.76.32.36:8001/tvc
+#EXTINF:-1 group-title="Евразия-Стар", Ю
+http://87.76.32.36:8001/u
+#EXTINF:-1 group-title="Евразия-Стар", Усадьба
+http://87.76.32.36:8001/usadba
+#EXTINF:-1 group-title="Евразия-Стар", Здоровое ТВ
+http://87.76.32.36:8001/zdorovoetv
+#EXTINF:-1 group-title="Евразия-Стар", Жара
+http://87.76.32.36:8001/zhara
+#EXTINF:-1 group-title="Евразия-Стар", Живи
+http://87.76.32.36:8001/zhivi
+#EXTINF:-1 group-title="Евразия-Стар", Зоопарк
+http://87.76.32.36:8001/zoo
+#EXTINF:-1 group-title="Евразия-Стар", Gakku
+http://87.76.32.36:8001/gakku
+#EXTINF:-1 group-title="Евразия-Стар"  tvg-id="toy-duman", Toiduman
+http://87.76.32.36:8001/toiduman
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="ktk-kz", ktk
+http://87.76.32.36:8001/ktk
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="abaitv", Abaitv
+http://87.76.32.36:8001/abaitv
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="almaty", Almatytv
+http://87.76.32.36:8001/almatytv
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="astana", Astana TV
+http://87.76.32.36:8001/astana
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="atameken-business", Atameken
+http://87.76.32.36:8001/atameken
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="balapan", Balapan
+http://87.76.32.36:8001/balapan
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="ntk-kz", НТК
+http://87.76.32.36:8001/ntk
+#EXTINF:-1 group-title="Евразия-Стар" tvg-id="7kanal-kz", Седьмой канал
+http://87.76.32.36:8001/7kanal
+#EXTINF:-1 group-title="Евразия-Стар", Европа плюс тв
+http://87.76.32.36:8001/europaplus
+#EXTINF:-1 group-title="Евразия-Стар", Мульт
+http://87.76.32.36:8001/mult
+#EXTINF:-1 group-title="Евразия-Стар", Da Vinci
+http://87.76.32.36:8001/davinci
+#EXTINF:-1 group-title="Евразия-Стар", Уникум
+http://87.76.32.36:8001/unikum
+#EXTINF:-1 group-title="Спорткомплекс 🏆" tvg-id="qsport-kz", qazsport
+http://87.76.32.36:8001/qazsport
+#EXTINF:-1 group-title="Спорткомплекс 🏆", MMA-TV.COM
+http://87.76.32.36:8001/m1global
+#EXTINF:-1 group-title="Спорткомплекс 🏆", Eurosport 1 HD
+http://87.76.32.36:8001/eurosport1hd
+#EXTINF:-1 group-title="Спорткомплекс 🏆", Матч! Планета
+http://87.76.32.36:8001/matchplaneta
+#EXTINF:-1 group-title="Спорткомплекс 🏆", Бокс ТВ
+http://87.76.32.36:8001/bokstv
+
+
+
+
+#EXTINF:-1 group-title="Merlive",Россия 1
+http://s7.merlive.am/Rossia1/index.m3u8
+#EXTINF:-1 group-title="Merlive",ТНТ HD
+http://s7.merlive.am/tnthd/index.m3u8
+#EXTINF:-1 group-title="Merlive",НТВ HD
+http://s7.merlive.am/ntvhd/index.m3u8
+#EXTINF:-1 group-title="Merlive",НТВ Право
+http://s7.merlive.am/ntvpravo/index.m3u8
+#EXTINF:-1 group-title="Merlive",НТВ стиль
+http://s7.merlive.am/ntvstil/index.m3u8
+#EXTINF:-1 group-title="Merlive",НТВ Хит
+http://s7.merlive.am/ntvxit/index.m3u8
+#EXTINF:-1 group-title="Merlive",Дикая охота HD
+http://s7.merlive.am/dikayaoxota/index.m3u8
+#EXTINF:-1 group-title="Merlive",National Geographic
+http://s7.merlive.am/NationalGeographic/index.m3u8
+#EXTINF:-1 group-title="Merlive",Живая Планета
+http://s7.merlive.am/jivayaplaneta/index.m3u8
+#EXTINF:-1 group-title="Merlive",RTG HD
+http://s7.merlive.am/rtgtv/index.m3u8
+#EXTINF:-1 group-title="Merlive",2x2
+http://s7.merlive.am/2x2/index.m3u8
+#EXTINF:-1 group-title="Merlive",Amedia 1
+http://s7.merlive.am/Amedia1/index.m3u8
+#EXTINF:-1 group-title="Merlive",Мир
+http://s7.merlive.am/Mir/index.m3u8
+#EXTINF:-1 group-title="Merlive",8 канал
+http://s7.merlive.am:80/8Kanal/index.m3u8
+#EXTINF:-1 group-title="Merlive",Дом кино
+http://s7.merlive.am/Domkino/index.m3u8
+#EXTINF:-1 group-title="Merlive",Еврокино
+http://s7.merlive.am/eurokino/index.m3u8
+#EXTINF:-1 group-title="Merlive",Кинеко
+http://s7.merlive.am/kineko/index.m3u8
+#EXTINF:-1 group-title="Merlive",Kinoman HD
+http://s7.merlive.am/Kinoman/index.m3u8
+#EXTINF:-1 group-title="Merlive",Родное кино
+http://s7.merlive.am/rodnoekino/index.m3u8
+#EXTINF:-1 group-title="Merlive",Киноужас
+http://s7.merlive.am/Kinoujas/index.m3u8
+#EXTINF:-1 group-title="Merlive",Мир 24
+http://s7.merlive.am/Mir24/index.m3u8
+#EXTINF:-1 group-title="Merlive",Победа
+http://s7.merlive.am/pobeda/index.m3u8
+#EXTINF:-1 group-title="Merlive",Пятница
+http://s7.merlive.am/Pyatnica/index.m3u8
+#EXTINF:-1 group-title="Merlive",РБК
+http://s7.merlive.am/RBK/index.m3u8
+#EXTINF:-1 group-title="Merlive",.Sci-Fi
+http://s7.merlive.am/Sci-Fi/index.m3u8
+#EXTINF:-1 group-title="Merlive",СТС Love
+http://s7.merlive.am/stslove/index.m3u8
+#EXTINF:-1 group-title="Merlive",МузТВ
+http://s7.merlive.am/muztv/index.m3u8
+#EXTINF:-1 group-title="Merlive",СТС Kids
+http://s7.merlive.am/STSkids/index.m3u8
+#EXTINF:-1 group-title="Merlive",Карусель
+http://s7.merlive.am/Karusel/index.m3u8
+#EXTINF:-1 group-title="Merlive",Da Vinci
+http://s7.merlive.am/DaVinci/index.m3u8
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч Премьер
+http://s7.merlive.am/matchpremier/index.m3u8
+
 
 
 
