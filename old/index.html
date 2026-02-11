@@ -4659,11 +4659,16 @@ const NAVIGATION_MODALS = [
         .replace(/ /g, '%s');
     }
 
-    /** Отправить фрагмент текста на ТВ (для посимвольной отправки и кнопки «Отправить»). */
+    /** Отправить фрагмент текста на ТВ (для посимвольной отправки и кнопки «Отправить»). Предпочтительно нативный runAdbInputText — корректная кириллица. */
     function sendAdbInputTextChunk(text) {
       if (!text || typeof text !== 'string') return;
       const ai = window.AndroidInterface;
-      if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+      if (!ai) return;
+      if (typeof ai.runAdbInputText === 'function') {
+        ai.runAdbInputText(text);
+        return;
+      }
+      if (typeof ai.runAdbShellCommand !== 'function') return;
       const escaped = escapeAdbInputText(text);
       const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
       ai.runAdbShellCommand(cmd, '', true);
@@ -4690,7 +4695,8 @@ const NAVIGATION_MODALS = [
           input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
           adbRemoteKeyboardKeydownListener = null;
         }
-        adbRemoteKeyboardInputListener = function () {
+        adbRemoteKeyboardInputListener = function (e) {
+          if (e && e.isComposing) return;
           const cur = input.value;
           const ai = window.AndroidInterface;
           if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
@@ -4734,7 +4740,7 @@ const NAVIGATION_MODALS = [
 
     function sendAdbInputTextToDevice() {
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
-      if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+      if (!ai) return;
       const input = document.getElementById('adbRemoteKeyboardInput');
       const raw = input ? input.value : '';
       const text = raw.trim();
@@ -4742,9 +4748,13 @@ const NAVIGATION_MODALS = [
         if (typeof showToast === 'function') showToast({ message: 'Введите текст', type: 'warning' });
         return;
       }
-      const escaped = escapeAdbInputText(text);
-      const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
-      ai.runAdbShellCommand(cmd, 'Ввод текста', true);
+      if (typeof ai.runAdbInputText === 'function') {
+        ai.runAdbInputText(text);
+      } else if (typeof ai.runAdbShellCommand === 'function') {
+        const escaped = escapeAdbInputText(text);
+        const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
+        ai.runAdbShellCommand(cmd, 'Ввод текста', true);
+      }
       if (typeof showToast === 'function') showToast({ message: 'Текст отправлен на ТВ', type: 'success' });
       if (input) {
         input.value = '';
@@ -4769,9 +4779,13 @@ const NAVIGATION_MODALS = [
           if (typeof showToast === 'function') showToast({ message: 'В буфере нет текста', type: 'warning' });
           return;
         }
-        const escaped = escapeAdbInputText(t);
-        const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
-        ai.runAdbShellCommand(cmd, 'Вставка с телефона', true);
+        if (typeof ai.runAdbInputText === 'function') {
+          ai.runAdbInputText(t);
+        } else {
+          const escaped = escapeAdbInputText(t);
+          const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
+          ai.runAdbShellCommand(cmd, 'Вставка с телефона', true);
+        }
         if (typeof showToast === 'function') showToast({ message: 'Текст с телефона отправлен на ТВ', type: 'success' });
       }
       const nativeText = tryNativeClipboard();
