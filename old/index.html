@@ -2001,7 +2001,11 @@
           <div class="adb-remote-keyboard-panel-header">
             <span class="adb-remote-keyboard-label">Ввод текста на ТВ</span>
             <div class="adb-remote-keyboard-header-btns">
-              <button type="button" class="adb-remote-keyboard-icon-btn" onclick="sendAdbRemoteBackspace()" aria-label="Backspace" title="Удалить символ">⌫</button>
+              <button type="button" class="adb-remote-keyboard-icon-btn" data-key="67" aria-label="Backspace" title="Удалить символ (удерживать — ускоренное удаление)"
+                    onpointerdown="startAdbRemoteRepeat(event)"
+                    onpointerup="stopAdbRemoteRepeat(event)"
+                    onpointerleave="stopAdbRemoteRepeat(event)"
+                    onpointercancel="stopAdbRemoteRepeat(event)">⌫</button>
               <button type="button" class="adb-remote-keyboard-icon-btn adb-remote-keyboard-close-btn" onclick="toggleAdbRemoteKeyboardPanel()" aria-label="Закрыть">✕</button>
             </div>
           </div>
@@ -4601,9 +4605,15 @@ const NAVIGATION_MODALS = [
       const panel = document.getElementById('adbRemoteKeyboardPanel');
       if (panel) panel.style.display = 'none';
       var input = document.getElementById('adbRemoteKeyboardInput');
-      if (input && adbRemoteKeyboardInputListener) {
-        input.removeEventListener('input', adbRemoteKeyboardInputListener);
-        adbRemoteKeyboardInputListener = null;
+      if (input) {
+        if (adbRemoteKeyboardInputListener) {
+          input.removeEventListener('input', adbRemoteKeyboardInputListener);
+          adbRemoteKeyboardInputListener = null;
+        }
+        if (adbRemoteKeyboardKeydownListener) {
+          input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
+          adbRemoteKeyboardKeydownListener = null;
+        }
       }
       adbRemoteKeyboardLastValue = '';
       if (adbRemoteRepeatUseNative || adbRemoteRepeatState.size) {
@@ -4661,6 +4671,7 @@ const NAVIGATION_MODALS = [
 
     var adbRemoteKeyboardLastValue = '';
     var adbRemoteKeyboardInputListener = null;
+    var adbRemoteKeyboardKeydownListener = null;
 
     function toggleAdbRemoteKeyboardPanel() {
       const panel = document.getElementById('adbRemoteKeyboardPanel');
@@ -4674,6 +4685,10 @@ const NAVIGATION_MODALS = [
         if (adbRemoteKeyboardInputListener) {
           input.removeEventListener('input', adbRemoteKeyboardInputListener);
           adbRemoteKeyboardInputListener = null;
+        }
+        if (adbRemoteKeyboardKeydownListener) {
+          input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
+          adbRemoteKeyboardKeydownListener = null;
         }
         adbRemoteKeyboardInputListener = function () {
           const cur = input.value;
@@ -4691,12 +4706,26 @@ const NAVIGATION_MODALS = [
           }
           adbRemoteKeyboardLastValue = cur;
         };
+        adbRemoteKeyboardKeydownListener = function (e) {
+          if (e.key !== 'Backspace') return;
+          if (input.value !== '') return;
+          var ai = window.AndroidInterface;
+          if (!ai || (typeof ai.sendAdbKeyEvent !== 'function' && typeof ai.runAdbShellCommand !== 'function')) return;
+          e.preventDefault();
+          if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(67, false);
+          else ai.runAdbShellCommand('input keyevent 67', '', true);
+        };
         input.addEventListener('input', adbRemoteKeyboardInputListener);
+        input.addEventListener('keydown', adbRemoteKeyboardKeydownListener);
         setTimeout(function () { input.focus(); }, 100);
       } else {
         if (adbRemoteKeyboardInputListener) {
           input.removeEventListener('input', adbRemoteKeyboardInputListener);
           adbRemoteKeyboardInputListener = null;
+        }
+        if (adbRemoteKeyboardKeydownListener) {
+          input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
+          adbRemoteKeyboardKeydownListener = null;
         }
         adbRemoteKeyboardLastValue = '';
         input.blur();
