@@ -502,10 +502,44 @@
       flex-direction: column;
       gap: 10px;
     }
+    #adbRemoteModal .adb-remote-keyboard-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
     #adbRemoteModal .adb-remote-keyboard-label {
       font-size: 13px;
       color: #aaa;
       margin: 0;
+    }
+    #adbRemoteModal .adb-remote-keyboard-header-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #adbRemoteModal .adb-remote-keyboard-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #3b3b3b;
+      background: #2b2b2b;
+      color: #fff;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+    #adbRemoteModal .adb-remote-keyboard-icon-btn:hover,
+    #adbRemoteModal .adb-remote-keyboard-icon-btn:focus {
+      border-color: #5a5a5a;
+      background: #343434;
+    }
+    #adbRemoteModal .adb-remote-keyboard-close-btn {
+      font-size: 16px;
     }
     #adbRemoteModal .adb-remote-keyboard-input {
       width: 100%;
@@ -547,16 +581,6 @@
       background: #252525;
       border-color: #353535;
       color: #ccc;
-    }
-    #adbRemoteModal .adb-remote-keyboard-close {
-      align-self: flex-start;
-      padding: 4px 8px;
-      font-size: 12px;
-      color: #888;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
     }
 
     /* Кнопки-иконки у блока ввода пароля */
@@ -1972,6 +1996,22 @@
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Пульт ДУ (ADB)
       </h3>
+      <div id="adbRemoteKeyboardPanel" class="adb-remote-keyboard-panel" style="display:none;">
+        <div class="adb-remote-keyboard-panel-inner">
+          <div class="adb-remote-keyboard-panel-header">
+            <span class="adb-remote-keyboard-label">Ввод текста на ТВ</span>
+            <div class="adb-remote-keyboard-header-btns">
+              <button type="button" class="adb-remote-keyboard-icon-btn" onclick="sendAdbRemoteBackspace()" aria-label="Backspace" title="Удалить символ">⌫</button>
+              <button type="button" class="adb-remote-keyboard-icon-btn adb-remote-keyboard-close-btn" onclick="toggleAdbRemoteKeyboardPanel()" aria-label="Закрыть">✕</button>
+            </div>
+          </div>
+          <textarea id="adbRemoteKeyboardInput" class="adb-remote-keyboard-input" rows="2" placeholder="Введите текст…" autocomplete="off"></textarea>
+          <div class="adb-remote-keyboard-actions">
+            <button type="button" class="sys-btn adb-remote-keyboard-btn" onclick="sendAdbInputTextToDevice()">Отправить на ТВ</button>
+            <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить с телефона</button>
+          </div>
+        </div>
+      </div>
       <div class="adb-remote-top">
         <div class="adb-remote-left-buttons">
           <button class="adb-remote-round-btn"
@@ -2029,17 +2069,6 @@
                     onpointercancel="stopAdbRemoteRepeat(event)"
                     data-key="25"></button>
           </div>
-        </div>
-      </div>
-      <div id="adbRemoteKeyboardPanel" class="adb-remote-keyboard-panel" style="display:none;">
-        <div class="adb-remote-keyboard-panel-inner">
-          <label for="adbRemoteKeyboardInput" class="adb-remote-keyboard-label">Ввод текста на ТВ</label>
-          <textarea id="adbRemoteKeyboardInput" class="adb-remote-keyboard-input" rows="2" placeholder="Введите текст…" autocomplete="off"></textarea>
-          <div class="adb-remote-keyboard-actions">
-            <button type="button" class="sys-btn adb-remote-keyboard-btn" onclick="sendAdbInputTextToDevice()">Отправить на ТВ</button>
-            <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить с телефона</button>
-          </div>
-          <button type="button" class="adb-remote-keyboard-close" onclick="toggleAdbRemoteKeyboardPanel()" aria-label="Свернуть">↑ Свернуть</button>
         </div>
       </div>
       <div class="adb-remote-grid">
@@ -4571,6 +4600,12 @@ const NAVIGATION_MODALS = [
       if (!modal) return;
       const panel = document.getElementById('adbRemoteKeyboardPanel');
       if (panel) panel.style.display = 'none';
+      var input = document.getElementById('adbRemoteKeyboardInput');
+      if (input && adbRemoteKeyboardInputListener) {
+        input.removeEventListener('input', adbRemoteKeyboardInputListener);
+        adbRemoteKeyboardInputListener = null;
+      }
+      adbRemoteKeyboardLastValue = '';
       if (adbRemoteRepeatUseNative || adbRemoteRepeatState.size) {
         stopAdbRemoteRepeat({ currentTarget: modal });
       }
@@ -4600,6 +4635,11 @@ const NAVIGATION_MODALS = [
       }
     }
 
+    /** Отправить на ТВ нажатие Backspace (удалить символ). */
+    function sendAdbRemoteBackspace() {
+      sendAdbRemoteKey(67);
+    }
+
     /** Экранирование строки для adb shell "input text ..." (пробел→%s, %→%%, \→\%). Порядок: сначала % и \. */
     function escapeAdbInputText(str) {
       if (str == null || typeof str !== 'string') return '';
@@ -4609,6 +4649,19 @@ const NAVIGATION_MODALS = [
         .replace(/ /g, '%s');
     }
 
+    /** Отправить фрагмент текста на ТВ (для посимвольной отправки и кнопки «Отправить»). */
+    function sendAdbInputTextChunk(text) {
+      if (!text || typeof text !== 'string') return;
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+      const escaped = escapeAdbInputText(text);
+      const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
+      ai.runAdbShellCommand(cmd, '', true);
+    }
+
+    var adbRemoteKeyboardLastValue = '';
+    var adbRemoteKeyboardInputListener = null;
+
     function toggleAdbRemoteKeyboardPanel() {
       const panel = document.getElementById('adbRemoteKeyboardPanel');
       const input = document.getElementById('adbRemoteKeyboardInput');
@@ -4616,9 +4669,36 @@ const NAVIGATION_MODALS = [
       const isHidden = panel.style.display === 'none';
       panel.style.display = isHidden ? 'block' : 'none';
       if (isHidden) {
+        adbRemoteKeyboardLastValue = '';
         input.value = '';
+        if (adbRemoteKeyboardInputListener) {
+          input.removeEventListener('input', adbRemoteKeyboardInputListener);
+          adbRemoteKeyboardInputListener = null;
+        }
+        adbRemoteKeyboardInputListener = function () {
+          const cur = input.value;
+          const ai = window.AndroidInterface;
+          if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+          if (cur.length > adbRemoteKeyboardLastValue.length) {
+            var added = cur.slice(adbRemoteKeyboardLastValue.length);
+            sendAdbInputTextChunk(added);
+          } else if (cur.length < adbRemoteKeyboardLastValue.length) {
+            var n = adbRemoteKeyboardLastValue.length - cur.length;
+            for (var i = 0; i < n; i++) {
+              if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(67, false);
+              else ai.runAdbShellCommand('input keyevent 67', '', true);
+            }
+          }
+          adbRemoteKeyboardLastValue = cur;
+        };
+        input.addEventListener('input', adbRemoteKeyboardInputListener);
         setTimeout(function () { input.focus(); }, 100);
       } else {
+        if (adbRemoteKeyboardInputListener) {
+          input.removeEventListener('input', adbRemoteKeyboardInputListener);
+          adbRemoteKeyboardInputListener = null;
+        }
+        adbRemoteKeyboardLastValue = '';
         input.blur();
       }
     }
@@ -4626,7 +4706,6 @@ const NAVIGATION_MODALS = [
     function sendAdbInputTextToDevice() {
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
       if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       const input = document.getElementById('adbRemoteKeyboardInput');
       const raw = input ? input.value : '';
       const text = raw.trim();
@@ -4638,13 +4717,15 @@ const NAVIGATION_MODALS = [
       const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
       ai.runAdbShellCommand(cmd, 'Ввод текста', true);
       if (typeof showToast === 'function') showToast({ message: 'Текст отправлен на ТВ', type: 'success' });
-      if (input) input.value = '';
+      if (input) {
+        input.value = '';
+        adbRemoteKeyboardLastValue = '';
+      }
     }
 
     function pasteFromPhoneAndSendToDevice() {
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
       if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
-      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       function tryNativeClipboard() {
         if (typeof window.AndroidInterface !== 'undefined' && typeof window.AndroidInterface.getClipboardText === 'function') {
           try {
