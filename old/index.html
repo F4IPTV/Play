@@ -2040,7 +2040,7 @@
             <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить с телефона</button>
           </div>
           <div class="adb-remote-keyboard-debug">
-            <button type="button" class="adb-remote-keyboard-debug-btn" onclick="checkAdbKeyboardStatus()">Проверить Unicode-поддержку</button>
+            <button type="button" class="adb-remote-keyboard-debug-btn" onclick="checkAdbKeyboardStatus()">Проверить поддержку кириллицы</button>
           </div>
         </div>
       </div>
@@ -4708,6 +4708,11 @@ const NAVIGATION_MODALS = [
       }
       updateKeyboardStatus('проверка...');
       ai.checkAdbKeyboardSupport();
+    }
+
+    /** Показать предложение установки ADBKeyboard */
+    function showAdbKeyboardInstallPrompt() {
+      updateKeyboardStatus('используем встроенные методы');
     }
 
     /** Отправить фрагмент текста на ТВ (для посимвольной отправки и кнопки «Отправить»). Предпочтительно нативный runAdbInputText — корректная кириллица. */
