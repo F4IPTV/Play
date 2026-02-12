@@ -513,6 +513,11 @@
       color: #aaa;
       margin: 0;
     }
+    #adbRemoteModal .adb-remote-keyboard-status {
+      font-size: 10px;
+      color: #666;
+      margin-left: 8px;
+    }
     #adbRemoteModal .adb-remote-keyboard-header-btns {
       display: flex;
       align-items: center;
@@ -581,6 +586,25 @@
       background: #252525;
       border-color: #353535;
       color: #ccc;
+    }
+    #adbRemoteModal .adb-remote-keyboard-debug {
+      display: flex;
+      justify-content: center;
+      margin-top: 6px;
+    }
+    #adbRemoteModal .adb-remote-keyboard-debug-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #777;
+      background: transparent;
+      border: 1px solid #333;
+      border-radius: 4px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #adbRemoteModal .adb-remote-keyboard-debug-btn:hover {
+      color: #aaa;
+      border-color: #444;
     }
 
     /* Кнопки-иконки у блока ввода пароля */
@@ -2000,6 +2024,7 @@
         <div class="adb-remote-keyboard-panel-inner">
           <div class="adb-remote-keyboard-panel-header">
             <span class="adb-remote-keyboard-label">Ввод текста на ТВ</span>
+            <span id="adbRemoteKeyboardStatus" class="adb-remote-keyboard-status"></span>
             <div class="adb-remote-keyboard-header-btns">
               <button type="button" class="adb-remote-keyboard-icon-btn" data-key="67" aria-label="Backspace" title="Удалить символ (удерживать — ускоренное удаление)"
                     onpointerdown="startAdbRemoteRepeat(event)"
@@ -2013,6 +2038,9 @@
           <div class="adb-remote-keyboard-actions">
             <button type="button" class="sys-btn adb-remote-keyboard-btn" onclick="sendAdbInputTextToDevice()">Отправить на ТВ</button>
             <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить с телефона</button>
+          </div>
+          <div class="adb-remote-keyboard-debug">
+            <button type="button" class="adb-remote-keyboard-debug-btn" onclick="checkAdbKeyboardStatus()">Проверить Unicode-поддержку</button>
           </div>
         </div>
       </div>
@@ -4659,20 +4687,47 @@ const NAVIGATION_MODALS = [
         .replace(/ /g, '%s');
     }
 
+    /** Показать статус метода ввода в UI */
+    function updateKeyboardStatus(message) {
+      const status = document.getElementById('adbRemoteKeyboardStatus');
+      if (status) {
+        status.textContent = message;
+        setTimeout(() => { if (status) status.textContent = ''; }, 3000);
+      }
+    }
+    
+    // Сделаем функцию глобальной для вызова из Kotlin
+    window.updateKeyboardStatus = updateKeyboardStatus;
+
+    /** Проверить статус поддержки Unicode на ТВ */
+    function checkAdbKeyboardStatus() {
+      const ai = window.AndroidInterface;
+      if (!ai || typeof ai.checkAdbKeyboardSupport !== 'function') {
+        updateKeyboardStatus('проверка недоступна');
+        return;
+      }
+      updateKeyboardStatus('проверка...');
+      ai.checkAdbKeyboardSupport();
+    }
+
     /** Отправить фрагмент текста на ТВ (для посимвольной отправки и кнопки «Отправить»). Предпочтительно нативный runAdbInputText — корректная кириллица. */
     function sendAdbInputTextChunk(text) {
       if (!text || typeof text !== 'string') return;
       const ai = window.AndroidInterface;
       if (!ai) return;
       if (text === ' ') {
+        updateKeyboardStatus('пробел');
         if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(62, false);
         else if (typeof ai.runAdbShellCommand === 'function') ai.runAdbShellCommand('input keyevent 62', '', true);
         return;
       }
+      const hasNonAscii = /[^\x00-\x7F]/.test(text);
+      if (hasNonAscii) updateKeyboardStatus('Unicode...');
       if (typeof ai.runAdbInputText === 'function') {
         ai.runAdbInputText(text);
         return;
       }
+      updateKeyboardStatus('fallback');
       if (typeof ai.runAdbShellCommand !== 'function') return;
       const escaped = escapeAdbInputText(text);
       const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
