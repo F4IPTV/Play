@@ -4669,11 +4669,6 @@ const NAVIGATION_MODALS = [
         else if (typeof ai.runAdbShellCommand === 'function') ai.runAdbShellCommand('input keyevent 62', '', true);
         return;
       }
-      const hasNonAscii = /[^\x00-\x7F]/.test(text);
-      if (hasNonAscii && typeof ai.runAdbPasteText === 'function') {
-        ai.runAdbPasteText(text);
-        return;
-      }
       if (typeof ai.runAdbInputText === 'function') {
         ai.runAdbInputText(text);
         return;
@@ -4758,10 +4753,7 @@ const NAVIGATION_MODALS = [
         if (typeof showToast === 'function') showToast({ message: 'Введите текст', type: 'warning' });
         return;
       }
-      const hasNonAscii = /[^\x00-\x7F]/.test(text);
-      if ((hasNonAscii || text.includes(' ')) && typeof ai.runAdbPasteText === 'function') {
-        ai.runAdbPasteText(text);
-      } else if (typeof ai.runAdbInputText === 'function') {
+      if (typeof ai.runAdbInputText === 'function') {
         ai.runAdbInputText(text);
       } else if (typeof ai.runAdbShellCommand === 'function') {
         const escaped = escapeAdbInputText(text);
@@ -4792,10 +4784,7 @@ const NAVIGATION_MODALS = [
           if (typeof showToast === 'function') showToast({ message: 'В буфере нет текста', type: 'warning' });
           return;
         }
-        const hasNonAscii = /[^\x00-\x7F]/.test(t);
-        if ((hasNonAscii || t.includes(' ')) && typeof ai.runAdbPasteText === 'function') {
-          ai.runAdbPasteText(t);
-        } else if (typeof ai.runAdbInputText === 'function') {
+        if (typeof ai.runAdbInputText === 'function') {
           ai.runAdbInputText(t);
         } else if (typeof ai.runAdbShellCommand === 'function') {
           const escaped = escapeAdbInputText(t);
