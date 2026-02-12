@@ -4664,6 +4664,16 @@ const NAVIGATION_MODALS = [
       if (!text || typeof text !== 'string') return;
       const ai = window.AndroidInterface;
       if (!ai) return;
+      if (text === ' ') {
+        if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(62, false);
+        else if (typeof ai.runAdbShellCommand === 'function') ai.runAdbShellCommand('input keyevent 62', '', true);
+        return;
+      }
+      const hasNonAscii = /[^\x00-\x7F]/.test(text);
+      if (hasNonAscii && typeof ai.runAdbPasteText === 'function') {
+        ai.runAdbPasteText(text);
+        return;
+      }
       if (typeof ai.runAdbInputText === 'function') {
         ai.runAdbInputText(text);
         return;
@@ -4743,12 +4753,15 @@ const NAVIGATION_MODALS = [
       if (!ai) return;
       const input = document.getElementById('adbRemoteKeyboardInput');
       const raw = input ? input.value : '';
-      const text = raw.trim();
-      if (!text) {
+      const text = raw;
+      if (!text || text.length === 0) {
         if (typeof showToast === 'function') showToast({ message: 'Введите текст', type: 'warning' });
         return;
       }
-      if (typeof ai.runAdbInputText === 'function') {
+      const hasNonAscii = /[^\x00-\x7F]/.test(text);
+      if ((hasNonAscii || text.includes(' ')) && typeof ai.runAdbPasteText === 'function') {
+        ai.runAdbPasteText(text);
+      } else if (typeof ai.runAdbInputText === 'function') {
         ai.runAdbInputText(text);
       } else if (typeof ai.runAdbShellCommand === 'function') {
         const escaped = escapeAdbInputText(text);
@@ -4764,7 +4777,7 @@ const NAVIGATION_MODALS = [
 
     function pasteFromPhoneAndSendToDevice() {
       const ai = getAdbInterfaceOrWarn('Пульт ДУ');
-      if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+      if (!ai) return;
       function tryNativeClipboard() {
         if (typeof window.AndroidInterface !== 'undefined' && typeof window.AndroidInterface.getClipboardText === 'function') {
           try {
@@ -4774,17 +4787,23 @@ const NAVIGATION_MODALS = [
         return '';
       }
       function doSend(text) {
-        const t = (text || '').trim();
-        if (!t) {
+        const t = (text || '');
+        if (!t || t.length === 0) {
           if (typeof showToast === 'function') showToast({ message: 'В буфере нет текста', type: 'warning' });
           return;
         }
-        if (typeof ai.runAdbInputText === 'function') {
+        const hasNonAscii = /[^\x00-\x7F]/.test(t);
+        if ((hasNonAscii || t.includes(' ')) && typeof ai.runAdbPasteText === 'function') {
+          ai.runAdbPasteText(t);
+        } else if (typeof ai.runAdbInputText === 'function') {
           ai.runAdbInputText(t);
-        } else {
+        } else if (typeof ai.runAdbShellCommand === 'function') {
           const escaped = escapeAdbInputText(t);
           const cmd = 'input text "' + escaped.replace(/"/g, '\\"') + '"';
           ai.runAdbShellCommand(cmd, 'Вставка с телефона', true);
+        } else {
+          if (typeof showToast === 'function') showToast({ message: 'ADB интерфейс недоступен', type: 'error' });
+          return;
         }
         if (typeof showToast === 'function') showToast({ message: 'Текст с телефона отправлен на ТВ', type: 'success' });
       }
