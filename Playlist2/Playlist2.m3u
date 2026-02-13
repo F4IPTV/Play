@@ -4016,8 +4016,7 @@ https://bl.rutube.ru/livestream/efc2833169ec20a3ea61197714bea6ab/index.m3u8?s=Ku
 
 
 
-#EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",ПЕРВЫЙ HD
-http://31.210.208.171:8080/1_HD/index.m3u8?token=+W2MSER
+
 #EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",ПЕРВЫЙ КАНАЛ
 http://31.210.208.171:8080/1kanal/index.m3u8?token=+W2MSER
 #EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",РЕН ТВ
@@ -4050,7 +4049,7 @@ http://31.210.208.171:8080/zagorodnaya_zhizn/index.m3u8?token=+W2MSER
 http://31.210.208.171:8080/zhivaya_planeta/index.m3u8?token=+W2MSER
 #EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",2x2
 http://31.210.208.171:8080/2x2/index.m3u8?token=+W2MSER
-#EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",5 КАНАЛ
+#EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",Пятый канал
 http://31.210.208.171:8080/5kanal/index.m3u8?token=+W2MSER
 #EXTINF:-1 group-title="Квант-Телеком (VPN 🇷🇺)",FAN
 http://31.210.208.171:8080/fan/index.m3u8?token=+W2MSER
@@ -4268,7 +4267,87 @@ http://uiptv.do.am/1ufc/612327787/playlist.m3u8
 http://uiptv.do.am/1ufc/113500247/playlist.m3u8
 
 
-
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Первый канал
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.goodstream.icu/live/210-req_offset_28000000-req_window_0-2k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",НТВ-Мир
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/213-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",ТНТ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/38-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Россия РТР
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/211-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Россия 24
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/30-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Россия К
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/9-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Рен ТВ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/14-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",ОТР
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/12-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Победа
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/43-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",5 Канал
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/8-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",ТВЦ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/13-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",СТС
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/296-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Домашний
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/17-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Дом Кино
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.goodstream.cyou/live/44-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",ТВ3
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/18-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Спас
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/15-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Звезда
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/748-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Пятница
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/19-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Мир
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/22-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)" tvg-logo="https://televizor24tochka.ru/logo/100/union.jpg",Юнион
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/27-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)" tvg-logo="https://televizor24tochka.ru/logo/100/tavria.jpg",Таврия
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/24-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Крым 24
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/28-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)" tvg-logo="https://televizor24tochka.ru/logo/100/zatv.jpg",За!ТВ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/25-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)" tvg-logo="https://televizor24tochka.ru/logo/100/lugansk-24.png",Луганск-24
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/29-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",Карусель
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/232-req_offset_28000000-req_window_0-1k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",МузТВ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.thestream.cyou/live/618-req_offset_28000000-req_window_0-3k_v5.m3u8
+#EXTINF:-1 group-title="Телевизор 24 (VPN)",МАТЧ ТВ
+#EXTVLCOPT:http-referrer=https://televizor24tochka.ru/
+https://streaming.televizor-24-tochka.ru/live/6-req_offset_28000000-req_window_0-1k_v5.m3u8
 
 
 #EXTINF:-1 group-title="CloudFlare Inc (VPN 🇷🇺)",Первый HD
