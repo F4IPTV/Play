@@ -2132,8 +2132,20 @@
         <div class="adb-remote-keyboard-panel-inner">
           <div class="adb-remote-keyboard-panel-header">
             <div class="adb-remote-keyboard-nav" aria-label="Навигация по тексту">
-              <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(21)" aria-label="Влево" title="Влево">←</button>
-              <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(22)" aria-label="Вправо" title="Вправо">→</button>
+              <button type="button" class="adb-remote-keyboard-nav-btn"
+                      aria-label="Влево" title="Влево"
+                      onpointerdown="startAdbRemoteRepeat(event)"
+                      onpointerup="stopAdbRemoteRepeat(event)"
+                      onpointerleave="stopAdbRemoteRepeat(event)"
+                      onpointercancel="stopAdbRemoteRepeat(event)"
+                      data-key="21">←</button>
+              <button type="button" class="adb-remote-keyboard-nav-btn"
+                      aria-label="Вправо" title="Вправо"
+                      onpointerdown="startAdbRemoteRepeat(event)"
+                      onpointerup="stopAdbRemoteRepeat(event)"
+                      onpointerleave="stopAdbRemoteRepeat(event)"
+                      onpointercancel="stopAdbRemoteRepeat(event)"
+                      data-key="22">→</button>
             </div>
             <span id="adbRemoteKeyboardStatus" class="adb-remote-keyboard-status"></span>
             <div class="adb-remote-keyboard-header-btns">
