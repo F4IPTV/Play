@@ -217,6 +217,12 @@
       justify-content: space-between;
       margin-top: -6px;
     }
+    #adbRemoteModal.keyboard-open .adb-remote-top {
+      display: none;
+    }
+    #adbRemoteModal.keyboard-open .adb-remote-grid {
+      margin-top: 6px;
+    }
     #adbRemoteModal .adb-remote-left-buttons {
       display: flex;
       gap: 10px;
@@ -498,6 +504,9 @@
       border: 1px solid #3b3b3b;
       max-height: 170px;
       overflow: hidden;
+    }
+    #adbRemoteModal.keyboard-open .adb-remote-keyboard-panel {
+      margin: 4px 0 10px;
     }
     #adbRemoteModal .adb-remote-keyboard-panel-inner {
       display: flex;
@@ -4659,6 +4668,7 @@ const NAVIGATION_MODALS = [
     function closeAdbRemoteModal() {
       const modal = document.getElementById('adbRemoteModal');
       if (!modal) return;
+      modal.classList.remove('keyboard-open');
       const panel = document.getElementById('adbRemoteKeyboardPanel');
       if (panel) panel.style.display = 'none';
       var input = document.getElementById('adbRemoteKeyboardInput');
@@ -4776,8 +4786,10 @@ const NAVIGATION_MODALS = [
       const panel = document.getElementById('adbRemoteKeyboardPanel');
       const input = document.getElementById('adbRemoteKeyboardInput');
       if (!panel || !input) return;
+      const modal = document.getElementById('adbRemoteModal');
       const isHidden = panel.style.display === 'none';
       panel.style.display = isHidden ? 'block' : 'none';
+      if (modal) modal.classList.toggle('keyboard-open', isHidden);
       if (isHidden) {
         adbRemoteKeyboardLastValue = '';
         input.value = '';
