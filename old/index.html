@@ -491,22 +491,50 @@
     /* Панель клавиатуры в пульте ДУ */
     #adbRemoteModal .adb-remote-keyboard-panel {
       width: 100%;
-      margin: 8px 0 4px;
-      padding: 12px;
+      margin: 6px 0 2px;
+      padding: 8px 10px;
       background: #1e1e1e;
       border-radius: 12px;
       border: 1px solid #3b3b3b;
+      max-height: 170px;
+      overflow: hidden;
     }
     #adbRemoteModal .adb-remote-keyboard-panel-inner {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
     #adbRemoteModal .adb-remote-keyboard-panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      flex-wrap: wrap;
+    }
+    #adbRemoteModal .adb-remote-keyboard-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #adbRemoteModal .adb-remote-keyboard-nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #3b3b3b;
+      background: #2b2b2b;
+      color: #fff;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+    #adbRemoteModal .adb-remote-keyboard-nav-btn:hover,
+    #adbRemoteModal .adb-remote-keyboard-nav-btn:focus {
+      border-color: #5a5a5a;
+      background: #343434;
     }
     #adbRemoteModal .adb-remote-keyboard-label {
       font-size: 13px;
@@ -548,9 +576,10 @@
     }
     #adbRemoteModal .adb-remote-keyboard-input {
       width: 100%;
-      min-height: 56px;
-      padding: 10px 12px;
-      font-size: 16px;
+      min-height: 40px;
+      max-height: 60px;
+      padding: 8px 10px;
+      font-size: 14px;
       line-height: 1.4;
       color: #fff;
       background: #2b2b2b;
@@ -570,13 +599,13 @@
     #adbRemoteModal .adb-remote-keyboard-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
     #adbRemoteModal .adb-remote-keyboard-btn {
       flex: 1 1 auto;
       min-width: 120px;
-      padding: 10px 14px;
-      font-size: 14px;
+      padding: 8px 12px;
+      font-size: 13px;
       border-radius: 8px;
       border: 2px solid #3b3b3b;
       background: #2b2b2b;
@@ -2020,30 +2049,6 @@
         <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:26px;">
         Пульт ДУ (ADB)
       </h3>
-      <div id="adbRemoteKeyboardPanel" class="adb-remote-keyboard-panel" style="display:none;">
-        <div class="adb-remote-keyboard-panel-inner">
-          <div class="adb-remote-keyboard-panel-header">
-            <span class="adb-remote-keyboard-label">Ввод текста на ТВ</span>
-            <span id="adbRemoteKeyboardStatus" class="adb-remote-keyboard-status"></span>
-            <div class="adb-remote-keyboard-header-btns">
-              <button type="button" class="adb-remote-keyboard-icon-btn" data-key="67" aria-label="Backspace" title="Удалить символ (удерживать — ускоренное удаление)"
-                    onpointerdown="startAdbRemoteRepeat(event)"
-                    onpointerup="stopAdbRemoteRepeat(event)"
-                    onpointerleave="stopAdbRemoteRepeat(event)"
-                    onpointercancel="stopAdbRemoteRepeat(event)">⌫</button>
-              <button type="button" class="adb-remote-keyboard-icon-btn adb-remote-keyboard-close-btn" onclick="toggleAdbRemoteKeyboardPanel()" aria-label="Закрыть">✕</button>
-            </div>
-          </div>
-          <textarea id="adbRemoteKeyboardInput" class="adb-remote-keyboard-input" rows="2" placeholder="Введите текст…" autocomplete="off"></textarea>
-          <div class="adb-remote-keyboard-actions">
-            <button type="button" class="sys-btn adb-remote-keyboard-btn" onclick="sendAdbInputTextToDevice()">Отправить на ТВ</button>
-            <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить с телефона</button>
-          </div>
-          <div class="adb-remote-keyboard-debug">
-            <button type="button" class="adb-remote-keyboard-debug-btn" onclick="checkAdbKeyboardStatus()">Проверить поддержку кириллицы</button>
-          </div>
-        </div>
-      </div>
       <div class="adb-remote-top">
         <div class="adb-remote-left-buttons">
           <button class="adb-remote-round-btn"
@@ -2100,6 +2105,30 @@
                     onpointerleave="stopAdbRemoteRepeat(event)"
                     onpointercancel="stopAdbRemoteRepeat(event)"
                     data-key="25"></button>
+          </div>
+        </div>
+      </div>
+      <div id="adbRemoteKeyboardPanel" class="adb-remote-keyboard-panel" style="display:none;">
+        <div class="adb-remote-keyboard-panel-inner">
+          <div class="adb-remote-keyboard-panel-header">
+            <div class="adb-remote-keyboard-nav" aria-label="Навигация по тексту">
+              <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(21)" aria-label="Влево" title="Влево">←</button>
+              <span class="adb-remote-keyboard-label">Навигация по тексту</span>
+              <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(22)" aria-label="Вправо" title="Вправо">→</button>
+            </div>
+            <span id="adbRemoteKeyboardStatus" class="adb-remote-keyboard-status"></span>
+            <div class="adb-remote-keyboard-header-btns">
+              <button type="button" class="adb-remote-keyboard-icon-btn" data-key="67" aria-label="Backspace" title="Удалить символ (удерживать — ускоренное удаление)"
+                    onpointerdown="startAdbRemoteRepeat(event)"
+                    onpointerup="stopAdbRemoteRepeat(event)"
+                    onpointerleave="stopAdbRemoteRepeat(event)"
+                    onpointercancel="stopAdbRemoteRepeat(event)">⌫</button>
+              <button type="button" class="adb-remote-keyboard-icon-btn adb-remote-keyboard-close-btn" onclick="toggleAdbRemoteKeyboardPanel()" aria-label="Закрыть">✕</button>
+            </div>
+          </div>
+          <textarea id="adbRemoteKeyboardInput" class="adb-remote-keyboard-input" rows="1" placeholder="Введите текст…" autocomplete="off"></textarea>
+          <div class="adb-remote-keyboard-actions">
+            <button type="button" class="sys-btn adb-remote-keyboard-btn secondary" onclick="pasteFromPhoneAndSendToDevice()">Вставить из буфера</button>
           </div>
         </div>
       </div>
