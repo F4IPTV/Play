@@ -4789,8 +4789,23 @@ const NAVIGATION_MODALS = [
     }
 
     var adbRemoteKeyboardLastValue = '';
+    var adbRemoteKeyboardLastSelectionStart = 0;
+    var adbRemoteKeyboardRemoteCursor = 0;
     var adbRemoteKeyboardInputListener = null;
     var adbRemoteKeyboardKeydownListener = null;
+    var adbRemoteKeyboardCursorListener = null;
+
+    function syncAdbRemoteCursor(targetPos) {
+      if (typeof targetPos !== 'number' || targetPos < 0) return;
+      const diff = targetPos - adbRemoteKeyboardRemoteCursor;
+      if (!diff) return;
+      const steps = Math.min(Math.abs(diff), 60);
+      const keyCode = diff > 0 ? 22 : 21;
+      for (var i = 0; i < steps; i++) {
+        sendAdbRemoteKey(keyCode);
+      }
+      adbRemoteKeyboardRemoteCursor += diff > 0 ? steps : -steps;
+    }
 
     function toggleAdbRemoteKeyboardPanel() {
       const panel = document.getElementById('adbRemoteKeyboardPanel');
@@ -4802,6 +4817,8 @@ const NAVIGATION_MODALS = [
       if (modal) modal.classList.toggle('keyboard-open', isHidden);
       if (isHidden) {
         adbRemoteKeyboardLastValue = '';
+        adbRemoteKeyboardLastSelectionStart = 0;
+        adbRemoteKeyboardRemoteCursor = 0;
         input.value = '';
         if (adbRemoteKeyboardInputListener) {
           input.removeEventListener('input', adbRemoteKeyboardInputListener);
@@ -4811,22 +4828,36 @@ const NAVIGATION_MODALS = [
           input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
           adbRemoteKeyboardKeydownListener = null;
         }
+        if (adbRemoteKeyboardCursorListener) {
+          input.removeEventListener('click', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('keyup', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('touchend', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('focus', adbRemoteKeyboardCursorListener);
+          adbRemoteKeyboardCursorListener = null;
+        }
         adbRemoteKeyboardInputListener = function (e) {
           if (e && e.isComposing) return;
           const cur = input.value;
           const ai = window.AndroidInterface;
           if (!ai || typeof ai.runAdbShellCommand !== 'function') return;
+          const prevCursor = adbRemoteKeyboardLastSelectionStart;
+          syncAdbRemoteCursor(prevCursor);
           if (cur.length > adbRemoteKeyboardLastValue.length) {
             var added = cur.slice(adbRemoteKeyboardLastValue.length);
             sendAdbInputTextChunk(added);
+            adbRemoteKeyboardRemoteCursor += added.length;
           } else if (cur.length < adbRemoteKeyboardLastValue.length) {
             var n = adbRemoteKeyboardLastValue.length - cur.length;
             for (var i = 0; i < n; i++) {
               if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(67, false);
               else ai.runAdbShellCommand('input keyevent 67', '', true);
             }
+            adbRemoteKeyboardRemoteCursor = Math.max(0, adbRemoteKeyboardRemoteCursor - n);
           }
           adbRemoteKeyboardLastValue = cur;
+          adbRemoteKeyboardLastSelectionStart = typeof input.selectionStart === 'number'
+            ? input.selectionStart
+            : cur.length;
         };
         adbRemoteKeyboardKeydownListener = function (e) {
           if (e.key !== 'Backspace') return;
@@ -4837,8 +4868,18 @@ const NAVIGATION_MODALS = [
           if (typeof ai.sendAdbKeyEvent === 'function') ai.sendAdbKeyEvent(67, false);
           else ai.runAdbShellCommand('input keyevent 67', '', true);
         };
+        adbRemoteKeyboardCursorListener = function () {
+          const pos = typeof input.selectionStart === 'number' ? input.selectionStart : 0;
+          if (pos === adbRemoteKeyboardLastSelectionStart) return;
+          adbRemoteKeyboardLastSelectionStart = pos;
+          syncAdbRemoteCursor(pos);
+        };
         input.addEventListener('input', adbRemoteKeyboardInputListener);
         input.addEventListener('keydown', adbRemoteKeyboardKeydownListener);
+        input.addEventListener('click', adbRemoteKeyboardCursorListener);
+        input.addEventListener('keyup', adbRemoteKeyboardCursorListener);
+        input.addEventListener('touchend', adbRemoteKeyboardCursorListener);
+        input.addEventListener('focus', adbRemoteKeyboardCursorListener);
         setTimeout(function () { input.focus(); }, 100);
       } else {
         if (adbRemoteKeyboardInputListener) {
@@ -4849,7 +4890,16 @@ const NAVIGATION_MODALS = [
           input.removeEventListener('keydown', adbRemoteKeyboardKeydownListener);
           adbRemoteKeyboardKeydownListener = null;
         }
+        if (adbRemoteKeyboardCursorListener) {
+          input.removeEventListener('click', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('keyup', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('touchend', adbRemoteKeyboardCursorListener);
+          input.removeEventListener('focus', adbRemoteKeyboardCursorListener);
+          adbRemoteKeyboardCursorListener = null;
+        }
         adbRemoteKeyboardLastValue = '';
+        adbRemoteKeyboardLastSelectionStart = 0;
+        adbRemoteKeyboardRemoteCursor = 0;
         input.blur();
       }
     }
