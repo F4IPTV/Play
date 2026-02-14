@@ -220,6 +220,10 @@
     #adbRemoteModal.keyboard-open .adb-remote-top {
       display: none;
     }
+    #adbRemoteModal.keyboard-open .adb-remote-grid,
+    #adbRemoteModal.keyboard-open .adb-remote-row {
+      display: none;
+    }
     #adbRemoteModal.keyboard-open .adb-remote-grid {
       margin-top: 6px;
     }
@@ -504,9 +508,13 @@
       border: 1px solid #3b3b3b;
       max-height: 170px;
       overflow: hidden;
+      position: relative;
+      z-index: 2;
     }
     #adbRemoteModal.keyboard-open .adb-remote-keyboard-panel {
-      margin: 4px 0 10px;
+      margin: 10px 0 16px;
+      max-height: none;
+      overflow: visible;
     }
     #adbRemoteModal .adb-remote-keyboard-panel-inner {
       display: flex;
@@ -518,12 +526,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     #adbRemoteModal .adb-remote-keyboard-nav {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      flex: 1 1 auto;
+      justify-content: center;
     }
     #adbRemoteModal .adb-remote-keyboard-nav-btn {
       width: 34px;
@@ -607,12 +617,13 @@
     }
     #adbRemoteModal .adb-remote-keyboard-actions {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
       gap: 6px;
     }
     #adbRemoteModal .adb-remote-keyboard-btn {
-      flex: 1 1 auto;
-      min-width: 120px;
+      flex: 0 0 auto;
+      min-width: 180px;
       padding: 8px 12px;
       font-size: 13px;
       border-radius: 8px;
@@ -2122,7 +2133,6 @@
           <div class="adb-remote-keyboard-panel-header">
             <div class="adb-remote-keyboard-nav" aria-label="Навигация по тексту">
               <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(21)" aria-label="Влево" title="Влево">←</button>
-              <span class="adb-remote-keyboard-label">Навигация по тексту</span>
               <button type="button" class="adb-remote-keyboard-nav-btn" onclick="sendAdbRemoteKey(22)" aria-label="Вправо" title="Вправо">→</button>
             </div>
             <span id="adbRemoteKeyboardStatus" class="adb-remote-keyboard-status"></span>
@@ -5926,7 +5936,14 @@ const NAVIGATION_MODALS = [
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
       else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
-      else if (document.getElementById('adbRemoteModal')?.style.display === 'flex') closeAdbRemoteModal();
+      else if (document.getElementById('adbRemoteModal')?.style.display === 'flex') {
+        const panel = document.getElementById('adbRemoteKeyboardPanel');
+        if (panel && panel.style.display === 'block') {
+          toggleAdbRemoteKeyboardPanel();
+        } else {
+          closeAdbRemoteModal();
+        }
+      }
       else if (document.getElementById('adbCommandsModal')?.style.display === 'flex') closeAdbCommandsModal();
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
