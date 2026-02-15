@@ -1137,7 +1137,13 @@
       gap: 10px;
       justify-items: center;
     }
-    #autostartList .card { transition: none !important; }
+    #autostartList .card {
+      transition: none !important;
+      flex: none;
+      width: 100%;
+      min-width: 140px;
+      max-width: 180px;
+    }
     #autostartList .card:focus { box-shadow: 0 0 0 3px rgba(255,255,255,.6) !important; border-color: #fff !important; outline: none; }
     /* Отключаем hover в автозапуске, чтобы мышь не давала "ложную" подсветку */
     #autostartList .card:hover { background-color: #2a2a2a; border-color: transparent; box-shadow: none; }
