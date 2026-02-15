@@ -4629,7 +4629,7 @@ const NAVIGATION_MODALS = [
       const actionLabel = 'Авторазрешения';
       if (!getAdbInterfaceOrWarn(actionLabel)) return;
       if (!ensureAdbSessionConnected(actionLabel)) return;
-      showToast({ message: 'Запуск авторазрешений…', type: 'info' });
+      showToast({ message: 'Запуск авторазрешений…', type: 'warning' });
 
       try {
         await Promise.all([
