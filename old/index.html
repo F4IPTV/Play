@@ -4144,7 +4144,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           }
         };
 
-        showToast({ message: 'Обновляем разрешения на установку APK…', type: 'info' });
+        showToast({ message: 'Обновляем разрешения на установку APK…', type: 'warning' });
 
         Promise.all(
           Array.from({ length: concurrency || 1 }, () => worker())
