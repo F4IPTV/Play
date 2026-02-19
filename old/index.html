@@ -861,10 +861,13 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
     }
     /* ТВ: убираем hover, чтобы не "залипало" при D-pad */
-    #atvAppsList .app-row:hover { background:#10131A; }
+    #atvAppsList .app-row:hover,
+    #launcherList .app-row:hover { background:#10131A; }
     /* ТВ/общий случай: подсветка по фокусу/selected */
     #atvAppsList .app-row:focus-visible,
-    #atvAppsList .app-row.selected {
+    #atvAppsList .app-row.selected,
+    #launcherList .app-row:focus-visible,
+    #launcherList .app-row.selected {
       background:#152b45;
       border-color:#fcb900;
       outline:none;
@@ -872,7 +875,9 @@
     /* Телефоны/планшеты: отключаем рамку (и при желании подсветку) */
     @media (hover: none) and (pointer: coarse) {
       #atvAppsList .app-row:focus-visible,
-      #atvAppsList .app-row.selected {
+      #atvAppsList .app-row.selected,
+      #launcherList .app-row:focus-visible,
+      #launcherList .app-row.selected {
         border-color: transparent;
         /* при необходимости уберите подсветку:
            box-shadow: none; */
@@ -948,6 +953,11 @@
     .app-state { font-size:12px; color:#ffc107; }
     #atvAppsModal.atv-loading-active { pointer-events: none; }
     #atvAppsModal.atv-loading-active .modal-content { opacity: 0.85; }
+    #launcherModal .modal-header-tools { right: -8px; top: -5px; gap: 1px; }
+    #launcherModal #launcherHeader { margin-top: 6px; margin-bottom: 6px; }
+    #launcherModal .modal-content { max-height: 90vh; }
+    #launcherModal.launcher-loading-active { pointer-events: none; }
+    #launcherModal.launcher-loading-active .modal-content { opacity: 0.85; }
 
     /* Модалка действий по приложению ATV */
     #atvAppActionsModal .sys-btn {
@@ -958,6 +968,18 @@
     #atvAppActionsModal .sys-btn:hover,
     #atvAppActionsModal .sys-btn:focus,
     #atvAppActionsModal .sys-btn.selected {
+      background: #10131A;
+      border-color: #3fa9f5;
+      color: #fff;
+    }
+    #launcherActionsModal .sys-btn {
+      background: #10131A;
+      border: 1px solid #1f3a5a;
+      color: #e8f0ff;
+    }
+    #launcherActionsModal .sys-btn:hover,
+    #launcherActionsModal .sys-btn:focus,
+    #launcherActionsModal .sys-btn.selected {
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
@@ -1767,6 +1789,10 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" style="height:28px;"><br>Пакеты
     </button>
 
+    <button onclick="openLaunchersModal(this)" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:26px;"><br>Лаунчеры
+    </button>
+
     <button onclick="openScreenSaverModal(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic12_ScreenServer.png" alt="" style="height:26px;"><br>Заставка
     </button>
@@ -1876,6 +1902,40 @@
       <h3 id="atvAppActionsTitle" style="display:flex;align-items:center;gap:8px;">Действия</h3>
       <div id="atvAppActionsInfo" style="font-size:13px; opacity:0.8; margin-bottom:10px;"></div>
       <div class="system-buttons" id="atvAppActionsButtons" style="justify-content:center; gap:8px; flex-wrap:wrap;"></div>
+    </div>
+  </div>
+
+  <!-- Модалка списка лаунчеров -->
+  <div id="launcherModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <div class="modal-header-tools" style="justify-content:flex-end;">
+        <button
+          type="button"
+          class="modal-quick-action atv-refresh-btn"
+          onclick="refreshLaunchersList()"
+          title="Обновить лаунчеры"
+          aria-label="Обновить лаунчеры"
+          style="--atv-refresh-offset-x: -10px; --atv-refresh-offset-y: 7px;"
+        >
+          <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="Refresh" loading="lazy">
+        </button>
+      </div>
+      <h3 id="launcherHeader" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;margin-top:0;font-size:1.1rem;">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:22px;">
+        Лаунчеры
+      </h3>
+      <div id="launcherContainer" style="max-height:calc(90vh - 135px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
+        <div id="launcherList" class="apps-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка действий по лаунчеру -->
+  <div id="launcherActionsModal" class="modal" style="display:none;" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="launcherActionsTitle" style="display:flex;align-items:center;gap:8px;">Лаунчер</h3>
+      <div id="launcherActionsInfo" style="font-size:13px; opacity:0.85; margin-bottom:10px;"></div>
+      <div class="system-buttons" id="launcherActionsButtons" style="justify-content:center; gap:8px; flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -2605,7 +2665,7 @@ function setAdbRootLog(text) {
         btn.setAttribute('data-tip', tip);
       }
     }
-    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','launcherModal','launcherActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -4566,6 +4626,8 @@ function applyAccessibilityServices() {
 
 const NAVIGATION_MODALS = [
       // 'installMethodModal', // локальный хендлер, исключаем из глобального DPAD
+      'launcherActionsModal',
+      'launcherModal',
       'atvAppActionsModal',
       'adbManualConnectModal',
       'screenSaverTimeoutModal',
@@ -6000,7 +6062,9 @@ const NAVIGATION_MODALS = [
     }
 
     function handleBackButton() {
-      if (document.getElementById('atvAppActionsModal')?.style.display === 'flex') closeAtvAppActions();
+      if (document.getElementById('launcherActionsModal')?.style.display === 'flex') closeLauncherActions();
+      else if (document.getElementById('launcherModal')?.style.display === 'flex') closeLaunchersModal();
+      else if (document.getElementById('atvAppActionsModal')?.style.display === 'flex') closeAtvAppActions();
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
       else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
@@ -7159,9 +7223,332 @@ window.applyAtvActionState = function(action, pkg) {
   renderAtvAppsList();
 };
 
+const launcherState = {
+  items: [],
+  loading: false,
+  sourceLabel: 'ADB устройство',
+  adbConnected: false
+};
+let launcherSelectedItem = null;
+let launcherLastFocusedEl = null;
+
+function openLaunchersModal(btn) {
+  ignoreNextEnter = true;
+  if (!isAdbSessionConnected()) {
+    showToast({ message: 'ADB не подключен', type: 'warning', position: 'top-center' });
+    ignoreNextEnter = false;
+    return;
+  }
+
+  const modal = document.getElementById('launcherModal');
+  if (!modal) return;
+
+  const header = document.getElementById('launcherHeader');
+  const iconSrc = btn?.querySelector('img')?.src || 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png';
+  if (header) {
+    header.innerHTML = `<img src="${iconSrc}" alt="" style="height:22px; vertical-align:middle; margin-right:6px;">Лаунчеры`;
+  }
+
+  document.activeElement?.blur();
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+  refreshLaunchersList();
+
+  setTimeout(() => {
+    const first = modal.querySelector('#launcherList .app-row');
+    if (first) first.focus({ preventScroll: true });
+    else modal.focus();
+  }, 120);
+}
+
+function closeLaunchersModal() {
+  const modal = document.getElementById('launcherModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  modal.style.zIndex = '';
+  closeLauncherActions();
+  if (!anyModalOpen()) {
+    document.body.classList.remove('modal-open');
+  }
+  setTimeout(() => {
+    ignoreNextEnter = false;
+  }, 100);
+}
+
+function refreshLaunchersList() {
+  setLauncherLoading(true);
+  renderLaunchersList();
+  setTimeout(() => {
+    try {
+      const raw = window.AndroidInterface?.getHomeLaunchersInventory?.() || '';
+      handleLaunchersPayload(raw);
+    } catch (e) {
+      handleLaunchersPayload('{}');
+      console.warn('getHomeLaunchersInventory error', e);
+      showToast?.({ message: '❌ Ошибка получения лаунчеров', type: 'error' });
+    }
+  }, 30);
+}
+
+function handleLaunchersPayload(raw) {
+  let data = null;
+  try { data = JSON.parse(raw); } catch (_) {}
+  if (!data || !Array.isArray(data.launchers)) {
+    showToast({ message: 'Не удалось получить список лаунчеров', type: 'error' });
+    launcherState.items = [];
+    setLauncherLoading(false);
+    renderLaunchersList();
+    return;
+  }
+
+  launcherState.items = data.launchers || [];
+  launcherState.sourceLabel = data.sourceLabel || 'ADB устройство';
+  launcherState.adbConnected = !!data.adbConnected;
+  if (data.error) {
+    showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
+  }
+  setLauncherLoading(false);
+  renderLaunchersList();
+}
+
+function setLauncherLoading(flag) {
+  launcherState.loading = !!flag;
+  const modal = document.getElementById('launcherModal');
+  if (modal) {
+    modal.classList.toggle('launcher-loading-active', !!flag);
+  }
+  if (flag) {
+    ignoreNextEnter = true;
+  } else {
+    setTimeout(() => { ignoreNextEnter = false; }, 120);
+  }
+}
+
+function renderLaunchersList() {
+  const list = document.getElementById('launcherList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (launcherState.loading) {
+    list.innerHTML = atvLoadingHtml;
+    return;
+  }
+  const items = launcherState.items || [];
+  if (!items.length) {
+    list.innerHTML = '<div style="text-align:center; opacity:0.7;">Лаунчеры не найдены</div>';
+    return;
+  }
+
+  const sorted = [...items].sort((a, b) => (a.label || a.package || '').localeCompare((b.label || b.package || ''), 'ru'));
+  sorted.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'app-row';
+    row.tabIndex = 0;
+    row.onclick = () => openLauncherActions(item);
+    row.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK') {
+        e.preventDefault();
+        openLauncherActions(item);
+      }
+    };
+    row.onfocus = () => {
+      document.querySelectorAll('#launcherList .app-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      row.scrollIntoView({ block: 'nearest' });
+      launcherLastFocusedEl = row;
+    };
+    row.onblur = () => row.classList.remove('selected');
+
+    const img = document.createElement('img');
+    img.className = 'app-icon';
+    img.loading = 'lazy';
+    img.src = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png';
+    img.alt = item.label || item.package;
+
+    const meta = document.createElement('div');
+    meta.className = 'app-meta';
+
+    const title = document.createElement('div');
+    title.className = 'app-title';
+    title.textContent = item.label || item.package || 'launcher';
+
+    const sub = document.createElement('div');
+    sub.className = 'app-sub';
+    sub.style.display = 'flex';
+    sub.style.flexDirection = 'column';
+    sub.style.alignItems = 'flex-start';
+    sub.style.gap = '3px';
+
+    const pkg = document.createElement('span');
+    pkg.textContent = item.package || '';
+    pkg.style.wordBreak = 'break-all';
+    pkg.style.opacity = '0.88';
+
+    const badges = document.createElement('div');
+    badges.style.display = 'flex';
+    badges.style.gap = '6px';
+    badges.style.flexWrap = 'wrap';
+
+    const typeBadge = document.createElement('span');
+    typeBadge.className = 'app-badge';
+    typeBadge.classList.add(item.type === 'system' ? 'badge-system' : 'badge-user');
+    typeBadge.textContent = item.type === 'system' ? 'system' : 'user';
+    badges.appendChild(typeBadge);
+
+    if (item.isActive) {
+      const active = document.createElement('span');
+      active.className = 'app-badge';
+      active.style.background = '#2abf6d';
+      active.style.color = '#000';
+      active.textContent = 'active';
+      badges.appendChild(active);
+    }
+    if (item.state && item.state !== 'enabled') {
+      const state = document.createElement('span');
+      state.className = 'app-badge';
+      state.style.background = item.state === 'deleted' ? '#ff4d4f' : '#e66909';
+      state.style.color = '#000';
+      state.textContent = item.state;
+      badges.appendChild(state);
+    }
+
+    sub.appendChild(pkg);
+    sub.appendChild(badges);
+
+    meta.appendChild(title);
+    meta.appendChild(sub);
+    row.appendChild(img);
+    row.appendChild(meta);
+    list.appendChild(row);
+  });
+}
+
+function openLauncherActions(item) {
+  launcherSelectedItem = item;
+  if (!launcherLastFocusedEl) {
+    const activeRow = document.activeElement?.closest?.('.app-row');
+    if (activeRow) launcherLastFocusedEl = activeRow;
+  }
+  const modal = document.getElementById('launcherActionsModal');
+  if (!modal) return;
+  const parentModal = document.getElementById('launcherModal');
+  if (parentModal && parentModal.style.display === 'flex') {
+    modal.dataset.restoreParent = '1';
+    parentModal.setAttribute('inert', '');
+    parentModal.style.pointerEvents = 'none';
+  } else {
+    modal.dataset.restoreParent = '0';
+  }
+
+  const title = document.getElementById('launcherActionsTitle');
+  if (title) {
+    title.innerHTML = `<img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:22px;width:22px;object-fit:contain;"> <span>${item.label || item.package}</span>`;
+  }
+  const info = document.getElementById('launcherActionsInfo');
+  if (info) {
+    const safeActivity = item.activity || '-';
+    info.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center;">
+        <span style="opacity:0.92;">${item.package || ''}</span>
+        <span style="opacity:0.72;font-size:12px;word-break:break-all;text-align:center;">${safeActivity}</span>
+      </div>
+    `;
+  }
+
+  const buttons = document.getElementById('launcherActionsButtons');
+  if (buttons) {
+    buttons.innerHTML = '';
+    buttons.appendChild(makeLauncherActionBtn(false, 'Сделать активным'));
+    buttons.appendChild(makeLauncherActionBtn(true, 'Активным + отключить остальные'));
+    buttons.appendChild(makeLauncherOpenPickerBtn());
+  }
+
+  modal.style.display = 'flex';
+  document.body.classList.add('modal-open');
+}
+
+function closeLauncherActions() {
+  const modal = document.getElementById('launcherActionsModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  modal.style.zIndex = '';
+
+  const parentModal = document.getElementById('launcherModal');
+  if (parentModal && parentModal.style.display === 'flex') {
+    if (modal.dataset.restoreParent === '1') {
+      parentModal.removeAttribute('inert');
+      parentModal.style.pointerEvents = '';
+      modal.dataset.restoreParent = '0';
+    }
+    document.body.classList.add('modal-open');
+    if (launcherLastFocusedEl && document.body.contains(launcherLastFocusedEl)) {
+      requestAnimationFrame(() => launcherLastFocusedEl?.focus({ preventScroll: true }));
+    }
+  } else {
+    document.body.classList.remove('modal-open');
+  }
+}
+
+function makeLauncherActionBtn(disableOthers, label) {
+  const btn = document.createElement('button');
+  btn.className = 'sys-btn';
+  btn.textContent = label;
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    handleLauncherAction(disableOthers);
+  };
+  return btn;
+}
+
+function makeLauncherOpenPickerBtn() {
+  const btn = document.createElement('button');
+  btn.className = 'sys-btn';
+  btn.textContent = 'Системный выбор';
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    sendAdbCommand('am start -a android.settings.HOME_SETTINGS', 'Выбор лаунчера');
+    closeLauncherActions();
+  };
+  return btn;
+}
+
+function handleLauncherAction(disableOthers) {
+  const item = launcherSelectedItem;
+  if (!item?.package) return;
+  try {
+    window.AndroidInterface?.confirmAndSetHomeLauncher?.(
+      item.package,
+      item.activity || '',
+      item.label || item.package,
+      !!disableOthers
+    );
+  } catch (e) {
+    console.warn('confirmAndSetHomeLauncher error', e);
+    showToast({ message: '❌ Не удалось отправить команду', type: 'error' });
+  }
+}
+
+window.applyLauncherActiveState = function(pkg) {
+  const items = launcherState.items || [];
+  launcherState.items = items.map((it) => {
+    if (it.package === pkg) return { ...it, isActive: true, state: 'enabled' };
+    return { ...it, isActive: false };
+  });
+  renderLaunchersList();
+};
+
 // Back/Escape закрывают модалки
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Back' || e.key === 'Escape') {
+    const launcherActions = document.getElementById('launcherActionsModal');
+    const launcherMain = document.getElementById('launcherModal');
+    if (launcherActions && launcherActions.style.display === 'flex') {
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      closeLauncherActions(); return;
+    }
+    if (launcherMain && launcherMain.style.display === 'flex') {
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      closeLaunchersModal(); return;
+    }
     const actions = document.getElementById('atvAppActionsModal');
     const main = document.getElementById('atvAppsModal');
     if (actions && actions.style.display === 'flex') {
@@ -7178,6 +7565,16 @@ document.addEventListener('keydown', function(e) {
 // Закрытие по native back через AndroidInterface, если доступно
 window.AndroidInterface?.registerOnBackPressed?.("atvAppsBackHandler");
 window.atvAppsBackHandler = function() {
+  const launcherActions = document.getElementById('launcherActionsModal');
+  const launcherMain = document.getElementById('launcherModal');
+  if (launcherActions && launcherActions.style.display === 'flex') {
+    closeLauncherActions();
+    return true;
+  }
+  if (launcherMain && launcherMain.style.display === 'flex') {
+    closeLaunchersModal();
+    return true;
+  }
   const actions = document.getElementById('atvAppActionsModal');
   const main = document.getElementById('atvAppsModal');
   if (actions && actions.style.display === 'flex') {
