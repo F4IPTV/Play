@@ -950,6 +950,16 @@
     #atvAppsModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px; opacity:0.9; }
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
+    #launcherModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:10px; padding:24px 20px; opacity:0.9; }
+    #launcherModal .launcher-spinner {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.22);
+      border-top-color: #00cfff;
+      animation: spin 0.95s linear infinite;
+      box-sizing: border-box;
+    }
     .app-state { font-size:12px; color:#ffc107; }
     #atvAppsModal.atv-loading-active { pointer-events: none; }
     #atvAppsModal.atv-loading-active .modal-content { opacity: 0.85; }
@@ -6740,6 +6750,12 @@ const atvLoadingHtml = `
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
+const launcherLoadingHtml = `
+  <div class="atv-loading">
+    <div class="launcher-spinner" aria-hidden="true"></div>
+    <div style="opacity:0.85;">Загрузка списка…</div>
+  </div>
+`;
 
 function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
@@ -7329,7 +7345,7 @@ function renderLaunchersList() {
   if (!list) return;
   list.innerHTML = '';
   if (launcherState.loading) {
-    list.innerHTML = atvLoadingHtml;
+    list.innerHTML = launcherLoadingHtml;
     return;
   }
   const items = launcherState.items || [];
