@@ -950,7 +950,9 @@
     #atvAppsModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px; opacity:0.9; }
     #atvAppsModal .atv-loading .spin { display:inline-flex; align-items:center; justify-content:center; animation: spin 1s linear infinite; transform-origin:center; }
     #atvAppsModal .atv-loading img { height:40px; width:40px; display:block; }
+    #atvAppsModal .atv-loading,
     #launcherModal .atv-loading { display:flex; flex-direction:column; align-items:center; gap:10px; padding:24px 20px; opacity:0.9; }
+    #atvAppsModal .launcher-spinner,
     #launcherModal .launcher-spinner {
       width: 36px;
       height: 36px;
@@ -6746,7 +6748,7 @@ const atvDefaultIcons = {
 };
 const atvLoadingHtml = `
   <div class="atv-loading">
-    <span class="spin"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" alt=""></span>
+    <div class="launcher-spinner" aria-hidden="true"></div>
     <div style="opacity:0.85;">Загрузка списка…</div>
   </div>
 `;
