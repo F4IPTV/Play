@@ -7600,16 +7600,11 @@ function handleLauncherEnableOnly() {
 function handleLauncherDisableOnly() {
   const item = launcherSelectedItem;
   if (!item?.package) return;
-  if (item.isActive) {
-    showToast({ message: '⚠️ Активный лаунчер нельзя отключить, сначала выберите другой', type: 'warning' });
-    return;
-  }
-  const ok = confirm(`Отключить лаунчер ${item.label || item.package}?`);
-  if (!ok) return;
   try {
-    sendAdbCommand(buildLauncherDisableCommand(item.package), `Отключить ${item.label || item.package}`);
-    closeLauncherActions();
-    setTimeout(() => refreshLaunchersList(), 700);
+    window.AndroidInterface?.confirmAndDisableHomeLauncher?.(
+      item.package,
+      item.label || item.package
+    );
   } catch (e) {
     console.warn('handleLauncherDisableOnly error', e);
     showToast({ message: '❌ Не удалось отключить лаунчер', type: 'error' });
