@@ -7477,6 +7477,8 @@ function openLauncherActions(item) {
     buttons.innerHTML = '';
     if (item.state === 'disabled' || item.state === 'deleted') {
       buttons.appendChild(makeLauncherEnableBtn());
+    } else {
+      buttons.appendChild(makeLauncherDisableBtn());
     }
     buttons.appendChild(makeLauncherActionBtn(false, 'Сделать активным'));
     buttons.appendChild(makeLauncherActionBtn(true, 'Активным + отключить остальные'));
@@ -7543,6 +7545,17 @@ function makeLauncherEnableBtn() {
   return btn;
 }
 
+function makeLauncherDisableBtn() {
+  const btn = document.createElement('button');
+  btn.className = 'sys-btn';
+  btn.textContent = 'Отключить';
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    handleLauncherDisableOnly();
+  };
+  return btn;
+}
+
 function buildLauncherEnableCommand(pkg) {
   const quoted = `"${pkg}"`;
   const base = [
@@ -7560,6 +7573,17 @@ function buildLauncherEnableCommand(pkg) {
   return base.join('; ');
 }
 
+function buildLauncherDisableCommand(pkg) {
+  const quoted = `"${pkg}"`;
+  const commands = [
+    `cmd package disable-user --user 0 ${quoted} || pm disable-user --user 0 ${quoted}`
+  ];
+  if (pkg === 'com.google.android.apps.tv.launcherx') {
+    commands.push('cmd package disable-user --user 0 "com.google.android.tungsten.setupwraith" || pm disable-user --user 0 "com.google.android.tungsten.setupwraith"');
+  }
+  return commands.join('; ');
+}
+
 function handleLauncherEnableOnly() {
   const item = launcherSelectedItem;
   if (!item?.package) return;
@@ -7570,6 +7594,25 @@ function handleLauncherEnableOnly() {
   } catch (e) {
     console.warn('handleLauncherEnableOnly error', e);
     showToast({ message: '❌ Не удалось включить лаунчер', type: 'error' });
+  }
+}
+
+function handleLauncherDisableOnly() {
+  const item = launcherSelectedItem;
+  if (!item?.package) return;
+  if (item.isActive) {
+    showToast({ message: '⚠️ Активный лаунчер нельзя отключить, сначала выберите другой', type: 'warning' });
+    return;
+  }
+  const ok = confirm(`Отключить лаунчер ${item.label || item.package}?`);
+  if (!ok) return;
+  try {
+    sendAdbCommand(buildLauncherDisableCommand(item.package), `Отключить ${item.label || item.package}`);
+    closeLauncherActions();
+    setTimeout(() => refreshLaunchersList(), 700);
+  } catch (e) {
+    console.warn('handleLauncherDisableOnly error', e);
+    showToast({ message: '❌ Не удалось отключить лаунчер', type: 'error' });
   }
 }
 
