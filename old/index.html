@@ -7475,6 +7475,9 @@ function openLauncherActions(item) {
   const buttons = document.getElementById('launcherActionsButtons');
   if (buttons) {
     buttons.innerHTML = '';
+    if (item.state === 'disabled' || item.state === 'deleted') {
+      buttons.appendChild(makeLauncherEnableBtn());
+    }
     buttons.appendChild(makeLauncherActionBtn(false, 'Сделать активным'));
     buttons.appendChild(makeLauncherActionBtn(true, 'Активным + отключить остальные'));
     buttons.appendChild(makeLauncherOpenPickerBtn());
@@ -7527,6 +7530,47 @@ function makeLauncherOpenPickerBtn() {
     closeLauncherActions();
   };
   return btn;
+}
+
+function makeLauncherEnableBtn() {
+  const btn = document.createElement('button');
+  btn.className = 'sys-btn';
+  btn.textContent = 'Включить';
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    handleLauncherEnableOnly();
+  };
+  return btn;
+}
+
+function buildLauncherEnableCommand(pkg) {
+  const quoted = `"${pkg}"`;
+  const base = [
+    `cmd package install-existing ${quoted} || pm install-existing ${quoted}`,
+    `cmd package enable --user 0 ${quoted}`,
+    `pm enable --user 0 ${quoted}`,
+    `cmd package enable ${quoted}`
+  ];
+  if (pkg === 'com.google.android.apps.tv.launcherx' || pkg === 'com.google.android.tvlauncher' || pkg === 'com.android.tvlauncher') {
+    base.push(
+      'cmd package install-existing --user 0 "com.google.android.tungsten.setupwraith" || pm install-existing --user 0 "com.google.android.tungsten.setupwraith" || cmd package install-existing "com.google.android.tungsten.setupwraith" || pm install-existing "com.google.android.tungsten.setupwraith"',
+      'cmd package enable --user 0 "com.google.android.tungsten.setupwraith" || pm enable --user 0 "com.google.android.tungsten.setupwraith" || cmd package enable "com.google.android.tungsten.setupwraith"'
+    );
+  }
+  return base.join('; ');
+}
+
+function handleLauncherEnableOnly() {
+  const item = launcherSelectedItem;
+  if (!item?.package) return;
+  try {
+    sendAdbCommand(buildLauncherEnableCommand(item.package), `Включить ${item.label || item.package}`);
+    closeLauncherActions();
+    setTimeout(() => refreshLaunchersList(), 700);
+  } catch (e) {
+    console.warn('handleLauncherEnableOnly error', e);
+    showToast({ message: '❌ Не удалось включить лаунчер', type: 'error' });
+  }
 }
 
 function handleLauncherAction(disableOthers) {
