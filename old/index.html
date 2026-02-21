@@ -1940,7 +1940,7 @@
         <div id="launcherList" class="apps-list"></div>
       </div>
       <div id="launcherSystemPickerWrap" class="system-buttons" style="margin-top:8px; justify-content:center;">
-        <button class="sys-btn" style="max-width:280px;" onclick="sendAdbCommand('am start -a android.settings.HOME_SETTINGS','Выбор лаунчера')">
+        <button class="sys-btn" style="max-width:280px;" onclick="sendAdbCommand('am start -a android.settings.HOME_SETTINGS','Выбор лаунчера',{ singleToast: true })">
           Системный<br>выбор
         </button>
       </div>
@@ -3665,19 +3665,32 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       restoreGroupModalOverlay();
     }
 
-    function sendAdbCommand(command, label) {
+    function sendAdbCommand(command, label, options = {}) {
       const trimmed = (command || '').trim();
       if (!trimmed) {
         showToast({ message: 'Команда не задана', type: 'warning' });
         return;
       }
       const ai = window.AndroidInterface;
-      if (!ai || typeof ai.runAdbShellCommand !== 'function') {
+      if (!ai || (typeof ai.runAdbShellCommand !== 'function' && typeof ai.runAdbShellCommandWithResult !== 'function')) {
         showToast({ message: 'ADB недоступен в этом режиме', type: 'error' });
         return;
       }
+      const singleToast = !!(options && options.singleToast);
       try {
-        ai.runAdbShellCommand(trimmed, label || '');
+        if (singleToast && typeof ai.runAdbShellCommandWithResult === 'function') {
+          const ok = !!ai.runAdbShellCommandWithResult(trimmed, label || '', true);
+          showToast({
+            message: ok ? `✅ ${(label || trimmed)} выполнено` : `❌ ${(label || trimmed)}: ошибка выполнения`,
+            type: ok ? 'success' : 'error'
+          });
+          return;
+        }
+        if (typeof ai.runAdbShellCommand === 'function') {
+          ai.runAdbShellCommand(trimmed, label || '');
+          return;
+        }
+        ai.runAdbShellCommandWithResult(trimmed, label || '', false);
       } catch (err) {
         console.error('ADB command error', err);
         showToast({ message: 'Не удалось отправить команду', type: 'error' });
@@ -7541,7 +7554,7 @@ function makeLauncherOpenPickerBtn() {
   btn.textContent = 'Системный выбор';
   btn.onclick = (e) => {
     e.stopPropagation();
-    sendAdbCommand('am start -a android.settings.HOME_SETTINGS', 'Выбор лаунчера');
+    sendAdbCommand('am start -a android.settings.HOME_SETTINGS', 'Выбор лаунчера', { singleToast: true });
     closeLauncherActions();
   };
   return btn;
