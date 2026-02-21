@@ -20,10 +20,13 @@
       flex-wrap: wrap;
     }
     #adbScanStatus .adb-scan-spinner {
-      height: 18px;
       width: 18px;
-      vertical-align: middle;
-      filter: drop-shadow(0 0 2px rgba(0,0,0,0.35));
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.22);
+      border-top-color: #00cfff;
+      animation: spin 0.95s linear infinite;
+      box-sizing: border-box;
     }
     #adbScanStatus .adb-scan-spinwrap {
       display: inline-flex;
@@ -3068,12 +3071,10 @@ function updateAdbScanStatus(message = null, totalOverride = null) {
 
   if (running) {
     const spinnerWrap = document.createElement('span');
-    spinnerWrap.className = 'spin adb-scan-spinwrap';
-    const spinnerImg = document.createElement('img');
-    spinnerImg.src = 'https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png';
-    spinnerImg.alt = '';
-    spinnerImg.className = 'adb-scan-spinner';
-    spinnerWrap.appendChild(spinnerImg);
+    spinnerWrap.className = 'adb-scan-spinwrap';
+    const spinnerEl = document.createElement('span');
+    spinnerEl.className = 'adb-scan-spinner';
+    spinnerWrap.appendChild(spinnerEl);
     status.appendChild(spinnerWrap);
   }
 
