@@ -7328,7 +7328,11 @@ function handleLaunchersPayload(raw) {
   launcherState.sourceLabel = data.sourceLabel || 'ADB устройство';
   launcherState.adbConnected = !!data.adbConnected;
   if (data.error) {
-    showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
+    if (!launcherState.items.length) {
+      showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
+    } else {
+      console.warn('Launcher inventory partial warnings:', data.error);
+    }
   }
   setLauncherLoading(false);
   renderLaunchersList();
