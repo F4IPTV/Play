@@ -7406,7 +7406,7 @@ function renderLaunchersList() {
     const img = document.createElement('img');
     img.className = 'app-icon';
     img.loading = 'lazy';
-    img.src = 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png';
+    img.src = item.icon || 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png';
     img.alt = item.label || item.package;
 
     const meta = document.createElement('div');
