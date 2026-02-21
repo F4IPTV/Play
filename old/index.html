@@ -7486,15 +7486,15 @@ function openLauncherActions(item) {
 
   const title = document.getElementById('launcherActionsTitle');
   if (title) {
-    title.innerHTML = `<img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png" alt="" style="height:22px;width:22px;object-fit:contain;"> <span>${item.label || item.package}</span>`;
+    const iconSrc = item.icon || 'https://appassets.androidplatform.net/assets/webview/icons/misc/ic20_ATV.png';
+    title.style.justifyContent = 'center';
+    title.innerHTML = `<img src="${iconSrc}" alt="" style="height:22px;width:22px;object-fit:contain;"> <span>${item.label || item.package}</span>`;
   }
   const info = document.getElementById('launcherActionsInfo');
   if (info) {
-    const safeActivity = item.activity || '-';
     info.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center;">
         <span style="opacity:0.92;">${item.package || ''}</span>
-        <span style="opacity:0.72;font-size:12px;word-break:break-all;text-align:center;">${safeActivity}</span>
       </div>
     `;
   }
