@@ -1939,7 +1939,7 @@
       <div id="launcherContainer" style="max-height:calc(90vh - 135px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;margin-bottom:4px;padding-right:4px;padding-bottom:24px;-webkit-overflow-scrolling:touch;">
         <div id="launcherList" class="apps-list"></div>
       </div>
-      <div class="system-buttons" style="margin-top:8px; justify-content:center;">
+      <div id="launcherSystemPickerWrap" class="system-buttons" style="margin-top:8px; justify-content:center;">
         <button class="sys-btn" style="max-width:280px;" onclick="sendAdbCommand('am start -a android.settings.HOME_SETTINGS','Выбор лаунчера')">
           Системный<br>выбор
         </button>
@@ -7339,6 +7339,10 @@ function setLauncherLoading(flag) {
   const modal = document.getElementById('launcherModal');
   if (modal) {
     modal.classList.toggle('launcher-loading-active', !!flag);
+  }
+  const pickerWrap = document.getElementById('launcherSystemPickerWrap');
+  if (pickerWrap) {
+    pickerWrap.style.display = flag ? 'none' : 'flex';
   }
   if (flag) {
     ignoreNextEnter = true;
