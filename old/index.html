@@ -785,11 +785,51 @@
       margin-top: 6px;
       margin-bottom: 10px;
     }
+    #groupsModalList .card {
+      background: #10131A;
+      border: 1px solid #1f3a5a;
+      color: #e8f0ff;
+      border-radius: 10px;
+      box-shadow: none;
+    }
+    #groupsModalList .card:hover,
+    #groupsModalList .card:focus,
+    #groupsModalList .card:focus-visible,
+    #groupsModalList .card.selected {
+      background: #10131A;
+      border-color: #3fa9f5;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
+    }
     #groupsModalPasswordRow {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-top: 10px;
+    }
+    #groupsModal #passwordBtn {
+      margin: 0;
+      min-width: 170px;
+      background: #10131A;
+      border: 1px solid #1f3a5a;
+      border-radius: 10px;
+      color: #e8f0ff;
+      font-size: 13px;
+      line-height: 1.1;
+      text-align: center;
+      box-shadow: none;
+      padding: 8px 12px;
+      width: auto;
+    }
+    #groupsModal #passwordBtn:hover,
+    #groupsModal #passwordBtn:focus,
+    #groupsModal #passwordBtn:focus-visible {
+      background: #10131A;
+      border-color: #3fa9f5;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
     }
     #installAllBtn:disabled {
       opacity: 0.6;
