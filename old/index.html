@@ -2967,7 +2967,7 @@ function configureVolumeSteps() {
     return;
   }
 
-  const command = `su -c 'MODDIR=/data/adb/modules/fi_volume_steps; mkdir -p "$MODDIR"; printf "%s\\n" "id=fi_volume_steps" "name=FI Volume Steps" "version=v1" "versionCode=1" "author=FastInstaller" "description=Media volume steps override" > "$MODDIR/module.prop"; printf "ro.config.media_vol_steps=${value}\\n" > "$MODDIR/system.prop"; chmod 0755 "$MODDIR"; chmod 0644 "$MODDIR/module.prop" "$MODDIR/system.prop"; touch "$MODDIR/update"'`;
+  const command = `su -c 'MODDIR=/data/adb/modules/fi_volume_steps; mkdir -p "$MODDIR"; printf "%s\\n" "id=fi_volume_steps" "name=Volume Steps" "version=1.0" "versionCode=1" "author=Filin4ik" "description=1.0 от Filin4ik" > "$MODDIR/module.prop"; printf "ro.config.media_vol_steps=${value}\\n" > "$MODDIR/system.prop"; chmod 0755 "$MODDIR"; chmod 0644 "$MODDIR/module.prop" "$MODDIR/system.prop"; touch "$MODDIR/update"'`;
   sendAdbCommand(command, `Шаги громкости: ${value}`, { singleToast: true });
   showToast({ message: `Значение ${value} сохранено. Перезагрузите бокс для применения`, type: 'warning', duration: 5000 });
 }
