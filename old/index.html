@@ -774,6 +774,23 @@
       border-color: #fff;
       box-shadow: 0 0 0 1px #fff;
     }
+    #groupsModalListContainer {
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: auto;
+      scrollbar-gutter: stable both-edges;
+    }
+    #groupsModalList {
+      margin-top: 6px;
+      margin-bottom: 10px;
+    }
+    #groupsModalPasswordRow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
     #installAllBtn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -902,16 +919,48 @@
     /* Flex для кнопок ввода/ADB: центрируем каждую строку */
     #passwordRow {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
       margin: 8px 0;
     }
+    #passwordTopRow,
+    #passwordExtraRow {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
     #passwordRow .password-row-icon-btn,
-    #passwordRow #passwordBtn,
     #passwordRow .adb-status-icon {
       flex: 0 0 auto;
+    }
+    #groupsOpenBtn {
+      margin: 0;
+      width: 170px;
+      min-height: 56px;
+      flex: 0 0 auto;
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.1;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s ease;
+      padding: 6px 10px;
+    }
+    #groupsOpenBtn:hover,
+    #groupsOpenBtn:focus,
+    #groupsOpenBtn:focus-visible,
+    #groupsOpenBtn.selected {
+      background-color: #004d61;
+      border-color: #00cfff;
+      box-shadow: 0 0 10px rgba(0,0,0,.5);
+      outline: none;
     }
     .app-icon { width:42px; height:42px; border-radius:10px; object-fit:contain; background:#101316; padding:6px; }
     .app-meta { display:flex; flex-direction:column; gap:4px; overflow:hidden; align-items:flex-start; width:100%; text-align:left; }
@@ -1719,16 +1768,14 @@
     </div>
   </div>
 
-  <div class="card-container" id="groupCards"></div>
-
   <script>
     // Enter/OK на главном экране
     document.addEventListener('keydown', function (e) {
       const isOk = e.key === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK' || e.code === 'Enter';
       if (!isOk) return;
-      if (anyModalOpen()) return;
+      if (document.getElementById('groupsModal')?.style.display !== 'flex') return;
 
-      const selected = document.querySelector('.card.selected');
+      const selected = document.querySelector('#groupsModal .card.selected');
       if (!selected) return;
       currentGroup = selected.dataset.group;
       startInstall();
@@ -1736,42 +1783,41 @@
   </script>
 
   <select id="groupSelect" style="display:none;"></select>
-  <div id="passwordRow" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
-    
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
-    </button>
+  <div id="passwordRow" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0;">
+    <div id="passwordTopRow">
+      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="К другому (RSA)" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
+      </button>
 
+      <button id="groupsOpenBtn" type="button" onclick="openGroupsModal(this)">Группы</button>
 
-    <button type="button" id="passwordBtn" class="password-row-icon-btn focus-tooltip"
-            title="Введите пароль" aria-label="Введите пароль" data-tip="Введите пароль">
-      <img id="passwordBtnIcon" src="https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp" alt="" loading="lazy">
-    </button>
+      <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Переподключиться к последнему ADB" aria-label="Переподключиться к последнему ADB" data-tip="Переподключиться к последнему ADB">
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
+      </button>
+    </div>
 
-    <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Подключиться к последнему ADB" aria-label="Подключиться к последнему ADB" data-tip="Подключиться к последнему ADB">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
-    </button>
-
-    <button class="password-row-icon-btn focus-tooltip" onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()"
+    <div id="passwordExtraRow">
+      <button class="password-row-icon-btn focus-tooltip" onclick="event.stopPropagation();window.AndroidInterface.openUnknownSources()"
             title="Неизвестные источники" aria-label="Неизвестные источники" data-tip="Неизвестные источники">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()"
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" loading="lazy">
+      </button>
+      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAppSettingsList()"
             title="Все приложения" aria-label="Все приложения" data-tip="Все приложения">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()"
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic2_appsSettings.png" alt="" loading="lazy">
+      </button>
+      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAccessibilitySettings()"
             title="Спец возможности" aria-label="Спец возможности" data-tip="Спец возможности">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()"
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" loading="lazy">
+      </button>
+      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openBatteryOptimization()"
             title="Общие настройки" aria-label="Общие настройки" data-tip="Общие настройки">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" loading="lazy">
-    </button>
-    <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()"
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic4_allSettings.png" alt="" loading="lazy">
+      </button>
+      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;window.AndroidInterface.openAllAppsSide()"
             title="Меню приложений" aria-label="Меню приложений" data-tip="Меню приложений">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" loading="lazy">
-    </button>
+        <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic7_appsdriver.png" alt="" loading="lazy">
+      </button>
+    </div>
   </div>
   <div id="status"></div>
 
@@ -2375,6 +2421,18 @@
     </div>
   </div>
 
+  <div id="groupsModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3 style="display:flex;gap:8px;align-items:center;justify-content:center;">Группы</h3>
+      <div id="groupsModalListContainer">
+        <div class="card-container" id="groupsModalList"></div>
+      </div>
+      <div id="groupsModalPasswordRow">
+        <button type="button" id="passwordBtn">🔑 Введите пароль</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Список ADB-команд. Изменяйте этот массив, чтобы обновить команды у всех пользователей.
     const ADB_COMMANDS = [
@@ -2672,20 +2730,11 @@ function setAdbRootLog(text) {
     function setPasswordFromAndroid(pwd) { savedPassword = (pwd || "").trim(); updatePasswordBtn(); }
     function updatePasswordBtn() {
       const btn = document.getElementById('passwordBtn');
-      const icon = document.getElementById('passwordBtnIcon');
+      if (!btn) return;
       const hasPwd = !!savedPassword;
-      const tip = hasPwd ? `Пароль: ${'*'.repeat(savedPassword.length)}` : 'Введите пароль';
-      const iconSrc = hasPwd
-        ? 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialViews.webp'
-        : 'https://appassets.androidplatform.net/assets/webview/icons/screenserver/ic_AerialDream.webp';
-      if (icon) icon.src = iconSrc;
-      if (btn) {
-        btn.title = tip;
-        btn.setAttribute('aria-label', tip);
-        btn.setAttribute('data-tip', tip);
-      }
+      btn.textContent = hasPwd ? `🔑 Пароль: ${'*'.repeat(savedPassword.length)}` : '🔑 Введите пароль';
     }
-    function anyModalOpen() { return ['modal','autostartModal','atvAppsModal','atvAppActionsModal','launcherModal','launcherActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
+    function anyModalOpen() { return ['modal','groupsModal','autostartModal','atvAppsModal','atvAppActionsModal','launcherModal','launcherActionsModal','miscModal','installMethodModal','adbScannerModal','adbManualConnectModal','adbCommandsModal','adbRemoteModal','screenSaverModal','screenSaverTimeoutModal'].some(id => document.getElementById(id)?.style.display === 'flex'); }
 
     function copyBackupsSequentially(urls, folder) { if (!urls.length) return; backupQueue = urls; backupTarget = folder; copyNextBackup(); }
     function copyNextBackup() {
@@ -4670,6 +4719,7 @@ const NAVIGATION_MODALS = [
       'atvAppsModal',
       'screenSaverModal',
       'autostartModal',
+      'groupsModal',
       'modal'
     ];
 
@@ -5593,7 +5643,7 @@ const NAVIGATION_MODALS = [
     }
 
     function renderGroupsFromConfig(config) {
-      const container = document.getElementById('groupCards') || document.querySelector('.card-container');
+      const container = document.getElementById('groupsModalList');
       if (!container) return;
       container.innerHTML = '';
 
@@ -5626,6 +5676,42 @@ const NAVIGATION_MODALS = [
       });
     }
 
+    async function openGroupsModal(triggerBtn = null) {
+      lastFocusedElement = triggerBtn instanceof HTMLElement
+        ? triggerBtn
+        : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      const modal = document.getElementById('groupsModal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      document.body.classList.add('modal-open');
+      try {
+        const cfg = await ensureConfig();
+        renderGroupsFromConfig(cfg);
+      } catch (e) {
+        const list = document.getElementById('groupsModalList');
+        if (list) list.innerHTML = '<div style="opacity:.7">Ошибка загрузки групп</div>';
+      }
+      setTimeout(() => {
+        const first = document.querySelector('#groupsModalList .card');
+        if (first) first.focus({ preventScroll: true });
+      }, 80);
+    }
+
+    function closeGroupsModal(restoreFocus = true) {
+      const modal = document.getElementById('groupsModal');
+      if (!modal) return;
+      modal.style.display = 'none';
+      if (document.getElementById('modal')?.style.display !== 'flex') {
+        document.body.classList.remove('modal-open');
+      }
+      if (!restoreFocus) return;
+      setTimeout(() => {
+        if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+          lastFocusedElement.focus?.({ preventScroll: true });
+        }
+      }, 50);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       initModalAdbHeaders();
       ensureConfig()
@@ -5655,6 +5741,9 @@ const NAVIGATION_MODALS = [
         if (!groupInfo) { status.innerHTML = "❌ Группа не найдена!"; status.style.color = "red"; status.classList.add('visible'); return; }
         if ((groupInfo.password || "") !== (password || "")) { showToast({ message: "🔒 Неверный пароль!" }); return; }
         cachedConfig = config;
+        if (document.getElementById('groupsModal')?.style.display === 'flex') {
+          closeGroupsModal(false);
+        }
         lastFocusedElement = document.activeElement;
         showGroupList(config);
       } catch (error) {
@@ -6111,6 +6200,7 @@ const NAVIGATION_MODALS = [
       else if (document.getElementById('miscMoreModal')?.style.display === 'flex') closeMiscMoreModal();
       else if (document.getElementById('adbManualConnectModal')?.style.display === 'flex') closeAdbManualConnectModal();
       else if (document.getElementById('adbScannerModal')?.style.display === 'flex') closeAdbScanner();
+      else if (document.getElementById('groupsModal')?.style.display === 'flex') closeGroupsModal();
       else if (document.getElementById('miscModal')?.style.display === 'flex') closeMiscModal();
       else if (document.getElementById('autostartModal')?.style.display === 'flex') closeAutostartModal();
       else if (document.getElementById('modal')?.style.display === 'flex') {
