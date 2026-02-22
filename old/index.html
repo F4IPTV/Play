@@ -2594,6 +2594,24 @@
         isEnabled: true,
         uid: "usb-fix-atv14"
       },
+      {
+        id: 1019,
+        command: "settings put global hdmi_control_volume_control_enabled 1",
+        description: "Если есть проблемы с регулировкой громкости через HDMI-CEC: примените команду и перезагрузите бокс.",
+        label: "HDMI-CEC громкость: ВКЛ",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png",
+        isEnabled: true,
+        uid: "hdmi-cec-volume-enable"
+      },
+      {
+        id: 1020,
+        command: "settings put global hdmi_control_volume_control_enabled 0",
+        description: "Отключение регулировки громкости через HDMI-CEC. После применения перезагрузите бокс.",
+        label: "HDMI-CEC громкость: ВЫКЛ",
+        icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png",
+        isEnabled: true,
+        uid: "hdmi-cec-volume-disable"
+      },
       
       { id: 1014, command: "am force-stop com.google.android.katniss", description: "Эффект «стоп-кадр»", label: "Перезапуск Katniss", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "force-stop-katniss" },
       { id: 1001, command: "reboot", description: "reboot", label: "Система", icon: "https://appassets.androidplatform.net/assets/webview/icons/misc/ic18_back.png", isEnabled: true, uid: "171afb09-e150-4348-83b8-1f4fef2787aa" },
