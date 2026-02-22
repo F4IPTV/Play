@@ -2438,7 +2438,7 @@
 
   <div id="groupsModal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h3 style="display:flex;gap:8px;align-items:center;justify-content:center;">Группы</h3>
+      <h3 id="groupsModalHeader" style="display:flex;gap:8px;align-items:center;justify-content:center;">Группы</h3>
       <div id="groupsModalListContainer">
         <div class="card-container" id="groupsModalList"></div>
       </div>
@@ -2719,6 +2719,7 @@ let lastAdbIndicatorText = '';
 let lastAdbIndicatorConnected = false;
 let autostartReturnModal = null;
 let autostartOpener = null;
+let returnToGroupsModalOnClose = false;
 
 const ADB_ROOT_LOG_ID = 'adbRootDiagOutput';
 
@@ -5691,12 +5692,31 @@ const NAVIGATION_MODALS = [
       });
     }
 
-    async function openGroupsModal(triggerBtn = null) {
-      lastFocusedElement = triggerBtn instanceof HTMLElement
-        ? triggerBtn
-        : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    async function openGroupsModal(triggerBtn = null, options = {}) {
+      const { preserveLastFocused = false, focusGroupKey = currentGroup || '' } = options;
+      if (!preserveLastFocused) {
+        lastFocusedElement = triggerBtn instanceof HTMLElement
+          ? triggerBtn
+          : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      }
       const modal = document.getElementById('groupsModal');
       if (!modal) return;
+      setModalHeaderTitle('groupsModalHeader', (container) => {
+        const btn = triggerBtn || document.getElementById('groupsOpenBtn');
+        const img = btn?.querySelector('img');
+        if (img) {
+          const icon = document.createElement('img');
+          icon.src = img.src;
+          icon.alt = '';
+          icon.style.height = '25px';
+          icon.style.width = '25px';
+          icon.style.objectFit = 'contain';
+          container.appendChild(icon);
+        }
+        const title = document.createElement('span');
+        title.textContent = 'Группы';
+        container.appendChild(title);
+      });
       modal.style.display = 'flex';
       document.body.classList.add('modal-open');
       try {
@@ -5707,7 +5727,12 @@ const NAVIGATION_MODALS = [
         if (list) list.innerHTML = '<div style="opacity:.7">Ошибка загрузки групп</div>';
       }
       setTimeout(() => {
-        const first = document.querySelector('#groupsModalList .card');
+        let preferred = null;
+        if (focusGroupKey) {
+          preferred = Array.from(document.querySelectorAll('#groupsModalList .card'))
+            .find((card) => card.dataset.group === focusGroupKey) || null;
+        }
+        const first = preferred || document.querySelector('#groupsModalList .card');
         if (first) first.focus({ preventScroll: true });
       }, 80);
     }
@@ -5757,6 +5782,7 @@ const NAVIGATION_MODALS = [
         if ((groupInfo.password || "") !== (password || "")) { showToast({ message: "🔒 Неверный пароль!" }); return; }
         cachedConfig = config;
         if (document.getElementById('groupsModal')?.style.display === 'flex') {
+          returnToGroupsModalOnClose = true;
           closeGroupsModal(false);
         }
         lastFocusedElement = document.activeElement;
@@ -6190,6 +6216,14 @@ const NAVIGATION_MODALS = [
       modal.style.display = "none";
       document.body.classList.remove("modal-open"); // Разблокируем скролл основного интерфейса
       restoreGroupModalOverlay();
+      if (returnToGroupsModalOnClose) {
+        returnToGroupsModalOnClose = false;
+        openGroupsModal(document.getElementById('groupsOpenBtn'), {
+          preserveLastFocused: true,
+          focusGroupKey: currentGroup
+        });
+        return;
+      }
       if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
         if (lastFocusedElement.classList?.contains('card')) selectCard(lastFocusedElement);
         lastFocusedElement.focus?.({ preventScroll: true });
