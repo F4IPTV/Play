@@ -784,6 +784,7 @@
     #groupsModalList {
       margin-top: 6px;
       margin-bottom: 10px;
+      gap: 10px;
     }
     #groupsModalList .card {
       background: #10131A;
@@ -804,6 +805,12 @@
       color: #fff;
       box-shadow: none;
       outline: none;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      #groupsModalList .card {
+        flex: 0 0 calc((100% - 10px) / 2);
+        max-width: calc((100% - 10px) / 2);
+      }
     }
     #groupsModalPasswordRow {
       display: flex;
