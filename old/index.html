@@ -791,10 +791,13 @@
       color: #e8f0ff;
       border-radius: 10px;
       box-shadow: none;
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
     }
     #groupsModalList .card:hover,
     #groupsModalList .card:focus,
     #groupsModalList .card:focus-visible,
+    #groupsModalList .card:active,
     #groupsModalList .card.selected {
       background: #10131A;
       border-color: #3fa9f5;
@@ -821,10 +824,13 @@
       box-shadow: none;
       padding: 8px 12px;
       width: auto;
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
     }
     #groupsModal #passwordBtn:hover,
     #groupsModal #passwordBtn:focus,
-    #groupsModal #passwordBtn:focus-visible {
+    #groupsModal #passwordBtn:focus-visible,
+    #groupsModal #passwordBtn:active {
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
