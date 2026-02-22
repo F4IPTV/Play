@@ -2939,12 +2939,23 @@ function handleAdbTcpToggle(enable, triggerBtn) {
 
 function configureVolumeSteps() {
   const actionLabel = 'Шкала громкости';
-  if (!getAdbInterfaceOrWarn(actionLabel)) return;
+  const ai = getAdbInterfaceOrWarn(actionLabel);
+  if (!ai) return;
   if (!ensureAdbSessionConnected(actionLabel)) return;
-  if (window.AndroidInterface?.hasRootAccess && !window.AndroidInterface.hasRootAccess()) {
-    showToast({ message: '❌ Нужен root (su)', type: 'error' });
-    setAdbRootLog('Нужен root (su) для изменения шкалы громкости');
-    return;
+  // Для удалённого ADB hasRootAccess() часто даёт ложный false.
+  // Проверяем root фактически через su -c.
+  if (typeof ai.runAdbShellCommandWithResult === 'function') {
+    let rootOk = false;
+    try {
+      rootOk = !!ai.runAdbShellCommandWithResult("su -c 'id -u >/dev/null 2>&1'", 'Проверка root', true);
+    } catch (_) {
+      rootOk = false;
+    }
+    if (!rootOk) {
+      showToast({ message: '❌ Нужен root (su) для shell', type: 'error' });
+      setAdbRootLog('Root не подтверждён для оболочки shell. Разрешите su для shell в Magisk.');
+      return;
+    }
   }
 
   const input = prompt('Введите шаги громкости (15-90)', '50');
