@@ -2114,6 +2114,9 @@
           <button onclick="ignoreNextEnter=true;installFastInstaller()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
           </button>
+          <button onclick="ignoreNextEnter=true;configureVolumeSteps()" class="sys-btn">
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Шкала громкости
+          </button>
 			
           
 			<button onclick="openMiscMoreModal(this)" class="sys-btn">
@@ -2932,6 +2935,30 @@ function handleAdbTcpToggle(enable, triggerBtn) {
     const reason = data?.error === "root_required" ? "Нужен root (su)" : (output || "неизвестная ошибка");
     showToast({ message: `❌ ${reason}`, type: "error" });
   }
+}
+
+function configureVolumeSteps() {
+  const actionLabel = 'Шкала громкости';
+  if (!getAdbInterfaceOrWarn(actionLabel)) return;
+  if (!ensureAdbSessionConnected(actionLabel)) return;
+  if (window.AndroidInterface?.hasRootAccess && !window.AndroidInterface.hasRootAccess()) {
+    showToast({ message: '❌ Нужен root (su)', type: 'error' });
+    setAdbRootLog('Нужен root (su) для изменения шкалы громкости');
+    return;
+  }
+
+  const input = prompt('Введите шаги громкости (15-90)', '50');
+  if (input === null) return;
+  const normalized = String(input).trim();
+  const value = Number.parseInt(normalized, 10);
+  if (!Number.isFinite(value) || String(value) !== normalized || value < 15 || value > 90) {
+    showToast({ message: 'Введите целое значение от 15 до 90', type: 'error' });
+    return;
+  }
+
+  const command = `su -c 'MODDIR=/data/adb/modules/fi_volume_steps; mkdir -p "$MODDIR"; printf "%s\\n" "id=fi_volume_steps" "name=FI Volume Steps" "version=v1" "versionCode=1" "author=FastInstaller" "description=Media volume steps override" > "$MODDIR/module.prop"; printf "ro.config.media_vol_steps=${value}\\n" > "$MODDIR/system.prop"; chmod 0755 "$MODDIR"; chmod 0644 "$MODDIR/module.prop" "$MODDIR/system.prop"; touch "$MODDIR/update"'`;
+  sendAdbCommand(command, `Шаги громкости: ${value}`, { singleToast: true });
+  showToast({ message: `Значение ${value} сохранено. Перезагрузите бокс для применения`, type: 'warning', duration: 5000 });
 }
 
 const adbScanState = {
