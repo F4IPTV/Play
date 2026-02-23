@@ -1849,8 +1849,8 @@
 
   <select id="groupSelect" style="display:none;"></select>
   <div id="passwordRow" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:8px 0;">
-    <div id="passwordTopRow">
-      <button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="Поиск устройств" aria-label="К другому (RSA)" data-tip="К другому (RSA)">
+    <div id="passwordTopRow"><button class="password-row-icon-btn focus-tooltip" onclick="ignoreNextEnter=true;openAdbScanner()" title="Поиск устройств" aria-label="Поиск устройств" data-tip="Поиск устройств">
+      
         <img src="https://appassets.androidplatform.net/assets/webview/icons/network/ic_ADB_scan.png" alt="" loading="lazy">
       </button>
 
@@ -1859,7 +1859,7 @@
         <span>Группы</span>
       </button>
 
-      <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Переподключиться к последнему ADB" aria-label="Переподключиться к последнему ADB" data-tip="Переподключиться к последнему ADB">
+      <button class="modal-adb-indicator adb-status-icon focus-tooltip" onclick="reconnectLastAdbFromChip(event)" title="Последнее устройство" aria-label="Последнее устройство" data-tip="Последнее устройство">
         <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" loading="lazy">
       </button>
     </div>
