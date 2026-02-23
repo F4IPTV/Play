@@ -1704,6 +1704,29 @@
   width: min(340px, 100%);
 }
 
+/* На приставках/широких экранах: 2 колонки только для выбора заставки */
+@media (min-width: 800px) and (orientation: landscape) {
+  .screen-saver-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-items: stretch;
+    align-items: stretch;
+  }
+  .screen-saver-actions .sys-btn {
+    width: 100%;
+    max-width: none;
+  }
+  /* Кнопки выбора заставки остаются в 2 колонки */
+  .screen-saver-actions .screen-saver-action-btn {
+    grid-column: auto;
+  }
+  /* Сервисные кнопки — на всю ширину */
+  #screenSaverToggleBtn,
+  #screenSaverModal .screen-saver-actions > button.sys-btn:not(.screen-saver-action-btn) {
+    grid-column: 1 / -1;
+  }
+}
+
 .screen-saver-actions .sys-btn,
 #screenSaverTimeoutModal .sys-btn {
   background: #10131A;
