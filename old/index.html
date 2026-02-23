@@ -808,7 +808,7 @@
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
-      box-shadow: none;
+      box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
       outline: none;
     }
     @media (hover: none) and (pointer: coarse) {
@@ -846,7 +846,7 @@
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
-      box-shadow: none;
+      box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
       outline: none;
     }
     /* Кнопка в стиле "Введите пароль" (без иконки) */
@@ -873,7 +873,7 @@
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
-      box-shadow: none;
+      box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
       outline: none;
     }
     #installAllBtn:disabled {
@@ -964,6 +964,16 @@
       display:flex; gap:12px; align-items:flex-start; padding:10px 12px;
       background:#10131A; border-radius:14px; border:1px solid #1f3a5a;
       box-shadow: 0 4px 10px rgba(0,0,0,0.28);
+    }
+    /* "Пакеты" -> модалка действий по приложению: делаем кнопки выше и ровнее */
+    #atvAppActionsModal .system-buttons .sys-btn {
+      padding: 10px 12px;
+      min-height: 52px;
+      line-height: 1.15;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: normal;
     }
     /* ТВ: убираем hover, чтобы не "залипало" при D-pad */
     #atvAppsList .app-row:hover,
@@ -1747,7 +1757,7 @@
   background: #10131A;
   border-color: #3fa9f5;
   color: #fff;
-  box-shadow: none;
+  box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
   outline: none;
 }
 
@@ -1856,7 +1866,7 @@
   background: #10131A;
   border-color: #3fa9f5;
   color: #fff;
-  box-shadow: none;
+  box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
   outline: none;
 }
 
@@ -7167,6 +7177,21 @@ const atvAppsState = {
 };
 
 let atvLastFocusedAppEl = null;
+let atvLastFocusedAppPkg = null;
+let atvAppsModalTriggerEl = null;
+let atvLastFocusedFilterEl = null;
+let atvPendingFocusPkg = null;
+
+function focusAtvRowByPackage(pkg) {
+  if (!pkg) return false;
+  const rows = Array.from(document.querySelectorAll('#atvAppsList .app-row'));
+  const row = rows.find(r => (r?.dataset?.pkg || '') === pkg);
+  if (!row) return false;
+  try { row.scrollIntoView({ block: 'nearest' }); } catch (_) {}
+  row.focus?.({ preventScroll: true });
+  return true;
+}
+
 let atvInputBlockUntil = 0;
 function isAtvInputBlocked() {
   return atvAppsState.loading || Date.now() < atvInputBlockUntil;
@@ -7212,6 +7237,7 @@ function openAtvAppsModalFast(btn) {
 
   const modal = document.getElementById('atvAppsModal');
   if (!modal) return;
+  atvAppsModalTriggerEl = btn || document.activeElement;
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
@@ -7226,6 +7252,15 @@ function openAtvAppsModalFast(btn) {
   refreshAtvAppsList('remote');
   
   setTimeout(() => {
+    // запоминаем фокус на фильтрах (на будущее)
+    modal.querySelectorAll('#atvAppsFilters .sys-btn').forEach((f) => {
+      f.onfocus = () => { atvLastFocusedFilterEl = f; };
+    });
+
+    if (atvLastFocusedFilterEl && modal.contains(atvLastFocusedFilterEl)) {
+      atvLastFocusedFilterEl.focus({ preventScroll: true });
+      return;
+    }
     const firstFilter = modal.querySelector('.app-filters .sys-btn');
     if (firstFilter) {
       firstFilter.focus({ preventScroll: true });
@@ -7247,6 +7282,13 @@ function closeAtvAppsModal() {
   setTimeout(() => {
     ignoreNextEnter = false;
   }, 100);
+
+  // возвращаем фокус на кнопку "Пакеты" (или другой триггер), если есть
+  const target = atvAppsModalTriggerEl;
+  atvAppsModalTriggerEl = null;
+  if (target && document.body.contains(target)) {
+    setTimeout(() => target.focus?.({ preventScroll: true }), 60);
+  }
 }
 
 function setAtvAppsFilter(filter, rerender = true) {
@@ -7368,6 +7410,7 @@ function renderAtvAppsList() {
     const row = document.createElement('div');
     row.className = 'app-row';
     row.tabIndex = 0;
+    row.dataset.pkg = app.package;
     row.onclick = () => openAtvAppActions(app);
     row.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); openAtvAppActions(app); } };
     row.onfocus = () => {
@@ -7375,6 +7418,7 @@ function renderAtvAppsList() {
       row.classList.add('selected');
       row.scrollIntoView({ block: 'nearest' });
       atvLastFocusedAppEl = row;
+      atvLastFocusedAppPkg = app.package;
     };
     row.onblur = () => row.classList.remove('selected');
 
@@ -7457,6 +7501,13 @@ function renderAtvAppsList() {
     row.appendChild(meta);
     list.appendChild(row);
   });
+
+  // Если список перерисовали после действия — восстановим фокус по package
+  if (atvPendingFocusPkg && document.getElementById('atvAppsModal')?.style.display === 'flex') {
+    const pkg = atvPendingFocusPkg;
+    atvPendingFocusPkg = null;
+    requestAnimationFrame(() => focusAtvRowByPackage(pkg));
+  }
 }
 
 function dumpLocalApps() {
@@ -7473,6 +7524,7 @@ let atvSelectedApp = null;
 function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
+  atvLastFocusedAppPkg = app?.package || atvLastFocusedAppPkg;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
     const activeRow = document.activeElement?.closest?.('.app-row');
@@ -7596,6 +7648,8 @@ function closeAtvAppActions() {
         else if (er.bottom > cr.bottom - 12) container.scrollTop += (er.bottom - (cr.bottom - 12));
       }
       requestAnimationFrame(() => atvLastFocusedAppEl?.focus({ preventScroll: true }));
+    } else if (atvLastFocusedAppPkg) {
+      requestAnimationFrame(() => focusAtvRowByPackage(atvLastFocusedAppPkg));
     }
   } else {
     document.body.classList.remove('modal-open');
@@ -7661,6 +7715,7 @@ function handleAtvAppAction(action) {
       if (idx !== -1) {
         apps[idx] = { ...apps[idx], state: targetState };
         atvAppsState.apps = apps;
+        atvPendingFocusPkg = atvSelectedApp.package;
         renderAtvAppsList();
       }
     }
@@ -7679,6 +7734,7 @@ window.applyAtvActionState = function(action, pkg) {
     apps[idx].state;
   apps[idx] = { ...apps[idx], state: targetState };
   atvAppsState.apps = apps;
+  atvPendingFocusPkg = pkg;
   renderAtvAppsList();
 };
 
@@ -7690,6 +7746,19 @@ const launcherState = {
 };
 let launcherSelectedItem = null;
 let launcherLastFocusedEl = null;
+let launcherLastFocusedPkg = null;
+let launcherPendingFocusPkg = null;
+let launcherModalTriggerEl = null;
+
+function focusLauncherRowByPackage(pkg) {
+  if (!pkg) return false;
+  const rows = Array.from(document.querySelectorAll('#launcherList .app-row'));
+  const row = rows.find(r => (r?.dataset?.pkg || '') === pkg);
+  if (!row) return false;
+  try { row.scrollIntoView({ block: 'nearest' }); } catch (_) {}
+  row.focus?.({ preventScroll: true });
+  return true;
+}
 
 function openLaunchersModal(btn) {
   ignoreNextEnter = true;
@@ -7708,12 +7777,14 @@ function openLaunchersModal(btn) {
     header.innerHTML = `<img src="${iconSrc}" alt="" style="height:22px; vertical-align:middle; margin-right:6px;">Лаунчеры`;
   }
 
+  launcherModalTriggerEl = btn || document.activeElement;
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
   refreshLaunchersList();
 
   setTimeout(() => {
+    if (launcherLastFocusedPkg && focusLauncherRowByPackage(launcherLastFocusedPkg)) return;
     const first = modal.querySelector('#launcherList .app-row');
     if (first) first.focus({ preventScroll: true });
     else modal.focus();
@@ -7732,6 +7803,12 @@ function closeLaunchersModal() {
   setTimeout(() => {
     ignoreNextEnter = false;
   }, 100);
+
+  const target = launcherModalTriggerEl;
+  launcherModalTriggerEl = null;
+  if (target && document.body.contains(target)) {
+    setTimeout(() => target.focus?.({ preventScroll: true }), 60);
+  }
 }
 
 function refreshLaunchersList() {
@@ -7810,6 +7887,7 @@ function renderLaunchersList() {
     const row = document.createElement('div');
     row.className = 'app-row';
     row.tabIndex = 0;
+    if (item?.package) row.dataset.pkg = item.package;
     row.onclick = () => openLauncherActions(item);
     row.onkeydown = (e) => {
       if (e.key === 'Enter' || e.key === 'NumpadEnter' || e.key === 'OK') {
@@ -7822,6 +7900,7 @@ function renderLaunchersList() {
       row.classList.add('selected');
       row.scrollIntoView({ block: 'nearest' });
       launcherLastFocusedEl = row;
+      launcherLastFocusedPkg = item?.package || launcherLastFocusedPkg;
     };
     row.onblur = () => row.classList.remove('selected');
 
@@ -7887,6 +7966,12 @@ function renderLaunchersList() {
     row.appendChild(meta);
     list.appendChild(row);
   });
+
+  if (launcherPendingFocusPkg && document.getElementById('launcherModal')?.style.display === 'flex') {
+    const pkg = launcherPendingFocusPkg;
+    launcherPendingFocusPkg = null;
+    requestAnimationFrame(() => focusLauncherRowByPackage(pkg));
+  }
 }
 
 function openLauncherActions(item) {
@@ -7895,6 +7980,7 @@ function openLauncherActions(item) {
     const activeRow = document.activeElement?.closest?.('.app-row');
     if (activeRow) launcherLastFocusedEl = activeRow;
   }
+  launcherLastFocusedPkg = item?.package || launcherLastFocusedPkg;
   const modal = document.getElementById('launcherActionsModal');
   if (!modal) return;
   const parentModal = document.getElementById('launcherModal');
@@ -8024,6 +8110,7 @@ function handleLauncherEnableOnly() {
   const item = launcherSelectedItem;
   if (!item?.package) return;
   try {
+    launcherPendingFocusPkg = item.package;
     sendAdbCommand(buildLauncherEnableCommand(item.package), `Включить ${item.label || item.package}`);
     closeLauncherActions();
     setTimeout(() => refreshLaunchersList(), 700);
@@ -8069,6 +8156,7 @@ window.applyLauncherActiveState = function(pkg) {
     if (it.package === pkg) return { ...it, isActive: true, state: 'enabled' };
     return { ...it, isActive: false };
   });
+  launcherPendingFocusPkg = pkg;
   renderLaunchersList();
 };
 
