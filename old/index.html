@@ -844,6 +844,33 @@
       box-shadow: none;
       outline: none;
     }
+    /* Кнопка в стиле "Введите пароль" (без иконки) */
+    .password-like-btn {
+      margin: 0;
+      min-width: 170px;
+      background: #10131A;
+      border: 1px solid #1f3a5a;
+      border-radius: 10px;
+      color: #e8f0ff;
+      font-size: 13px;
+      line-height: 1.1;
+      text-align: center;
+      box-shadow: none;
+      padding: 8px 12px;
+      width: auto !important;
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
+    }
+    .password-like-btn:hover,
+    .password-like-btn:focus,
+    .password-like-btn:focus-visible,
+    .password-like-btn:active {
+      background: #10131A;
+      border-color: #3fa9f5;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
+    }
     #installAllBtn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -2057,8 +2084,8 @@
         <div id="launcherList" class="apps-list"></div>
       </div>
       <div id="launcherSystemPickerWrap" class="system-buttons" style="margin-top:8px; justify-content:center;">
-        <button class="sys-btn" style="max-width:280px;" onclick="sendAdbCommand('am start -a android.settings.HOME_SETTINGS','Выбор лаунчера',{ singleToast: true })">
-          Системный<br>выбор
+        <button class="sys-btn password-like-btn" style="max-width:280px;" onclick="sendAdbCommand('am start -a android.settings.HOME_SETTINGS','Выбор лаунчера',{ singleToast: true })">
+          Системный выбор
         </button>
       </div>
     </div>
@@ -7813,7 +7840,7 @@ function makeLauncherActionBtn(disableOthers, label) {
 
 function makeLauncherOpenPickerBtn() {
   const btn = document.createElement('button');
-  btn.className = 'sys-btn';
+  btn.className = 'sys-btn password-like-btn';
   btn.textContent = 'Системный выбор';
   btn.onclick = (e) => {
     e.stopPropagation();
