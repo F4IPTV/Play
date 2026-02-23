@@ -2968,7 +2968,21 @@ function configureVolumeSteps() {
   }
 
   const command = `su -c 'MODDIR=/data/adb/modules/fi_volume_steps; mkdir -p "$MODDIR"; printf "%s\\n" "id=fi_volume_steps" "name=Volume Steps" "version=1.0" "versionCode=1" "author=Filin4ik" "description=Настройка шагов громкости мультимедиа (15-90), применяется после перезагрузки." > "$MODDIR/module.prop"; printf "ro.config.media_vol_steps=${value}\\n" > "$MODDIR/system.prop"; chmod 0755 "$MODDIR"; chmod 0644 "$MODDIR/module.prop" "$MODDIR/system.prop"; touch "$MODDIR/update"'`;
-  sendAdbCommand(command, `Шаги громкости: ${value}`, { singleToast: true });
+  let ok = false;
+  try {
+    if (typeof ai.runAdbShellCommandWithResult === 'function') {
+      ok = !!ai.runAdbShellCommandWithResult(command, `Шаги громкости: ${value}`, true);
+    } else {
+      ai.runAdbShellCommand?.(command, `Шаги громкости: ${value}`, true);
+      ok = false;
+    }
+  } catch (_) {
+    ok = false;
+  }
+  if (!ok) {
+    showToast({ message: '❌ Не удалось применить (su/root недоступен)', type: 'error' });
+    return;
+  }
   showToast({ message: `Значение ${value} сохранено. Перезагрузите бокс для применения`, type: 'warning', duration: 5000 });
 }
 
