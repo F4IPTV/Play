@@ -1575,10 +1575,15 @@
   transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
+.adb-command-btn:hover {
+  /* Перебиваем глобальный button:hover (иначе на ТВ получаем "сплошную" заливку) */
+  background: #10131A !important;
+}
+
 .adb-command-btn:focus,
 .adb-command-btn:focus-visible,
 .adb-command-btn.selected {
-  background: #10131A;
+  background: #10131A !important;
   border-color: #3fa9f5;
   color: #fff;
   box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
