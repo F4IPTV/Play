@@ -845,7 +845,7 @@
       outline: none;
     }
     /* Кнопка в стиле "Введите пароль" (без иконки) */
-    .password-like-btn {
+    .sys-btn.password-like-btn {
       margin: 0;
       min-width: 170px;
       background: #10131A;
@@ -861,10 +861,10 @@
       -webkit-tap-highlight-color: transparent;
       appearance: none;
     }
-    .password-like-btn:hover,
-    .password-like-btn:focus,
-    .password-like-btn:focus-visible,
-    .password-like-btn:active {
+    .sys-btn.password-like-btn:hover,
+    .sys-btn.password-like-btn:focus,
+    .sys-btn.password-like-btn:focus-visible,
+    .sys-btn.password-like-btn:active {
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
@@ -1139,6 +1139,29 @@
       background: #10131A;
       border-color: #3fa9f5;
       color: #fff;
+    }
+    /* В лаунчерах/действиях делаем "парольный" вид приоритетным */
+    #launcherModal .sys-btn.password-like-btn,
+    #launcherActionsModal .sys-btn.password-like-btn {
+      background: #10131A;
+      border: 1px solid #1f3a5a;
+      color: #e8f0ff;
+      box-shadow: none;
+    }
+    #launcherModal .sys-btn.password-like-btn:hover,
+    #launcherModal .sys-btn.password-like-btn:focus,
+    #launcherModal .sys-btn.password-like-btn:focus-visible,
+    #launcherModal .sys-btn.password-like-btn:active,
+    #launcherActionsModal .sys-btn.password-like-btn:hover,
+    #launcherActionsModal .sys-btn.password-like-btn:focus,
+    #launcherActionsModal .sys-btn.password-like-btn:focus-visible,
+    #launcherActionsModal .sys-btn.password-like-btn:active,
+    #launcherActionsModal .sys-btn.password-like-btn.selected {
+      background: #10131A;
+      border-color: #3fa9f5;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
     }
     #miscModal .sys-btn:focus {
       background-color: #00cfff; color:#000;
@@ -7829,7 +7852,7 @@ function closeLauncherActions() {
 
 function makeLauncherActionBtn(disableOthers, label) {
   const btn = document.createElement('button');
-  btn.className = 'sys-btn';
+  btn.className = 'sys-btn password-like-btn';
   btn.textContent = label;
   btn.onclick = (e) => {
     e.stopPropagation();
@@ -7852,7 +7875,7 @@ function makeLauncherOpenPickerBtn() {
 
 function makeLauncherEnableBtn() {
   const btn = document.createElement('button');
-  btn.className = 'sys-btn';
+  btn.className = 'sys-btn password-like-btn';
   btn.textContent = 'Включить';
   btn.onclick = (e) => {
     e.stopPropagation();
@@ -7863,7 +7886,7 @@ function makeLauncherEnableBtn() {
 
 function makeLauncherDisableBtn() {
   const btn = document.createElement('button');
-  btn.className = 'sys-btn';
+  btn.className = 'sys-btn password-like-btn';
   btn.textContent = 'Отключить';
   btn.onclick = (e) => {
     e.stopPropagation();
