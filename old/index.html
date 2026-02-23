@@ -1575,14 +1575,25 @@
   transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
-.adb-command-btn:hover,
 .adb-command-btn:focus,
+.adb-command-btn:focus-visible,
 .adb-command-btn.selected {
   background: #10131A;
   border-color: #3fa9f5;
   color: #fff;
-  box-shadow: none;
+  box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
   outline: none;
+}
+
+/* Hover подсветка только там, где hover реально существует (иначе на телефоне "залипает") */
+@media (hover: hover) and (pointer: fine) {
+  .adb-command-btn:hover {
+    background: #10131A;
+    border-color: #3fa9f5;
+    color: #fff;
+    box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
+    outline: none;
+  }
 }
 
 .adb-command-btn__icon {
@@ -1639,7 +1650,7 @@
   background: #10131A;
   border-color: #3fa9f5;
   color: #fff;
-  box-shadow: none;
+  box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
 }
 
 #screenSaverModal .modal-content {
@@ -3811,6 +3822,19 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       if (!list) return;
       list.innerHTML = '';
 
+      // Гарантируем, что "selected" всегда только на одном элементе (важно для D-pad на ТВ)
+      if (!list.dataset.selectionBound) {
+        list.dataset.selectionBound = '1';
+        list.addEventListener('focusin', (e) => {
+          const btn = e.target?.closest?.('.adb-command-btn');
+          if (!btn || !list.contains(btn)) return;
+          list.querySelectorAll('.adb-command-btn.selected').forEach(el => {
+            if (el !== btn) el.classList.remove('selected');
+          });
+          btn.classList.add('selected');
+        });
+      }
+
       const commands = ADB_COMMANDS.filter(item => item && item.isEnabled !== false);
       if (!commands.length) {
         const placeholder = document.createElement('div');
@@ -3863,6 +3887,11 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
         btn.addEventListener('focus', () => {
           document.querySelectorAll('#adbCommandsList .adb-command-btn').forEach(el => el.classList.remove('selected'));
           btn.classList.add('selected');
+        });
+        // На некоторых ТВ-WebView blur может срабатывать без следующего focus,
+        // поэтому снимаем выделение и тут — чтобы не оставалось "две подсвеченных".
+        btn.addEventListener('blur', () => {
+          btn.classList.remove('selected');
         });
 
         list.appendChild(btn);
