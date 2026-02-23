@@ -774,8 +774,14 @@
       border-color: #fff;
       box-shadow: 0 0 0 1px #fff;
     }
+    #groupsModal .modal-content {
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+      max-height: 80vh;
+    }
     #groupsModalListContainer {
-      max-height: 60vh;
+      flex: 1 1 auto;
       overflow-y: auto;
       overscroll-behavior: contain;
       scroll-behavior: auto;
@@ -816,7 +822,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 10px;
+      margin-top: auto;
+      padding-top: 10px;
     }
     #groupsModal #passwordBtn {
       margin: 0;
@@ -1705,6 +1712,10 @@
   border: 1px solid #1f3a5a;
   color: #e8f0ff;
   box-shadow: none;
+  padding: 10px 12px;
+  min-height: 48px;
+  border-radius: 10px;
+  line-height: 1.15;
 }
 .screen-saver-actions .sys-btn:hover,
 .screen-saver-actions .sys-btn:focus,
@@ -1784,6 +1795,38 @@
   outline: none;
   border-color: #3fa9f5;
   color: #fff;
+}
+
+/* Таймер-кнопки 30 мин / 480 мин в модалке заставки */
+#screenSaverModal .screen-saver-row .sys-btn {
+  background: #10131A;
+  border: 1px solid #1f3a5a;
+  color: #e8f0ff;
+  box-shadow: none;
+  padding: 10px 12px;
+  min-height: 48px;
+  border-radius: 10px;
+  width: auto;
+  min-width: 140px;
+  max-width: 220px;
+  white-space: nowrap;
+}
+#screenSaverModal .screen-saver-row .sys-btn:hover,
+#screenSaverModal .screen-saver-row .sys-btn:focus,
+#screenSaverModal .screen-saver-row .sys-btn:focus-visible,
+#screenSaverModal .screen-saver-row .sys-btn:active,
+#screenSaverModal .screen-saver-row .sys-btn.selected {
+  background: #10131A;
+  border-color: #3fa9f5;
+  color: #fff;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Нижние кнопки (Отключить/Проверка/Сброс) всегда в 2 строки */
+#screenSaverToggleBtn,
+#screenSaverModal .screen-saver-actions > button.sys-btn:not(.screen-saver-action-btn) {
+  white-space: normal;
 }
 
 .screen-saver-step-row {
@@ -2529,10 +2572,10 @@
               <span>Aerial Dream</span>
             </button>
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
-              Отключить заставку
+              Отключить<br>заставку
             </button>
-          <button class="sys-btn" onclick="RunScreenSaverSettings()">Проверка заставки</button>
-            <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс настроек заставки</button>
+          <button class="sys-btn" onclick="RunScreenSaverSettings()">Проверка<br>заставки</button>
+            <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс настроек<br>заставки</button>
           </div>
         </div>
       </div>
@@ -5687,7 +5730,7 @@ const NAVIGATION_MODALS = [
         sleepBtn.textContent = formatMinutesLabel(sleepMinutes);
       }
       if (toggleBtn) {
-        toggleBtn.textContent = enabled ? 'Отключить заставку' : 'Включить заставку';
+        toggleBtn.innerHTML = enabled ? 'Отключить<br>заставку' : 'Включить<br>заставку';
       }
     }
 
