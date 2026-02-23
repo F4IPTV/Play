@@ -777,11 +777,10 @@
     #groupsModal .modal-content {
       display: flex;
       flex-direction: column;
-      height: 80vh;
       max-height: 80vh;
     }
     #groupsModalListContainer {
-      flex: 1 1 auto;
+      max-height: 60vh;
       overflow-y: auto;
       overscroll-behavior: contain;
       scroll-behavior: auto;
@@ -822,8 +821,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: auto;
-      padding-top: 10px;
+      margin-top: 10px;
     }
     #groupsModal #passwordBtn {
       margin: 0;
@@ -6481,6 +6479,7 @@ const NAVIGATION_MODALS = [
       else if (document.getElementById('atvAppActionsModal')?.style.display === 'flex') closeAtvAppActions();
       else if (document.getElementById('atvAppsModal')?.style.display === 'flex') closeAtvAppsModal();
       else if (document.getElementById('installMethodModal')?.style.display === 'flex') closeInstallMethodSettings();
+      else if (document.getElementById('screenSaverTimeoutModal')?.style.display === 'flex') closeScreenSaverTimeoutModal();
       else if (document.getElementById('screenSaverModal')?.style.display === 'flex') closeScreenSaverModal();
       else if (document.getElementById('adbRemoteModal')?.style.display === 'flex') {
         const panel = document.getElementById('adbRemoteKeyboardPanel');
