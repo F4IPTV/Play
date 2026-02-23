@@ -1586,6 +1586,16 @@
   outline: none;
 }
 
+/* ТВ/D-pad: WebView может "залипать" на :hover, получаем двойную подсветку.
+   Когда пользователь листает стрелками, временно гасим hover-подсветку. */
+body.adb-dpad-mode .adb-command-btn:hover {
+  background: #10131A !important;
+  border-color: #1f3a5a;
+  color: #e8f0ff;
+  box-shadow: none;
+  outline: none;
+}
+
 .adb-command-btn:focus,
 .adb-command-btn:focus-visible,
 .adb-command-btn.selected {
@@ -3820,6 +3830,15 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     }
 
     // Навигация D-pad по сетке кнопок (для ТВ, где браузер часто "скроллит", но не переводит фокус)
+    let __adbDpadModeTimer = null;
+    function markAdbDpadMode() {
+      document.body.classList.add('adb-dpad-mode');
+      if (__adbDpadModeTimer) clearTimeout(__adbDpadModeTimer);
+      __adbDpadModeTimer = setTimeout(() => {
+        document.body.classList.remove('adb-dpad-mode');
+      }, 1200);
+    }
+
     function moveAdbCommandsFocus(currentBtn, key) {
       const list = document.getElementById('adbCommandsList');
       if (!list || !currentBtn) return false;
@@ -3941,6 +3960,7 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
             event.preventDefault();
             event.stopPropagation();
+            markAdbDpadMode();
             moveAdbCommandsFocus(btn, event.key);
           }
         });
