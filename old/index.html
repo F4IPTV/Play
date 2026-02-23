@@ -1573,11 +1573,17 @@
   text-align: left;
   cursor: pointer;
   transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
 }
 
 .adb-command-btn:hover {
   /* Перебиваем глобальный button:hover (иначе на ТВ получаем "сплошную" заливку) */
   background: #10131A !important;
+  border-color: #3fa9f5;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
+  outline: none;
 }
 
 .adb-command-btn:focus,
@@ -1590,16 +1596,7 @@
   outline: none;
 }
 
-/* Hover подсветка только там, где hover реально существует (иначе на телефоне "залипает") */
-@media (hover: hover) and (pointer: fine) {
-  .adb-command-btn:hover {
-    background: #10131A;
-    border-color: #3fa9f5;
-    color: #fff;
-    box-shadow: 0 0 0 1px rgba(63,169,245,0.15), 0 0 12px rgba(63,169,245,0.25);
-    outline: none;
-  }
-}
+/* Note: hover стили задаём явно выше, без заливки */
 
 .adb-command-btn__icon {
   width: 36px;
