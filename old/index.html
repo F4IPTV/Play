@@ -3817,6 +3817,57 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
       return wrapper;
     }
 
+    // Навигация D-pad по сетке кнопок (для ТВ, где браузер часто "скроллит", но не переводит фокус)
+    function moveAdbCommandsFocus(currentBtn, key) {
+      const list = document.getElementById('adbCommandsList');
+      if (!list || !currentBtn) return false;
+      const buttons = Array.from(list.querySelectorAll('.adb-command-btn'));
+      if (!buttons.length) return false;
+
+      const curRect = currentBtn.getBoundingClientRect();
+      const curCx = curRect.left + curRect.width / 2;
+      const curCy = curRect.top + curRect.height / 2;
+
+      const dir = key === 'ArrowLeft' ? 'left'
+        : key === 'ArrowRight' ? 'right'
+        : key === 'ArrowUp' ? 'up'
+        : key === 'ArrowDown' ? 'down'
+        : null;
+      if (!dir) return false;
+
+      let best = null;
+      let bestScore = Infinity;
+
+      for (const b of buttons) {
+        if (b === currentBtn) continue;
+        const r = b.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dx = cx - curCx;
+        const dy = cy - curCy;
+
+        // Отсекаем кандидатов не в нужном направлении
+        if (dir === 'left'  && dx >= -2) continue;
+        if (dir === 'right' && dx <=  2) continue;
+        if (dir === 'up'    && dy >= -2) continue;
+        if (dir === 'down'  && dy <=  2) continue;
+
+        // Скоринг: по главной оси важнее, по вторичной — чуть менее
+        const primary = (dir === 'left' || dir === 'right') ? Math.abs(dx) : Math.abs(dy);
+        const secondary = (dir === 'left' || dir === 'right') ? Math.abs(dy) : Math.abs(dx);
+        const score = primary * 1000 + secondary; // крупный вес для "главного" направления
+
+        if (score < bestScore) {
+          bestScore = score;
+          best = b;
+        }
+      }
+
+      if (!best) return false;
+      focusAndRevealAdbCommand(best);
+      return true;
+    }
+
     function renderAdbCommandsList() {
       const list = document.getElementById('adbCommandsList');
       if (!list) return;
@@ -3882,6 +3933,13 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
           if (['Enter', 'OK', 'NumpadEnter', ' '].includes(event.key)) {
             event.preventDefault();
             exec();
+          }
+        });
+        btn.addEventListener('keydown', (event) => {
+          if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+            event.preventDefault();
+            event.stopPropagation();
+            moveAdbCommandsFocus(btn, event.key);
           }
         });
         btn.addEventListener('focus', () => {
