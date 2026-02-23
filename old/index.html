@@ -1699,6 +1699,29 @@
   width: min(340px, 100%);
 }
 
+.screen-saver-actions .sys-btn,
+#screenSaverTimeoutModal .sys-btn {
+  background: #10131A;
+  border: 1px solid #1f3a5a;
+  color: #e8f0ff;
+  box-shadow: none;
+}
+.screen-saver-actions .sys-btn:hover,
+.screen-saver-actions .sys-btn:focus,
+.screen-saver-actions .sys-btn:focus-visible,
+.screen-saver-actions .sys-btn:active,
+#screenSaverTimeoutModal .sys-btn:hover,
+#screenSaverTimeoutModal .sys-btn:focus,
+#screenSaverTimeoutModal .sys-btn:focus-visible,
+#screenSaverTimeoutModal .sys-btn:active,
+#screenSaverTimeoutModal .sys-btn.selected {
+  background: #10131A;
+  border-color: #3fa9f5;
+  color: #fff;
+  box-shadow: none;
+  outline: none;
+}
+
 .screen-saver-action-btn {
   display: inline-flex;
   align-items: center;
@@ -1749,12 +1772,18 @@
   width: 100%;
   box-sizing: border-box;
   padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid #1f3a5a;
   border-radius: 10px;
-  background: rgba(255,255,255,0.05);
-  color: #fff;
+  background: #10131A;
+  color: #e8f0ff;
   font-size: 18px;
   text-align: center;
+}
+#screenSaverTimeoutInput:focus,
+#screenSaverTimeoutInput:focus-visible {
+  outline: none;
+  border-color: #3fa9f5;
+  color: #fff;
 }
 
 .screen-saver-step-row {
@@ -7821,7 +7850,6 @@ function openLauncherActions(item) {
     }
     buttons.appendChild(makeLauncherActionBtn(false, 'Сделать активным'));
     buttons.appendChild(makeLauncherActionBtn(true, 'Активным + отключить остальные'));
-    buttons.appendChild(makeLauncherOpenPickerBtn());
   }
 
   modal.style.display = 'flex';
@@ -7857,18 +7885,6 @@ function makeLauncherActionBtn(disableOthers, label) {
   btn.onclick = (e) => {
     e.stopPropagation();
     handleLauncherAction(disableOthers);
-  };
-  return btn;
-}
-
-function makeLauncherOpenPickerBtn() {
-  const btn = document.createElement('button');
-  btn.className = 'sys-btn password-like-btn';
-  btn.textContent = 'Системный выбор';
-  btn.onclick = (e) => {
-    e.stopPropagation();
-    sendAdbCommand('am start -a android.settings.HOME_SETTINGS', 'Выбор лаунчера', { singleToast: true });
-    closeLauncherActions();
   };
   return btn;
 }
