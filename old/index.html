@@ -1829,11 +1829,24 @@
   max-width: 220px;
   white-space: nowrap;
 }
-#screenSaverIdleBtn,
-#screenSaverSleepBtn {
-  /* Одинаковая ширина обеих кнопок на телефоне */
-  width: clamp(140px, 45vw, 220px);
-  flex: 0 0 clamp(140px, 45vw, 220px);
+
+/* Телефон: таймер-строки ровно в 2 колонки (текст слева, кнопка справа) */
+@media (hover: none) and (pointer: coarse) {
+  #screenSaverModal .screen-saver-row--timer {
+    display: grid;
+    grid-template-columns: 1fr clamp(140px, 45vw, 220px);
+    align-items: center;
+    gap: 12px;
+  }
+  #screenSaverModal .screen-saver-row--timer label {
+    min-width: 0;
+  }
+  #screenSaverIdleBtn,
+  #screenSaverSleepBtn {
+    justify-self: end;
+    width: clamp(140px, 45vw, 220px);
+    max-width: clamp(140px, 45vw, 220px);
+  }
 }
 #screenSaverModal .screen-saver-row .sys-btn:hover,
 #screenSaverModal .screen-saver-row .sys-btn:focus,
@@ -2570,13 +2583,13 @@
             <label>Текущая заставка</label>
             <div id="screenSaverCurrent" class="screen-saver-value">—</div>
           </div>
-          <div class="screen-saver-row">
+          <div class="screen-saver-row screen-saver-row--timer">
             <label>Запуск заставки</label>
             <button id="screenSaverIdleBtn" class="sys-btn" onclick="openScreenSaverTimeoutModal('screen')">
               —
             </button>
           </div>
-          <div class="screen-saver-row">
+          <div class="screen-saver-row screen-saver-row--timer">
             <label>Сон при бездействии</label>
             <button id="screenSaverSleepBtn" class="sys-btn" onclick="openScreenSaverTimeoutModal('sleep')">
               —
