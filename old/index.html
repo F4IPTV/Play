@@ -1704,7 +1704,7 @@
   width: min(340px, 100%);
 }
 
-/* На приставках/широких экранах: 2 колонки только для выбора заставки */
+/* На приставках/широких экранах: 2 колонки в выборе заставки */
 @media (min-width: 800px) and (orientation: landscape) {
   .screen-saver-actions {
     display: grid;
@@ -1716,14 +1716,11 @@
     width: 100%;
     max-width: none;
   }
-  /* Кнопки выбора заставки остаются в 2 колонки */
-  .screen-saver-actions .screen-saver-action-btn {
-    grid-column: auto;
-  }
-  /* Сервисные кнопки — на всю ширину */
-  #screenSaverToggleBtn,
-  #screenSaverModal .screen-saver-actions > button.sys-btn:not(.screen-saver-action-btn) {
+  /* Последняя кнопка (Сброс) — отдельным рядом по центру */
+  #screenSaverResetBtn {
     grid-column: 1 / -1;
+    justify-self: center;
+    width: min(340px, 100%);
   }
 }
 
@@ -1831,6 +1828,12 @@
   min-width: 140px;
   max-width: 220px;
   white-space: nowrap;
+}
+#screenSaverIdleBtn,
+#screenSaverSleepBtn {
+  /* Одинаковая ширина обеих кнопок на телефоне */
+  width: clamp(140px, 45vw, 220px);
+  flex: 0 0 clamp(140px, 45vw, 220px);
 }
 #screenSaverModal .screen-saver-row .sys-btn:hover,
 #screenSaverModal .screen-saver-row .sys-btn:focus,
@@ -2595,8 +2598,8 @@
             <button id="screenSaverToggleBtn" class="sys-btn" onclick="toggleScreenSaver()">
               Отключить<br>заставку
             </button>
-          <button class="sys-btn" onclick="RunScreenSaverSettings()">Проверка<br>заставки</button>
-            <button class="sys-btn" onclick="resetScreenSaverSettings()">Сброс настроек<br>заставки</button>
+          <button id="screenSaverCheckBtn" class="sys-btn" onclick="RunScreenSaverSettings()">Проверка<br>заставки</button>
+            <button id="screenSaverResetBtn" class="sys-btn" onclick="resetScreenSaverSettings()">Сброс настроек<br>заставки</button>
           </div>
         </div>
       </div>
