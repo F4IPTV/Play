@@ -2283,6 +2283,10 @@
     <button onclick="dumpLocalApps()" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Дамп иконок
     </button>
+
+    <button onclick="ignoreNextEnter=true;try{window.AndroidInterface?.applyAccessibilityServicesAuto?.();}catch(e){console.warn('applyAccessibilityServicesAuto недоступен',e);}" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Авто спец. возможности
+    </button>
           
            <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление всех приложений
