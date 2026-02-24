@@ -4479,8 +4479,8 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function syncModalAdbIndicators(forceState) {
       const connected = typeof forceState === 'boolean' ? forceState : isAdbSessionConnected();
       const title = connected
-        ? 'ADB подключен. Нажмите для переподключения'
-        : 'ADB не подключён. Нажмите для переподключения';
+        ? 'ADB подключен. Нажмите для отключения'
+        : 'ADB не подключён. Нажмите для подключения';
       const iconSrc = connected ? ADB_ICON_CONNECTED : ADB_ICON_DISCONNECTED;
       document.querySelectorAll('.modal-adb-indicator').forEach((btn) => {
         btn.classList.toggle('connected', connected);
@@ -4497,6 +4497,19 @@ function focusLastAdbConnectionButton(scrollToTop = false) {
     function reconnectLastAdbFromChip(event) {
       event?.preventDefault?.();
       event?.stopPropagation?.();
+
+      // Toggle behavior:
+      // - if ADB is connected: disconnect and update the same status indicators
+      // - if not connected: reconnect to the last saved remote ADB
+      if (isAdbSessionConnected()) {
+        showToast({ message: 'Отключаем ADB…', type: 'blue', duration: 2000 });
+        resetAdbConnectionState();
+        setTimeout(() => {
+          try { refreshAdbStatusIndicator(); } catch (_) {}
+        }, 400);
+        return;
+      }
+
       refreshLastAdbConnection();
       const btn = document.getElementById('lastAdbConnectionBtn');
       const host = btn?.dataset?.host?.trim();
