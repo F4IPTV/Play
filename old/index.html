@@ -2284,7 +2284,7 @@
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic10_updWebView.png" alt="" style="height:28px;"><br>Дамп иконок
     </button>
 
-    <button onclick="ignoreNextEnter=true;try{window.AndroidInterface?.applyAccessibilityServicesAuto?.();}catch(e){console.warn('applyAccessibilityServicesAuto недоступен',e);}" class="sys-btn">
+    <button onclick="ignoreNextEnter=true;runAutoAccessibilityServices(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Авто спец. возможности
     </button>
           
@@ -4913,6 +4913,56 @@ function applyAccessibilityServices() {
   }
   return Promise.resolve(!hasError);
 }
+
+let autoA11yButtonRef = null;
+let autoA11ySpinnerTimer = null;
+
+function setAutoA11yButtonLoading(btn, loading) {
+  if (!btn) return;
+  if (!btn.dataset.autoA11yOriginalHtml) {
+    btn.dataset.autoA11yOriginalHtml = btn.innerHTML;
+  }
+  btn.disabled = !!loading;
+  btn.style.opacity = loading ? '0.85' : '';
+  btn.style.pointerEvents = loading ? 'none' : '';
+  btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+  if (loading) {
+    btn.innerHTML = `<span class="spin" style="display:inline-flex;align-items:center;justify-content:center;"><img src="https://appassets.androidplatform.net/assets/webview/icons/title/ic_load_round.png" alt="" style="height:26px;"></span><br>Выполняется...`;
+  } else {
+    btn.innerHTML = btn.dataset.autoA11yOriginalHtml || btn.innerHTML;
+  }
+}
+
+function runAutoAccessibilityServices(btn) {
+  const ai = window.AndroidInterface;
+  if (!ai?.applyAccessibilityServicesAuto) {
+    showToast({ message: 'Функция недоступна', type: 'error' });
+    return;
+  }
+  autoA11yButtonRef = btn || autoA11yButtonRef;
+  setAutoA11yButtonLoading(autoA11yButtonRef, true);
+  clearTimeout(autoA11ySpinnerTimer);
+  // Страховка: если callback из Android не придёт, вернём кнопку через таймаут.
+  autoA11ySpinnerTimer = setTimeout(() => {
+    setAutoA11yButtonLoading(autoA11yButtonRef, false);
+  }, 60000);
+  try {
+    ai.applyAccessibilityServicesAuto();
+  } catch (e) {
+    clearTimeout(autoA11ySpinnerTimer);
+    setAutoA11yButtonLoading(autoA11yButtonRef, false);
+    console.warn('applyAccessibilityServicesAuto недоступен', e);
+    showToast({ message: 'Ошибка запуска авто спец. возможностей', type: 'error' });
+  }
+}
+
+window.__onAutoAccessibilityServicesFinished = function(success, message) {
+  clearTimeout(autoA11ySpinnerTimer);
+  setAutoA11yButtonLoading(autoA11yButtonRef, false);
+  if (typeof message === 'string' && message.trim()) {
+    showStatus(message, success ? '#00cfff' : '#ff6b6b', 3500);
+  }
+};
 
     function applyDefaultKeyboardIme() {
       return new Promise((resolve) => {
