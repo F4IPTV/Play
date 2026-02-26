@@ -2288,6 +2288,10 @@
     <button onclick="ignoreNextEnter=true;runAutoAccessibilityServices(this)" class="sys-btn">
       <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic3_accessibility.png" alt="" style="height:28px;"><br>Авто спец. возможности
     </button>
+
+    <button onclick="ignoreNextEnter=true;runAutoUnknownSources(this)" class="sys-btn">
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/main/ic1_unknow.png" alt="" style="height:28px;"><br>Авто неизв. источники
+    </button>
           
            <button onclick="ignoreNextEnter=true;handleConfirmWipeThirdPartyApps()" class="sys-btn">
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic8_cleartrash.png" alt="" style="height:26px;"><br>Удаление всех приложений
@@ -4917,6 +4921,8 @@ function applyAccessibilityServices() {
 
 let autoA11yButtonRef = null;
 let autoA11ySpinnerTimer = null;
+let autoUnknownButtonRef = null;
+let autoUnknownSpinnerTimer = null;
 
 function setAutoA11yButtonLoading(btn, loading) {
   if (!btn) return;
@@ -4960,6 +4966,52 @@ function runAutoAccessibilityServices(btn) {
 window.__onAutoAccessibilityServicesFinished = function(success, message) {
   clearTimeout(autoA11ySpinnerTimer);
   setAutoA11yButtonLoading(autoA11yButtonRef, false);
+  if (typeof message === 'string' && message.trim()) {
+    showStatus(message, success ? '#00cfff' : '#ff6b6b', 3500);
+  }
+};
+
+function setAutoUnknownSourcesButtonLoading(btn, loading) {
+  if (!btn) return;
+  if (!btn.dataset.autoUnknownOriginalHtml) {
+    btn.dataset.autoUnknownOriginalHtml = btn.innerHTML;
+  }
+  btn.disabled = !!loading;
+  btn.style.opacity = loading ? '0.85' : '';
+  btn.style.pointerEvents = loading ? 'none' : '';
+  btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+  if (loading) {
+    btn.innerHTML = `<span style="display:inline-flex;align-items:center;justify-content:center;"><span class="launcher-spinner" aria-hidden="true"></span></span><br>Выполняется...`;
+  } else {
+    btn.innerHTML = btn.dataset.autoUnknownOriginalHtml || btn.innerHTML;
+  }
+}
+
+function runAutoUnknownSources(btn) {
+  const ai = window.AndroidInterface;
+  if (!ai?.grantUnknownSourcesPermissionsAsync) {
+    showToast({ message: 'Функция недоступна', type: 'error' });
+    return;
+  }
+  autoUnknownButtonRef = btn || autoUnknownButtonRef;
+  setAutoUnknownSourcesButtonLoading(autoUnknownButtonRef, true);
+  clearTimeout(autoUnknownSpinnerTimer);
+  autoUnknownSpinnerTimer = setTimeout(() => {
+    setAutoUnknownSourcesButtonLoading(autoUnknownButtonRef, false);
+  }, 60000);
+  try {
+    ai.grantUnknownSourcesPermissionsAsync();
+  } catch (e) {
+    clearTimeout(autoUnknownSpinnerTimer);
+    setAutoUnknownSourcesButtonLoading(autoUnknownButtonRef, false);
+    console.warn('grantUnknownSourcesPermissionsAsync недоступен', e);
+    showToast({ message: 'Ошибка запуска авто неизв. источников', type: 'error' });
+  }
+}
+
+window.__onAutoUnknownSourcesFinished = function(success, message) {
+  clearTimeout(autoUnknownSpinnerTimer);
+  setAutoUnknownSourcesButtonLoading(autoUnknownButtonRef, false);
   if (typeof message === 'string' && message.trim()) {
     showStatus(message, success ? '#00cfff' : '#ff6b6b', 3500);
   }
@@ -8408,7 +8460,5 @@ window.atvAppsBackHandler = function() {
     </div>
   </div>
 </div>
-  
-  
 </body>
 </html>
