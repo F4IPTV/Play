@@ -7768,6 +7768,7 @@ function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
   const resolvedSizeBytes = app?.sizeBytes;
+  const resolvedApkBytes = app?.apkBytes;
   const resolvedAppBytes = app?.appBytes;
   const resolvedDataBytes = app?.dataBytes;
   const resolvedCacheBytes = app?.cacheBytes;
@@ -7810,7 +7811,7 @@ function openAtvAppActions(app) {
     const versionText = app.version ? `v${app.version}` : '';
     const sizeText = showSizeDetails ? formatAtvSizeMbTenths(resolvedSizeBytes) : '';
     const versionSizeLine = [versionText, showSizeDetails ? `Общий: ${sizeText}` : ''].filter(Boolean).join(' · ');
-    const apkText = formatAtvSizeMbTenths(resolvedAppBytes);
+    const apkText = formatAtvSizeMbTenths(resolvedApkBytes || resolvedAppBytes);
     const dataText = formatAtvSizeMbTenths(resolvedDataBytes);
     const cacheText = formatAtvSizeMbTenths(resolvedCacheBytes);
     const sizesBlock = showSizeDetails ? `
