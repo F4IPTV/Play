@@ -7769,6 +7769,7 @@ function openAtvAppActions(app) {
   const resolvedAppBytes = app?.appBytes;
   const resolvedDataBytes = app?.dataBytes;
   const resolvedCacheBytes = app?.cacheBytes;
+  const showSizeDetails = !(atvAppsState.source === 'adb' && atvAppsState.sourceLabel !== 'ADB (локально)');
   atvLastFocusedAppPkg = app?.package || atvLastFocusedAppPkg;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
@@ -7805,12 +7806,12 @@ function openAtvAppActions(app) {
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
     const versionText = app.version ? `v${app.version}` : '';
-    const sizeText = formatAtvSizeMbTenths(resolvedSizeBytes);
-    const versionSizeLine = [versionText, `Общий: ${sizeText}`].filter(Boolean).join(' · ');
+    const sizeText = showSizeDetails ? formatAtvSizeMbTenths(resolvedSizeBytes) : '';
+    const versionSizeLine = [versionText, showSizeDetails ? `Общий: ${sizeText}` : ''].filter(Boolean).join(' · ');
     const apkText = formatAtvSizeMbTenths(resolvedAppBytes);
     const dataText = formatAtvSizeMbTenths(resolvedDataBytes);
     const cacheText = formatAtvSizeMbTenths(resolvedCacheBytes);
-    const sizesBlock = `
+    const sizesBlock = showSizeDetails ? `
       <div style="margin-top:6px; width:100%; max-width:380px;">
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; text-align:center; color:#fff; font-size:11px; opacity:0.85;">
           <span>APK</span>
@@ -7822,7 +7823,7 @@ function openAtvAppActions(app) {
           <span>${dataText}</span>
           <span>${cacheText}</span>
         </div>
-      </div>`;
+      </div>` : '';
     const typeBadge = `
       <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;
         background:${app.type === 'system' ? '#d0a447' : '#2abf6d'}; color:#000; font-weight:700; text-transform:uppercase; font-size:12px;">
