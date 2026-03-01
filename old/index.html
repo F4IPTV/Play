@@ -7390,11 +7390,6 @@ const atvAppsState = {
   localIcons: {},
   localLabels: {},
   localVersions: {},
-  sizeByPackage: {},
-  sizePending: {},
-  sizeQueue: [],
-  sizeRequestInFlight: false,
-  sizeFetchTimer: 0,
   defaultIcon: null,
   loading: false
 };
@@ -7460,87 +7455,6 @@ function formatAtvSize(bytes) {
   }
   const digits = value >= 100 ? 0 : value >= 10 ? 1 : 2;
   return `${value.toFixed(digits)} ${units[unit]}`;
-}
-
-function ensureAtvSizePrefetchBinding() {
-  const container = document.getElementById('atvAppsContainer');
-  if (!container || container.dataset.sizePrefetchBound === '1') return;
-  container.dataset.sizePrefetchBound = '1';
-  container.addEventListener('scroll', () => scheduleAtvVisibleSizesFetch(), { passive: true });
-}
-
-function getVisibleAtvPackages(limit = 14) {
-  const container = document.getElementById('atvAppsContainer');
-  if (!container) return [];
-  const cr = container.getBoundingClientRect();
-  const rows = Array.from(container.querySelectorAll('.app-row'));
-  const result = [];
-  for (const row of rows) {
-    if (result.length >= limit) break;
-    const pkg = row?.dataset?.pkg;
-    if (!pkg || atvAppsState.sizeByPackage[pkg] || atvAppsState.sizePending[pkg]) continue;
-    const rr = row.getBoundingClientRect();
-    const visible = rr.bottom >= (cr.top - 80) && rr.top <= (cr.bottom + 80);
-    if (visible) result.push(pkg);
-  }
-  return result;
-}
-
-function queueAtvSizesFetch(packages) {
-  const uniq = (packages || []).filter(Boolean).filter((pkg, i, arr) => arr.indexOf(pkg) === i);
-  if (!uniq.length) return;
-  uniq.forEach(pkg => {
-    if (atvAppsState.sizeByPackage[pkg] || atvAppsState.sizePending[pkg]) return;
-    atvAppsState.sizePending[pkg] = true;
-    atvAppsState.sizeQueue.push(pkg);
-  });
-  scheduleAtvVisibleSizesFetch(80);
-}
-
-function scheduleAtvVisibleSizesFetch(delay = 120) {
-  if (atvAppsState.loading || atvAppsState.source !== 'adb') return;
-  ensureAtvSizePrefetchBinding();
-  if (!atvAppsState.sizeRequestInFlight) {
-    const visible = getVisibleAtvPackages();
-    if (visible.length) queueAtvSizesFetch(visible);
-  }
-  if (atvAppsState.sizeFetchTimer) clearTimeout(atvAppsState.sizeFetchTimer);
-  atvAppsState.sizeFetchTimer = setTimeout(() => flushAtvSizesFetchQueue(), delay);
-}
-
-function flushAtvSizesFetchQueue() {
-  if (atvAppsState.sizeRequestInFlight || atvAppsState.loading || atvAppsState.source !== 'adb') return;
-  const batch = atvAppsState.sizeQueue.splice(0, 10);
-  if (!batch.length) return;
-  atvAppsState.sizeRequestInFlight = true;
-  try {
-    const raw = window.AndroidInterface?.getAppsSizesBatch?.(JSON.stringify(batch), atvAppsState.source) || '{}';
-    const data = JSON.parse(raw || '{}');
-    const sizes = data?.sizes || {};
-    const appsByPkg = new Map((atvAppsState.apps || []).map(a => [a.package, a]));
-    Object.keys(sizes).forEach(pkg => {
-      const value = Number(sizes[pkg]);
-      if (Number.isFinite(value) && value > 0) {
-        atvAppsState.sizeByPackage[pkg] = value;
-        const app = appsByPkg.get(pkg);
-        if (app) app.sizeBytes = value;
-      }
-      delete atvAppsState.sizePending[pkg];
-    });
-    batch.forEach(pkg => { if (!sizes[pkg]) delete atvAppsState.sizePending[pkg]; });
-    renderAtvAppsList();
-    if (document.getElementById('atvAppActionsModal')?.style.display === 'flex' && atvSelectedApp?.package) {
-      const updated = appsByPkg.get(atvSelectedApp.package);
-      if (updated) atvSelectedApp = updated;
-      openAtvAppActions(atvSelectedApp);
-    }
-  } catch (e) {
-    console.warn('getAppsSizesBatch error', e);
-    batch.forEach(pkg => { delete atvAppsState.sizePending[pkg]; });
-  } finally {
-    atvAppsState.sizeRequestInFlight = false;
-    if (atvAppsState.sizeQueue.length) scheduleAtvVisibleSizesFetch(40);
-  }
 }
 
 function openAtvAppsModalFast(btn) {
@@ -7649,12 +7563,6 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.localIcons = data.localIcons || {};
   atvAppsState.localLabels = data.localLabels || {};
   atvAppsState.localVersions = data.localVersions || {};
-  atvAppsState.sizeByPackage = {};
-  atvAppsState.sizePending = {};
-  atvAppsState.sizeQueue = [];
-  atvAppsState.sizeRequestInFlight = false;
-  if (atvAppsState.sizeFetchTimer) clearTimeout(atvAppsState.sizeFetchTimer);
-  atvAppsState.sizeFetchTimer = 0;
   atvAppsState.defaultIcon = data.defaultIcon || null;
   if (data.error) {
     showToast({ message: `Ошибка: ${data.error}`, type: 'warning' });
@@ -7777,7 +7685,7 @@ function renderAtvAppsList() {
     pkg.style.wordBreak = 'break-all';
 
     const versionText = app.version || atvAppsState.localVersions?.[app.package];
-    const sizeBytes = app.sizeBytes || atvAppsState.sizeByPackage?.[app.package];
+    const sizeBytes = app.sizeBytes;
     const sizeText = formatAtvSize(sizeBytes);
     const metaLineText = [versionText ? `v${versionText}` : '', sizeText].filter(Boolean).join(' · ');
     const version = document.createElement('span');
@@ -7835,10 +7743,6 @@ function renderAtvAppsList() {
     atvPendingFocusPkg = null;
     requestAnimationFrame(() => focusAtvRowByPackage(pkg));
   }
-  if (atvAppsState.source === 'adb') {
-    ensureAtvSizePrefetchBinding();
-    scheduleAtvVisibleSizesFetch(60);
-  }
 }
 
 function dumpLocalApps() {
@@ -7855,7 +7759,7 @@ let atvSelectedApp = null;
 function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
-  const resolvedSizeBytes = app?.sizeBytes || atvAppsState.sizeByPackage?.[app?.package];
+  const resolvedSizeBytes = app?.sizeBytes;
   atvLastFocusedAppPkg = app?.package || atvLastFocusedAppPkg;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
@@ -7915,10 +7819,6 @@ function openAtvAppActions(app) {
       </div>
     `;
   }
-  if (atvAppsState.source === 'adb' && app?.package && !resolvedSizeBytes) {
-    queueAtvSizesFetch([app.package]);
-  }
-
   const buttons = document.getElementById('atvAppActionsButtons');
   if (buttons) {
     buttons.innerHTML = '';
