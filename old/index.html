@@ -7480,7 +7480,7 @@ function openAtvAppsModalFast(btn) {
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
-  // Обновляем заголовок и иконку из кнопки-триггера1
+  // Обновляем заголовок и иконку из кнопки-триггера
   const header = document.getElementById('atvAppsHeader');
   const iconSrc = btn?.querySelector('img')?.src || 'https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png';
   const titleText = (btn?.innerText || 'Приложения Android TV').trim();
@@ -7767,6 +7767,7 @@ let atvSelectedApp = null;
 function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
+  const resolvedTotalBytes = app?.totalBytes || app?.sizeBytes;
   const resolvedSizeBytes = app?.sizeBytes;
   const resolvedApkBytes = app?.apkBytes;
   const resolvedAppBytes = app?.appBytes;
@@ -7809,7 +7810,7 @@ function openAtvAppActions(app) {
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
     const versionText = app.version ? `v${app.version}` : '';
-    const sizeText = showSizeDetails ? formatAtvSizeMbTenths(resolvedSizeBytes) : '';
+    const sizeText = showSizeDetails ? formatAtvSizeMbTenths(resolvedTotalBytes) : '';
     const versionSizeLine = [versionText, showSizeDetails ? `Общий: ${sizeText}` : ''].filter(Boolean).join(' · ');
     const apkText = formatAtvSizeMbTenths(resolvedApkBytes || resolvedAppBytes);
     const dataText = formatAtvSizeMbTenths(resolvedDataBytes);
