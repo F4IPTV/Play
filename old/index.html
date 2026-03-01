@@ -7457,6 +7457,11 @@ function formatAtvSize(bytes) {
   return `${value.toFixed(digits)} ${units[unit]}`;
 }
 
+function formatAtvSizeWithSource(bytes) {
+  const size = formatAtvSize(bytes);
+  return size ? `${size} (appBytes)` : '';
+}
+
 function openAtvAppsModalFast(btn) {
   ignoreNextEnter = true;
   // Требуем активное ADB-подключение
@@ -7686,7 +7691,7 @@ function renderAtvAppsList() {
 
     const versionText = app.version || atvAppsState.localVersions?.[app.package];
     const sizeBytes = app.sizeBytes;
-    const sizeText = formatAtvSize(sizeBytes);
+    const sizeText = formatAtvSizeWithSource(sizeBytes);
     const metaLineText = [versionText ? `v${versionText}` : '', sizeText].filter(Boolean).join(' · ');
     const version = document.createElement('span');
     version.textContent = metaLineText;
@@ -7796,7 +7801,7 @@ function openAtvAppActions(app) {
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
     const versionText = app.version ? `v${app.version}` : '';
-    const sizeText = formatAtvSize(resolvedSizeBytes);
+    const sizeText = formatAtvSizeWithSource(resolvedSizeBytes);
     const versionSizeLine = [versionText, sizeText].filter(Boolean).join(' · ');
     const typeBadge = `
       <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;
