@@ -7387,6 +7387,7 @@ const atvAppsState = {
   filter: 'all',
   source: 'local',
   sourceLabel: 'Локальное устройство',
+  isLocalAdb: false,
   localIcons: {},
   localLabels: {},
   localVersions: {},
@@ -7566,6 +7567,7 @@ function handleAtvAppsPayload(raw) {
   atvAppsState.apps = data.apps || [];
   atvAppsState.source = data.source || 'local';
   atvAppsState.sourceLabel = data.sourceLabel || (atvAppsState.source === 'adb' ? 'ADB устройство' : 'Локальное устройство');
+  atvAppsState.isLocalAdb = data?.isLocalAdb === true;
   atvAppsState.localIcons = data.localIcons || {};
   atvAppsState.localLabels = data.localLabels || {};
   atvAppsState.localVersions = data.localVersions || {};
@@ -7769,7 +7771,7 @@ function openAtvAppActions(app) {
   const resolvedAppBytes = app?.appBytes;
   const resolvedDataBytes = app?.dataBytes;
   const resolvedCacheBytes = app?.cacheBytes;
-  const showSizeDetails = !(atvAppsState.source === 'adb' && atvAppsState.sourceLabel !== 'ADB (локально)');
+  const showSizeDetails = !(atvAppsState.source === 'adb' && !atvAppsState.isLocalAdb);
   atvLastFocusedAppPkg = app?.package || atvLastFocusedAppPkg;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
