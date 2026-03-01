@@ -7480,7 +7480,7 @@ function openAtvAppsModalFast(btn) {
   document.activeElement?.blur();
   modal.style.display = 'flex';
   document.body.classList.add('modal-open');
-  // Обновляем заголовок и иконку из кнопки-триггера
+  // Обновляем заголовок и иконку из кнопки-триггера1
   const header = document.getElementById('atvAppsHeader');
   const iconSrc = btn?.querySelector('img')?.src || 'https://appassets.androidplatform.net/assets/webview/icons/main/ic20_ATV.png';
   const titleText = (btn?.innerText || 'Приложения Android TV').trim();
