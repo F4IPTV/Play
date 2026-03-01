@@ -7767,7 +7767,7 @@ let atvSelectedApp = null;
 function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
-  const resolvedTotalBytes = app?.totalBytes || app?.sizeBytes;
+  const resolvedTotalBytes = app?.totalBytes || app?.sizeBytes || app?.apkBytes || app?.appBytes;
   const resolvedSizeBytes = app?.sizeBytes;
   const resolvedApkBytes = app?.apkBytes;
   const resolvedAppBytes = app?.appBytes;
