@@ -7457,9 +7457,10 @@ function formatAtvSize(bytes) {
   return `${value.toFixed(digits)} ${units[unit]}`;
 }
 
-function formatAtvSizeWithSource(bytes) {
-  const size = formatAtvSize(bytes);
-  return size ? `${size} (appBytes)` : '';
+function formatAtvSizeMbTenths(bytes) {
+  const n = Number(bytes);
+  if (!Number.isFinite(n) || n < 0) return '0.0 MB';
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function openAtvAppsModalFast(btn) {
@@ -7691,7 +7692,7 @@ function renderAtvAppsList() {
 
     const versionText = app.version || atvAppsState.localVersions?.[app.package];
     const sizeBytes = app.sizeBytes;
-    const sizeText = formatAtvSizeWithSource(sizeBytes);
+    const sizeText = formatAtvSize(sizeBytes);
     const metaLineText = [versionText ? `v${versionText}` : '', sizeText].filter(Boolean).join(' · ');
     const version = document.createElement('span');
     version.textContent = metaLineText;
@@ -7765,6 +7766,9 @@ function openAtvAppActions(app) {
   if (isAtvInputBlocked()) return;
   atvSelectedApp = app;
   const resolvedSizeBytes = app?.sizeBytes;
+  const resolvedAppBytes = app?.appBytes;
+  const resolvedDataBytes = app?.dataBytes;
+  const resolvedCacheBytes = app?.cacheBytes;
   atvLastFocusedAppPkg = app?.package || atvLastFocusedAppPkg;
   // запоминаем текущую строку списка для восстановления фокуса после закрытия
   if (!atvLastFocusedAppEl) {
@@ -7801,8 +7805,24 @@ function openAtvAppActions(app) {
   const info = document.getElementById('atvAppActionsInfo');
   if (info) {
     const versionText = app.version ? `v${app.version}` : '';
-    const sizeText = formatAtvSizeWithSource(resolvedSizeBytes);
-    const versionSizeLine = [versionText, sizeText].filter(Boolean).join(' · ');
+    const sizeText = formatAtvSizeMbTenths(resolvedSizeBytes);
+    const versionSizeLine = [versionText, `Общий: ${sizeText}`].filter(Boolean).join(' · ');
+    const apkText = formatAtvSizeMbTenths(resolvedAppBytes);
+    const dataText = formatAtvSizeMbTenths(resolvedDataBytes);
+    const cacheText = formatAtvSizeMbTenths(resolvedCacheBytes);
+    const sizesBlock = `
+      <div style="margin-top:6px; width:100%; max-width:380px;">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; text-align:center; color:#fff; font-size:11px; opacity:0.85;">
+          <span>APK</span>
+          <span>Данные</span>
+          <span>Кеш</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; text-align:center; color:#fff; font-size:12px; font-weight:700;">
+          <span>${apkText}</span>
+          <span>${dataText}</span>
+          <span>${cacheText}</span>
+        </div>
+      </div>`;
     const typeBadge = `
       <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;
         background:${app.type === 'system' ? '#d0a447' : '#2abf6d'}; color:#000; font-weight:700; text-transform:uppercase; font-size:12px;">
@@ -7817,6 +7837,7 @@ function openAtvAppActions(app) {
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;color:#fff; margin-top:-4px;">
         <span style="color:#fff; font-size:11px; opacity:0.9; text-align:center;">${app.package}</span>
         ${versionSizeLine ? `<span style="color:#fff; font-size:11px; opacity:0.85; text-align:center;">${versionSizeLine}</span>` : ''}
+        ${sizesBlock}
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
           ${typeBadge}
           ${stateBadge}
