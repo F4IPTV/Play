@@ -1345,12 +1345,17 @@
       font-size: 13px;
       padding: 10px 14px;
       gap: 10px;
-      align-items: flex-start;
+      align-items: center;
       border-radius: 12px;
     }
     .toast--stats .toast-message {
       overflow-wrap: normal;
       word-break: normal;
+      text-align: center;
+    }
+    .toast--stats img {
+      align-self: center;
+      flex: 0 0 20px;
     }
     .toast .spin { display:inline-block; animation: spin 1s linear infinite; }
     .toast-stack { position: fixed; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
