@@ -7646,6 +7646,10 @@ function renderAtvAppsList() {
     const fallbackIcon = atvAppsState.defaultIcon || atvDefaultIcons[app.type === 'system' ? 'system' : 'user'];
     const localIcon = atvAppsState.localIcons?.[app.package];
     img.src = app.icon || localIcon || fallbackIcon;
+    img.onerror = () => {
+      // Иногда data:image может быть поврежден/непрочитан в WebView, уводим в стабильный fallback
+      if (img.src !== fallbackIcon) img.src = fallbackIcon;
+    };
     img.alt = app.label || app.package;
 
     const meta = document.createElement('div');
