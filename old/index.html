@@ -1335,6 +1335,7 @@
       white-space: normal; overflow-wrap: anywhere; word-break: break-word; opacity: 0; transform: translateY(8px);
       transition: opacity .25s ease, transform .25s ease; pointer-events: auto;
     }
+    .toast-message { white-space: pre-line; }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast--pill { border-radius: 999px; padding: 10px 16px; }
     .toast--compact { padding: 8px 12px; font-size: 16px; }
@@ -6337,8 +6338,8 @@ const NAVIGATION_MODALS = [
       toast.style.backgroundColor = scheme.bg; toast.style.color = scheme.text;
       let html = '';
       if (withSpin) html += `<span class="spin">⏳</span>`;
-      html += `<span>${message}</span>`;
       if (iconUrl) html += `<img src="${iconUrl}" alt="" style="height:20px; width:20px; object-fit:contain; vertical-align:middle;">`;
+      html += `<span class="toast-message">${message}</span>`;
       toast.innerHTML = html;
 
       let cleanup;
