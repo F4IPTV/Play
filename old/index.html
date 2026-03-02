@@ -1340,6 +1340,18 @@
     .toast--pill { border-radius: 999px; padding: 10px 16px; }
     .toast--compact { padding: 8px 12px; font-size: 16px; }
     .toast--card { box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    .toast--stats {
+      max-width: min(90vw, 980px);
+      font-size: 13px;
+      padding: 10px 14px;
+      gap: 10px;
+      align-items: flex-start;
+      border-radius: 12px;
+    }
+    .toast--stats .toast-message {
+      overflow-wrap: normal;
+      word-break: normal;
+    }
     .toast .spin { display:inline-block; animation: spin 1s linear infinite; }
     .toast-stack { position: fixed; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
     .toast-stack--top{ top: 40px; } .toast-stack--bottom{ bottom: 40px; } .toast-stack--center{ top: 50%; transform: translateY(-50%); }
@@ -6334,7 +6346,10 @@ const NAVIGATION_MODALS = [
       const scheme = colors || styles[type] || styles.info;
 
       const toast = document.createElement('div');
-      toast.className = 'toast' + (variant==='pill'?' toast--pill':'') + (variant==='compact'?' toast--compact':'') + (variant==='card'?' toast--card':'');
+      const variantClass = ['pill', 'compact', 'card', 'stats'].includes(variant)
+        ? ` toast--${variant}`
+        : '';
+      toast.className = 'toast' + variantClass;
       toast.style.backgroundColor = scheme.bg; toast.style.color = scheme.text;
       let html = '';
       if (withSpin) html += `<span class="spin">⏳</span>`;
