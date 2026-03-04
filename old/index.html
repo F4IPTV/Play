@@ -2115,7 +2115,7 @@
     </button>
 
     <button onclick="ignoreNextEnter=true;window.AndroidInterface.openWirelessDebuggingSettings()" class="sys-btn">
-      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Для разработчиков
+      <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic3_developer.png" alt="" style="height:26px;"><br>Меню разработчиков
     </button>
 
     <button onclick="openAdbCommandsFromButton(this)" class="sys-btn">
@@ -2335,7 +2335,7 @@
             <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic4_developer.png" alt="" style="height:28px;"><br>Установить FastInstaller
           </button>
           <button onclick="ignoreNextEnter=true;configureVolumeSteps()" class="sys-btn">
-            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Шкала громкости
+            <img src="https://appassets.androidplatform.net/assets/webview/icons/misc/ic1_tools.png" alt="" style="height:26px;"><br>Громкость (Magisk)
           </button>
 			
           
@@ -5369,7 +5369,7 @@ const NAVIGATION_MODALS = [
     let lastAdbRemoteTrigger = null;
     function openAdbRemoteModal(triggerBtn = null) {
       // TEMP: bypass ADB check for remote modal
-      // if (!ensureAdbSessionConnected('Пульт ДУ')) return;
+      if (!ensureAdbSessionConnected('Пульт ДУ')) return;
       saveMainScroll();
       lastAdbRemoteTrigger = triggerBtn || document.activeElement;
       document.activeElement?.blur();
