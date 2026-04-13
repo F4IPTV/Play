@@ -611,13 +611,50 @@ http://hls.stb.md/MATCH_PLANETA_H264/video.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cC
 
 
 
-
-
-
-
-
-
-
+#EXTINF:-1 group-title="Кавкасус Онлайн",Amedia Hit
+http://85.117.37.41/amediahit/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Arirang
+http://85.117.37.41/arirang/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Драйв
+http://85.117.37.41/drive/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Deutsche Welle
+http://85.117.37.41/dw/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Bloomberg
+http://85.117.37.41/bloomberg/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Еврокино
+http://85.117.37.41/eurokino/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Евроновости
+http://85.117.37.41/euronews/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",TV1000
+http://85.117.37.41/tv1000/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",TV1000 Русское кино
+http://85.117.37.41/tv1000ru/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",TV XXI
+http://85.117.37.41/tv21/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Mezzo
+http://85.117.37.41/mezzo/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",МузТВ
+http://85.117.37.41/muztv/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",JimJam
+http://85.117.37.41/jimjam/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Viasat Sport
+http://85.117.37.41/viasatsport/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",KHL
+http://85.117.37.41/khl/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Матч! Арена
+http://85.117.37.41/matcharena/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Матч! Страна
+http://85.117.37.41/matchstrana/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Eurosport 1 HD
+http://85.117.37.41/eurosport1/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Eurosport 2 HD
+http://85.117.37.41/eurosport2/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Матч! Футбол 1 HD
+http://85.117.37.41/fut1/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Матч! Футбол 2 HD
+http://85.117.37.41/fut2/index.m3u8
+#EXTINF:-1 group-title="Кавкасус Онлайн",Матч! Футбол 3 HD
+http://85.117.37.41/fut3/index.m3u8
 
 
 
@@ -625,10 +662,8 @@ http://hls.stb.md/MATCH_PLANETA_H264/video.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cC
 http://217.21.34.162:38002/rossiyakhd/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",ТНТ-International (Беларусь)
 http://217.21.34.162:38006/tntint/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",RTR Беларусь HD
+#EXTINF:-1 group-title="Unitary Services Enterprise",РТР-Беларусь
 http://217.21.34.162:38005/rtr/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",RTR Беларусь
-http://217.21.34.162:38007/rtr/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",НТВ Беларусь
 http://217.21.34.162:38007/ntv/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",НТВ Право
@@ -647,7 +682,7 @@ http://217.21.34.162:38005/stv/index.m3u8
 http://217.21.34.162:38003/DocuBoxHD/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Терра Инкогнита
 http://217.21.34.162:38003/terra/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Galaxy HD
+#EXTINF:-1 group-title="Unitary Services Enterprise",Galaxy TV
 http://217.21.34.162:38006/GalaxyHD/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Точка РФ
 http://217.21.34.162:38006/hdl/index.m3u8
@@ -663,7 +698,7 @@ http://217.21.34.162:38003/cinema/index.m3u8
 http://217.21.34.162:38003/FashionBoxHD/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Классика Кино
 http://217.21.34.162:38003/klassikakino/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Ко есть Кто
+#EXTINF:-1 group-title="Unitary Services Enterprise",Кто есть Кто
 http://217.21.34.162:38003/ktoestkto/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Неизвестная планета
 http://217.21.34.162:38003/neplaneta/index.m3u8
@@ -715,11 +750,11 @@ http://217.21.34.162:38003/amediapremiumhd/index.m3u8
 http://217.21.34.162:38003/vhska/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Муви ТВ
 http://217.21.34.162:38004/muvitv/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Воен ТВ
+#EXTINF:-1 group-title="Unitary Services Enterprise",ВоенТВ [BY]
 http://217.21.34.162:38004/voentv/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",365 дней
 http://217.21.34.162:38006/365dnei/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Звязда Беларусь
+#EXTINF:-1 group-title="Unitary Services Enterprise",Звязда
 http://217.21.34.162:38004/zvezda/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",Amedia 1 HD
 http://217.21.34.162:38004/amedia1hd/index.m3u8
@@ -765,17 +800,17 @@ http://217.21.34.162:38001/bridgetv/index.m3u8
 http://217.21.34.162:38003/europaplus/index.m3u8
 #EXTINF:-1 group-title="Unitary Services Enterprise",RU.TV
 http://217.21.34.162:38001/rutv/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Матч! Планета HD
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Матч! Планета HD
 http://217.21.34.162:38003/matchplanetahd/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Футбол
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Футбол
 http://217.21.34.162:38006/football/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",KHL HD
+#EXTINF:-1 group-title="Спорткомплекс 🏆",KHL HD
 http://217.21.34.162:38006/khlhd/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",MMA-TV.COM
+#EXTINF:-1 group-title="Спорткомплекс 🏆",MMA-TV.COM
 http://217.21.34.162:38006/m1global/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Футбол HD
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Футбол HD
 http://217.21.34.162:38003/footballhd/index.m3u8
-#EXTINF:-1 group-title="Unitary Services Enterprise",Бокс ТВ
+#EXTINF:-1 group-title="Спорткомплекс 🏆",Бокс ТВ
 http://217.21.34.162:38003/bokstv/index.m3u8
 
 
@@ -873,7 +908,7 @@ https://fs.uplink.kz/ktk/tracks-v1a1/mono.ts.m3u8?token=onlinetv
 https://fs.uplink.kz/ntk/tracks-v1a1/mono.ts.m3u8?token=onlinetv
 #EXTINF:-1 group-title="Uplink",Astana TV
 https://fs.uplink.kz/astana/tracks-v1a1/mono.ts.m3u8?token=onlinetv
-#EXTINF:-1 group-title="Uplink",Atameken
+#EXTINF:-1 group-title="Uplink",Atameken Business
 https://fs.uplink.kz/atameken/tracks-v1a1/mono.ts.m3u8?token=onlinetv
 #EXTINF:-1 group-title="Uplink" tvg-id="balapan",Balapan   
 https://fs.uplink.kz/balapan/tracks-v1a1/mono.ts.m3u8?token=onlinetv
