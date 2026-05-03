@@ -1,3 +1,5 @@
-#EXTM3U x-tvg-url="http://epg.one/epg.xml.gz"
-#EXTINF:0 tvg-logo="http://satexpresstv.ru/image/catalog/setv_logo.png», group-title="ОБНОВЛЕНИЕ SETV", T.ME/infosetv
-https://getfile.dokpub.com/yandex/get/https://disk.yandex.com/i/-Z3gNrM6vMgnoA
+﻿#EXTM3U
+#EXTINF:-1,IPTV => Playlist
+http://dmi3y-tv.online/iptv/Playlist.auto.m3u
+#EXTINF:-1,IPTV => Playlist (резерв)
+http://dmitry-tv.ddns.net/iptv/Playlist.auto.m3u
