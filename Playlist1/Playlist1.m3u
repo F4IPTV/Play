@@ -301,8 +301,6 @@ http://dmi3y-tv.online/hls/zabava/CH_CHE_7.m3u8
 http://dmi3y-tv.online/hls/zabava/CH_U-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Ю
 http://dmi3y-tv.online/hls/zabava/CH_U.m3u8
-#EXTINF:-1 group-title="ЭФИРНЫЕ",Ю HD720
-http://dmi3y-tv.online/hls/CH_U_HD720.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Ю (+2)
 http://dmi3y-tv.online/hls/zabava/CH_U_2.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Ю (+4)
@@ -699,8 +697,6 @@ http://dmi3y-tv.online/hls/zabava/region/SARATOV/CH_SARATOV24HD.m3u8
 http://dmi3y-tv.online/hls/zabava/region/DV_SLIN_OBL/CH_OTV_SLIN.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",АСТВ (Сахалин)
 http://dmi3y-tv.online/hls/zabava/region/DV_SLIN/CH_ACTV.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",НТС HD (Севастополь)
-http://dmi3y-tv.online/hls/region/CH_NTSHD_SVTPL.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Первый Крымский (Симферополь)
 http://dmi3y-tv.online/hls/region/CH_1KRYMSKIY_SMRPL.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",КРЫМ 24 (Симферополь)
@@ -863,8 +859,6 @@ http://dmi3y-tv.online/hls/zabava/region/YARL/CH_1YAROSLAVSKIYHD.m3u8
 http://dmi3y-tv.online/hls/zabava/region/YARL/CH_GTREG.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",МИТВ (Местное Илимское TV)
 http://193.33.233.109:9000/tv
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Грозный HD720 (Грозный)
-http://balancer.facecast.io/evacoder_hls_hi/UUMLQVAYVlZyH14GRENQVV0G/2/1.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",СТАРТ ТРИУМФ
 http://dmi3y-tv.online/hls/CH_START_TRIUMF.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",СТАРТ ТРИУМФ HD720
@@ -1185,8 +1179,6 @@ http://dmi3y-tv.online/hls/CH_KRONEHITHD.m3u8
 http://dmi3y-tv.online/hls/CH_SHANSONTV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",ТНТ MUSIC HD
 http://dmi3y-tv.online/hls/CH_TNTMUSICHD.m3u8
-#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",RETRO MUSIC TV
-http://dmi3y-tv.online/hls/CH_RETRO_MUSICTV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",RUTV
 http://dmi3y-tv.online/hls/CH_RUTV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",MEZZO
