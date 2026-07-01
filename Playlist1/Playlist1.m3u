@@ -923,10 +923,14 @@ http://dmi3y-tv.online/hls/CH_PRO100TV.m3u8
 http://dmi3y-tv.online/hls/CH_PATRIOT.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV XXI
 http://dmi3y-tv.online/hls/CH_TVXXI.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000
+http://dmi3y-tv.online/hls/CH_TV1000.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 HD
 http://dmi3y-tv.online/hls/CH_TV1000HD.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 ACTION HD
 http://dmi3y-tv.online/hls/CH_TV1000ACTIONHD.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 РУССКОЕ КИНО
+http://dmi3y-tv.online/hls/CH_TV1000RUSSKOEKINO.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 РУССКОЕ КИНО HD
 http://dmi3y-tv.online/hls/CH_TV1000RUSSKOEKINOHD.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ДОМ КИНО
@@ -1093,6 +1097,8 @@ http://dmi3y-tv.online/hls/CH_RYZHIY.m3u8
 http://dmi3y-tv.online/hls/CH_TIJI.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Gulli GIRL
 http://dmi3y-tv.online/hls/CH_GULLI_GIRL.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",СТС Kids
+http://dmi3y-tv.online/hls/CH_STSKIDS.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ПРОДВИЖЕНИЕ
 http://dmi3y-tv.online/hls/CH_PRODVIZHENIE.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",СОЮЗ HD
@@ -1167,6 +1173,10 @@ http://dmi3y-tv.online/hls/CH_NASHA_SIBIRHD.m3u8
 http://dmi3y-tv.online/hls/CH_T24.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Доктор
 http://dmi3y-tv.online/hls/CH_DOKTOR.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Zoo ПАРК
+http://dmi3y-tv.online/hls/CH_3OOPARK.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ТЕЛЕКАФЕ
+http://dmi3y-tv.online/hls/CH_TELEKAFE.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Муз Союз
 http://dmi3y-tv.online/hls/CH_MUZSOYUZ.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",V2BEAT HD720
@@ -1191,6 +1201,8 @@ http://dmi3y-tv.online/hls/CH_FTVHD.m3u8
 http://dmi3y-tv.online/hls/CH_MYDAYTV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Retro TV HD
 http://dmi3y-tv.online/hls/CH_RETROTVHD.m3u8
+#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",DAR21
+http://dmi3y-tv.online/hls/CH_DAR21.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ENGLISH
 http://dmi3y-tv.online/hls/CH_CGTN_ENGLISH.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ENGLISH HD720
