@@ -1,5 +1,242 @@
-﻿#EXTM3U
-#EXTINF:-1,IPTV => Playlist
-http://dmi3y-tv.online/iptv/Playlist.auto.m3u
-#EXTINF:-1,IPTV => Playlist (резерв)
-http://dmitry-tv.ddns.net/iptv/Playlist.auto.m3u
+
+<!DOCTYPE html>
+<html lang="ru" class="h-100">
+<head>
+    <title>Агрегатор плейлистов</title>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <style>.cursor-pointer{cursor:pointer}.cursor-help{cursor:help}</style>
+    <script async type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script async nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="IPTV Плейлисты" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="msapplication-TileImage" content="/favicon/mstile-150x150.png">
+    <meta name="theme-color" content="#212529">
+    </head>
+<body class="d-flex flex-column h-100 bg-dark text-light">
+    <header class="sticky-top bg-dark border-bottom border-secondary">
+        <nav class="navbar navbar-expand-lg navbar-dark container px-2">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/" title="На главную">
+                <img src="/favicon/favicon-32x32.png" alt="Логотип проекта" class="d-inline-block">
+                <span>Агрегатор плейлистов</span>
+            </a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://status.m3u.su">
+                            <ion-icon name="pulse-outline" class="me-1"></ion-icon>&nbsp;Аптайм
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/docs">
+                            <ion-icon name="document-text-outline" class="me-1"></ion-icon>&nbsp;Документация
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/docs/support.html">
+                            <ion-icon name="heart-outline" class="me-1"></ion-icon>&nbsp;Помочь проекту
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false"
+                        >
+                            <ion-icon name="paper-plane-outline" class="me-1"></ion-icon>&nbsp;Telegram
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" target="_blank" href="https://t.me/iptv_aggregator">
+                                    <ion-icon name="megaphone-outline"></ion-icon>&nbsp;Канал @iptv_aggregator
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" target="_blank" href="https://t.me/iptv_aggregator_chat">
+                                    <ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;Чат @iptv_aggregator_chat
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center gap-2" target="_blank" href="https://t.me/iptv_aggregator_bot">
+                                    <ion-icon name="chatbox-ellipses-outline"></ion-icon>&nbsp;Бот @iptv_aggregator_bot
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow-1 container py-4">
+                <div class="content-wrapper">
+                <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 text-center">
+            <div class="card bg-dark border-secondary">
+                <div class="card-body">
+                    <ion-icon name="warning-outline" class="display-1 text-warning mb-3"></ion-icon>
+                    <h2 class="card-title">Плейлист <code>d5</code> не найден</h2>
+                    <p class="card-text">
+                        Возможно, его здесь никогда не было, либо он уже был удалён.
+                    </p>
+                    <p class="text-muted small">
+                        Если хочешь, чтобы здесь был плейлист, предложи его к добавлению.
+                        <br />
+                        <a href="/docs/support.html#participate">Как это сделать?</a>
+                    </p>
+                    <a class="btn btn-outline-light" href="/" title="На главную">
+                        <ion-icon name="list-outline" class="me-1"></ion-icon>Перейти к списку плейлистов
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark border-top border-secondary py-4">
+        <div class="container text-center">
+            <div class="d-flex flex-wrap justify-content-center gap-3 mb-3">
+                <a target="_blank" href="/docs" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="document-text-outline"></ion-icon>Документация
+                </a>
+                <a target="_blank" href="https://git.axenov.dev/IPTV" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="code-slash-outline"></ion-icon>Исходники
+                </a>
+                <a target="_blank" href="https://axenov.dev" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="person-outline"></ion-icon>axenov.dev
+                </a>
+                <a target="_blank" href="https://t.me/iptv_aggregator" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="megaphone-outline"></ion-icon>Канал
+                </a>
+                <a target="_blank" href="https://t.me/iptv_aggregator_chat" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="chatbubbles-outline"></ion-icon>Чат
+                </a>
+                <a target="_blank" href="https://t.me/iptv_aggregator_bot" class="text-light text-decoration-none d-flex align-items-center gap-1">
+                    <ion-icon name="chatbox-ellipses-outline"></ion-icon>Бот
+                </a>
+            </div>
+            <div>
+                <a class="small text-secondary d-inline-flex align-items-center gap-1"
+                   href="https://git.axenov.dev/IPTV/web/releases/tag/v1.0.0"
+                   target="_blank"
+                >
+                    <ion-icon name="pricetag-outline"></ion-icon>v1.0.0
+                </a>
+            </div>
+        </div>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+	
+    </footer>
+
+        
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast align-items-center text-bg-success border-0" role="alert" id="clipboardToast">
+            <div class="d-flex">
+                <div class="toast-body" id="clipboardToastBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            const toastEl = document.getElementById('clipboardToast');
+            const toastBodyEl = document.getElementById('clipboardToastBody');
+            toastBodyEl.innerHTML = message;
+            const toast = new bootstrap.Toast(toastEl, {delay: 5000});
+            toast.show();
+        }
+
+        function copyPlaylistUrl(code) {
+            const url = 'https://m3u.su/' + code;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard
+                    .writeText(url)
+                    .then(() => showToast(`Ссылка на плейлист '${code}' скопирована в буфер обмена`))
+                    .catch(err => console.error('Failed to copy:', err));
+            } else {
+                try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    textArea.style.position = "fixed";  // Avoid scrolling to bottom
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+
+                    if (successful) {
+                        showToast(`Ссылка на плейлист '${code}' скопирована в буфер обмена`);
+                    } else {
+                        showToast('Ошибка при копировании ссылки', true);
+                    }
+                } catch (err) {
+                    console.error('Fallback copy failed:', err);
+                    showToast('Ошибка при копировании ссылки', true);
+                }
+            }
+        }
+    </script>
+
+    
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WSSRN7CQTQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WSSRN7CQTQ');
+</script>
+<!-- /Google tag (gtag.js) -->
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+    ym(90211601, 'init', {webvisor:true, trackHash:true, clickmap:true, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/90211601" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<!--LiveInternet counter-->
+<center><a href="https://www.liveinternet.ru/click"
+target="_blank"><img id="licnt11D4" width="88" height="31" style="border:0" 
+title="LiveInternet: показано число просмотров за 24 часа, посетителей за 24 часа и за сегодня"
+src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+alt=""/></a><script>(function(d,s){d.getElementById("licnt11D4").src=
+"https://counter.yadro.ru/hit?t17.5;r"+escape(d.referrer)+
+((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+(s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+";h"+escape(d.title.substring(0,150))+";"+Math.random()})
+(document,screen)</script></center>
+<!--/LiveInternet-->
+
+</body>
+</html>
