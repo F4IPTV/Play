@@ -117,8 +117,6 @@ http://dmi3y-tv.online/hls/smotrim/T2/CH_PLANETARTRHD720_SNG.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_RUSSIA24.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 HD
 http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24HD.m3u8
-#EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 (+2)
-http://dmi3y-tv.online/hls/DVB-T2/CH_RUSSIA24_2.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 (+3)
 http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24_3.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 International
@@ -283,8 +281,6 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV_4.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV_6.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ (+7)
 http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV_7.m3u8
-#EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ [UZ]
-http://dmi3y-tv.online/hls/T2/CH_MUZTV_UZ.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Че! (-1)
 http://dmi3y-tv.online/hls/zabava/CH_CHE-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Че!
@@ -865,10 +861,6 @@ http://dmi3y-tv.online/hls/CH_START_TRIUMF.m3u8
 http://dmi3y-tv.online/hls/CH_START_TRIUMFHD720.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",VIASAT SPORT HD
 http://dmi3y-tv.online/hls/CH_VIASAT_SPORTHD.m3u8
-#EXTINF:-1 group-title="СПОРТИВНЫЕ",SETANTA SPORTS 1 HD
-http://dmi3y-tv.online/hls/CH_SETANTA_SPORTS1HD.m3u8
-#EXTINF:-1 group-title="СПОРТИВНЫЕ",SETANTA SPORTS 2 HD
-http://dmi3y-tv.online/hls/CH_SETANTA_SPORTS2HD.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",TRACE SPORT STARS
 http://dmi3y-tv.online/hls/CH_TRACE_SPORT_STARS.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",EUROSPORT 1
@@ -905,22 +897,14 @@ http://dmi3y-tv.online/hls/smotrim/CH_MUZHSKOEHD.m3u8
 http://dmi3y-tv.online/hls/smotrim/CH_CLASSICA.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",СМОТРИМ 100% КЛАССИКА HD
 http://dmi3y-tv.online/hls/smotrim/CH_CLASSICAHD.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",KINO 24
-http://dmi3y-tv.online/hls/CH_KINO24.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",КИНО ТВ
 http://dmi3y-tv.online/hls/CH_KINOTV.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",CINEMA
-http://dmi3y-tv.online/hls/CH_CINEMA.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ЕВРОКИНО
 http://dmi3y-tv.online/hls/CH_EVROKINO.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",НСТ
 http://dmi3y-tv.online/hls/CH_NST.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Русский роман
 http://dmi3y-tv.online/hls/CH_RUSSKIY_ROMAN.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",PRO100 TV
-http://dmi3y-tv.online/hls/CH_PRO100TV.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ПАТРИОТ
-http://dmi3y-tv.online/hls/CH_PATRIOT.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV XXI
 http://dmi3y-tv.online/hls/CH_TVXXI.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000
@@ -1021,8 +1005,6 @@ http://dmi3y-tv.online/hls/zabava/CH_TNT4_7.m3u8
 http://dmi3y-tv.online/hls/CH_8CHANNEL.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",8 канал HD
 http://dmi3y-tv.online/hls/CH_8CHANNELHD.m3u8
-#EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",8 Канал (Европа)
-http://dmi3y-tv.online/hls/CH_8CHANNEL_EUROPE.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",Просвещение
 http://dmi3y-tv.online/hls/CH_PROSVESHENIE.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",Надежда HD720
@@ -1065,12 +1047,6 @@ http://dmi3y-tv.online/hls/zabava/CH_DISNEY_6.m3u8
 http://dmi3y-tv.online/hls/zabava/CH_DISNEY_7.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Радость моя
 http://dmi3y-tv.online/hls/CH_RADOSTMOYA.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",ПИНГВИН ЛОЛО
-http://dmi3y-tv.online/hls/CH_PINGVIN_LOLO.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",Мультимания
-http://dmi3y-tv.online/hls/CH_MULTIMANIYA.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",Мамонтёнок
-http://dmi3y-tv.online/hls/CH_MAMONTENOK.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",СМОТРИМ 100% ДЕТСКОЕ
 http://dmi3y-tv.online/hls/smotrim/CH_DETSKOE.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",СМОТРИМ 100% ДЕТСКОЕ HD
