@@ -21,6 +21,10 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_1TV_7.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_1TV_8.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Первый канал (+9)
 http://dmi3y-tv.online/hls/DVB-T2/CH_1TV_9.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",Первый канал (Евразия)
+http://dmi3y-tv.online/hls/T2/CH_1TV_EVRAZIA.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",Первый канал (СНГ)
+http://dmi3y-tv.online/hls/T2/CH_1TV_SNG.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 1 (-1)
 http://dmi3y-tv.online/hls/DVB-T2/CH_RUSSIA1-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 1
@@ -65,6 +69,8 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_NTV_4.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_NTV_6.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",НТВ (+7)
 http://dmi3y-tv.online/hls/DVB-T2/CH_NTV_7.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",НТВ МИР
+http://dmi3y-tv.online/hls/T2/CH_NTV_MIR.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Пятый канал (-1)
 http://dmi3y-tv.online/hls/DVB-T2/CH_5TV-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Пятый канал
@@ -117,8 +123,12 @@ http://dmi3y-tv.online/hls/smotrim/T2/CH_PLANETARTRHD720_SNG.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_RUSSIA24.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 HD
 http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24HD.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 (+2)
+http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24_2.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 (+3)
 http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24_3.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 (+6)
+http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24_6.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Россия 24 International
 http://dmi3y-tv.online/hls/smotrim/T2/CH_RUSSIA24_INT.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Карусель (-1)
@@ -215,8 +225,6 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_TV3_4.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_TV3_6.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",ТВ3 (+7)
 http://dmi3y-tv.online/hls/DVB-T2/CH_TV3_7.m3u8
-#EXTINF:-1 group-title="ЭФИРНЫЕ",ТВ3 International
-http://dmi3y-tv.online/hls/T2/CH_TV3_INTERNATIONAL.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Пятница! (-1)
 http://dmi3y-tv.online/hls/DVB-T2/CH_FRIDAY-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",Пятница!
@@ -257,10 +265,14 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_MIR_4.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_MIR_6.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",МИР (+7)
 http://dmi3y-tv.online/hls/DVB-T2/CH_MIR_7.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",МИР (Казахстан)
+http://dmi3y-tv.online/hls/T2/CH_MIR_KZN.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",ТНТ (-1)
 http://dmi3y-tv.online/hls/DVB-T2/CH_TNT-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",ТНТ
 http://dmi3y-tv.online/hls/DVB-T2/CH_TNT.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",ТНТ HD (Казахстан)
+http://dmi3y-tv.online/hls/T2/CH_TNTHD_KZN.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",ТНТ (+2)
 http://dmi3y-tv.online/hls/DVB-T2/CH_TNT_2.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",ТНТ (+4)
@@ -273,6 +285,8 @@ http://dmi3y-tv.online/hls/DVB-T2/CH_TNT_7.m3u8
 http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV-1.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ
 http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV.m3u8
+#EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ HD [uz]
+http://dmi3y-tv.online/hls/T2/CH_MUZTVHD_UZ.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ (+2)
 http://dmi3y-tv.online/hls/DVB-T2/CH_MUZTV_2.m3u8
 #EXTINF:-1 group-title="ЭФИРНЫЕ",МУЗ ТВ (+4)
@@ -411,10 +425,10 @@ http://dmi3y-tv.online/hls/zabava/region/EKT/CH_VEKTORHD720_TRNSK.m3u8
 http://dmi3y-tv.online/hls/zabava/region/EKT/CH_TELEKON24HD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",4 канал (Екатеринбург)
 http://dmi3y-tv.online/hls/zabava/region/EKT/CH_4CHANNEL.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",МиГ ТВ (Красноуральск)
+http://dmi3y-tv.online/hls/zabava/region/EKT/CH_MIGTV_KRASN.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Барс (Иваново)
 http://dmi3y-tv.online/hls/zabava/region/IVAN/CH_BARS.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ИОТ (Иваново)
-http://dmi3y-tv.online/hls/zabava/region/IVAN/CH_IOT.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Моя Удмуртия (Ижевск)
 http://dmi3y-tv.online/hls/zabava/region/IZHSK/CH_MYUDMURTIA.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",МЭТР (Йошкар-Ола)
@@ -427,10 +441,6 @@ http://dmi3y-tv.online/hls/zabava/region/IRK/CH_AISTHD.m3u8
 http://dmi3y-tv.online/hls/zabava/region/IRK/CH_AKTISHD720.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",НТС HD (Иркутск)
 http://dmi3y-tv.online/hls/zabava/region/IRK/CH_NTSHD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",БАЙКАЛ Универ ТВ HD (Иркутск)
-http://dmi3y-tv.online/hls/region/CH_BAYKALUNIVERTVHD_IRK.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ТИВИСИ HD (Иркутск)
-http://dmi3y-tv.online/hls/region/CH_TIVICIHD_IRK.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ТНВ Татарстан (Казань)
 http://dmi3y-tv.online/hls/zabava/region/KZN/CH_TNVT.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Татарстан 24 (Казань)
@@ -533,6 +543,8 @@ http://dmi3y-tv.online/hls/region/CH_DAGESTAN_MAHACHK.m3u8
 http://dmi3y-tv.online/hls/zabava/region/MAHACHK/CH_DAGESTAN.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Москва 24 (Москва)
 http://dmi3y-tv.online/hls/zabava/region/MOS/CH_MOSKVA24.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Москва 24 HD (Москва)
+http://dmi3y-tv.online/hls/zabava/region/MOS/CH_MOSKVA24HD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Москва Доверие (Москва)
 http://dmi3y-tv.online/hls/zabava/region/MOS/CH_MOSKVADOVERIE.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ТЕО ТВ HD (Москва)
@@ -583,26 +595,12 @@ http://dmi3y-tv.online/hls/smotrim/region/CH_SIBIR24_NSK.m3u8
 http://dmi3y-tv.online/hls/smotrim/region/CH_SIBIR24HD_NSK.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Ямал-Регион (Салехард)
 http://dmi3y-tv.online/hls/zabava/region/NBK/CH_YAMREG.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",МИГ ТВ HD (Ноябрьск)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_MIGTVHD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Импульс HD (Новый Уренгой)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_IMPULSHD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Муравленко 24 HD (Муравленко)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_MURAVLENKO24HD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ЯМАЛ 1 HD (Ноябрьск)
 http://dmi3y-tv.online/hls/zabava/region/NBK/CH_YAMAL1HD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Вектор 24 (Губкинский)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_VEKTOR24_GUBK.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Вестник Надыма HD (Надым)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_VESTN_NADHD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Луч HD (Тарко-Сале)
-http://dmi3y-tv.online/hls/zabava/region/NBK/CH_LUTCHHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",12 Канал (Омск)
 http://dmi3y-tv.online/hls/region/CH_12CHANNEL_OMSK.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",12 канал HD (Омск)
 http://dmi3y-tv.online/hls/zabava/region/OMSK/CH_12CHANNELHD.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Первый городской (Омск)
-http://dmi3y-tv.online/hls/zabava/region/OMSK/CH_1GORODSKOY.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Продвижение HD (Омск)
 http://dmi3y-tv.online/hls/zabava/region/OMSK/CH_PRODVIZHENIEHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Омск ТВ HD (Омск)
@@ -629,8 +627,6 @@ http://dmi3y-tv.online/hls/zabava/region/PERM/CH_RIFEY.m3u8
 http://dmi3y-tv.online/hls/zabava/region/PERM/CH_VERHTV_BRZKI.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Своё ТВ (Березники)
 http://dmi3y-tv.online/hls/zabava/region/PERM/CH_SVOETV_BRZKI.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ЛТК HD (Лысьва)
-http://dmi3y-tv.online/hls/zabava/region/PERM/CH_LTKHD_LSVA.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",СОЮЗ ТВ (Чусовой)
 http://dmi3y-tv.online/hls/zabava/region/PERM/CH_SOYUZ_CHUS.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Сампо ТВ (Петрозаводск)
@@ -672,21 +668,23 @@ http://dmi3y-tv.online/hls/zabava/region/SAMARA/CH_SAMARAGISHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Лен ТВ 24 (Санкт-Петербург)
 http://dmi3y-tv.online/hls/zabava/region/SPB/CH_LENTV24.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Лен ТВ 24 HD (Санкт-Петербург)
-http://dmi3y-tv.online/hls/smotrim/region/CH_LENTV24HD_SPB.m3u8
+http://dmi3y-tv.online/hls/zabava/region/SPB/CH_LENTV24HD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Санкт-Петербург (Санкт-Петербург)
 http://dmi3y-tv.online/hls/smotrim/region/CH_SANKTPETERBURG_SPB.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Санкт-Петербург HD (Санкт-Петербург)
-http://dmi3y-tv.online/hls/zabava/region/SPB/CH_SPB.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",78 канал HD (Санкт-Петербург)
 http://dmi3y-tv.online/hls/zabava/region/SPB/CH_78CHANNELHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Теледом HD720 (Санкт-Петербург)
 http://dmi3y-tv.online/hls/region/CH_TELEDOMHD720_SPB.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ТРК Кириши HD (Санкт-Петербург)
+http://dmi3y-tv.online/hls/zabava/region/SPB/CH_KIRISHIHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",10 канал (Саранск)
 http://dmi3y-tv.online/hls/zabava/region/SRNK/CH_10CHANNEL.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Народное телевидение Мордовии (Саранск)
 http://dmi3y-tv.online/hls/zabava/region/SRNK/CH_NTM.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Народное телевидение Мордовии HD720 (Саранск)
 http://dmi3y-tv.online/hls/region/CH_NTMHD720_SRNK.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Мордовия 24 (Саранск)
+http://dmi3y-tv.online/hls/zabava/region/SRNK/CH_MORDOVIY24.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Саратов 24 HD (Саратов)
 http://dmi3y-tv.online/hls/zabava/region/SARATOV/CH_SARATOV24HD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",ОТВ Сахалин (Сахалин)
@@ -709,6 +707,8 @@ http://dmi3y-tv.online/hls/zabava/region/STAVR/CH_KAVKAZ24.m3u8
 http://dmi3y-tv.online/hls/zabava/region/STAVR/CH_SVOETVHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",АТВ (Ставрополь)
 http://dmi3y-tv.online/hls/zabava/region/STAVR/CH_ATV.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",26 РЕГИОН HD720 (Ставрополь)
+http://dmi3y-tv.online/hls/region/CH_26REGIONHD720_STAVR.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Югра HD (Сургут)
 http://dmi3y-tv.online/hls/zabava/region/SUR/CH_UGRA.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",UGRA Travel (Сургут)
@@ -751,8 +751,6 @@ http://dmi3y-tv.online/hls/zabava/region/SKTV/CH_YURGAN.m3u8
 http://dmi3y-tv.online/hls/region/CH_STV_SRVOY.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Новый век (Тамбов)
 http://dmi3y-tv.online/hls/zabava/region/TAMB/CH_NOVIY_VEK.m3u8
-#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Новый век HD720 (Тамбов)
-http://dmi3y-tv.online/hls/region/CH_NOVIY_VEKHD720_TAMB.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Тверской Проспект HD (Тверь)
 http://dmi3y-tv.online/hls/zabava/region/TVER/CH_TVERPROSPHD.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Панорама ТВ HD (Тверь)
@@ -855,6 +853,22 @@ http://dmi3y-tv.online/hls/zabava/region/YARL/CH_1YAROSLAVSKIYHD.m3u8
 http://dmi3y-tv.online/hls/zabava/region/YARL/CH_GTREG.m3u8
 #EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",МИТВ (Местное Илимское TV)
 http://193.33.233.109:9000/tv
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",НТК (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_NTK_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",7 канал (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_7TV_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Astana TV (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_ASTANATV_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",31 канал (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_31TV_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",КТК (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_KTK_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",24 KZ (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_24KZ_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Новое ТВ HD720 (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_NOVOETVHD720_KZN.m3u8
+#EXTINF:-1 group-title="РЕГИОНАЛЬНЫЕ",Валента HD (Казахстан)
+http://dmi3y-tv.online/hls/region/CH_VALENTAHD_KZN.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",СТАРТ ТРИУМФ
 http://dmi3y-tv.online/hls/CH_START_TRIUMF.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",СТАРТ ТРИУМФ HD720
@@ -863,6 +877,20 @@ http://dmi3y-tv.online/hls/CH_START_TRIUMFHD720.m3u8
 http://dmi3y-tv.online/hls/CH_VIASAT_SPORTHD.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",TRACE SPORT STARS
 http://dmi3y-tv.online/hls/CH_TRACE_SPORT_STARS.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",SETANTA SPORTS 1 HD
+http://dmi3y-tv.online/hls/CH_SETANTA_SPORTS1HD.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",SETANTA SPORTS 2 HD
+http://dmi3y-tv.online/hls/CH_SETANTA_SPORTS2HD.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",Точка отрыва
+http://dmi3y-tv.online/hls/CH_TOCHKA_OTRYVA.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",Sport+ HD
+http://dmi3y-tv.online/hls/CH_SPORT_PLUSHD.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",АВТО 24
+http://dmi3y-tv.online/hls/CH_AVTO24.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",FUEL TV HD
+http://dmi3y-tv.online/hls/CH_FUELTVHD.m3u8
+#EXTINF:-1 group-title="СПОРТИВНЫЕ",ДРАЙВ
+http://dmi3y-tv.online/hls/CH_DRIVE.m3u8
 #EXTINF:-1 group-title="СПОРТИВНЫЕ",EUROSPORT 1
 http://dmi3y-tv.online/hls/CH_EUROSPORT1.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",СТС Love (-1)
@@ -905,58 +933,20 @@ http://dmi3y-tv.online/hls/CH_EVROKINO.m3u8
 http://dmi3y-tv.online/hls/CH_NST.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Русский роман
 http://dmi3y-tv.online/hls/CH_RUSSKIY_ROMAN.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV XXI
-http://dmi3y-tv.online/hls/CH_TVXXI.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000
-http://dmi3y-tv.online/hls/CH_TV1000.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 HD
 http://dmi3y-tv.online/hls/CH_TV1000HD.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 ACTION HD
 http://dmi3y-tv.online/hls/CH_TV1000ACTIONHD.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 РУССКОЕ КИНО
-http://dmi3y-tv.online/hls/CH_TV1000RUSSKOEKINO.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",TV1000 РУССКОЕ КИНО HD
 http://dmi3y-tv.online/hls/CH_TV1000RUSSKOEKINOHD.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ДОМ КИНО
 http://dmi3y-tv.online/hls/CH_DOMKINO.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ДОМ КИНО ПРЕМИУМ
 http://dmi3y-tv.online/hls/CH_DOMKINOPREMIUM.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ДОМ КИНО ПРЕМИУМ HD
-http://dmi3y-tv.online/hls/CH_DOMKINOPREMIUMHD.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Точка SCI-FI
-http://dmi3y-tv.online/hls/CH_TOCHKA_SCI-FI.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Точка BLACK
-http://dmi3y-tv.online/hls/CH_TOCHKA_BLACK.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Точка RED
-http://dmi3y-tv.online/hls/CH_TOCHKA_RED.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Иллюзион+
 http://dmi3y-tv.online/hls/CH_ILLUZION_PLUS.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ViP PREMIERE
-http://dmi3y-tv.online/hls/CH_VIP_PREMIERE.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ViP MEGAHIT
-http://dmi3y-tv.online/hls/CH_VIP_MEGAHIT.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ViP COMEDY
-http://dmi3y-tv.online/hls/CH_VIP_COMEDY.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ViP COMEDY HD
-http://dmi3y-tv.online/hls/CH_VIP_COMEDYHD.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ViP SERIAL
-http://dmi3y-tv.online/hls/CH_VIP_SERIAL.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",AMEDIA I
-http://dmi3y-tv.online/hls/CH_AMEDIAI.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",AMEDIA II
-http://dmi3y-tv.online/hls/CH_AMEDIAII.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",AMEDIA HIT
-http://dmi3y-tv.online/hls/CH_AMEDIA_HIT.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",AMEDIA PREMIUM
-http://dmi3y-tv.online/hls/CH_AMEDIA_PREMIUM.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",AMEDIA PREMIUM HD
 http://dmi3y-tv.online/hls/CH_AMEDIA_PREMIUMHD.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",FILM BOX
-http://dmi3y-tv.online/hls/CH_FILMBOX.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",FILM BOX ARTHOUSE
-http://dmi3y-tv.online/hls/CH_FILMBOX_ARTHOUSE.m3u8
-#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",FOX LIFE
-http://dmi3y-tv.online/hls/CH_FOX_LIFE.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",КИНОПОКАЗ
 http://dmi3y-tv.online/hls/CH_KINOPOKAZ.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",ДОРАМА
@@ -965,6 +955,16 @@ http://dmi3y-tv.online/hls/CH_DORAMA.m3u8
 http://dmi3y-tv.online/hls/CH_HOLLYWOOD.m3u8
 #EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",BOLLYWOOD
 http://dmi3y-tv.online/hls/CH_BOLLYWOOD.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",МОСФИЛЬМ ЗОЛОТАЯ КОЛЛЕКЦИЯ
+http://dmi3y-tv.online/hls/CH_MOSFILM.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Победа
+http://dmi3y-tv.online/hls/CH_POBEDA.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",Русский иллюзион
+http://dmi3y-tv.online/hls/CH_RUSSKIY_ILLUZION.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",РЕТРО
+http://dmi3y-tv.online/hls/CH_RETRO.m3u8
+#EXTINF:-1 group-title="КИНО И СЕРИАЛЫ",CINEMA
+http://dmi3y-tv.online/hls/CH_CINEMA.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",2x2 (-1)
 http://dmi3y-tv.online/hls/zabava/CH_2X2-1.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",2x2
@@ -1033,6 +1033,10 @@ http://dmi3y-tv.online/hls/smotrim/CH_PRAZDNIKHD.m3u8
 http://dmi3y-tv.online/hls/CH_ZHIVI_AKTIVNO.m3u8
 #EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",ТОЧКА РФ HD
 http://dmi3y-tv.online/hls/CH_TOCHKA_RFHD.m3u8
+#EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",Перец International
+http://dmi3y-tv.online/hls/CH_PERETZ_INTERNATIONAL.m3u8
+#EXTINF:-1 group-title="РАЗВЛЕКАТЕЛЬНЫЕ",Сарафан
+http://dmi3y-tv.online/hls/CH_SARAFAN.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Солнце (-1)
 http://dmi3y-tv.online/hls/zabava/CH_DISNEY-1.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Солнце
@@ -1051,16 +1055,12 @@ http://dmi3y-tv.online/hls/CH_RADOSTMOYA.m3u8
 http://dmi3y-tv.online/hls/smotrim/CH_DETSKOE.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",СМОТРИМ 100% ДЕТСКОЕ HD
 http://dmi3y-tv.online/hls/smotrim/CH_DETSKOEHD.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",NICKELODEON
-http://dmi3y-tv.online/hls/CH_NICKELODEON.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",NICKELODEON HD
 http://dmi3y-tv.online/hls/CH_NICKELODEONHD.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",NickToons
 http://dmi3y-tv.online/hls/CH_NICKTOONS.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Nick Jr
 http://dmi3y-tv.online/hls/CH_NICKJR.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",Детский мир
-http://dmi3y-tv.online/hls/CH_DETSKIY_MIR.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",МАМА
 http://dmi3y-tv.online/hls/CH_MAMA.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",В гостях у сказки HD
@@ -1073,8 +1073,20 @@ http://dmi3y-tv.online/hls/CH_RYZHIY.m3u8
 http://dmi3y-tv.online/hls/CH_TIJI.m3u8
 #EXTINF:-1 group-title="ДЕТСКИЕ",Gulli GIRL
 http://dmi3y-tv.online/hls/CH_GULLI_GIRL.m3u8
-#EXTINF:-1 group-title="ДЕТСКИЕ",СТС Kids
-http://dmi3y-tv.online/hls/CH_STSKIDS.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",МУЛЬТ
+http://dmi3y-tv.online/hls/CH_MULT.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",Da Vinci
+http://dmi3y-tv.online/hls/CH_DAVINCI.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",О!
+http://dmi3y-tv.online/hls/CH_O.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",Мультиландия
+http://dmi3y-tv.online/hls/CH_MULTILANDIA.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",В гостях у сказки
+http://dmi3y-tv.online/hls/CH_VGOSTYAHUSKAZKI.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",Детский
+http://dmi3y-tv.online/hls/CH_DETSKIY.m3u8
+#EXTINF:-1 group-title="ДЕТСКИЕ",Duck tv HD
+http://dmi3y-tv.online/hls/CH_DUCKTVHD.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ПРОДВИЖЕНИЕ
 http://dmi3y-tv.online/hls/CH_PRODVIZHENIE.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",СОЮЗ HD
@@ -1099,26 +1111,10 @@ http://dmi3y-tv.online/hls/CH_VIASAT_EXPLOREHD.m3u8
 http://dmi3y-tv.online/hls/CH_VIASAT_HISTORYHD.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",VIASAT NATURE HD
 http://dmi3y-tv.online/hls/CH_VIASAT_NATUREHD.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Travel+Adventure
-http://dmi3y-tv.online/hls/CH_TRAVELPLUSADVENTURE.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",RTG SD
-http://dmi3y-tv.online/hls/CH_RTGSD.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ВРЕМЯ
 http://dmi3y-tv.online/hls/CH_VREMYA.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",HISTORY
-http://dmi3y-tv.online/hls/CH_HISTORY.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",HISTORY 2
-http://dmi3y-tv.online/hls/CH_HISTORY_2.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Galaxy TV
-http://dmi3y-tv.online/hls/CH_GALAXYTV.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Ocean TV
-http://dmi3y-tv.online/hls/CH_OCEANTV.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",RTG HD
-http://dmi3y-tv.online/hls/CH_RTGHD.m3u8
-#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Discovery Channel
-http://dmi3y-tv.online/hls/CH_DISCOVERY_CHANNEL.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",NATIONAL GEOGRAPHIC
-http://dmi3y-tv.online/hls/CH_NATIONALGEOGRAPHIC.m3u8
+http://stream1.cinerama.uz/1041/tracks-v1a1/mono.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",NATIONAL GEOGRAPHIC WILD
 http://dmi3y-tv.online/hls/CH_NATIONALGEOGRAPHICWILD.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Загородный
@@ -1153,6 +1149,24 @@ http://dmi3y-tv.online/hls/CH_DOKTOR.m3u8
 http://dmi3y-tv.online/hls/CH_3OOPARK.m3u8
 #EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ТЕЛЕКАФЕ
 http://dmi3y-tv.online/hls/CH_TELEKAFE.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Поехали!
+http://dmi3y-tv.online/hls/CH_POEHALI.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",Оружие
+http://dmi3y-tv.online/hls/CH_ORUZHIE.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",БОБЁР
+http://dmi3y-tv.online/hls/CH_BOBER.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",TOP SECRET
+http://dmi3y-tv.online/hls/CH_TOP_SECRET.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ВОПРОСЫ И ОТВЕТЫ
+http://dmi3y-tv.online/hls/CH_VOPROSYIOTVETY.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ПСИХОЛОГИЯ 21
+http://dmi3y-tv.online/hls/CH_PSIHOLOGIA21.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ДОМАШНИЕ ЖИВОТНЫЕ
+http://dmi3y-tv.online/hls/CH_DOMASHNIEZHIVOTNYE.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",УСАДЬБА
+http://dmi3y-tv.online/hls/CH_USADBA.m3u8
+#EXTINF:-1 group-title="ПОЗНАВАТЕЛЬНЫЕ",ЗДОРОВОЕ ТВ
+http://dmi3y-tv.online/hls/CH_ZDOROVOETV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Муз Союз
 http://dmi3y-tv.online/hls/CH_MUZSOYUZ.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",V2BEAT HD720
@@ -1167,8 +1181,6 @@ http://dmi3y-tv.online/hls/CH_SHANSONTV.m3u8
 http://dmi3y-tv.online/hls/CH_TNTMUSICHD.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",RUTV
 http://dmi3y-tv.online/hls/CH_RUTV.m3u8
-#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",MEZZO
-http://dmi3y-tv.online/hls/CH_MEZZO.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",МУЗЫКА ПЕРВОГО
 http://dmi3y-tv.online/hls/CH_MUZYKA_PERVOGO.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",FTV HD
@@ -1177,18 +1189,14 @@ http://dmi3y-tv.online/hls/CH_FTVHD.m3u8
 http://dmi3y-tv.online/hls/CH_MYDAYTV.m3u8
 #EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Retro TV HD
 http://dmi3y-tv.online/hls/CH_RETROTVHD.m3u8
-#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",DAR21
-http://dmi3y-tv.online/hls/CH_DAR21.m3u8
+#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Europa Plus
+http://dmi3y-tv.online/hls/CH_EUROPA_PLUS.m3u8
+#EXTINF:-1 group-title="МУЗЫКАЛЬНЫЕ",Жара
+http://dmi3y-tv.online/hls/CH_ZHARA.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ENGLISH
 http://dmi3y-tv.online/hls/CH_CGTN_ENGLISH.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ENGLISH HD720
 http://dmi3y-tv.online/hls/CH_CGTN_ENGLISHHD720.m3u8
-#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ESPANOL HD
-http://dmi3y-tv.online/hls/CH_CGTN_ESPANOLHD.m3u8
-#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN FRANCAIS HD
-http://dmi3y-tv.online/hls/CH_CGTN_FRANCAISHD.m3u8
-#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN ARABIC HD
-http://dmi3y-tv.online/hls/CH_CGTN_ARABICHD.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN РУССКИЙ HD
 http://dmi3y-tv.online/hls/CH_CGTN_RUSSKIYHD.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",CGTN DOCUMENTARY HD720
@@ -1241,8 +1249,10 @@ http://dmi3y-tv.online/hls/CH_CNN_ENGLISH.m3u8
 http://dmi3y-tv.online/hls/CH_DW_ENGLISH.m3u8
 #EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",NHK World Japan HD [ENGLISH]
 http://dmi3y-tv.online/hls/CH_NHK_WORLD_JAPANHD_ENGLISH.m3u8
-#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",RTVI
-http://dmi3y-tv.online/hls/CH_RTVI.m3u8
+#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",360° НОВОСТИ
+http://dmi3y-tv.online/hls/smotrim/CH_360TV_NEWS.m3u8
+#EXTINF:-1 group-title="ИНФОРМАЦИОННЫЕ",360° НОВОСТИ HD
+http://dmi3y-tv.online/hls/smotrim/CH_360TV_NEWSHD.m3u8
 #EXTINF:-1 group-title="ТЕЛЕМАГАЗИНЫ",LEOMAX 24 HD
 http://dmi3y-tv.online/hls/CH_LEOMAX24HD.m3u8
 #EXTINF:-1 group-title="ТЕЛЕМАГАЗИНЫ",Витрина ТВ
